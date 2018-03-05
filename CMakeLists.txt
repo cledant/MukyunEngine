@@ -39,7 +39,14 @@ set(SOURCE_FILES
 		srcs/WindowManager/Glfw_manager.cpp
 		srcs/WindowManager/Window.cpp
 		srcs/WindowManager/Input.cpp
-		srcs/Exceptions/GeneralException.cpp)
+		srcs/Exceptions/GeneralException.cpp
+		srcs/OpenGL/RessourceManager.cpp
+		srcs/OpenGL/oGL_utility.cpp
+		srcs/OpenGL/Ressource/Texture.cpp
+		srcs/OpenGL/Ressource/Shader.cpp
+		srcs/OpenGL/Ressource/Framebuffer.cpp
+		srcs/OpenGL/Ressource/Mesh.cpp
+		srcs/OpenGL/Ressource/Model.cpp)
 
 #OS specific libs
 if (APPLE)
