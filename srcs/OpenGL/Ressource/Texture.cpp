@@ -27,10 +27,11 @@ Texture::Texture(std::string const &path, Texture::eTextureType type) :
 }
 
 Texture::Texture(const void *buffer, glm::ivec2 const &size,
-				 Texture::eTextureType type) :
+				 GLint internalFormat, GLenum format, Texture::eTextureType type) :
 		_type(type), _tex_id(0), _tex_w(0), _tex_h(0), _tex_nb_chan(0)
 {
-	this->_tex_id = Texture::_load_glyph(buffer, size.x, size.y);
+	this->_tex_id = Texture::_load_buffer(buffer, size.x, size.y,
+										  internalFormat, format);
 }
 
 Texture::~Texture(void)
@@ -100,8 +101,6 @@ GLuint Texture::_load_flat(std::string const &path, int *w, int *h, int *chan)
 	unsigned char *data;
 
 	glGenTextures(1, &tex_id);
-	if (glGetError() != GL_NO_ERROR)
-		throw Texture::AllocationException();
 	glBindTexture(GL_TEXTURE_2D, tex_id);
 	if ((data = stbi_load(path.c_str(), &tex_w, &tex_h,
 						  &tex_nb_chan, 0)) != NULL)
@@ -148,20 +147,25 @@ GLuint Texture::_load_flat(std::string const &path, int *w, int *h, int *chan)
 	return (tex_id);
 }
 
-GLuint Texture::_load_glyph(const void *buffer, int tex_w, int tex_h)
+GLuint Texture::_load_buffer(const void *buffer, int tex_w, int tex_h,
+							 GLint internalFormat, GLenum format)
 {
 	GLuint tex_id;
 
 	glGenTextures(1, &tex_id);
-	if (glGetError() != GL_NO_ERROR)
-		throw Texture::AllocationException();
 	glBindTexture(GL_TEXTURE_2D, tex_id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED,
-				 tex_w, tex_h, 0, GL_RED, GL_UNSIGNED_BYTE, buffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat,
+				 tex_w, tex_h, 0, format, GL_UNSIGNED_BYTE, buffer);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	if (glGetError() != GL_NO_ERROR)
+	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+		glDeleteTextures(1, &tex_id);
+		throw InvalidTextureException();
+	}
 	glBindTexture(GL_TEXTURE_2D, 0);
 	return (tex_id);
 }
@@ -196,15 +200,6 @@ Texture::TypeException::TypeException(void)
 }
 
 Texture::TypeException::~TypeException(void) throw()
-{
-}
-
-Texture::NumberException::NumberException(void)
-{
-	this->_msg = "Texture : Invalid number of file";
-}
-
-Texture::NumberException::~NumberException(void) throw()
 {
 }
 

@@ -35,6 +35,7 @@ class Texture
 		Texture(void);
 		Texture(std::string const &path, Texture::eTextureType type);
 		Texture(const void *buffer, glm::ivec2 const &size,
+				GLint internalFormat, GLenum format,
 				Texture::eTextureType type);
 		Texture(const Texture &src) = delete;
 		Texture &operator=(Texture const &rhs) = delete;
@@ -78,14 +79,6 @@ class Texture
 				virtual ~TypeException(void) throw();
 		};
 
-		class NumberException : public GeneralException
-		{
-			public :
-
-				explicit NumberException(void);
-				virtual ~NumberException(void) throw();
-		};
-
 		class ChannelNumberException : public GeneralException
 		{
 			public :
@@ -118,8 +111,9 @@ class Texture
 		int                   _tex_h;
 		int                   _tex_nb_chan;
 
-		static GLuint _load_flat(std::string const &path, int *w, int *h, int *chan);
-		static GLuint _load_glyph(const void *buffer, int tex_w, int tex_h);
+		GLuint _load_flat(std::string const &path, int *w, int *h, int *chan);
+		GLuint _load_buffer(const void *buffer, int tex_w, int tex_h,
+							GLint internalFormat, GLenum format);
 };
 
 #endif
