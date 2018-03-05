@@ -26,7 +26,7 @@ set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -O3")
 include_directories(includes
 		libs/glm
 		libs/stb
-		libs/glad/build/includes
+		${CMAKE_BINARY_DIR}/libs/glad/build/include
 		libs/glfw/include/GLFW
 		libs/assimp/include
 		libs/assimp/build/include
@@ -35,7 +35,11 @@ link_directories(${CMAKE_BINARY_DIR}/libs/glad/build
 		${CMAKE_BINARY_DIR}/libs/glfw/build/src
 		${CMAKE_BINARY_DIR}/libs/assimp/build/code)
 set(SOURCE_FILES
-		srcs/main.cpp)
+		srcs/main.cpp
+		srcs/WindowManager/Glfw_manager.cpp
+		srcs/WindowManager/Window.cpp
+		srcs/WindowManager/Input.cpp
+		srcs/Exceptions/GeneralException.cpp)
 
 #OS specific libs
 if (APPLE)
