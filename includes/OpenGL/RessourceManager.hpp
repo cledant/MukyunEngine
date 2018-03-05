@@ -17,7 +17,7 @@
 # include "glfw3.h"
 # include "OpenGL/Ressource/Shader.hpp"
 # include "OpenGL/Ressource/Texture.hpp"
-# include "OpenGL/Model.hpp"
+# include "OpenGL/Ressource/Model.hpp"
 # include "OpenGL/Ressource/Framebuffer.hpp"
 # include "Exceptions/GeneralException.hpp"
 # include <map>
@@ -41,9 +41,8 @@ class RessourceManager
 		void add_model(std::string const &name,
 					   std::string const &path);
 		void add_texture(std::string const &name,
-						 std::vector<std::string> const &files,
-						 Texture::t_tex_gl_type gl_type,
-						 Texture::t_tex_type type);
+						 std::string const &path,
+						 Texture::eTextureType type);
 		void add_framebuffer(std::string const &name, int h, int w);
 
 		/*

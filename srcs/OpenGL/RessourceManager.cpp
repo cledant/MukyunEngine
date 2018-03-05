@@ -34,15 +34,14 @@ void RessourceManager::add_shader(std::string const &name,
 void RessourceManager::add_model(std::string const &name,
 								 std::string const &path)
 {
-	this->_model_list.push_back({name, path});
+	this->_model_list.insert(std::pair<std::string, Model>(name, Model(path)));
 }
 
 void RessourceManager::add_texture(std::string const &name,
-								   std::vector<std::string> const &files,
-								   Texture::t_tex_gl_type gl_type,
-								   Texture::t_tex_type type)
+								   std::string const &path,
+								   Texture::eTextureType type)
 {
-	this->_texture_list.push_back({name, files, gl_type, type});
+	this->_model_list.insert(std::pair<std::string, Model>(name, Texture(path, type)));
 }
 
 void RessourceManager::add_framebuffer(std::string const &name, int h, int w)
@@ -56,32 +55,29 @@ void RessourceManager::add_framebuffer(std::string const &name, int h, int w)
 
 Shader const &RessourceManager::getShader(std::string const &name) const
 {
-	for (auto it = this->_shader_list.begin(); it != this->_shader_list.end(); ++it)
-	{
-		if (it->getName().compare(name) == 0)
-			return (*it);
-	}
-	throw RessourceManager::ShaderNotFoundException(name);
+	auto it = this->_shader_list.find(name);
+
+	if (it == this->_shader_list.end())
+		throw RessourceManager::ShaderNotFoundException(name);
+	return (it->second);
 }
 
 Model const &RessourceManager::getModel(std::string const &name) const
 {
-	for (auto it = this->_model_list.begin(); it != this->_model_list.end(); ++it)
-	{
-		if (it->getName().compare(name) == 0)
-			return (*it);
-	}
-	throw RessourceManager::ModelNotFoundException(name);
+	auto it = this->_model_list.find(name);
+
+	if (it == this->_model_list.end())
+		throw RessourceManager::ModelNotFoundException(name);
+	return (it->second);
 }
 
 Texture const &RessourceManager::getTexture(std::string const &name) const
 {
-	for (auto it = this->_texture_list.begin(); it != this->_texture_list.end(); ++it)
-	{
-		if (it->getName().compare(name) == 0)
-			return (*it);
-	}
-	throw RessourceManager::TextureNotFoundException(name);
+	auto it = this->_texture_list.find(name);
+
+	if (it == this->_texture_list.end())
+		throw RessourceManager::TextureNotFoundException(name);
+	return (it->second);
 }
 
 Framebuffer const &RessourceManager::getFramebuffer(std::string const &name) const
@@ -150,14 +146,5 @@ RessourceManager::FramebufferNotFoundException::FramebufferNotFoundException(std
 }
 
 RessourceManager::FramebufferNotFoundException::~FramebufferNotFoundException(void) throw()
-{
-}
-
-RessourceManager::oGLFailException::oGLFailException(void)
-{
-	this->_msg = "OpenGL : Something failed !";
-}
-
-RessourceManager::oGLFailException::~oGLFailException(void) throw()
 {
 }

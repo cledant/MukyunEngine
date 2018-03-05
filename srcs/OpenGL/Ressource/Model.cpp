@@ -10,28 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Model/Model.hpp"
+#include "OpenGL/Ressource/Model.hpp"
 
-Model::Model(void) : _name(""), _center({0.0f, 0.0f, 0.0f})
+Model::Model(void) : _center({0.0f, 0.0f, 0.0f})
 {
 }
 
-Model::Model(std::string const &name, float const *array, size_t size,
-			 std::vector<std::string> const &files, Texture::t_tex_gl_type gl_type,
-			 Texture::t_tex_type type)
-{
-	std::cout << "Loading : " << name << std::endl;
-	this->_texture_list.insert(std::pair<std::string, Texture>("tex1",
-															   Texture(name, files,
-																	   gl_type,
-																	   type)));
-	this->_mesh_list.push_back(Mesh(array, size, type, "tex1"));
-	this->_name = name;
-	this->_calculate_center();
-}
-
-Model::Model(std::string const &name, std::string const &path) : _name(name),
-																 _center({0.0f, 0.0f, 0.0f})
+Model::Model(std::string const &path) : _center({0.0f, 0.0f, 0.0f})
 {
 	std::cout << "Loading : " << path << std::endl;
 	this->_load_model(path);
@@ -40,18 +25,14 @@ Model::Model(std::string const &name, std::string const &path) : _name(name),
 
 Model::Model(Model &&src)
 {
-	this->_name         = src.getName();
-	this->_mesh_list    = src.moveMeshList();
-	this->_center       = src.getCenter();
-	this->_texture_list = src.moveTextureList();
+	this->_mesh_list = src.moveMeshList();
+	this->_center    = src.getCenter();
 }
 
 Model &Model::operator=(Model &&rhs)
 {
-	this->_name         = rhs.getName();
-	this->_mesh_list    = rhs.moveMeshList();
-	this->_center       = rhs.getCenter();
-	this->_texture_list = rhs.moveTextureList();
+	this->_mesh_list = rhs.moveMeshList();
+	this->_center    = rhs.getCenter();
 	return (*this);
 }
 
@@ -62,11 +43,6 @@ Model::~Model(void)
 /*
  * Getter
  */
-
-std::string const &Model::getName(void) const
-{
-	return (this->_name);
-}
 
 std::vector<Mesh> const &Model::getMeshList(void) const
 {
@@ -81,16 +57,6 @@ glm::vec3 const &Model::getCenter(void) const
 std::vector<Mesh> Model::moveMeshList()
 {
 	return (std::move(this->_mesh_list));
-}
-
-std::map<std::string, Texture> Model::moveTextureList(void)
-{
-	return (std::move(this->_texture_list));
-}
-
-std::map<std::string, Texture> const &Model::getTextureList(void) const
-{
-	return (this->_texture_list);
 }
 
 void Model::_load_model(std::string const &path)
