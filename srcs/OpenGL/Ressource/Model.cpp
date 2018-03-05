@@ -16,10 +16,11 @@ Model::Model(void) : _center({0.0f, 0.0f, 0.0f})
 {
 }
 
-Model::Model(std::string const &path) : _center({0.0f, 0.0f, 0.0f})
+Model::Model(std::string const &path,
+			 std::map<std::string, Texture> &texture_list) : _center({0.0f, 0.0f, 0.0f})
 {
 	std::cout << "Loading : " << path << std::endl;
-	this->_load_model(path);
+	this->_load_model(path, texture_list);
 	this->_calculate_center();
 }
 
@@ -59,7 +60,7 @@ std::vector<Mesh> Model::moveMeshList()
 	return (std::move(this->_mesh_list));
 }
 
-void Model::_load_model(std::string const &path)
+void Model::_load_model(std::string const &path, std::map<std::string, Texture> &texture_list)
 {
 	Assimp::Importer importer;
 	const aiScene    *scene;
@@ -74,18 +75,19 @@ void Model::_load_model(std::string const &path)
 		directory = ".";
 	else
 		directory = path.substr(0, pos);
-	this->_load_node(scene->mRootNode, scene, directory);
+	this->_load_node(scene->mRootNode, scene, directory, texture_list);
 }
 
-void Model::_load_node(aiNode *node, const aiScene *scene, std::string const &directory)
+void Model::_load_node(aiNode *node, const aiScene *scene, std::string const &directory,
+					   std::map<std::string, Texture> &texture_list)
 {
 	if (node == NULL)
 		throw Model::InvalidNodeException();
 	for (size_t i = 0; i < node->mNumMeshes; ++i)
-		this->_mesh_list.push_back({scene->mMeshes[node->mMeshes[i]], scene, directory,
-									this->_texture_list});
+		this->_mesh_list.push_back(Mesh(scene->mMeshes[node->mMeshes[i]], scene, directory,
+										texture_list));
 	for (size_t j = 0; j < node->mNumChildren; ++j)
-		this->_load_node(node->mChildren[j], scene, directory);
+		this->_load_node(node->mChildren[j], scene, directory, texture_list);
 }
 
 void Model::_calculate_center(void)

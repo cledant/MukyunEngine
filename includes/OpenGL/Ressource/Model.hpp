@@ -19,7 +19,6 @@
 # include "assimp/scene.h"
 # include "assimp/postprocess.h"
 # include "OpenGL/Ressource/Mesh.hpp"
-# include "OpenGL/Ressource/Texture.hpp"
 # include "Exceptions/GeneralException.hpp"
 # include "glm/glm.hpp"
 # include <iostream>
@@ -31,7 +30,7 @@ class Model
 	public :
 
 		Model(void);
-		Model(std::string const &path);
+		Model(std::string const &path, std::map<std::string, Texture> &_texture_list);
 		Model(Model const &src) = delete;
 		Model &operator=(Model const &rhs) = delete;
 		Model(Model &&src);
@@ -68,8 +67,9 @@ class Model
 		std::vector<Mesh> _mesh_list;
 		glm::vec3         _center;
 
-		void _load_model(std::string const &path);
-		void _load_node(aiNode *node, const aiScene *scene, std::string const &directory);
+		void _load_model(std::string const &path, std::map<std::string, Texture> &texture_list);
+		void _load_node(aiNode *node, const aiScene *scene, std::string const &directory,
+						std::map<std::string, Texture> &texture_list);
 		void _calculate_center(void);
 };
 

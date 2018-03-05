@@ -21,7 +21,7 @@ RessourceManager::~RessourceManager(void)
 }
 
 /*
- * Object Creation
+ * Ressource Creation
  */
 
 void RessourceManager::add_shader(std::string const &name,
