@@ -56,8 +56,8 @@ class Mesh
 			glm::vec3 diffuse;
 			glm::vec3 specular;
 			float     shininess;
-			GLint     diffuseMap;
-			GLint     specularMap;
+			GLuint    diffuseMap;
+			GLuint    specularMap;
 		};
 
 		/*
@@ -118,6 +118,7 @@ class Mesh
 		void _load_mesh(float const *array, size_t size);
 		void _load_material(aiMesh *mesh, const aiScene *scene,
 							std::map<std::string, Texture> &texture_list);
+		void _load_material_info(aiMaterial *mat);
 		void _load_texture(aiMaterial *mat, aiTextureType type,
 						   Texture::eTextureType tex_type,
 						   std::map<std::string, Texture> &texture_list);

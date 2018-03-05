@@ -168,6 +168,7 @@ void Mesh::_load_material(aiMesh *mesh, const aiScene *scene,
 
 	if ((mat = scene->mMaterials[mesh->mMaterialIndex]) == NULL)
 		throw Mesh::InvalidMaterialException();
+	this->_load_material_info(mat);
 	this->_load_texture(mat, aiTextureType_DIFFUSE, Texture::TEX_DIFFUSE, texture_list);
 	this->_load_texture(mat, aiTextureType_SPECULAR, Texture::TEX_SPECULAR, texture_list);
 }
@@ -179,18 +180,23 @@ void Mesh::_load_texture(aiMaterial *mat, aiTextureType type,
 	aiString    str;
 	std::string std_str;
 
-	for (size_t i = 0; i < mat->GetTextureCount(type); ++i)
+	if (mat->GetTextureCount(type))
 	{
-		mat->GetTexture(type, i, &str);
-		std_str.clear();
+		mat->GetTexture(type, 0, &str);
 		std_str = this->_directory + '/';
 		std_str.append(str.C_Str());
-		texture_list.insert(
-				std::pair<std::string, Texture>(std_str, tex_type));
-		if (!this->_find_texture(std_str, texture_list))
+		Texture tmp = Texture(std_str, tex_type);
+		if (tex_type == Texture::eTextureType::TEX_DIFFUSE)
 		{
-			Texture tmp = {std_str, {std_str}, Texture::TEX_FLAT, tex_type};
-			texture_list.insert(std::pair<std::string, Texture>(std_str, std::move(tmp)));
+			std_str.append("_diffuse");
+			auto it = texture_list.insert(std::pair<std::string, Texture>(std_str, std::move(tmp)));
+			this->_material.diffuseMap = it.first->second.getTextureID();
+		}
+		else
+		{
+			std_str.append("_specular");
+			auto it = texture_list.insert(std::pair<std::string, Texture>(std_str, std::move(tmp)));
+			this->_material.specularMap = it.first->second.getTextureID();
 		}
 	}
 }
