@@ -46,7 +46,8 @@ set(SOURCE_FILES
 		srcs/OpenGL/Ressource/Shader.cpp
 		srcs/OpenGL/Ressource/Framebuffer.cpp
 		srcs/OpenGL/Ressource/Mesh.cpp
-		srcs/OpenGL/Ressource/Model.cpp)
+		srcs/OpenGL/Ressource/Model.cpp
+		srcs/RenderBin/ARenderBin.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
 target_compile_options(primary PRIVATE -Wall -Werror -Wextra)
 
