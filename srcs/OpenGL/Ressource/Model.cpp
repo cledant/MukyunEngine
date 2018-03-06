@@ -26,8 +26,7 @@ Model::Model(std::string const &path,
 
 Model::Model(Model &&src)
 {
-	this->_mesh_list = src.moveMeshList();
-	this->_center    = src.getCenter();
+	*this = std::move(src);
 }
 
 Model &Model::operator=(Model &&rhs)

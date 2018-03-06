@@ -34,14 +34,15 @@ void RessourceManager::add_shader(std::string const &name,
 void RessourceManager::add_model(std::string const &name,
 								 std::string const &path)
 {
-	this->_model_list.insert(std::pair<std::string, Model>(name, Model(path)));
+	this->_model_list.insert(std::pair<std::string, Model>(name, Model(path,
+																	   this->_texture_list)));
 }
 
 void RessourceManager::add_texture(std::string const &name,
 								   std::string const &path,
 								   Texture::eTextureType type)
 {
-	this->_model_list.insert(std::pair<std::string, Model>(name, Texture(path, type)));
+	this->_texture_list.insert(std::pair<std::string, Texture>(name, Texture(path, type)));
 }
 
 void RessourceManager::add_framebuffer(std::string const &name, int h, int w)

@@ -44,9 +44,9 @@ Shader::~Shader(void)
 	glDeleteShader(this->_shader_program);
 }
 
-Shader::Shader(Shader &&src) : _shader_program(0)
+Shader::Shader(Shader &&src)
 {
-	this->_shader_program = src.moveShaderProgram();
+	*this = std::move(src);
 }
 
 Shader &Shader::operator=(Shader &&rhs)

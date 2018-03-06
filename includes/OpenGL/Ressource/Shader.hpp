@@ -26,7 +26,7 @@ class Shader
 
 		Shader(void);
 		Shader(std::string const &vs_path, std::string const &fs_path);
-		Shader(Shader &src) = delete;
+		Shader(Shader const &src) = delete;
 		Shader &operator=(Shader const &rhs) = delete;
 		Shader(Shader &&src);
 		Shader &operator=(Shader &&rhs);

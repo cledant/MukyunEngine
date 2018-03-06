@@ -52,7 +52,7 @@ class Mesh
 			Material(void);
 			~Material(void);
 
-			glm::vec3 ambiant;
+			glm::vec3 ambient;
 			glm::vec3 diffuse;
 			glm::vec3 specular;
 			float     shininess;
@@ -115,7 +115,6 @@ class Mesh
 		std::string               _directory;
 
 		void _load_mesh(aiMesh *mesh);
-		void _load_mesh(float const *array, size_t size);
 		void _load_material(aiMesh *mesh, const aiScene *scene,
 							std::map<std::string, Texture> &texture_list);
 		void _load_material_info(aiMaterial *mat);

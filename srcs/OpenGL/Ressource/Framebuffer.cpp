@@ -23,6 +23,7 @@ Framebuffer::Framebuffer(int h, int w) : _fbo(0), _textureColorBuffer(0), _rbo(0
 		glDeleteFramebuffers(1, &this->_fbo);
 		glDeleteTextures(1, &this->_textureColorBuffer);
 		glDeleteRenderbuffers(1, &this->_rbo);
+		throw;
 	}
 }
 
