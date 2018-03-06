@@ -13,6 +13,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 
 #include "OpenGL/Ressource/Texture.hpp"
+#include "stb_image.h"
 
 Texture::Texture(void) : _type(TEX_DIFFUSE), _tex_id(0), _tex_w(0), _tex_h(0),
 						 _tex_nb_chan(0)

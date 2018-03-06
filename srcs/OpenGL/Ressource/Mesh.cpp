@@ -104,6 +104,16 @@ std::string const &Mesh::getDirectory(void) const
 	return (this->_directory);
 }
 
+Mesh::Material const &Mesh::getMaterial(void) const
+{
+	return (this->_material);
+}
+
+GLuint Mesh::getVBO(void) const
+{
+	return (this->_vbo);
+}
+
 GLuint Mesh::moveVBO(void)
 {
 	GLuint tmp = this->_vbo;

@@ -1,11 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 project(MukyunEngine)
 
-#Setup cpp version and flags
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
 #Setup Glad
 set(GLAD_API "gl=4.1")
 add_subdirectory(libs/glad ${CMAKE_BINARY_DIR}/libs/glad/build)
@@ -21,8 +16,13 @@ set(BUILD_SHARED_LIBS OFF)
 set(ASSIMP_NO_EXPORT ON)
 add_subdirectory(libs/assimp ${CMAKE_BINARY_DIR}/libs/assimp/build)
 
-set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -O3")
+#Setup cpp version and Release type
+set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
+#Setup directories
 include_directories(includes
 		libs/glm
 		libs/stb
@@ -34,29 +34,40 @@ include_directories(includes
 link_directories(${CMAKE_BINARY_DIR}/libs/glad/build
 		${CMAKE_BINARY_DIR}/libs/glfw/build/src
 		${CMAKE_BINARY_DIR}/libs/assimp/build/code)
+
+#Setup Main Lib with all compilations flag
 set(SOURCE_FILES
-		srcs/main.cpp
 		srcs/WindowManager/Glfw_manager.cpp
 		srcs/WindowManager/Window.cpp
 		srcs/WindowManager/Input.cpp
 		srcs/Exceptions/GeneralException.cpp
 		srcs/OpenGL/RessourceManager.cpp
 		srcs/OpenGL/oGL_utility.cpp
-		srcs/OpenGL/Ressource/Texture.cpp
 		srcs/OpenGL/Ressource/Shader.cpp
 		srcs/OpenGL/Ressource/Framebuffer.cpp
 		srcs/OpenGL/Ressource/Mesh.cpp
 		srcs/OpenGL/Ressource/Model.cpp)
+add_library(primary STATIC ${SOURCE_FILES})
+target_compile_options(primary PRIVATE -Wall -Werror -Wextra)
 
-#OS specific libs
-if (APPLE)
-	find_library(OPEN_GL OpenGL REQUIRED)
-	find_library(COCOA COCOA REQUIRED)
-	find_library(IOKIT IOkit REQUIRED)
-	find_library(COREVIDEO CoreVideo REQUIRED)
-	set(EXTRA_LIBS ${OPEN_GL} ${COCOA} ${IOKIT} ${COREVIDEO})
-endif ()
+#Setup secondary Lib with no compilation flag for unused var
+#Used to fix stbi compilation
+set(SOURCE_FILES_NO_FLAG
+		srcs/OpenGL/Ressource/Texture.cpp)
+add_library(secondary STATIC ${SOURCE_FILES_NO_FLAG})
+target_compile_options(secondary PRIVATE -Wall -Wextra)
 
-add_executable(engine ${SOURCE_FILES})
-target_link_libraries(engine glad glfw assimp ${EXTRA_LIBS})
+#Creating executable
+set(SOURCE_FILES_MAIN
+		srcs/main.cpp)
+add_executable(engine ${SOURCE_FILES_MAIN})
+target_compile_options(engine PRIVATE -Wall -Werror -Wextra)
+
+#Build Order
+add_dependencies(primary glad glfw assimp)
+add_dependencies(secondary glad glfw assimp)
+add_dependencies(engine primary secondary)
+target_link_libraries(engine glad glfw assimp primary secondary)
+
+#Copy assets
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})

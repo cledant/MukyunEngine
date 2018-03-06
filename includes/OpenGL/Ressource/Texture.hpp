@@ -17,7 +17,6 @@
 # include "glfw3.h"
 # include "Exceptions/GeneralException.hpp"
 # include "glm/glm.hpp"
-# include "stb_image.h"
 # include <iostream>
 # include <fstream>
 # include <vector>
@@ -37,7 +36,7 @@ class Texture
 		Texture(const void *buffer, glm::ivec2 const &size,
 				GLint internalFormat, GLenum format,
 				Texture::eTextureType type);
-		Texture(const Texture &src) = delete;
+		Texture(Texture const &src) = delete;
 		Texture &operator=(Texture const &rhs) = delete;
 		Texture(Texture &&src);
 		Texture &operator=(Texture &&rhs);

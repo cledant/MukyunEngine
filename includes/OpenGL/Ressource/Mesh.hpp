@@ -80,7 +80,7 @@ class Mesh
 		std::vector<Mesh::Vertex> const &getVertexList(void) const;
 		std::string const &getDirectory(void) const;
 		Mesh::Material const &getMaterial(void) const;
-		GLuint getVBO(void);
+		GLuint getVBO(void) const;
 		GLuint moveVBO(void);
 
 		class GLInitException : public GeneralException
