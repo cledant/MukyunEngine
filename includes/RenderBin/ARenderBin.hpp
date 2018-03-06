@@ -45,7 +45,7 @@ class ARenderBin
 		ARenderBin(ARenderBin::Params const &params);
 		virtual ~ARenderBin(void);
 		ARenderBin(ARenderBin const &src) = delete;
-		ARenderBin &operator=(RenderBin const &rhs) = delete;
+		ARenderBin &operator=(ARenderBin const &rhs) = delete;
 		ARenderBin(ARenderBin &&src);
 		ARenderBin &operator=(ARenderBin &&rhs);
 

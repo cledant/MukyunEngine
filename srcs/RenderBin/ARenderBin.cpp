@@ -184,6 +184,45 @@ void ARenderBin::_create_vao_mesh(void)
 	for (auto it = this->_model->getMeshList().begin(); it != this->_model->getMeshList().end(); ++it)
 	{
 		glGenVertexArrays(1, &new_vao);
+		glBindVertexArray(new_vao);
+		//Binding mesh vbo to vao
 		glBindBuffer(GL_ARRAY_BUFFER, it->getVBO());
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::Vertex),
+							  reinterpret_cast<void *>(0));
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::Vertex),
+							  reinterpret_cast<void *>(3 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Mesh::Vertex),
+							  reinterpret_cast<void *>(6 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::Vertex),
+							  reinterpret_cast<void *>(8 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::Vertex),
+							  reinterpret_cast<void *>(11 * sizeof(GLfloat)));
+		//Binding matrice vbo to vao
+		glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_model_matrices);
+		glEnableVertexAttribArray(5);
+		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
+							  reinterpret_cast<void *>(0));
+		glEnableVertexAttribArray(6);
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
+							  reinterpret_cast<void *>(sizeof(glm::vec4)));
+		glEnableVertexAttribArray(7);
+		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
+							  reinterpret_cast<void *>(2 * sizeof(glm::vec4)));
+		glEnableVertexAttribArray(8);
+		glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
+							  reinterpret_cast<void *>(3 * sizeof(glm::vec4)));
+		//Link VertexAttrib slots as one
+		glVertexAttribDivisor(5, 1);
+		glVertexAttribDivisor(6, 1);
+		glVertexAttribDivisor(7, 1);
+		glVertexAttribDivisor(8, 1);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+		this->_vao_mesh.push_back(new_vao);
 	}
 }
