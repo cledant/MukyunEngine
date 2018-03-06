@@ -79,7 +79,7 @@ class ARenderBin
 		size_t getCurrentInstanceNumber(void) const;
 		size_t getMaxInstanceNumber(void) const;
 
-	private:
+	protected :
 
 		ARenderBin::eType      _type;
 		Shader const           *_shader;

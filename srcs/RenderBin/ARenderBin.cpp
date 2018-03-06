@@ -223,6 +223,7 @@ void ARenderBin::_create_vao_mesh(void)
 		glVertexAttribDivisor(8, 1);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
+		oGL_check_error();
 		this->_vao_mesh.push_back(new_vao);
 	}
 }

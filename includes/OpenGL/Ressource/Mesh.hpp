@@ -82,6 +82,7 @@ class Mesh
 		Mesh::Material const &getMaterial(void) const;
 		GLuint getVBO(void) const;
 		GLuint moveVBO(void);
+		size_t getNbFaces(void) const;
 
 		class GLInitException : public GeneralException
 		{
@@ -112,6 +113,7 @@ class Mesh
 		Mesh::Material            _material;
 		std::vector<Mesh::Vertex> _vertex_list;
 		GLuint                    _vbo;
+		size_t                    _nb_face;
 		std::string               _directory;
 
 		void _load_mesh(aiMesh *mesh);
