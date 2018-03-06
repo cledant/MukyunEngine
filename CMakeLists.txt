@@ -48,7 +48,11 @@ set(SOURCE_FILES
 		srcs/OpenGL/Ressource/Mesh.cpp
 		srcs/OpenGL/Ressource/Model.cpp
 		srcs/RenderBin/ARenderBin.cpp
-		srcs/RenderBin/ClassesRenderBin/BasicPropRenderBin.cpp)
+		srcs/RenderBin/ClassesRenderBin/BasicPropRenderBin.cpp
+		srcs/Interfaces/ICollidable.cpp
+		srcs/Interfaces/IEntity.cpp
+		srcs/Interfaces/ITransformable.cpp
+		srcs/GameEntities/Utility/CollisionBox.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
 target_compile_options(primary PRIVATE -Wall -Werror -Wextra)
 
