@@ -47,6 +47,7 @@ set(SOURCE_FILES
 		srcs/OpenGL/Ressource/Framebuffer.cpp
 		srcs/OpenGL/Ressource/Mesh.cpp
 		srcs/OpenGL/Ressource/Model.cpp
+		srcs/OpenGL/Ressource/Texture.cpp
 		srcs/OpenGL/RenderBin/ARenderBin.cpp
 		srcs/OpenGL/RenderBin/ClassesRenderBin/BasicPropRenderBin.cpp
 		srcs/Interfaces/ICollidable.cpp
@@ -54,16 +55,12 @@ set(SOURCE_FILES
 		srcs/Interfaces/ITransformable.cpp
 		srcs/GameEntities/Utility/CollisionBox.cpp
 		srcs/Cameras/Camera.cpp
-		srcs/GameEntities/Prop.cpp srcs/TestInstancing/TestInstancing.cpp srcs/TestInstancing/InitTestInstancing.cpp)
+		srcs/GameEntities/Prop.cpp
+		srcs/TestInstancing/TestInstancing.cpp
+		srcs/TestInstancing/InitTestInstancing.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
-target_compile_options(primary PRIVATE -Wall -Werror -Wextra)
-
-#Setup secondary Lib with no compilation flag for unused var
-#Used to fix stbi compilation
-set(SOURCE_FILES_NO_FLAG
-		srcs/OpenGL/Ressource/Texture.cpp)
-add_library(secondary STATIC ${SOURCE_FILES_NO_FLAG})
-target_compile_options(secondary PRIVATE -Wall -Wextra)
+target_link_libraries(primary glad glfw assimp)
+target_compile_options(primary PRIVATE -Wall -Wextra)
 
 #Creating executable
 set(SOURCE_FILES_MAIN
@@ -73,9 +70,8 @@ target_compile_options(engine PRIVATE -Wall -Werror -Wextra)
 
 #Build Order
 add_dependencies(primary glad glfw assimp)
-add_dependencies(secondary glad glfw assimp)
-add_dependencies(engine primary secondary)
-target_link_libraries(engine glad glfw assimp primary secondary)
+add_dependencies(engine primary)
+target_link_libraries(engine glad glfw assimp primary)
 
 #Copy assets
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
