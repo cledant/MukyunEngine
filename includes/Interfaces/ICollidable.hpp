@@ -20,7 +20,7 @@ class ICollidable
 {
 	public :
 
-		enum Damages
+		enum eDamages
 		{
 			NONE          = 0,
 			HALF          = 1,
@@ -34,7 +34,7 @@ class ICollidable
 		ICollidable &operator=(ICollidable const &rhs) = delete;
 
 		virtual CollisionBox const &getCollisionBox(void) const = 0;
-		virtual Damages getDamages(void) const = 0;
+		virtual ICollidable::eDamages getDamages(void) const = 0;
 		virtual void setPassthrough(bool value) = 0;
 		virtual bool getPassthrough(void) const = 0;
 };

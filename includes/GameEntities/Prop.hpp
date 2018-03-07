@@ -33,16 +33,15 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 			Params(void);
 			~Params(void);
 
-			ARenderBin           *render_bin;
-			glm::vec3            pos;
-			glm::vec3            orientation;
-			glm::vec3            scale;
-			glm::vec3            offset;
-			bool                 auto_rotation;
-			bool                 active;
-			glm::vec3            cb_half_size;
-			ICollidable::Damages dmg;
-			bool                 passthrough;
+			ARenderBin            *render_bin;
+			glm::vec3             pos;
+			glm::vec3             orientation;
+			glm::vec3             scale;
+			glm::vec3             offset;
+			bool                  active;
+			glm::vec3             cb_half_size;
+			ICollidable::eDamages dmg;
+			bool                  passthrough;
 		};
 
 		Prop(Prop::Params const &params);
@@ -65,15 +64,14 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		 * Getter
 		 */
 
-		ARenderBin const *getRenderBin(void) const;
+		ARenderBin *getRenderBin(void) const;
 		float getYaw(void) const;
 		float getPitch(void) const;
 		float getRoll(void) const;
 		glm::vec3 const &getPos(void) const;
 		glm::vec3 const &getScale(void) const;
 		glm::vec3 const &getOffset(void) const;
-		glm::mat4 const &getTotalMatrix(void) const;
-		bool getAutoRotation(void) const;
+		glm::mat4 const &getModelMatrix(void) const;
 
 		/*
 		 * Interface IEntity
@@ -97,7 +95,7 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		 */
 
 		virtual CollisionBox const &getCollisionBox(void) const;
-		virtual Damages getDamages(void) const;
+		virtual ICollidable::eDamages getDamages(void) const;
 		virtual void setPassthrough(bool value);
 		virtual bool getPassthrough(void) const;
 
@@ -118,16 +116,15 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		glm::vec3  _pos;
 		glm::vec3  _scale;
 		glm::vec3  _offset;
-		glm::mat4  _total;
-		bool       _auto_rotation;
+		glm::mat4  _model;
 
 		//Related to IEntity
 		bool _active;
 
 		//Related to ICollidable
-		CollisionBox         _cb;
-		ICollidable::Damages _dmg;
-		bool                 _passthrough;
+		CollisionBox          _cb;
+		ICollidable::eDamages _dmg;
+		bool                  _passthrough;
 };
 
 #endif
