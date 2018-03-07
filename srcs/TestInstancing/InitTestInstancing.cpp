@@ -21,26 +21,33 @@ static void init_ressources(RessourceManager &rm)
 }
 
 static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
-							 TestInstancing **world)
+							TestInstancing **world)
 {
 	(*world) = new TestInstancing(manager.getInput(), manager.getWindow(),
 								  glm::vec3(0.0f, 0.0f, 10.0f),
-								  glm::vec2(0.1f, 400.0f), 60.0f, 10);
+								  glm::vec2(0.1f, 1000.0f), 60.0f, 10);
 
 	//Creating Sakuya RenderBin
 	ARenderBin::Params rb_sakuya;
 	rb_sakuya.shader       = &rm.getShader("BasicProp");
 	rb_sakuya.model        = &rm.getModel("Sakuya");
-	rb_sakuya.max_instance = 1000;
+	rb_sakuya.max_instance = 100000;
 	ARenderBin *sakuya = (*world)->add_RenderBin("Sakuya", rb_sakuya, ARenderBin::eType::PROP);
 
 	//Creating Prop
 	Prop::Params prop_params;
 	prop_params.render_bin = sakuya;
-	prop_params.pos = glm::vec3(0.0f);
 	prop_params.orientation = glm::vec3(0.0f);
-	prop_params.scale = glm::vec3(0.01f);
-	(*world)->add_Prop(prop_params);
+	prop_params.scale       = glm::vec3(0.01f);
+	for (size_t i = 0; i < 50; ++i)
+	{
+		for (size_t j = 0; j < 50; ++j)
+		{
+			prop_params.pos = glm::vec3(2.0f * i, 0.0f, 1.0f * j);
+			(*world)->add_Prop(prop_params);
+		}
+	}
+
 }
 
 static void init_program(TestInstancing **world, RessourceManager &rm, Glfw_manager &manager)

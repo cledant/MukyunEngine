@@ -14,9 +14,9 @@
 
 Camera::Camera(Input const *input, glm::vec3 const &pos, glm::vec3 const &world_up,
 			   glm::vec3 const &front, GLfloat yaw, GLfloat pitch) :
-		_input(input), _update_cam(true), _mouse_exclusive_to_manager(false),
-		_world_up(world_up), _pos(pos), _front(front), _xy_front(glm::vec3(0.0f)),
-		_mouse_sensitivity(0.05f), _movement_speed(0.075f), _yaw(yaw), _pitch(pitch)
+		_input(input), _update_cam(true), _world_up(world_up), _pos(pos),
+		_front(front), _xy_front(glm::vec3(0.0f)), _mouse_sensitivity(0.05f),
+		_movement_speed(0.075f), _yaw(yaw), _pitch(pitch)
 {
 	if (this->_input == nullptr)
 		throw Camera::CameraFailException();
@@ -36,7 +36,6 @@ Camera &Camera::operator=(Camera const &rhs)
 {
 	this->_input                      = rhs.getInput();
 	this->_update_cam                 = rhs.getUpdateCamera();
-	this->_mouse_exclusive_to_manager = rhs.getMouseExclusiveToManager();
 	this->_world_up                   = rhs.getWorldUp();
 	this->_pos                        = rhs.getPos();
 	this->_front                      = rhs.getFront();
@@ -53,7 +52,7 @@ Camera &Camera::operator=(Camera const &rhs)
 
 void Camera::update(void)
 {
-	if (this->_update_cam && !this->_mouse_exclusive_to_manager)
+	if (this->_update_cam && this->_input->mouse_exclusive)
 	{
 		if (this->_input->mouse_refreshed)
 			this->_update_from_mouse_input();
@@ -74,11 +73,6 @@ Input const *Camera::getInput(void) const
 bool Camera::getUpdateCamera(void) const
 {
 	return (this->_update_cam);
-}
-
-bool Camera::getMouseExclusiveToManager(void) const
-{
-	return (this->_mouse_exclusive_to_manager);
 }
 
 glm::vec3 const &Camera::getWorldUp(void) const
@@ -143,11 +137,6 @@ float Camera::getPitch(void) const
 void Camera::setCameraUpdate(bool value)
 {
 	this->_update_cam = value;
-}
-
-void Camera::setMouseExclusiveToManager(bool value)
-{
-	this->_mouse_exclusive_to_manager = value;
 }
 
 void Camera::setYaw(GLfloat yaw)

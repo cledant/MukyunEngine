@@ -38,7 +38,6 @@ class Camera
 
 		Input const *getInput(void) const;
 		bool getUpdateCamera(void) const;
-		bool getMouseExclusiveToManager(void) const;
 		glm::vec3 const &getWorldUp(void) const;
 		glm::vec3 const &getPos(void) const;
 		glm::vec3 const &getFront(void) const;
@@ -56,7 +55,6 @@ class Camera
 		 */
 
 		void setCameraUpdate(bool value);
-		void setMouseExclusiveToManager(bool value);
 		void setYaw(GLfloat yaw);
 		void setPitch(GLfloat pitch);
 
@@ -72,7 +70,6 @@ class Camera
 
 		Input const *_input;
 		bool        _update_cam;
-		bool        _mouse_exclusive_to_manager;
 		glm::vec3   _world_up;
 		glm::vec3   _pos;
 		glm::vec3   _front;
