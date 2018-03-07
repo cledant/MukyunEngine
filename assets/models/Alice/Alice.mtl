@@ -1,0 +1,50 @@
+# Blender MTL File: 'Alice.blend'
+# Material Count: 4
+
+newmtl body.tga
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.200000 0.200000 0.200000
+Ni 1.000000
+d 0.000000
+illum 2
+map_Kd body.tga
+map_d body.tga
+map_Ks body.tga
+
+newmtl eyes1.tga
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.200000 0.200000 0.200000
+Ni 1.000000
+d 0.000000
+illum 2
+map_Kd eyes1.tga
+map_d eyes1.tga
+map_Ks eyes1.tga
+
+newmtl mouth1.tga
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.200000 0.200000 0.200000
+Ni 1.000000
+d 0.000000
+illum 2
+map_Kd mouth1.tga
+map_d mouth1.tga
+map_Ks mouth1.tga
+
+newmtl wep.tga
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.200000 0.200000 0.200000
+Ni 1.000000
+d 0.000000
+illum 2
+map_Kd wep.tga
+map_d wep.tga
+map_Ks wep.tga
