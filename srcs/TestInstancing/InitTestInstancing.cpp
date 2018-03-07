@@ -39,7 +39,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	prop_params.render_bin = sakuya;
 	prop_params.pos = glm::vec3(0.0f);
 	prop_params.orientation = glm::vec3(0.0f);
-	prop_params.scale = glm::vec3(0.1f);
+	prop_params.scale = glm::vec3(0.01f);
 	(*world)->add_Prop(prop_params);
 }
 
