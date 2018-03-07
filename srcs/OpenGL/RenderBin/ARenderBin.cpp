@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RenderBin/ARenderBin.hpp"
+#include "OpenGL/RenderBin/ARenderBin.hpp"
 
 ARenderBin::Params::Params(void)
 {
@@ -40,6 +40,7 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		glDeleteBuffers(1, &(this->_vbo_model_matrices));
 		for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 			glDeleteVertexArrays(1, &(*it));
+		std::cout << "ARenderBin Initialization Error" << std::endl;
 		throw;
 	}
 }
@@ -74,6 +75,7 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 		glDeleteBuffers(1, &(this->_vbo_model_matrices));
 		for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 			glDeleteVertexArrays(1, &(*it));
+		std::cout << "ARenderBin Move Error" << std::endl;
 		throw;
 	}
 	return (*this);

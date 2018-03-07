@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RenderBin/ClassesRenderBin/BasicPropRenderBin.hpp"
+#include "OpenGL/RenderBin/ClassesRenderBin/BasicPropRenderBin.hpp"
 
 BasicPropRenderBin::BasicPropRenderBin(ARenderBin::Params const &params) : ARenderBin(params)
 {

@@ -13,7 +13,7 @@
 #ifndef BASICPROPRENDERBIN_HPP
 # define BASICPROPRENDERBIN_HPP
 
-# include "RenderBin/ARenderBin.hpp"
+# include "OpenGL/RenderBin/ARenderBin.hpp"
 
 class BasicPropRenderBin : public ARenderBin
 {
