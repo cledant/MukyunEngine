@@ -35,6 +35,35 @@ TestInstancing::~TestInstancing(void)
 }
 
 /*
+ * Game Loop
+ */
+
+void TestInstancing::startGameLoop(Glfw_manager &manager)
+{
+	glEnable(GL_DEPTH_TEST);
+	while (Glfw_manager::getActiveWindowNumber())
+	{
+		if (manager.getWindow().win != nullptr)
+		{
+			this->reset_skip_loop();
+			while (this->should_be_updated(Glfw_manager::getTime()))
+			{
+				manager.update_events();
+				this->update();
+			}
+			manager.calculate_fps();
+			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			this->render();
+			manager.swap_buffers();
+			if (manager.should_window_be_closed())
+				manager.destroy_window();
+		}
+	}
+	glFinish();
+}
+
+/*
  * Draw
  */
 
@@ -69,6 +98,7 @@ ARenderBin *TestInstancing::add_RenderBin(std::string const &name,
 										  ARenderBin::Params &params,
 										  ARenderBin::eType type)
 {
+	params.perspec_mult_view = &this->_perspec_mult_view;
 	if (type == ARenderBin::eType::PROP)
 	{
 		this->_render_bin_list[name] = std::make_unique<BasicPropRenderBin>(params);

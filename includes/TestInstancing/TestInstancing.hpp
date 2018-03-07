@@ -23,6 +23,7 @@
 # include "GameEntities/Prop.hpp"
 # include "GameEntities/Utility/CollisionBox.hpp"
 # include "Cameras/Camera.hpp"
+# include "WindowManager/Glfw_manager.hpp"
 # include "WindowManager/Window.hpp"
 # include "WindowManager/Input.hpp"
 # include <iostream>
@@ -48,6 +49,12 @@ class TestInstancing
 
 		void update(void);
 		void render(void);
+
+		/*
+		 * Game Loop
+		 */
+
+		void startGameLoop(Glfw_manager &manager);
 
 		/*
 		 * Object creation
@@ -92,5 +99,7 @@ class TestInstancing
 		size_t                                             _skip_loop;
 		glm::vec2                                          _near_far;
 };
+
+void InitRunTestInstancing(Glfw_manager &manager);
 
 #endif

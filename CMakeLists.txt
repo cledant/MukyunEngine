@@ -54,7 +54,7 @@ set(SOURCE_FILES
 		srcs/Interfaces/ITransformable.cpp
 		srcs/GameEntities/Utility/CollisionBox.cpp
 		srcs/Cameras/Camera.cpp
-		srcs/GameEntities/Prop.cpp srcs/TestInstancing/TestInstancing.cpp)
+		srcs/GameEntities/Prop.cpp srcs/TestInstancing/TestInstancing.cpp srcs/TestInstancing/InitTestInstancing.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
 target_compile_options(primary PRIVATE -Wall -Werror -Wextra)
 
@@ -79,3 +79,4 @@ target_link_libraries(engine glad glfw assimp primary secondary)
 
 #Copy assets
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY shaders DESTINATION ${CMAKE_BINARY_DIR})
