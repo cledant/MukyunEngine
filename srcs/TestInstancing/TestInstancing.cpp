@@ -52,6 +52,7 @@ void TestInstancing::startGameLoop(Glfw_manager &manager)
 				this->update();
 			}
 			manager.calculate_fps();
+			manager.update_title_fps();
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			this->render();

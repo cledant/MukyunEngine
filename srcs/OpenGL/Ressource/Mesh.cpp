@@ -47,7 +47,7 @@ Mesh::Material::~Material(void)
  * Actual class
  */
 
-Mesh::Mesh(void) : _vbo(0), _nb_face(0), _directory(".")
+Mesh::Mesh(void) : _vbo(0), _nb_vertices(0), _directory(".")
 {
 }
 
@@ -59,7 +59,6 @@ Mesh::Mesh(aiMesh *mesh, const aiScene *scene, std::string const &directory,
 		throw Mesh::InvalidMeshException();
 	try
 	{
-		this->_nb_face = mesh->mNumFaces;
 		this->_load_mesh(mesh);
 		this->_load_material(mesh, scene, texture_list);
 		this->_allocate_set_GL_ressources();
@@ -87,7 +86,7 @@ Mesh &Mesh::operator=(Mesh &&rhs)
 	this->_material    = rhs.getMaterial();
 	this->_vertex_list = rhs.getVertexList();
 	this->_vbo         = rhs.moveVBO();
-	this->_nb_face     = rhs.getNbFaces();
+	this->_nb_vertices = rhs.getNbVertices();
 	this->_directory   = rhs.getDirectory();
 	return (*this);
 }
@@ -124,15 +123,16 @@ GLuint Mesh::moveVBO(void)
 	return (tmp);
 }
 
-size_t Mesh::getNbFaces(void) const
+size_t Mesh::getNbVertices(void) const
 {
-	return (this->_nb_face);
+	return (this->_nb_vertices);
 }
 
 void Mesh::_load_mesh(aiMesh *mesh)
 {
 	struct Mesh::Vertex tmp;
 
+	this->_nb_vertices = mesh->mNumVertices;
 	for (size_t i = 0; i < mesh->mNumVertices; ++i)
 	{
 		tmp.Position.x = mesh->mVertices[i].x;

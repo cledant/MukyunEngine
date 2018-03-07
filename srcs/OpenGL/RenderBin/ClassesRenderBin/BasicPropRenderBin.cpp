@@ -57,13 +57,17 @@ void BasicPropRenderBin::draw(void)
 	this->_shader->setMat4(uniform_mat_perspec_mult_view_id, *(this->_perspec_mult_view));
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 	{
+
 		glActiveTexture(GL_TEXTURE0);
 		glUniform1i(uniform_tex_diffuse_id, 0);
 		glBindTexture(GL_TEXTURE_2D, (this->_model->getMeshList())[i].getMaterial().diffuseMap);
 		glBindVertexArray(this->_vao_mesh[i]);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glDrawElementsInstanced(GL_TRIANGLES, (this->_model->getMeshList())[i].getNbFaces(),
-								GL_UNSIGNED_INT, 0, this->_model_matrices.size());
+//		oGL_display_error();
+		glDrawArrays(GL_TRIANGLES, 0, (this->_model->getMeshList())[i].getNbVertices());
+//		glDrawElementsInstanced(GL_TRIANGLES, (this->_model->getMeshList())[i].getNbFaces(),
+//								GL_UNSIGNED_INT, 0, this->_model_matrices.size());
+//		oGL_display_error();
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindVertexArray(0);
 		i++;
