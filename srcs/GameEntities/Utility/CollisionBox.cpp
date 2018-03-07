@@ -21,7 +21,7 @@ CollisionBox::~CollisionBox(void)
 {
 }
 
-CollisionBox::CollisionBox(CollisionBox const &src)
+CollisionBox::CollisionBox(CollisionBox const &src) : ITransformable()
 {
 	this->_pos       = src.getPos();
 	this->_half_size = src.getHalfSize();

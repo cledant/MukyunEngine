@@ -45,7 +45,8 @@ Prop::~Prop(void)
 {
 }
 
-Prop::Prop(Prop const &src) : _cb(glm::vec3(0.0f), glm::vec3(0.0f))
+Prop::Prop(Prop const &src) : IEntity(), ITransformable(), ICollidable(),
+							  _cb(glm::vec3(0.0f), glm::vec3(0.0f))
 {
 	*this = src;
 }
