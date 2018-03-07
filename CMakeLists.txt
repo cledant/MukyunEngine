@@ -54,7 +54,7 @@ set(SOURCE_FILES
 		srcs/Interfaces/ITransformable.cpp
 		srcs/GameEntities/Utility/CollisionBox.cpp
 		srcs/Cameras/Camera.cpp
-		srcs/GameEntities/Prop.cpp)
+		srcs/GameEntities/Prop.cpp srcs/TestInstancing/TestInstancing.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
 target_compile_options(primary PRIVATE -Wall -Werror -Wextra)
 
