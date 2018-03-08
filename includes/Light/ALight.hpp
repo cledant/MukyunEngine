@@ -15,7 +15,7 @@
 
 # include "Interfaces/IEntity.hpp"
 # include "Interfaces/ITransformable.hpp"
-# include "OpenGL/RenderBin/ARenderBin.hpp"
+# include "OpenGL/RenderBin/ALightRenderBin.hpp"
 # include "glm/glm.hpp"
 # include "glm/gtc/matrix_transform.hpp"
 
@@ -29,6 +29,7 @@ class ALight
 			DIRECTIONAL,
 			SPOT,
 		};
+
 
 		struct Params
 		{
@@ -49,13 +50,6 @@ class ALight
 		virtual ~ALight(void);
 		ALight(ALight const &src);
 		ALight &operator=(ALight const &rhs);
-
-
-		/*
-		 * Light
-		 */
-
-		virtual void addLight(void) = 0;
 
 		/*
 		 * Getter
@@ -80,8 +74,8 @@ class ALight
 		 * Interface IEntity
 		 */
 
-		void update(float time);
-		void requestDraw(void);
+		virtual void update(float time) = 0;
+		virtual void requestDraw(void) = 0;
 		void setActive(bool value);
 		bool getActive(void) const;
 
@@ -95,12 +89,12 @@ class ALight
 
 	protected :
 
-		ARenderBin *_model_rb;
-		ARenderBin *_light_rb;
-		glm::vec3  _ambient_color;
-		glm::vec3  _diffuse_color;
-		glm::vec3  _specular_color;
-		bool       _draw_model;
+		ARenderBin      *_model_rb;
+		ALightRenderBin *_light_rb;
+		glm::vec3       _ambient_color;
+		glm::vec3       _diffuse_color;
+		glm::vec3       _specular_color;
+		bool            _draw_model;
 
 		//Related to IEntity
 		bool      _active;

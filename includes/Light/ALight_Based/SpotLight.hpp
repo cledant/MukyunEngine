@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PointLight.hpp                                     :+:      :+:    :+:   */
+/*   SpotLight.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,12 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef POINTLIGHT_HPP
-# define POINTLIGHT_HPP
+#ifndef SPOTLIGHT_HPP
+# define SPOTLIGHT_HPP
 
 # include "Light/ALight.hpp"
 
-class PointLight : ALight
+class SpotLight : ALight
 {
 	public :
 
@@ -25,19 +25,21 @@ class PointLight : ALight
 			~Params(void);
 
 			glm::vec3 pos;
+			glm::vec3 dir;
 			glm::vec3 attenuation_coeff;
 		};
 
-		PointLight(void);
-		virtual ~PointLight(void);
-		PointLight(const PointLight &src);
-		PointLight &operator=(PointLight const &rhs);
+		SpotLight(void);
+		virtual ~SpotLight(void);
+		SpotLight(const SpotLight &src);
+		SpotLight &operator=(SpotLight const &rhs);
 
 		/*
 		 * Getter
 		 */
 
 		glm::vec3 const &getPos(void) const;
+		glm::vec3 const &getDir(void) const;
 		glm::vec3 const &getAttenuationCoeff(void) const;
 
 		/*
@@ -46,12 +48,11 @@ class PointLight : ALight
 
 		virtual void update(float time);
 		virtual void requestDraw(void);
-		void setActive(bool value);
-		bool getActive(void) const;
 
 	protected :
 
 		glm::vec3 _pos;
+		glm::vec3 _dir;
 		//x = constant; y = linear; z = quadratic
 		glm::vec3 _attenuation_coeff;
 };

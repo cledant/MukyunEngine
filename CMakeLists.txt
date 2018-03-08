@@ -49,7 +49,7 @@ set(SOURCE_FILES
 		srcs/OpenGL/Ressource/Model.cpp
 		srcs/OpenGL/Ressource/Texture.cpp
 		srcs/OpenGL/RenderBin/ARenderBin.cpp
-		srcs/OpenGL/RenderBin/ClassesRenderBin/BasicPropRenderBin.cpp
+		srcs/OpenGL/RenderBin/ARenderBin_Based/BasicPropRenderBin.cpp
 		srcs/Interfaces/ICollidable.cpp
 		srcs/Interfaces/IEntity.cpp
 		srcs/Interfaces/ITransformable.cpp

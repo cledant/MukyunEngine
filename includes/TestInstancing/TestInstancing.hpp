@@ -15,7 +15,7 @@
 
 # include "OpenGL/RessourceManager.hpp"
 # include "OpenGL/RenderBin/ARenderBin.hpp"
-# include "OpenGL/RenderBin/ClassesRenderBin/BasicPropRenderBin.hpp"
+# include "OpenGL/RenderBin/ARenderBin_Based/BasicPropRenderBin.hpp"
 # include "Exceptions/GeneralException.hpp"
 # include "glm/glm.hpp"
 # include "glm/gtc/matrix_transform.hpp"

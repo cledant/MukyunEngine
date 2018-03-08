@@ -39,6 +39,7 @@ class ARenderBin
 		enum eType
 		{
 			PROP,
+			COLOR,
 			NONE
 		};
 
