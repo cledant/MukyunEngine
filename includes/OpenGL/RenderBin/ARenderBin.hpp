@@ -55,8 +55,8 @@ class ARenderBin
 		 */
 
 		virtual void draw(void) = 0;
-		void updateVBO(void);
-		void flushMatrices(void);
+		virtual void updateVBO(void);
+		virtual void flushData(void);
 
 		/*
 		 * Setter

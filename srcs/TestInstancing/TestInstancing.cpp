@@ -75,7 +75,7 @@ void TestInstancing::update(void)
 	this->_camera.update();
 	this->_perspec_mult_view = this->_perspective * this->_camera.getViewMatrix();
 	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
-		it->second.get()->flushMatrices();
+		it->second.get()->flushData();
 	for (auto it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
 	{
 		it->get()->update(this->_tick);

@@ -75,8 +75,8 @@ class ALightRenderBin
 		 */
 
 		virtual void draw(void) = 0;
-		void updateLightVBO(void);
-		void flushLightMatrices(void);
+		virtual void updateVBO(void);
+		virtual void flushData(void);
 
 		/*
 		 * Setter

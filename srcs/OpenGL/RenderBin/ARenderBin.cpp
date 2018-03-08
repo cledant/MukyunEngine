@@ -89,7 +89,7 @@ void ARenderBin::updateVBO(void)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void ARenderBin::flushMatrices(void)
+void ARenderBin::flushData(void)
 {
 	this->_model_matrices.clear();
 }
