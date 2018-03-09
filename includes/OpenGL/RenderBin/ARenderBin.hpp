@@ -28,7 +28,7 @@ class ARenderBin
 		struct Params
 		{
 			Params(void);
-			~Params(void);
+			virtual ~Params(void);
 
 			Shader const    *shader;
 			glm::mat4 const *perspec_mult_view;
@@ -40,9 +40,11 @@ class ARenderBin
 		{
 			PROP,
 			COLOR,
+			MULTILIGHT_POINT_DIR_SPOT,
 			NONE
 		};
 
+		ARenderBin(void);
 		ARenderBin(ARenderBin::Params const &params);
 		virtual ~ARenderBin(void);
 		ARenderBin(ARenderBin const &src) = delete;

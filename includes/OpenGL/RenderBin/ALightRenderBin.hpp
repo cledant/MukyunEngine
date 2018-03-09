@@ -15,7 +15,7 @@
 
 # include "OpenGL/RenderBin/ARenderBin.hpp"
 
-class ALightRenderBin
+class ALightRenderBin : public ARenderBin
 {
 	public :
 
@@ -57,12 +57,6 @@ class ALightRenderBin
 			glm::vec4 cutoff;
 		};
 
-		enum eType
-		{
-			MULTILIGHT_POINT_DIR_SPOT,
-			NONE
-		};
-
 		ALightRenderBin(ALightRenderBin::Params const &params);
 		virtual ~ALightRenderBin(void);
 		ALightRenderBin(ALightRenderBin const &src) = delete;
@@ -82,40 +76,34 @@ class ALightRenderBin
 		 * Setter
 		 */
 
-		bool addiLightInstance(struct PointLightDataGL const &data);
-		bool addiLightInstance(struct DirLightDataGL const &data);
-		bool addiLightInstance(struct SpotLightDataGL const &data);
+		bool addLightInstance(struct PointLightDataGL const &data);
+		bool addLightInstance(struct DirLightDataGL const &data);
+		bool addLightInstance(struct SpotLightDataGL const &data);
 
 		/*
 		 * Getter
 		 */
 
-		ALightRenderBin::eType getType(void) const;
-
 		//PointLight functions
 		std::vector<struct PointLightDataGL> const &getPointLightDataGL(void) const;
-		GLuint getVboPointLight(void) const;
 		GLuint moveVboPointLight(void);
 		size_t getCurrentPointLightNumber(void) const;
 		size_t getMaxPointLightNumber(void) const;
 
 		//DirLight functions
 		std::vector<struct DirLightDataGL> const &getDirLightDataGL(void) const;
-		GLuint getVboDirLight(void) const;
 		GLuint moveVboDirLight(void);
 		size_t getCurrentDirLightNumber(void) const;
 		size_t getMaxDirLightNumber(void) const;
 
 		//SpotLight functions
 		std::vector<struct SpotLightDataGL> const &getSpotLightDataGL(void) const;
-		GLuint getVboSpotLight(void) const;
 		GLuint moveVboSpotLight(void);
 		size_t getCurrentSpotLightNumber(void) const;
 		size_t getMaxSpotLightNumber(void) const;
 
 	protected :
 
-		ALightRenderBin::eType               _type;
 		std::vector<struct PointLightDataGL> _data_point_light;
 		std::vector<struct DirLightDataGL>   _data_dir_light;
 		std::vector<struct SpotLightDataGL>  _data_spot_light;
@@ -123,7 +111,7 @@ class ALightRenderBin
 		GLuint                               _vbo_dir_light;
 		GLuint                               _vbo_spot_light;
 
-		void _create_lights_vbo(void);
+		void _allocate_memory(ALightRenderBin::Params const &params);
 };
 
 #endif

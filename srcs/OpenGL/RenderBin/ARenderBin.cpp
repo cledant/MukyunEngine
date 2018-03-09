@@ -24,6 +24,12 @@ ARenderBin::Params::~Params(void)
 {
 }
 
+ARenderBin::ARenderBin(void) :
+		_type(ARenderBin::eType::NONE), _shader(nullptr), _perspec_mult_view(nullptr),
+		_model(nullptr), _vbo_model_matrices(0)
+{
+}
+
 ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		_type(ARenderBin::eType::NONE), _shader(params.shader),
 		_perspec_mult_view(params.perspec_mult_view), _model(params.model),
@@ -52,7 +58,7 @@ ARenderBin::~ARenderBin(void)
 		glDeleteVertexArrays(1, &(*it));
 }
 
-ARenderBin::ARenderBin(ARenderBin &&src)
+ARenderBin::ARenderBin(ARenderBin &&src) : _vbo_model_matrices(0)
 {
 	*this = std::move(src);
 }
