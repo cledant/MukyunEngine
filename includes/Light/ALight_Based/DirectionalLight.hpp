@@ -27,7 +27,7 @@ class DirectionalLight : ALight
 			glm::vec3 dir;
 		};
 
-		DirectionalLight(void);
+		DirectionalLight(DirectionalLight::Params const &params);
 		virtual ~DirectionalLight(void);
 		DirectionalLight(const DirectionalLight &src);
 		DirectionalLight &operator=(DirectionalLight const &rhs);
@@ -42,7 +42,6 @@ class DirectionalLight : ALight
 		 * Interface IEntity
 		 */
 
-		virtual void update(float time);
 		virtual void requestDraw(void);
 
 	protected :

@@ -28,7 +28,7 @@ class PointLight : ALight
 			glm::vec3 attenuation_coeff;
 		};
 
-		PointLight(void);
+		PointLight(PointLight::Params const &params);
 		virtual ~PointLight(void);
 		PointLight(const PointLight &src);
 		PointLight &operator=(PointLight const &rhs);

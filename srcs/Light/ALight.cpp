@@ -31,6 +31,21 @@ ALight::Params::~Params()
 {
 }
 
+ALight::ALight() : _type(ALight::eType::NONE),
+				   _model_rb(nullptr),
+				   _light_rb(nullptr),
+				   _ambient_color(glm::vec3(0.0f)),
+				   _diffuse_color(glm::vec3(0.0f)),
+				   _specular_color(glm::vec3(0.0f)),
+				   _draw_model(false),
+				   _active(false),
+				   _model_pos(glm::vec3(0.0f)),
+				   _model_scale(glm::vec3(0.0f)),
+				   _model_offset(glm::vec3(0.0f)),
+				   _model_orientation(glm::vec3(0.0f))
+{
+}
+
 ALight::ALight(ALight::Params const &params) : _type(ALight::eType::NONE),
 											   _model_rb(params.model_rb),
 											   _light_rb(params.light_rb),
@@ -38,11 +53,12 @@ ALight::ALight(ALight::Params const &params) : _type(ALight::eType::NONE),
 											   _diffuse_color(params.diffuse_color),
 											   _specular_color(params.specular_color),
 											   _draw_model(params.draw_model),
+											   _active(params.active),
 											   _model_pos(params.model_pos),
 											   _model_scale(params.model_scale),
 											   _model_offset(params.model_orientation),
-											   _model_orientation(params.model_orientation),
-											   _active(params.active)
+											   _model_orientation(params.model_orientation)
+
 {
 	this->update(1.0f);
 }
@@ -165,6 +181,11 @@ void ALight::setDrawModel(bool val)
 void ALight::setModelPos(glm::vec3 const &vec)
 {
 	this->_model_pos = vec;
+}
+
+void ALight::setModelOffset(glm::vec3 const &vec)
+{
+	this->_model_offset = vec;
 }
 
 void ALight::setModelScale(glm::vec3 const &vec)

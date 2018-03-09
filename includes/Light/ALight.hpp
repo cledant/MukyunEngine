@@ -35,7 +35,7 @@ class ALight : public IEntity, public ITransformable
 		struct Params
 		{
 			Params(void);
-			~Params(void);
+			virtual ~Params(void);
 
 			ARenderBin      *model_rb;
 			ALightRenderBin *light_rb;
@@ -50,6 +50,7 @@ class ALight : public IEntity, public ITransformable
 			bool            active;
 		};
 
+		ALight(void);
 		ALight(ALight::Params const &Params);
 		virtual ~ALight(void);
 		ALight(ALight const &src);

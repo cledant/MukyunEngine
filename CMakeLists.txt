@@ -57,7 +57,9 @@ set(SOURCE_FILES
 		srcs/Cameras/Camera.cpp
 		srcs/GameEntities/Prop.cpp
 		srcs/TestInstancing/TestInstancing.cpp
-		srcs/TestInstancing/InitTestInstancing.cpp srcs/Light/ALight.cpp)
+		srcs/TestInstancing/InitTestInstancing.cpp
+		srcs/Light/ALight.cpp
+		srcs/Light/ALight_Based/PointLight.cpp srcs/Light/ALight_Based/DirectionalLight.cpp srcs/Light/ALight_Based/SpotLight.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
 target_link_libraries(primary glad glfw assimp)
 target_compile_options(primary PRIVATE -Wall -Wextra)

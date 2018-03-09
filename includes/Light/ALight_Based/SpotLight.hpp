@@ -29,7 +29,7 @@ class SpotLight : ALight
 			glm::vec3 attenuation_coeff;
 		};
 
-		SpotLight(void);
+		SpotLight(SpotLight::Params const &params);
 		virtual ~SpotLight(void);
 		SpotLight(const SpotLight &src);
 		SpotLight &operator=(SpotLight const &rhs);
@@ -39,7 +39,7 @@ class SpotLight : ALight
 		 */
 
 		glm::vec3 const &getPos(void) const;
-		glm::vec3 const &getDir(void) const;
+		glm::vec3 const &getDirection(void) const;
 		glm::vec3 const &getAttenuationCoeff(void) const;
 
 		/*
