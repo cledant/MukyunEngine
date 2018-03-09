@@ -15,7 +15,7 @@
 
 # include "Light/ALight.hpp"
 
-class SpotLight : ALight
+class SpotLight : public ALight
 {
 	public :
 

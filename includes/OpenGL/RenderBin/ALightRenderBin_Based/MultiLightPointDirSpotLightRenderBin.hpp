@@ -32,3 +32,5 @@ class MultiLightPointDirSpotLightRenderBin : public ALightRenderBin
 
 		virtual void draw(void);
 };
+
+#endif

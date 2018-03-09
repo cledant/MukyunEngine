@@ -15,7 +15,7 @@
 
 # include "Light/ALight.hpp"
 
-class DirectionalLight : ALight
+class DirectionalLight : public ALight
 {
 	public :
 
