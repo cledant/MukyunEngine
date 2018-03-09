@@ -28,6 +28,7 @@ SpotLight::SpotLight(SpotLight::Params const &params) : ALight(params),
 														_dir(params.dir),
 														_attenuation_coeff(params.attenuation_coeff)
 {
+	this->_type = ALight::eType::SPOT;
 	this->update(0.0f);
 }
 

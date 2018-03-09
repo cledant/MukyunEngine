@@ -26,6 +26,7 @@ PointLight::PointLight(PointLight::Params const &params) : ALight(params),
 														   _pos(params.pos),
 														   _attenuation_coeff(params.attenuation_coeff)
 {
+	this->_type = ALight::eType::POINT;
 	this->update(0.0f);
 }
 

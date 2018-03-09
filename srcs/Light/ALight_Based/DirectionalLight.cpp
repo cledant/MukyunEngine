@@ -24,6 +24,7 @@ DirectionalLight::Params::~Params()
 DirectionalLight::DirectionalLight(DirectionalLight::Params const &params) : ALight(params),
 																			 _dir(params.dir)
 {
+	this->_type = ALight::eType::DIRECTIONAL;
 	this->update(0.0f);
 }
 
