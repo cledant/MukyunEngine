@@ -158,17 +158,17 @@ bool ALightRenderBin::addLightInstance(struct SpotLightDataGL const &data)
 
 //PointLight functions
 
+std::vector<struct ALightRenderBin::PointLightDataGL> const &ALightRenderBin::getPointLightDataGL() const
+{
+	return (this->_data_point_light);
+}
+
 GLuint ALightRenderBin::moveVboPointLight()
 {
 	GLuint tmp = this->_vbo_point_light;
 
 	this->_vbo_point_light = 0;
 	return (tmp);
-}
-
-std::vector<struct PointLightDataGL> const &ALightRenderBin::getPointLightDataGL() const
-{
-	return (this->_data_point_light);
 }
 
 size_t ALightRenderBin::getCurrentPointLightNumber(void) const
@@ -183,52 +183,52 @@ size_t ALightRenderBin::getMaxPointLightNumber() const
 
 //DirLight functions
 
-GLuint ALightRenderBin::moveVboPointLight()
+std::vector<struct ALightRenderBin::DirLightDataGL> const &ALightRenderBin::getDirLightDataGL() const
 {
-	GLuint tmp = this->_vbo_point_light;
+	return (this->_data_dir_light);
+}
 
-	this->_vbo_point_light = 0;
+GLuint ALightRenderBin::moveVboDirLight()
+{
+	GLuint tmp = this->_vbo_dir_light;
+
+	this->_vbo_dir_light = 0;
 	return (tmp);
 }
 
-std::vector<struct PointLightDataGL> const &ALightRenderBin::getPointLightDataGL() const
+size_t ALightRenderBin::getCurrentDirLightNumber(void) const
 {
-	return (this->_data_point_light);
+	return (this->_data_dir_light.size());
 }
 
-size_t ALightRenderBin::getCurrentPointLightNumber(void) const
+size_t ALightRenderBin::getMaxDirLightNumber() const
 {
-	return (this->_data_point_light.size());
-}
-
-size_t ALightRenderBin::getMaxPointLightNumber() const
-{
-	return (this->_data_point_light.capacity());
+	return (this->_data_dir_light.capacity());
 }
 
 //SpotLight functions
 
-GLuint ALightRenderBin::moveVboPointLight()
+std::vector<struct ALightRenderBin::SpotLightDataGL> const &ALightRenderBin::getSpotLightDataGL() const
 {
-	GLuint tmp = this->_vbo_point_light;
+	return (this->_data_spot_light);
+}
 
-	this->_vbo_point_light = 0;
+GLuint ALightRenderBin::moveVboSpotLight()
+{
+	GLuint tmp = this->_vbo_spot_light;
+
+	this->_vbo_spot_light = 0;
 	return (tmp);
 }
 
-std::vector<struct PointLightDataGL> const &ALightRenderBin::getPointLightDataGL() const
+size_t ALightRenderBin::getCurrentSpotLightNumber(void) const
 {
-	return (this->_data_point_light);
+	return (this->_data_spot_light.size());
 }
 
-size_t ALightRenderBin::getCurrentPointLightNumber(void) const
+size_t ALightRenderBin::getMaxSpotLightNumber() const
 {
-	return (this->_data_point_light.size());
-}
-
-size_t ALightRenderBin::getMaxPointLightNumber() const
-{
-	return (this->_data_point_light.capacity());
+	return (this->_data_spot_light.capacity());
 }
 
 void ALightRenderBin::_allocate_memory(ALightRenderBin::Params const &params)

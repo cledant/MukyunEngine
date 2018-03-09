@@ -85,19 +85,19 @@ class ALightRenderBin : public ARenderBin
 		 */
 
 		//PointLight functions
-		std::vector<struct PointLightDataGL> const &getPointLightDataGL(void) const;
+		std::vector<struct ALightRenderBin::PointLightDataGL> const &getPointLightDataGL(void) const;
 		GLuint moveVboPointLight(void);
 		size_t getCurrentPointLightNumber(void) const;
 		size_t getMaxPointLightNumber(void) const;
 
 		//DirLight functions
-		std::vector<struct DirLightDataGL> const &getDirLightDataGL(void) const;
+		std::vector<struct ALightRenderBin::DirLightDataGL> const &getDirLightDataGL(void) const;
 		GLuint moveVboDirLight(void);
 		size_t getCurrentDirLightNumber(void) const;
 		size_t getMaxDirLightNumber(void) const;
 
 		//SpotLight functions
-		std::vector<struct SpotLightDataGL> const &getSpotLightDataGL(void) const;
+		std::vector<struct ALightRenderBin::SpotLightDataGL> const &getSpotLightDataGL(void) const;
 		GLuint moveVboSpotLight(void);
 		size_t getCurrentSpotLightNumber(void) const;
 		size_t getMaxSpotLightNumber(void) const;
