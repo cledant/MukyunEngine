@@ -59,4 +59,15 @@ glm::vec3 const &DirectionalLight::getDirection() const
 
 void DirectionalLight::requestDraw()
 {
+	if (this->_active)
+	{
+		if (this->_draw_model)
+			this->_model_rb->addInstance(this->_model);
+		struct ALightRenderBin::DirLightDataGL tmp = {glm::vec4(this->_dir, 0.0f),
+													  glm::vec4(this->_ambient_color, 0.0f),
+													  glm::vec4(this->_diffuse_color, 0.0f),
+													  glm::vec4(this->_specular_color, 0.0f)};
+		this->_light_rb->addLightInstance(tmp);
+
+	}
 }

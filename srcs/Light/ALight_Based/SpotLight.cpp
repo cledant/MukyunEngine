@@ -17,6 +17,7 @@ SpotLight::Params::Params() : ALight::Params()
 	this->pos               = glm::vec3(0.0f);
 	this->dir               = glm::vec3(0.0f);
 	this->attenuation_coeff = glm::vec3(0.0f);
+	this->cutoff            = glm::vec2(0.0f);
 }
 
 SpotLight::Params::~Params()
@@ -26,7 +27,8 @@ SpotLight::Params::~Params()
 SpotLight::SpotLight(SpotLight::Params const &params) : ALight(params),
 														_pos(params.pos),
 														_dir(params.dir),
-														_attenuation_coeff(params.attenuation_coeff)
+														_attenuation_coeff(params.attenuation_coeff),
+														_cutoff(params.cutoff)
 {
 	this->_type = ALight::eType::SPOT;
 	this->update(0.0f);
@@ -46,6 +48,7 @@ SpotLight &SpotLight::operator=(SpotLight const &rhs)
 	ALight::operator=(rhs);
 	this->_pos               = rhs.getPos();
 	this->_attenuation_coeff = rhs.getAttenuationCoeff();
+	this->_cutoff            = rhs.getCutoff();
 	return (*this);
 }
 
@@ -68,6 +71,11 @@ glm::vec3 const &SpotLight::getAttenuationCoeff() const
 	return (this->_attenuation_coeff);
 }
 
+glm::vec2 const &SpotLight::getCutoff() const
+{
+	return (this->_cutoff);
+}
+
 /*
  * Interface IEntity
  */
@@ -80,4 +88,17 @@ void SpotLight::update(float time)
 
 void SpotLight::requestDraw()
 {
+	if (this->_active)
+	{
+		if (this->_draw_model)
+			this->_model_rb->addInstance(this->_model);
+		struct ALightRenderBin::SpotLightDataGL tmp = {glm::vec4(this->_pos, 0.0f),
+													   glm::vec4(this->_dir, 0.0f),
+													   glm::vec4(this->_attenuation_coeff, 0.0f),
+													   glm::vec4(this->_ambient_color, 0.0f),
+													   glm::vec4(this->_diffuse_color, 0.0f),
+													   glm::vec4(this->_specular_color, 0.0f),
+													   glm::vec4(glm::radians(this->_cutoff), 0.0f, 0.0f)};
+		this->_light_rb->addLightInstance(tmp);
+	}
 }

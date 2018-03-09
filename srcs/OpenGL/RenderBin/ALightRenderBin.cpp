@@ -122,7 +122,7 @@ void ALightRenderBin::flushData(void)
  * Setter
  */
 
-bool ALightRenderBin::addLightInstance(struct PointLightDataGL const &data)
+bool ALightRenderBin::addLightInstance(struct ALightRenderBin::PointLightDataGL const &data)
 {
 	if (this->_data_point_light.size() < this->_data_point_light.capacity())
 	{
@@ -132,7 +132,7 @@ bool ALightRenderBin::addLightInstance(struct PointLightDataGL const &data)
 	return (false);
 }
 
-bool ALightRenderBin::addLightInstance(struct DirLightDataGL const &data)
+bool ALightRenderBin::addLightInstance(struct ALightRenderBin::DirLightDataGL const &data)
 {
 	if (this->_data_dir_light.size() < this->_data_dir_light.capacity())
 	{
@@ -142,7 +142,7 @@ bool ALightRenderBin::addLightInstance(struct DirLightDataGL const &data)
 	return (false);
 }
 
-bool ALightRenderBin::addLightInstance(struct SpotLightDataGL const &data)
+bool ALightRenderBin::addLightInstance(struct ALightRenderBin::SpotLightDataGL const &data)
 {
 	if (this->_data_spot_light.size() < this->_data_spot_light.capacity())
 	{

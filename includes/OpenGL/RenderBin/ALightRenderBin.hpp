@@ -76,9 +76,9 @@ class ALightRenderBin : public ARenderBin
 		 * Setter
 		 */
 
-		bool addLightInstance(struct PointLightDataGL const &data);
-		bool addLightInstance(struct DirLightDataGL const &data);
-		bool addLightInstance(struct SpotLightDataGL const &data);
+		bool addLightInstance(struct ALightRenderBin::PointLightDataGL const &data);
+		bool addLightInstance(struct ALightRenderBin::DirLightDataGL const &data);
+		bool addLightInstance(struct ALightRenderBin::SpotLightDataGL const &data);
 
 		/*
 		 * Getter

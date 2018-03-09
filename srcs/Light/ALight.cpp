@@ -58,7 +58,6 @@ ALight::ALight(ALight::Params const &params) : _type(ALight::eType::NONE),
 											   _model_scale(params.model_scale),
 											   _model_offset(params.model_orientation),
 											   _model_orientation(params.model_orientation)
-
 {
 	this->update(1.0f);
 }
@@ -204,7 +203,7 @@ void ALight::setModelOrientation(glm::vec3 const &vec)
 
 void ALight::update(float time)
 {
-	if (this->_draw_model)
+	if (this->_draw_model && this->_active)
 	{
 		static_cast<void>(time);
 		this->_model = glm::mat4(1.0f);

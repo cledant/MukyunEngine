@@ -27,6 +27,7 @@ class SpotLight : ALight
 			glm::vec3 pos;
 			glm::vec3 dir;
 			glm::vec3 attenuation_coeff;
+			glm::vec2 cutoff;
 		};
 
 		SpotLight(SpotLight::Params const &params);
@@ -41,6 +42,7 @@ class SpotLight : ALight
 		glm::vec3 const &getPos(void) const;
 		glm::vec3 const &getDirection(void) const;
 		glm::vec3 const &getAttenuationCoeff(void) const;
+		glm::vec2 const &getCutoff(void) const;
 
 		/*
 		 * Interface IEntity
@@ -55,6 +57,8 @@ class SpotLight : ALight
 		glm::vec3 _dir;
 		//x = constant; y = linear; z = quadratic
 		glm::vec3 _attenuation_coeff;
+		//x = outer, y = inner || x should be superior to y
+		glm::vec2 _cutoff;
 };
 
 #endif
