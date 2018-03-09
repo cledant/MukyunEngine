@@ -19,7 +19,7 @@
 # include "glm/glm.hpp"
 # include "glm/gtc/matrix_transform.hpp"
 
-class ALight
+class ALight : public IEntity, public ITransformable
 {
 	public :
 
@@ -28,6 +28,7 @@ class ALight
 			POINT,
 			DIRECTIONAL,
 			SPOT,
+			NONE,
 		};
 
 
@@ -36,16 +37,19 @@ class ALight
 			Params(void);
 			~Params(void);
 
-			ARenderBin *model_rb;
-			ARenderBin *light_rb;
-			glm::vec3  ambient_color;
-			glm::vec3  diffuse_color;
-			glm::vec3  specular_color;
-			bool       draw_model;
-			bool       active;
+			ARenderBin      *model_rb;
+			ALightRenderBin *light_rb;
+			glm::vec3       ambient_color;
+			glm::vec3       diffuse_color;
+			glm::vec3       specular_color;
+			glm::vec3       model_pos;
+			glm::vec3       model_offset;
+			glm::vec3       model_scale;
+			glm::vec3       model_orientation;
+			bool            draw_model;
+			bool            active;
 		};
 
-		ALight(void);
 		ALight(ALight::Params const &Params);
 		virtual ~ALight(void);
 		ALight(ALight const &src);
@@ -59,22 +63,33 @@ class ALight
 		glm::vec3 const &getLightAmbientColor(void) const;
 		glm::vec3 const &getLightDiffuseColor(void) const;
 		glm::vec3 const &getLightSpecularColor(void) const;
-		glm::vec3 const &getDrawModel(void) const;
+		bool getDrawModel(void) const;
+		glm::vec3 const &getModelPos(void) const;
+		glm::vec3 const &getModelOffset(void) const;
+		glm::vec3 const &getModelScale(void) const;
+		glm::vec3 const &getModelOrientation(void) const;
+		glm::mat4 const &getModelMatrix(void) const;
+		ALightRenderBin *getLightModelRenderBin(void) const;
+		ARenderBin *getModelRenderBin(void) const;
 
 		/*
 		 * Setter
 		 */
 
-		glm::vec3 const &setLightAmbientColor(void);
-		glm::vec3 const &setLightDiffuseColor(void);
-		glm::vec3 const &setLightSpecularColor(void);
-		glm::vec3 const &setDrawModel(void);
+		void setLightAmbientColor(glm::vec3 const &vec);
+		void setLightDiffuseColor(glm::vec3 const &vec);
+		void setLightSpecularColor(glm::vec3 const &vec);
+		void setDrawModel(bool val);
+		void setModelPos(glm::vec3 const &vec);
+		void setModelOffset(glm::vec3 const &vec);
+		void setModelScale(glm::vec3 const &vec);
+		void setModelOrientation(glm::vec3 const &vec);
 
 		/*
 		 * Interface IEntity
 		 */
 
-		virtual void update(float time) = 0;
+		virtual void update(float time);
 		virtual void requestDraw(void) = 0;
 		void setActive(bool value);
 		bool getActive(void) const;
@@ -87,8 +102,17 @@ class ALight
 		void scaleObject(glm::vec3 const &vec);
 		void rotateObject(glm::vec3 const &vec);
 
+		class InitException : public GeneralException
+		{
+			public :
+
+				explicit InitException(void);
+				virtual ~InitException(void) throw();
+		};
+
 	protected :
 
+		ALight::eType   _type;
 		ARenderBin      *_model_rb;
 		ALightRenderBin *_light_rb;
 		glm::vec3       _ambient_color;
@@ -100,6 +124,7 @@ class ALight
 		bool      _active;
 		glm::vec3 _model_pos;
 		glm::vec3 _model_scale;
+		glm::vec3 _model_offset;
 		//x = yaw; y = pitch; z = roll
 		glm::vec3 _model_orientation;
 		glm::mat4 _model;
