@@ -20,7 +20,7 @@ ALight::Params::Params()
 	this->diffuse_color     = glm::vec3(1.0f);
 	this->specular_color    = glm::vec3(1.0f);
 	this->model_pos         = glm::vec3(0.0f);
-	this->model_orientation = glm::vec3(0.0f);
+	this->model_offset      = glm::vec3(0.0f);
 	this->model_scale       = glm::vec3(1.0f);
 	this->model_orientation = glm::vec3(0.0f);
 	this->draw_model        = true;

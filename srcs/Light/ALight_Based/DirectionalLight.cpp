@@ -68,6 +68,5 @@ void DirectionalLight::requestDraw()
 													  glm::vec4(this->_diffuse_color, 0.0f),
 													  glm::vec4(this->_specular_color, 0.0f)};
 		this->_light_rb->addLightInstance(tmp);
-
 	}
 }

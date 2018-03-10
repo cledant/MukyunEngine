@@ -65,7 +65,8 @@ set(SOURCE_FILES
 		srcs/Light/ALight_Based/SpotLight.cpp
 		srcs/OpenGL/RenderBin/ALightRenderBin.cpp
 		srcs/OpenGL/RenderBin/ALightRenderBin_Based/MultiLightPointDirSpotLightRenderBin.cpp
-		srcs/TestLight/TestLight.cpp)
+		srcs/TestLight/TestLight.cpp
+		srcs/TestLight/InitTestLight.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
 target_link_libraries(primary glad glfw assimp)
 target_compile_options(primary PRIVATE -Wall -Wextra)

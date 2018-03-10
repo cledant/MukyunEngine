@@ -37,5 +37,5 @@ MultiLightPointDirSpotLightRenderBin &MultiLightPointDirSpotLightRenderBin::oper
 
 void MultiLightPointDirSpotLightRenderBin::draw(void)
 {
-	std::cout << "TODO" << std::endl;
+//	std::cout << "TODO" << std::endl;
 }

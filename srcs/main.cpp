@@ -12,8 +12,26 @@
 
 #include "WindowManager/Glfw_manager.hpp"
 #include "TestInstancing/TestInstancing.hpp"
+#include "TestLight/TestLight.hpp"
 
-int main()
+static void display_help()
+{
+	std::cout << "Available option : " << std::endl;
+	std::cout << "		--instancing for Instancing Model Test" << std::endl;
+	std::cout << "		--light for Light Test" << std::endl;
+}
+
+static void InitRun(Glfw_manager &manager, std::string const &argv)
+{
+	if (argv.compare("--instancing") == 0)
+		InitRunTestInstancing(manager);
+	else if (argv.compare("--light") == 0)
+		InitRunTestLight(manager);
+	else
+		display_help();
+}
+
+int main(int argc, char **argv)
 {
 	Glfw_manager manager;
 
@@ -26,7 +44,7 @@ int main()
 		std::cout << e.what() << std::endl;
 		return (0);
 	}
-	InitRunTestInstancing(manager);
+	(argc > 1) ? InitRun(manager, argv[1]) : display_help();
 	std::cout << "Close manager" << std::endl;
 	Glfw_manager::close_manager();
 	return (0);
