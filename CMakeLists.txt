@@ -69,13 +69,13 @@ set(SOURCE_FILES
 		srcs/TestLight/InitTestLight.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
 target_link_libraries(primary glad glfw assimp)
-target_compile_options(primary PRIVATE -Wall -Wextra)
+target_compile_options(primary PRIVATE -Wall -Wextra -g3)
 
 #Creating executable
 set(SOURCE_FILES_MAIN
 		srcs/main.cpp)
 add_executable(engine ${SOURCE_FILES_MAIN})
-target_compile_options(engine PRIVATE -Wall -Werror -Wextra)
+target_compile_options(engine PRIVATE -Wall -Wextra -g3)
 
 #Build Order
 add_dependencies(primary glad glfw assimp)

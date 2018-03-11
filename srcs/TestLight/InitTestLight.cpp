@@ -41,28 +41,30 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	rb_light.shader       = &rm.getShader("BasicColor");
 	rb_light.model        = &rm.getModel("BlueBox");
 	rb_light.max_instance = 100000;
-	ARenderBin *light = (*world)->add_RenderBin("MultiLight", rb_light, ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
+	ARenderBin *light = (*world)
+			->add_LightRenderBin("MultiLight", rb_light, ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
 
 	//Creating Light
-/*	PointLight::Params params_point;
-	params_point.model_rb  = color;
-	params_point.light_rb  = dynamic_cast<ALightRenderBin *>(light);
-	params_point.model_pos = glm::vec3(0.0f, 0.0f, 5.0f);
+	PointLight::Params params_point;
+	params_point.model_rb    = color;
+	params_point.light_rb    = dynamic_cast<ALightRenderBin *>(light);
+	params_point.model_pos   = glm::vec3(0.0f, 5.0f, 0.0f);
+	params_point.model_scale = glm::vec3(0.1f);
 	(*world)->add_PointLight(params_point);
 
 	//Creating Prop
 	Prop::Params prop_params;
 	prop_params.render_bin  = light;
 	prop_params.orientation = glm::vec3(0.0f);
-	prop_params.scale       = glm::vec3(1.0f);
-	for (size_t i = 0; i < 1; ++i)
+	prop_params.scale       = glm::vec3(0.1f);
+	for (size_t i = 0; i < 10; ++i)
 	{
-		for (size_t j = 0; j < 3; ++j)
+		for (size_t j = 0; j < 10; ++j)
 		{
 			prop_params.pos = glm::vec3(2.0f * i, 0.0f, 1.0f * j);
 			(*world)->add_Prop(prop_params);
 		}
-	}*/
+	}
 }
 
 static void init_program(TestLight **world, RessourceManager &rm, Glfw_manager &manager)

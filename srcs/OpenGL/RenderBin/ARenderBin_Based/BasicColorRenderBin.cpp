@@ -35,6 +35,7 @@ BasicColorRenderBin &BasicColorRenderBin::operator=(BasicColorRenderBin &&rhs)
 void BasicColorRenderBin::draw(void)
 {
 	GLint  uniform_light_diffuse_id;
+	GLint  uniform_mat_perspec_mult_view_id;
 	size_t i = 0;
 
 	if (this->_shader == nullptr || this->_perspec_mult_view == nullptr ||
@@ -43,14 +44,17 @@ void BasicColorRenderBin::draw(void)
 		std::cout << "Can't Render BasicColor" << std::endl;
 		return;
 	}
+	uniform_mat_perspec_mult_view_id = glGetUniformLocation(this->_shader->getShaderProgram(),
+															"uniform_mat_perspec_mult_view");
 	uniform_light_diffuse_id = glGetUniformLocation(this->_shader->getShaderProgram(),
 													"uniform_light_diffuse");
-	if (uniform_light_diffuse_id == -1)
+	if ((uniform_mat_perspec_mult_view_id == -1) || (uniform_light_diffuse_id == -1))
 	{
 		std::cout << "Can't Render BasicColor" << std::endl;
 		return;
 	}
 	this->_shader->use();
+	this->_shader->setMat4(uniform_mat_perspec_mult_view_id, *(this->_perspec_mult_view));
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 	{
 		glBindVertexArray(this->_vao_mesh[i]);
