@@ -17,6 +17,8 @@ static void init_ressources(RessourceManager &rm)
 {
 	rm.add_shader("BasicColor", "./shaders/BasicColor/BasicColor.vs",
 				  "./shaders/BasicColor/BasicColor.fs");
+	rm.add_shader("DiffuseColored", "./shaders/DiffuseColored/DiffuseColored.vs",
+				  "./shaders/DiffuseColored/DiffuseColored.fs");
 	rm.add_model("WhiteBox", "./assets/models/WhiteBox/WhiteBox.obj");
 	rm.add_model("BlueBox", "./assets/models/BlueBox/BlueBox.obj");
 	rm.add_model("RedBox", "./assets/models/RedBox/RedBox.obj");
@@ -30,7 +32,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 							 glm::vec2(0.1f, 1000.0f), 60.0f, 10,
 							 LightContainer::Params());
 
-	//Creating RenderBin for LightBox Indication
+	//Creating RenderBin for LightBox Indication in scene
 	ARenderBin::Params rb_light_color;
 	rb_light_color.shader       = &rm.getShader("BasicColor");
 	rb_light_color.model        = &rm.getModel("WhiteBox");

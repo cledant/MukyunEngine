@@ -66,14 +66,15 @@ set(SOURCE_FILES
 		srcs/OpenGL/RenderBin/ARenderBin_Based/MultiLightPointDirSpotLightRenderBin.cpp
 		srcs/TestLight/TestLight.cpp
 		srcs/TestLight/InitTestLight.cpp
-		srcs/OpenGL/LightContainer/LightContainer.cpp)
+		srcs/OpenGL/LightContainer/LightContainer.cpp
+		srcs/OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
 target_link_libraries(primary glad glfw assimp)
 target_compile_options(primary PRIVATE -Wall -Wextra -g3)
 
 #Creating executable
 set(SOURCE_FILES_MAIN
-		srcs/main.cpp)
+		srcs/main.cpp includes/OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.hpp)
 add_executable(engine ${SOURCE_FILES_MAIN})
 target_compile_options(engine PRIVATE -Wall -Wextra -g3)
 

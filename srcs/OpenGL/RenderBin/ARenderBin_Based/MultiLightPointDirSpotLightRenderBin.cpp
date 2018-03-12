@@ -26,7 +26,7 @@ MultiLightPointDirSpotLightRenderBin::~MultiLightPointDirSpotLightRenderBin(void
 }
 
 MultiLightPointDirSpotLightRenderBin::MultiLightPointDirSpotLightRenderBin(MultiLightPointDirSpotLightRenderBin &&src) :
-		ARenderBin(std::move(src))
+		ARenderBin(std::move(src)), _lc(src.getLightContainer())
 {
 }
 
@@ -60,7 +60,7 @@ void MultiLightPointDirSpotLightRenderBin::draw(void)
 															"uniform_light_diffuse");
 	if ((uniform_mat_perspec_mult_view_id == -1) || (uniform_light_diffuse_id == -1))
 	{
-		std::cout << "Can't Render BasicColor" << std::endl;
+		std::cout << "Can't Render MultiLightPointDirSpotLight" << std::endl;
 		return;
 	}
 	this->_shader->use();

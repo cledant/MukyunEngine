@@ -41,6 +41,7 @@ class ARenderBin
 			PROP,
 			COLOR,
 			MULTILIGHT_POINT_DIR_SPOT,
+			DIFFUSE_COLORED,
 			NONE
 		};
 
