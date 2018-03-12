@@ -27,7 +27,8 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 {
 	(*world) = new TestLight(manager.getInput(), manager.getWindow(),
 							 glm::vec3(0.0f, 0.0f, 10.0f),
-							 glm::vec2(0.1f, 1000.0f), 60.0f, 10);
+							 glm::vec2(0.1f, 1000.0f), 60.0f, 10,
+							 LightContainer::Params());
 
 	//Creating Model RenderBin binded to render light box
 	ARenderBin::Params rb_color;
@@ -48,7 +49,6 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	PointLight::Params params_point;
 	params_point.diffuse_color = glm::vec3(1.0f, 1.0f, 1.0f);
 	params_point.model_rb      = color;
-	params_point.light_rb      = dynamic_cast<ALightRenderBin *>(light);
 	params_point.pos           = glm::vec3(0.0f, 5.0f, 0.0f);
 	params_point.model_scale   = glm::vec3(0.1f);
 	(*world)->add_PointLight(params_point);

@@ -19,6 +19,7 @@
 # include "OpenGL/RenderBin/ARenderBin_Based/BasicColorRenderBin.hpp"
 # include "OpenGL/RenderBin/ALightRenderBin_Based/MultiLightPointDirSpotLightRenderBin.hpp"
 # include "OpenGL/RenderBin/ALightRenderBin.hpp"
+# include "OpenGL/LightContainer/LightContainer.hpp"
 # include "Light/ALight_Based/PointLight.hpp"
 # include "Light/ALight_Based/DirectionalLight.hpp"
 # include "Light/ALight_Based/SpotLight.hpp"
@@ -44,7 +45,8 @@ class TestLight
 
 		TestLight(Input const &input, GLFW_Window const &win,
 				  glm::vec3 const &cam_pos, glm::vec2 const &near_far,
-				  float max_fps, size_t max_frame_skip);
+				  float max_fps, size_t max_frame_skip,
+				  LightContainer::Params const &lc_params);
 		virtual ~TestLight(void);
 		TestLight(TestLight const &src) = delete;
 		TestLight &operator=(TestLight const &rhs) = delete;
@@ -98,6 +100,7 @@ class TestLight
 
 		std::map<std::string, std::unique_ptr<ARenderBin>> _render_bin_list;
 		std::vector<std::unique_ptr<IEntity>>              _entity_list;
+		LightContainer                                     _light_container;
 		GLFW_Window const                                  &_window;
 		glm::mat4                                          _perspective;
 		Camera                                             _camera;

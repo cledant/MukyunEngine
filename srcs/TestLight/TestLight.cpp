@@ -14,9 +14,11 @@
 
 TestLight::TestLight(Input const &input, GLFW_Window const &win,
 					 glm::vec3 const &cam_pos, glm::vec2 const &near_far,
-					 float max_fps, size_t max_frame_skip) :
-		_window(win), _camera(&input, cam_pos, glm::vec3(0.0f, 1.0f, 0.0f),
-							  glm::vec3(0.0f, 0.0f, -1.0f), -90.0f, 0.0f),
+					 float max_fps, size_t max_frame_skip,
+					 LightContainer::Params const &lc_params) :
+		_light_container(lc_params), _window(win),
+		_camera(&input, cam_pos, glm::vec3(0.0f, 1.0f, 0.0f),
+				glm::vec3(0.0f, 0.0f, -1.0f), -90.0f, 0.0f),
 		_fov(45.0f), _max_fps(max_fps), _max_frame_skip(max_frame_skip),
 		_next_update_tick(0.0f), _last_update_tick(0.0f), _delta_tick(0.0f),
 		_skip_loop(0), _near_far(near_far)

@@ -15,7 +15,6 @@
 ALight::Params::Params()
 {
 	this->model_rb          = nullptr;
-	this->light_rb          = nullptr;
 	this->ambient_color     = glm::vec3(1.0f);
 	this->diffuse_color     = glm::vec3(1.0f);
 	this->specular_color    = glm::vec3(1.0f);
@@ -33,7 +32,6 @@ ALight::Params::~Params()
 
 ALight::ALight() : _type(ALight::eType::NONE),
 				   _model_rb(nullptr),
-				   _light_rb(nullptr),
 				   _ambient_color(glm::vec3(0.0f)),
 				   _diffuse_color(glm::vec3(0.0f)),
 				   _specular_color(glm::vec3(0.0f)),
@@ -48,7 +46,6 @@ ALight::ALight() : _type(ALight::eType::NONE),
 
 ALight::ALight(ALight::Params const &params) : _type(ALight::eType::NONE),
 											   _model_rb(params.model_rb),
-											   _light_rb(params.light_rb),
 											   _ambient_color(params.ambient_color),
 											   _diffuse_color(params.diffuse_color),
 											   _specular_color(params.specular_color),
@@ -75,7 +72,6 @@ ALight &ALight::operator=(ALight const &rhs)
 {
 	this->_type              = rhs.getLightType();
 	this->_model_rb          = rhs.getModelRenderBin();
-	this->_light_rb          = rhs.getLightModelRenderBin();
 	this->_ambient_color     = rhs.getLightAmbientColor();
 	this->_diffuse_color     = rhs.getLightDiffuseColor();
 	this->_specular_color    = rhs.getLightSpecularColor();
@@ -141,11 +137,6 @@ glm::vec3 const &ALight::getModelScale() const
 glm::mat4 const &ALight::getModelMatrix() const
 {
 	return (this->_model);
-}
-
-ALightRenderBin *ALight::getLightModelRenderBin() const
-{
-	return (this->_light_rb);
 }
 
 ARenderBin *ALight::getModelRenderBin() const

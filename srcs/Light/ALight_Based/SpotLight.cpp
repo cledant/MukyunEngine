@@ -88,17 +88,6 @@ void SpotLight::update(float time)
 
 void SpotLight::requestDraw()
 {
-	if (this->_active)
-	{
-		if (this->_draw_model)
-			this->_model_rb->addInstance(this->_model);
-		struct ALightRenderBin::SpotLightDataGL tmp = {glm::vec4(this->_pos, 0.0f),
-													   glm::vec4(this->_dir, 0.0f),
-													   glm::vec4(this->_attenuation_coeff, 0.0f),
-													   glm::vec4(this->_ambient_color, 0.0f),
-													   glm::vec4(this->_diffuse_color, 0.0f),
-													   glm::vec4(this->_specular_color, 0.0f),
-													   glm::vec4(glm::radians(this->_cutoff), 0.0f, 0.0f)};
-		this->_light_rb->addLightInstance(tmp);
-	}
+	if (this->_active && this->_draw_model)
+		this->_model_rb->addInstance(this->_model);
 }
