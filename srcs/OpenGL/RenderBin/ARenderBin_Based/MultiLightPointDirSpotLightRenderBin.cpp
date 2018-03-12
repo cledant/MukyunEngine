@@ -10,12 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "OpenGL/RenderBin/ALightRenderBin_Based/MultiLightPointDirSpotLightRenderBin.hpp"
+#include "OpenGL/RenderBin/ARenderBin_Based/MultiLightPointDirSpotLightRenderBin.hpp"
 
-MultiLightPointDirSpotLightRenderBin::MultiLightPointDirSpotLightRenderBin(ALightRenderBin::Params const &params) :
-		ALightRenderBin(params)
+MultiLightPointDirSpotLightRenderBin::MultiLightPointDirSpotLightRenderBin(ARenderBin::Params const &params) :
+		ARenderBin(params)
 {
-	this->_type = ALightRenderBin::eType::MULTILIGHT_POINT_DIR_SPOT;
+	this->_type = ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT;
 	std::cout << "Creating MultiLightPointDirSpotLight RenderBin" << std::endl;
 }
 
@@ -24,14 +24,14 @@ MultiLightPointDirSpotLightRenderBin::~MultiLightPointDirSpotLightRenderBin(void
 }
 
 MultiLightPointDirSpotLightRenderBin::MultiLightPointDirSpotLightRenderBin(MultiLightPointDirSpotLightRenderBin &&src) :
-		ALightRenderBin(std::move(src))
+		ARenderBin(std::move(src))
 {
 }
 
 MultiLightPointDirSpotLightRenderBin &MultiLightPointDirSpotLightRenderBin::operator=(
 		MultiLightPointDirSpotLightRenderBin &&rhs)
 {
-	ALightRenderBin::operator=(std::move(rhs));
+	ARenderBin::operator=(std::move(rhs));
 	return (*this);
 }
 
@@ -49,8 +49,8 @@ void MultiLightPointDirSpotLightRenderBin::draw(void)
 	}
 	uniform_mat_perspec_mult_view_id = glGetUniformLocation(this->_shader->getShaderProgram(),
 															"uniform_mat_perspec_mult_view");
-	uniform_light_diffuse_id = glGetUniformLocation(this->_shader->getShaderProgram(),
-													"uniform_light_diffuse");
+	uniform_light_diffuse_id         = glGetUniformLocation(this->_shader->getShaderProgram(),
+															"uniform_light_diffuse");
 	if ((uniform_mat_perspec_mult_view_id == -1) || (uniform_light_diffuse_id == -1))
 	{
 		std::cout << "Can't Render BasicColor" << std::endl;

@@ -63,8 +63,7 @@ set(SOURCE_FILES
 		srcs/Light/ALight_Based/PointLight.cpp
 		srcs/Light/ALight_Based/DirectionalLight.cpp
 		srcs/Light/ALight_Based/SpotLight.cpp
-		srcs/OpenGL/RenderBin/ALightRenderBin.cpp
-		srcs/OpenGL/RenderBin/ALightRenderBin_Based/MultiLightPointDirSpotLightRenderBin.cpp
+		srcs/OpenGL/RenderBin/ARenderBin_Based/MultiLightPointDirSpotLightRenderBin.cpp
 		srcs/TestLight/TestLight.cpp
 		srcs/TestLight/InitTestLight.cpp
 		srcs/OpenGL/LightContainer/LightContainer.cpp)

@@ -76,6 +76,8 @@ void TestLight::update(void)
 		this->updatePerspective(this->_fov);
 	this->_camera.update();
 	this->_perspec_mult_view = this->_perspective * this->_camera.getViewMatrix();
+	this->_light_container.flushData();
+	this->_light_container.update(this->_tick);
 	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
 		it->second.get()->flushData();
 	for (auto it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
@@ -112,15 +114,7 @@ ARenderBin *TestLight::add_RenderBin(std::string const &name,
 		this->_render_bin_list[name] = std::make_unique<BasicColorRenderBin>(params);
 		return (this->_render_bin_list[name].get());
 	}
-	return (nullptr);
-}
-
-ARenderBin *TestLight::add_LightRenderBin(std::string const &name,
-										  ALightRenderBin::Params &params,
-										  ALightRenderBin::eType type)
-{
-	params.perspec_mult_view = &this->_perspec_mult_view;
-	if (type == ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT)
+	else if (type == ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT)
 	{
 		this->_render_bin_list[name] = std::make_unique<MultiLightPointDirSpotLightRenderBin>(params);
 		return (this->_render_bin_list[name].get());
@@ -136,20 +130,17 @@ IEntity *TestLight::add_Prop(Prop::Params &params)
 
 IEntity *TestLight::add_PointLight(PointLight::Params &params)
 {
-	this->_entity_list.emplace_back(new PointLight(params));
-	return (this->_entity_list.back().get());
+	return (this->_light_container.addLightInstance(params));
 }
 
 IEntity *TestLight::add_DirectionalLight(DirectionalLight::Params &params)
 {
-	this->_entity_list.emplace_back(new DirectionalLight(params));
-	return (this->_entity_list.back().get());
+	return (this->_light_container.addLightInstance(params));
 }
 
 IEntity *TestLight::add_SpotLight(SpotLight::Params &params)
 {
-	this->_entity_list.emplace_back(new SpotLight(params));
-	return (this->_entity_list.back().get());
+	return (this->_light_container.addLightInstance(params));
 }
 
 /*

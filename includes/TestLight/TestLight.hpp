@@ -17,8 +17,7 @@
 # include "OpenGL/RenderBin/ARenderBin.hpp"
 # include "OpenGL/RenderBin/ARenderBin_Based/BasicPropRenderBin.hpp"
 # include "OpenGL/RenderBin/ARenderBin_Based/BasicColorRenderBin.hpp"
-# include "OpenGL/RenderBin/ALightRenderBin_Based/MultiLightPointDirSpotLightRenderBin.hpp"
-# include "OpenGL/RenderBin/ALightRenderBin.hpp"
+# include "OpenGL/RenderBin/ARenderBin_Based/MultiLightPointDirSpotLightRenderBin.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
 # include "Light/ALight_Based/PointLight.hpp"
 # include "Light/ALight_Based/DirectionalLight.hpp"
@@ -71,9 +70,6 @@ class TestLight
 		ARenderBin *add_RenderBin(std::string const &name,
 								  ARenderBin::Params &params,
 								  ARenderBin::eType type);
-		ARenderBin *add_LightRenderBin(std::string const &name,
-									   ALightRenderBin::Params &params,
-									   ARenderBin::eType type);
 		IEntity *add_Prop(Prop::Params &params);
 		IEntity *add_PointLight(PointLight::Params &params);
 		IEntity *add_DirectionalLight(DirectionalLight::Params &params);
