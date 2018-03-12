@@ -149,7 +149,8 @@ void DiffuseColored::_update_vao(void)
 		glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_light_diffuse);
 		glEnableVertexAttribArray(9);
 		glVertexAttribPointer(9, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3),
-							  reinterpret_cast<void *>(sizeof(glm::vec3)));
+							  reinterpret_cast<void *>(0));
+		glVertexAttribDivisor(9, 1);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 		oGL_check_error();

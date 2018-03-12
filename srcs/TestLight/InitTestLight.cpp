@@ -48,13 +48,26 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	ARenderBin *light = (*world)->add_RenderBin("Light", rb_light,
 												ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
 
-	//Creating Light
+	//Creating Lights
 	PointLight::Params params_point;
-	params_point.diffuse_color = glm::vec3(1.0f, 1.0f, 0.0f);
+	params_point.diffuse_color = glm::vec3(1.0f, 0.0f, 0.0f);
 	params_point.model_rb      = light_color;
 	params_point.pos           = glm::vec3(0.0f, 5.0f, 0.0f);
 	params_point.model_scale   = glm::vec3(0.1f);
 	(*world)->add_PointLight(params_point);
+
+	params_point.diffuse_color = glm::vec3(0.0f, 1.0f, 0.0f);
+	params_point.pos           = glm::vec3(20.0f, 5.0f, 0.0f);
+	(*world)->add_PointLight(params_point);
+
+	params_point.diffuse_color = glm::vec3(0.0f, 1.0f, 1.0f);
+	params_point.pos           = glm::vec3(0.0f, 5.0f, 10.0f);
+	(*world)->add_PointLight(params_point);
+
+	params_point.diffuse_color = glm::vec3(1.0f, 1.0f, 1.0f);
+	params_point.pos           = glm::vec3(20.0f, 5.0f, 10.0f);
+	(*world)->add_PointLight(params_point);
+
 
 	//Creating Prop
 	Prop::Params prop_params;
