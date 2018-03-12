@@ -120,6 +120,12 @@ ARenderBin *TestLight::add_RenderBin(std::string const &name,
 																							  &this->_light_container);
 		return (this->_render_bin_list[name].get());
 	}
+	else if (type == ARenderBin::eType::DIFFUSE_COLORED)
+	{
+		this->_render_bin_list[name] = std::make_unique<DiffuseColored>(params,
+																		&this->_light_container);
+		return (this->_render_bin_list[name].get());
+	}
 	return (nullptr);
 }
 

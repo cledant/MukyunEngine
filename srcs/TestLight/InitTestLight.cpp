@@ -34,21 +34,23 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating RenderBin for LightBox Indication in scene
 	ARenderBin::Params rb_light_color;
-	rb_light_color.shader       = &rm.getShader("BasicColor");
+	rb_light_color.shader       = &rm.getShader("DiffuseColored");
 	rb_light_color.model        = &rm.getModel("WhiteBox");
 	rb_light_color.max_instance = 100;
-	ARenderBin *light_color = (*world)->add_RenderBin("Light_Color", rb_light_color, ARenderBin::eType::COLOR);
+	ARenderBin *light_color = (*world)->add_RenderBin("Light_Color", rb_light_color,
+													  ARenderBin::eType::DIFFUSE_COLORED);
 
 	//Creating RenderBin for Light that uses LightContainer
 	ARenderBin::Params rb_light;
 	rb_light.shader       = &rm.getShader("BasicColor");
 	rb_light.model        = &rm.getModel("BlueBox");
 	rb_light.max_instance = 100000;
-	ARenderBin *light = (*world)->add_RenderBin("Light", rb_light, ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
+	ARenderBin *light = (*world)->add_RenderBin("Light", rb_light,
+												ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
 
 	//Creating Light
 	PointLight::Params params_point;
-	params_point.diffuse_color = glm::vec3(1.0f, 1.0f, 1.0f);
+	params_point.diffuse_color = glm::vec3(1.0f, 1.0f, 0.0f);
 	params_point.model_rb      = light_color;
 	params_point.pos           = glm::vec3(0.0f, 5.0f, 0.0f);
 	params_point.model_scale   = glm::vec3(0.1f);
