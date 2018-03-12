@@ -30,14 +30,14 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 							 glm::vec2(0.1f, 1000.0f), 60.0f, 10,
 							 LightContainer::Params());
 
-	//Creating Model RenderBin binded to render light box
+	//Creating RenderBin for LightBox Indication
 	ARenderBin::Params rb_light_color;
 	rb_light_color.shader       = &rm.getShader("BasicColor");
 	rb_light_color.model        = &rm.getModel("WhiteBox");
-	rb_light_color.max_instance = 100000;
+	rb_light_color.max_instance = 100;
 	ARenderBin *light_color = (*world)->add_RenderBin("Light_Color", rb_light_color, ARenderBin::eType::COLOR);
 
-	//Creating Model RenderBin binded to render light box
+	//Creating RenderBin for Light that uses LightContainer
 	ARenderBin::Params rb_light;
 	rb_light.shader       = &rm.getShader("BasicColor");
 	rb_light.model        = &rm.getModel("BlueBox");

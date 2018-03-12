@@ -59,7 +59,7 @@ LightContainer &LightContainer::operator=(LightContainer &&rhs)
 {
 	try
 	{
-		this->_light_list = std::move(rhs.moveLightStorage());
+		this->_light_list = rhs.moveLightStorage();
 		this->_data_point_light.reserve(rhs.getMaxPointLightNumber());
 		this->_data_dir_light.reserve(rhs.getMaxDirLightNumber());
 		this->_data_spot_light.reserve(rhs.getMaxSpotLightNumber());

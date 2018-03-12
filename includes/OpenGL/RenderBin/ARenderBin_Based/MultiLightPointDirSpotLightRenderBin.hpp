@@ -14,12 +14,14 @@
 # define MULTILIGHTPOINTDIRSPOTLIGHTRENDERBIN_HPP
 
 # include "OpenGL/RenderBin/ARenderBin.hpp"
+# include "OpenGL/LightContainer/LightContainer.hpp"
 
 class MultiLightPointDirSpotLightRenderBin : public ARenderBin
 {
 	public :
 
-		MultiLightPointDirSpotLightRenderBin(ARenderBin::Params const &params);
+		MultiLightPointDirSpotLightRenderBin(ARenderBin::Params const &params,
+											 LightContainer const *lc);
 		virtual ~MultiLightPointDirSpotLightRenderBin(void);
 		MultiLightPointDirSpotLightRenderBin(MultiLightPointDirSpotLightRenderBin const &src) = delete;
 		MultiLightPointDirSpotLightRenderBin &operator=(MultiLightPointDirSpotLightRenderBin const &rhs) = delete;
@@ -31,6 +33,16 @@ class MultiLightPointDirSpotLightRenderBin : public ARenderBin
 		 */
 
 		virtual void draw(void);
+
+		/*
+		 * Getter
+		 */
+
+		LightContainer const *getLightContainer(void);
+
+	protected :
+
+		LightContainer const *_lc;
 };
 
 #endif

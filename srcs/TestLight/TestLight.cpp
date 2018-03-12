@@ -77,9 +77,9 @@ void TestLight::update(void)
 	this->_camera.update();
 	this->_perspec_mult_view = this->_perspective * this->_camera.getViewMatrix();
 	this->_light_container.flushData();
-	this->_light_container.update(this->_tick);
 	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
 		it->second.get()->flushData();
+	this->_light_container.update(this->_tick);
 	for (auto it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
 	{
 		it->get()->update(this->_tick);
@@ -116,7 +116,8 @@ ARenderBin *TestLight::add_RenderBin(std::string const &name,
 	}
 	else if (type == ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT)
 	{
-		this->_render_bin_list[name] = std::make_unique<MultiLightPointDirSpotLightRenderBin>(params);
+		this->_render_bin_list[name] = std::make_unique<MultiLightPointDirSpotLightRenderBin>(params,
+																							  &this->_light_container);
 		return (this->_render_bin_list[name].get());
 	}
 	return (nullptr);

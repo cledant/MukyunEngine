@@ -12,8 +12,10 @@
 
 #include "OpenGL/RenderBin/ARenderBin_Based/MultiLightPointDirSpotLightRenderBin.hpp"
 
-MultiLightPointDirSpotLightRenderBin::MultiLightPointDirSpotLightRenderBin(ARenderBin::Params const &params) :
-		ARenderBin(params)
+MultiLightPointDirSpotLightRenderBin::MultiLightPointDirSpotLightRenderBin(ARenderBin::Params const &params,
+																		   LightContainer const *lc) :
+		ARenderBin(params),
+		_lc(lc)
 {
 	this->_type = ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT;
 	std::cout << "Creating MultiLightPointDirSpotLight RenderBin" << std::endl;
@@ -32,8 +34,13 @@ MultiLightPointDirSpotLightRenderBin &MultiLightPointDirSpotLightRenderBin::oper
 		MultiLightPointDirSpotLightRenderBin &&rhs)
 {
 	ARenderBin::operator=(std::move(rhs));
+	this->_lc = rhs.getLightContainer();
 	return (*this);
 }
+
+/*
+ * Draw
+ */
 
 void MultiLightPointDirSpotLightRenderBin::draw(void)
 {
@@ -70,4 +77,13 @@ void MultiLightPointDirSpotLightRenderBin::draw(void)
 		glBindVertexArray(0);
 		i++;
 	}
+}
+
+/*
+ * Getter
+ */
+
+LightContainer const *MultiLightPointDirSpotLightRenderBin::getLightContainer(void)
+{
+	return (this->_lc);
 }
