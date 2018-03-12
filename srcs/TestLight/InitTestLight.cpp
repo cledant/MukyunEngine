@@ -29,7 +29,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 							 glm::vec3(0.0f, 0.0f, 10.0f),
 							 glm::vec2(0.1f, 1000.0f), 60.0f, 10);
 
-	//Creating Model RenderBin
+	//Creating Model RenderBin binded to render light box
 	ARenderBin::Params rb_color;
 	rb_color.shader       = &rm.getShader("BasicColor");
 	rb_color.model        = &rm.getModel("WhiteBox");
@@ -46,10 +46,11 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating Light
 	PointLight::Params params_point;
-	params_point.model_rb    = color;
-	params_point.light_rb    = dynamic_cast<ALightRenderBin *>(light);
-	params_point.model_pos   = glm::vec3(0.0f, 5.0f, 0.0f);
-	params_point.model_scale = glm::vec3(0.1f);
+	params_point.diffuse_color = glm::vec3(1.0f, 1.0f, 1.0f);
+	params_point.model_rb      = color;
+	params_point.light_rb      = dynamic_cast<ALightRenderBin *>(light);
+	params_point.pos           = glm::vec3(0.0f, 5.0f, 0.0f);
+	params_point.model_scale   = glm::vec3(0.1f);
 	(*world)->add_PointLight(params_point);
 
 	//Creating Prop
@@ -77,7 +78,6 @@ static void init_program(TestLight **world, RessourceManager &rm, Glfw_manager &
 
 void InitRunTestLight(Glfw_manager &manager)
 {
-
 	RessourceManager rm;
 	TestLight        *world = nullptr;
 
