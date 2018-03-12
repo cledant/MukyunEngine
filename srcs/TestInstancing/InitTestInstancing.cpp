@@ -15,6 +15,8 @@
 
 static void init_ressources(RessourceManager &rm)
 {
+	rm.add_texture("default_texture", "./assets/default_texture/default_texture.tga",
+				   Texture::eTextureType::TEX_DIFFUSE_SPECULAR);
 	rm.add_shader("BasicProp", "./shaders/BasicProp/BasicProp.vs",
 				  "./shaders/BasicProp/BasicProp.fs");
 	rm.add_model("Sakuya", "./assets/models/Sakuya/Sakuya_Izayoi.obj");

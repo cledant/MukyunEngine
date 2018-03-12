@@ -29,6 +29,7 @@ class Texture
 		{
 			TEX_DIFFUSE,
 			TEX_SPECULAR,
+			TEX_DIFFUSE_SPECULAR,
 		};
 
 		Texture(void);

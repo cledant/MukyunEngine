@@ -15,6 +15,8 @@
 
 static void init_ressources(RessourceManager &rm)
 {
+	rm.add_texture("default_texture", "./assets/default_texture/default_texture.tga",
+				   Texture::eTextureType::TEX_DIFFUSE_SPECULAR);
 	rm.add_shader("BasicColor", "./shaders/BasicColor/BasicColor.vs",
 				  "./shaders/BasicColor/BasicColor.fs");
 	rm.add_shader("DiffuseColored", "./shaders/DiffuseColored/DiffuseColored.vs",
