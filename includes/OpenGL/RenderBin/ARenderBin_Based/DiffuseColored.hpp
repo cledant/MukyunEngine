@@ -39,7 +39,12 @@ class DiffuseColored : public ARenderBin
 		 * Getter
 		 */
 
-		LightContainer const *getLightContainer(void);
+		LightContainer const *getLightContainer(void) const;
+		std::vector<glm::vec3> const &getVectorLightDiffuse(void) const;
+		size_t getCurrentVectorLightDiffuseNumber(void) const;
+		size_t getMaxVectorLightDiffuseNumber(void) const;
+		GLuint getVBOLightDiffuse(void) const;
+		GLuint moveVBOLightDiffuse(void);
 
 	protected :
 

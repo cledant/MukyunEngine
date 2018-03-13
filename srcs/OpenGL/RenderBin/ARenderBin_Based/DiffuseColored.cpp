@@ -14,7 +14,8 @@
 
 DiffuseColored::DiffuseColored(ARenderBin::Params const &params,
 							   LightContainer const *lc) : ARenderBin(params),
-														   _lc(lc)
+														   _lc(lc),
+														   _vbo_light_diffuse(0)
 {
 	try
 	{
@@ -40,15 +41,31 @@ DiffuseColored::~DiffuseColored(void)
 	glDeleteBuffers(1, &(this->_vbo_light_diffuse));
 }
 
-DiffuseColored::DiffuseColored(DiffuseColored &&src) : ARenderBin(std::move(src)),
-													   _lc(src.getLightContainer())
+DiffuseColored::DiffuseColored(DiffuseColored &&src) : ARenderBin(),
+													   _vbo_light_diffuse(0)
 {
+	*this = std::move(src);
 }
 
 DiffuseColored &DiffuseColored::operator=(DiffuseColored &&rhs)
 {
 	ARenderBin::operator=(std::move(rhs));
-	this->_lc = rhs.getLightContainer();
+	try
+	{
+		this->_vector_light_diffuse.reserve(rhs.getMaxVectorLightDiffuseNumber());
+		this->_vector_light_diffuse = rhs.getVectorLightDiffuse();
+		this->_vbo_light_diffuse    = rhs.moveVBOLightDiffuse();
+		this->_lc                   = rhs.getLightContainer();
+	}
+	catch (std::exception &e)
+	{
+		glDeleteBuffers(1, &(this->_vbo_model_matrices));
+		for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
+			glDeleteVertexArrays(1, &(*it));
+		glDeleteBuffers(1, &(this->_vbo_light_diffuse));
+		std::cout << "DiffuseColored Move Error" << std::endl;
+		throw;
+	}
 	return (*this);
 }
 
@@ -116,9 +133,37 @@ void DiffuseColored::draw(void)
  * Getter
  */
 
-LightContainer const *DiffuseColored::getLightContainer(void)
+LightContainer const *DiffuseColored::getLightContainer(void) const
 {
 	return (this->_lc);
+}
+
+std::vector<glm::vec3> const &DiffuseColored::getVectorLightDiffuse(void) const
+{
+	return (this->_vector_light_diffuse);
+}
+
+size_t DiffuseColored::getCurrentVectorLightDiffuseNumber() const
+{
+	return (this->_vector_light_diffuse.size());
+}
+
+size_t DiffuseColored::getMaxVectorLightDiffuseNumber(void) const
+{
+	return (this->_vector_light_diffuse.capacity());
+}
+
+GLuint DiffuseColored::getVBOLightDiffuse(void) const
+{
+	return (this->_vbo_light_diffuse);
+}
+
+GLuint DiffuseColored::moveVBOLightDiffuse(void)
+{
+	GLuint tmp = this->_vbo_light_diffuse;
+
+	this->_vbo_light_diffuse = 0;
+	return (tmp);
 }
 
 void DiffuseColored::_allocate_vbo(size_t max_size)

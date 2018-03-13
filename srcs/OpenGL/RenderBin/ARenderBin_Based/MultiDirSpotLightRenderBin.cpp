@@ -13,7 +13,7 @@
 #include "OpenGL/RenderBin/ARenderBin_Based/MultiDirSpotLightRenderBin.hpp"
 
 MultiPointDirSpotLightRenderBin::MultiPointDirSpotLightRenderBin(ARenderBin::Params const &params,
-																		   LightContainer const *lc) :
+																 LightContainer const *lc) :
 		ARenderBin(params),
 		_lc(lc)
 {
@@ -79,11 +79,21 @@ void MultiPointDirSpotLightRenderBin::draw(void)
 	}
 }
 
+void MultiPointDirSpotLightRenderBin::updateVBO(void)
+{
+	ARenderBin::updateVBO();
+}
+
+void MultiPointDirSpotLightRenderBin::flushData(void)
+{
+	ARenderBin::flushData();
+}
+
 /*
  * Getter
  */
 
-LightContainer const *MultiPointDirSpotLightRenderBin::getLightContainer(void)
+LightContainer const *MultiPointDirSpotLightRenderBin::getLightContainer(void) const
 {
 	return (this->_lc);
 }
