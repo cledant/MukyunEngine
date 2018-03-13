@@ -108,6 +108,11 @@ void Shader::setFloat(GLint uniform_id, float value) const
 	glUniform1f(uniform_id, static_cast<GLfloat>(value));
 }
 
+void Shader::setInt(GLint uniform_id, int value) const
+{
+	glUniform1i(uniform_id, value);
+}
+
 GLuint Shader::_load_shader(std::string const &path, GLenum type)
 {
 	std::string content;

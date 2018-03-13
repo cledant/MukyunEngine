@@ -23,9 +23,9 @@ LightContainer::Params::~Params(void)
 {
 }
 
-LightContainer::LightContainer(LightContainer::Params const &params) : _vbo_point_light(0),
-																	   _vbo_dir_light(0),
-																	   _vbo_spot_light(0)
+LightContainer::LightContainer(LightContainer::Params const &params) : _ubo_point_light(0),
+																	   _ubo_dir_light(0),
+																	   _ubo_spot_light(0)
 {
 	try
 	{
@@ -33,9 +33,9 @@ LightContainer::LightContainer(LightContainer::Params const &params) : _vbo_poin
 	}
 	catch (std::exception &e)
 	{
-		glDeleteBuffers(1, &(this->_vbo_point_light));
-		glDeleteBuffers(1, &(this->_vbo_dir_light));
-		glDeleteBuffers(1, &(this->_vbo_spot_light));
+		glDeleteBuffers(1, &(this->_ubo_point_light));
+		glDeleteBuffers(1, &(this->_ubo_dir_light));
+		glDeleteBuffers(1, &(this->_ubo_spot_light));
 		std::cout << "LightContainer Initialization Error" << std::endl;
 		throw;
 	}
@@ -43,14 +43,14 @@ LightContainer::LightContainer(LightContainer::Params const &params) : _vbo_poin
 
 LightContainer::~LightContainer(void)
 {
-	glDeleteBuffers(1, &(this->_vbo_point_light));
-	glDeleteBuffers(1, &(this->_vbo_dir_light));
-	glDeleteBuffers(1, &(this->_vbo_spot_light));
+	glDeleteBuffers(1, &(this->_ubo_point_light));
+	glDeleteBuffers(1, &(this->_ubo_dir_light));
+	glDeleteBuffers(1, &(this->_ubo_spot_light));
 }
 
-LightContainer::LightContainer(LightContainer &&src) : _vbo_point_light(0),
-													   _vbo_dir_light(0),
-													   _vbo_spot_light(0)
+LightContainer::LightContainer(LightContainer &&src) : _ubo_point_light(0),
+													   _ubo_dir_light(0),
+													   _ubo_spot_light(0)
 {
 	*this = std::move(src);
 }
@@ -64,17 +64,17 @@ LightContainer &LightContainer::operator=(LightContainer &&rhs)
 		this->_data_dir_light.reserve(rhs.getMaxDirLightNumber());
 		this->_data_spot_light.reserve(rhs.getMaxSpotLightNumber());
 		this->_data_point_light = rhs.getPointLightDataGL();
-		this->_vbo_point_light  = rhs.moveVboPointLight();
+		this->_ubo_point_light  = rhs.moveUboPointLight();
 		this->_data_dir_light   = rhs.getDirLightDataGL();
-		this->_vbo_dir_light    = rhs.moveVboDirLight();
+		this->_ubo_dir_light    = rhs.moveUboDirLight();
 		this->_data_spot_light  = rhs.getSpotLightDataGL();
-		this->_vbo_spot_light   = rhs.moveVboSpotLight();
+		this->_ubo_spot_light   = rhs.moveUboSpotLight();
 	}
 	catch (std::exception &e)
 	{
-		glDeleteBuffers(1, &(this->_vbo_point_light));
-		glDeleteBuffers(1, &(this->_vbo_dir_light));
-		glDeleteBuffers(1, &(this->_vbo_spot_light));
+		glDeleteBuffers(1, &(this->_ubo_point_light));
+		glDeleteBuffers(1, &(this->_ubo_dir_light));
+		glDeleteBuffers(1, &(this->_ubo_spot_light));
 		std::cout << "LightContainer Move Error" << std::endl;
 		throw;
 	}
@@ -101,19 +101,19 @@ void LightContainer::update(float time)
 				 this->_data_spot_light.size() < this->_data_spot_light.capacity())
 			this->_create_spot_light_gl_data(dynamic_cast<SpotLight const *>(it->get()));
 	}
-	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_point_light);
-	glBufferSubData(GL_ARRAY_BUFFER, 0,
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_point_light);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0,
 					sizeof(PointLightDataGL) * this->_data_point_light.size(),
 					&(this->_data_point_light[0]));
-	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_dir_light);
-	glBufferSubData(GL_ARRAY_BUFFER, 0,
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_dir_light);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0,
 					sizeof(DirLightDataGL) * this->_data_dir_light.size(),
 					&(this->_data_dir_light[0]));
-	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_spot_light);
-	glBufferSubData(GL_ARRAY_BUFFER, 0,
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_spot_light);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0,
 					sizeof(SpotLightDataGL) * this->_data_spot_light.size(),
 					&(this->_data_spot_light[0]));
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void LightContainer::flushData(void)
@@ -166,12 +166,17 @@ std::vector<struct LightContainer::PointLightDataGL> const &LightContainer::getP
 	return (this->_data_point_light);
 }
 
-GLuint LightContainer::moveVboPointLight()
+GLuint LightContainer::moveUboPointLight()
 {
-	GLuint tmp = this->_vbo_point_light;
+	GLuint tmp = this->_ubo_point_light;
 
-	this->_vbo_point_light = 0;
+	this->_ubo_point_light = 0;
 	return (tmp);
+}
+
+GLuint LightContainer::getUboPointLight(void) const
+{
+	return (this->_ubo_point_light);
 }
 
 size_t LightContainer::getCurrentPointLightNumber(void) const
@@ -191,12 +196,17 @@ std::vector<struct LightContainer::DirLightDataGL> const &LightContainer::getDir
 	return (this->_data_dir_light);
 }
 
-GLuint LightContainer::moveVboDirLight()
+GLuint LightContainer::moveUboDirLight()
 {
-	GLuint tmp = this->_vbo_dir_light;
+	GLuint tmp = this->_ubo_dir_light;
 
-	this->_vbo_dir_light = 0;
+	this->_ubo_dir_light = 0;
 	return (tmp);
+}
+
+GLuint LightContainer::getUboDirLight(void) const
+{
+	return (this->_ubo_dir_light);
 }
 
 size_t LightContainer::getCurrentDirLightNumber(void) const
@@ -216,12 +226,17 @@ std::vector<struct LightContainer::SpotLightDataGL> const &LightContainer::getSp
 	return (this->_data_spot_light);
 }
 
-GLuint LightContainer::moveVboSpotLight()
+GLuint LightContainer::moveUboSpotLight()
 {
-	GLuint tmp = this->_vbo_spot_light;
+	GLuint tmp = this->_ubo_spot_light;
 
-	this->_vbo_spot_light = 0;
+	this->_ubo_spot_light = 0;
 	return (tmp);
+}
+
+GLuint LightContainer::getUboSpotLight(void) const
+{
+	return (this->_ubo_spot_light);
 }
 
 size_t LightContainer::getCurrentSpotLightNumber(void) const
@@ -239,22 +254,19 @@ inline void LightContainer::_allocate_memory(LightContainer::Params const &param
 	this->_data_point_light.reserve(params.max_point_light);
 	this->_data_dir_light.reserve(params.max_dir_light);
 	this->_data_spot_light.reserve(params.max_spot_light);
-	glGenBuffers(1, &(this->_vbo_point_light));
-	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_point_light);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(PointLightDataGL) * params.max_point_light,
-				 &(this->_data_point_light[0]),
-				 GL_STATIC_DRAW);
-	glGenBuffers(1, &(this->_vbo_dir_light));
-	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_dir_light);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(DirLightDataGL) * params.max_dir_light,
-				 &(this->_data_dir_light[0]),
-				 GL_STATIC_DRAW);
-	glGenBuffers(1, &(this->_vbo_spot_light));
-	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_spot_light);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(SpotLightDataGL) * params.max_spot_light,
-				 &(this->_data_spot_light[0]),
-				 GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glGenBuffers(1, &(this->_ubo_point_light));
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_point_light);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(PointLightDataGL) * params.max_point_light,
+				 &(this->_data_point_light[0]), GL_STATIC_DRAW);
+	glGenBuffers(1, &(this->_ubo_dir_light));
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_dir_light);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(DirLightDataGL) * params.max_dir_light,
+				 &(this->_data_dir_light[0]), GL_STATIC_DRAW);
+	glGenBuffers(1, &(this->_ubo_spot_light));
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_spot_light);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(SpotLightDataGL) * params.max_spot_light,
+				 &(this->_data_spot_light[0]), GL_STATIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	oGL_check_error();
 }
 

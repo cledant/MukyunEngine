@@ -97,19 +97,22 @@ class LightContainer
 
 		//PointLight functions
 		std::vector<struct LightContainer::PointLightDataGL> const &getPointLightDataGL(void) const;
-		GLuint moveVboPointLight(void);
+		GLuint moveUboPointLight(void);
+		GLuint getUboPointLight(void) const;
 		size_t getCurrentPointLightNumber(void) const;
 		size_t getMaxPointLightNumber(void) const;
 
 		//DirLight functions
 		std::vector<struct LightContainer::DirLightDataGL> const &getDirLightDataGL(void) const;
-		GLuint moveVboDirLight(void);
+		GLuint moveUboDirLight(void);
+		GLuint getUboDirLight(void) const;
 		size_t getCurrentDirLightNumber(void) const;
 		size_t getMaxDirLightNumber(void) const;
 
 		//SpotLight functions
 		std::vector<struct LightContainer::SpotLightDataGL> const &getSpotLightDataGL(void) const;
-		GLuint moveVboSpotLight(void);
+		GLuint moveUboSpotLight(void);
+		GLuint getUboSpotLight(void) const;
 		size_t getCurrentSpotLightNumber(void) const;
 		size_t getMaxSpotLightNumber(void) const;
 
@@ -119,9 +122,9 @@ class LightContainer
 		std::vector<struct PointLightDataGL> _data_point_light;
 		std::vector<struct DirLightDataGL>   _data_dir_light;
 		std::vector<struct SpotLightDataGL>  _data_spot_light;
-		GLuint                               _vbo_point_light;
-		GLuint                               _vbo_dir_light;
-		GLuint                               _vbo_spot_light;
+		GLuint                               _ubo_point_light;
+		GLuint                               _ubo_dir_light;
+		GLuint                               _ubo_spot_light;
 
 		inline void _allocate_memory(LightContainer::Params const &params);
 		inline void _create_point_light_gl_data(PointLight const *ptr);

@@ -13,8 +13,9 @@
 #include "OpenGL/RenderBin/ARenderBin_Based/MultiDirSpotLightRenderBin.hpp"
 
 MultiPointDirSpotLightRenderBin::MultiPointDirSpotLightRenderBin(ARenderBin::Params const &params,
-																 LightContainer const *lc) :
-		ARenderBin(params), _lc(lc), _vbo_inv_model_matrices(0)
+																 LightContainer const *lc,
+																 glm::vec3 const *viewPos) :
+		ARenderBin(params), _lc(lc), _view_pos(viewPos), _vbo_inv_model_matrices(0)
 {
 	try
 	{
@@ -41,7 +42,8 @@ MultiPointDirSpotLightRenderBin::~MultiPointDirSpotLightRenderBin(void)
 }
 
 MultiPointDirSpotLightRenderBin::MultiPointDirSpotLightRenderBin(MultiPointDirSpotLightRenderBin &&src) :
-		ARenderBin(std::move(src)), _lc(src.getLightContainer()), _vbo_inv_model_matrices(0)
+		ARenderBin(std::move(src)), _lc(src.getLightContainer()), _view_pos(nullptr),
+		_vbo_inv_model_matrices(0)
 {
 	*this = std::move(src);
 }
@@ -56,6 +58,7 @@ MultiPointDirSpotLightRenderBin &MultiPointDirSpotLightRenderBin::operator=(
 		this->_inv_model_matrices     = rhs.getInvModelMatrices();
 		this->_vbo_inv_model_matrices = rhs.moveVBOinvModelMatrices();
 		this->_lc                     = rhs.getLightContainer();
+		this->_view_pos               = rhs.getViewPos();
 	}
 	catch (std::exception &e)
 	{
@@ -75,32 +78,51 @@ MultiPointDirSpotLightRenderBin &MultiPointDirSpotLightRenderBin::operator=(
 
 void MultiPointDirSpotLightRenderBin::draw(void)
 {
-	GLint  uniform_light_diffuse_id;
+	GLuint shader_id = this->_shader->getShaderProgram();
 	GLint  uniform_mat_perspec_mult_view_id;
+	GLint  uniform_viewPos;
+	GLint  uniform_nb_point_light;
+	GLint  uniform_nb_dir_light;
+	GLint  uniform_nb_spot_light;
+	GLint  uniform_mat_diffuse_map;
+	GLint  uniform_mat_specular_map;
+	GLint  uniform_mat_shininess;
+
 	size_t i = 0;
 
 	if (this->_shader == nullptr || this->_perspec_mult_view == nullptr ||
 		this->_model == nullptr)
 	{
-		std::cout << "Can't Render BasicColor" << std::endl;
-		return;
-	}
-	uniform_mat_perspec_mult_view_id = glGetUniformLocation(this->_shader->getShaderProgram(),
-															"uniform_mat_perspec_mult_view");
-	uniform_light_diffuse_id         = glGetUniformLocation(this->_shader->getShaderProgram(),
-															"uniform_light_diffuse");
-	if ((uniform_mat_perspec_mult_view_id == -1) || (uniform_light_diffuse_id == -1))
-	{
 		std::cout << "Can't Render MultiLightPointDirSpotLight" << std::endl;
 		return;
 	}
+	uniform_mat_perspec_mult_view_id = glGetUniformLocation(shader_id,
+															"uniform_mat_perspec_mult_view");
+	uniform_viewPos                  = glGetUniformLocation(shader_id, "viewPos");
+	uniform_nb_point_light           = glGetUniformLocation(shader_id, "nb_point_light");
+	uniform_nb_dir_light             = glGetUniformLocation(shader_id, "nb_dir_light");
+	uniform_nb_spot_light            = glGetUniformLocation(shader_id, "nb_spot_light");
+	uniform_mat_diffuse_map          = glGetUniformLocation(shader_id, "material.tex_diffuse");
+	uniform_mat_specular_map         = glGetUniformLocation(shader_id, "material.tex_specular");
+	uniform_mat_shininess            = glGetUniformLocation(shader_id, "material.shininess");
+
 	this->_shader->use();
 	this->_shader->setMat4(uniform_mat_perspec_mult_view_id, *(this->_perspec_mult_view));
+	this->_shader->setVec3(uniform_viewPos, *(this->_view_pos));
+	this->_shader->setInt(uniform_nb_point_light, this->_lc->getCurrentPointLightNumber());
+	this->_shader->setInt(uniform_nb_dir_light, this->_lc->getCurrentDirLightNumber());
+	this->_shader->setInt(uniform_nb_spot_light, this->_lc->getCurrentSpotLightNumber());
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 	{
+
+		glActiveTexture(GL_TEXTURE0);
+		glUniform1i(uniform_mat_diffuse_map, 0);
+		glBindTexture(GL_TEXTURE_2D, (this->_model->getMeshList())[i].getMaterial().diffuseMap);
+		glActiveTexture(GL_TEXTURE1);
+		glUniform1i(uniform_mat_specular_map, 1);
+		glBindTexture(GL_TEXTURE_2D, (this->_model->getMeshList())[i].getMaterial().specularMap);
+		this->_shader->setFloat(uniform_mat_shininess, (this->_model->getMeshList())[i].getMaterial().shininess);
 		glBindVertexArray(this->_vao_mesh[i]);
-		this->_shader->setVec3(uniform_light_diffuse_id,
-							   this->_model->getMeshList()[i].getMaterial().diffuse);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0,
 							  (this->_model->getMeshList())[i].getNbVertices(),
@@ -134,6 +156,11 @@ void MultiPointDirSpotLightRenderBin::flushData(void)
 LightContainer const *MultiPointDirSpotLightRenderBin::getLightContainer(void) const
 {
 	return (this->_lc);
+}
+
+glm::vec3 const *MultiPointDirSpotLightRenderBin::getViewPos(void)
+{
+	return (this->_view_pos);
 }
 
 std::vector<glm::mat4> const &MultiPointDirSpotLightRenderBin::getInvModelMatrices(void) const
@@ -184,6 +211,8 @@ void MultiPointDirSpotLightRenderBin::_update_vector_inv_model(void)
 
 void MultiPointDirSpotLightRenderBin::_update_vao(void)
 {
+	GLuint shader_id = this->_shader->getShaderProgram();
+
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 	{
 		glBindVertexArray(*it);
@@ -206,6 +235,14 @@ void MultiPointDirSpotLightRenderBin::_update_vao(void)
 		glVertexAttribDivisor(10, 1);
 		glVertexAttribDivisor(11, 1);
 		glVertexAttribDivisor(12, 1);
+
+		//Get and set uniform block
+		GLuint uniformBlockIndexPointLight = glGetUniformBlockIndex(shader_id, "uniform_PointLight");
+		GLuint uniformBlockIndexDirLight   = glGetUniformBlockIndex(shader_id, "uniform_DirLight");
+		GLuint uniformBlockIndexSpotLight  = glGetUniformBlockIndex(shader_id, "uniform_SpotLight");
+		glUniformBlockBinding(shader_id, uniformBlockIndexPointLight, 0);
+		glUniformBlockBinding(shader_id, uniformBlockIndexDirLight, 0);
+		glUniformBlockBinding(shader_id, uniformBlockIndexSpotLight, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 		oGL_check_error();
