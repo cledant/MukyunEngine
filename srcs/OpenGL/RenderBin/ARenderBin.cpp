@@ -224,7 +224,7 @@ void ARenderBin::_create_vao_mesh(void)
 		glEnableVertexAttribArray(8);
 		glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
 							  reinterpret_cast<void *>(3 * sizeof(glm::vec4)));
-		//Link VertexAttrib slots as one
+		//Set VertexAttrib as one 1er instance
 		glVertexAttribDivisor(5, 1);
 		glVertexAttribDivisor(6, 1);
 		glVertexAttribDivisor(7, 1);

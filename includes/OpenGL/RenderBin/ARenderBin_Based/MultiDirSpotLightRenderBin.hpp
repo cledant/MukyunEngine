@@ -42,7 +42,7 @@ class MultiPointDirSpotLightRenderBin : public ARenderBin
 
 		LightContainer const *getLightContainer(void) const;
 		std::vector<glm::mat4> const &getInvModelMatrices(void) const;
-		size_t getInvModelMatricesNumber(void) const;
+		size_t getCurrentInvModelMatricesNumber(void) const;
 		size_t getMaxInvModelMatricesNumber(void) const;
 		GLuint getVBOinvModelMatrices(void) const;
 		GLuint moveVBOinvModelMatrices(void);
@@ -54,7 +54,7 @@ class MultiPointDirSpotLightRenderBin : public ARenderBin
 		GLuint                 _vbo_inv_model_matrices;
 
 		void _allocate_vbo(size_t max_size);
-		void _update_vector_light_diffuse(void);
+		void _update_vector_inv_model(void);
 		void _update_vao(void);
 };
 
