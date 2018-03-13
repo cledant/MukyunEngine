@@ -116,7 +116,7 @@ ARenderBin *TestLight::add_RenderBin(std::string const &name,
 	}
 	else if (type == ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT)
 	{
-		this->_render_bin_list[name] = std::make_unique<MultiLightPointDirSpotLightRenderBin>(params,
+		this->_render_bin_list[name] = std::make_unique<MultiPointDirSpotLightRenderBin>(params,
 																							  &this->_light_container);
 		return (this->_render_bin_list[name].get());
 	}

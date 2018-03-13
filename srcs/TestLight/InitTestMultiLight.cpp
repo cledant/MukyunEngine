@@ -17,10 +17,10 @@ static void init_ressources(RessourceManager &rm)
 {
 	rm.add_texture("default_texture", "./assets/default_texture/default_texture.tga",
 				   Texture::eTextureType::TEX_DIFFUSE_SPECULAR);
-	rm.add_shader("BasicColor", "./shaders/BasicColor/BasicColor.vs",
-				  "./shaders/BasicColor/BasicColor.fs");
 	rm.add_shader("DiffuseColored", "./shaders/DiffuseColored/DiffuseColored.vs",
 				  "./shaders/DiffuseColored/DiffuseColored.fs");
+	rm.add_shader("MultiPointDirSpotLight", "./shaders/MultiPointDirSpotLight/MultiPointDirSpotLight_vs.glsl",
+				  "./shaders/MultiPointDirSpotLight/MultiPointDirSpotLight_fs.glsl");
 	rm.add_model("WhiteBox", "./assets/models/WhiteBox/WhiteBox.obj");
 	rm.add_model("BlueBox", "./assets/models/BlueBox/BlueBox.obj");
 	rm.add_model("RedBox", "./assets/models/RedBox/RedBox.obj");
@@ -38,52 +38,41 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	ARenderBin::Params rb_light_color;
 	rb_light_color.shader       = &rm.getShader("DiffuseColored");
 	rb_light_color.model        = &rm.getModel("WhiteBox");
-	rb_light_color.max_instance = 100;
+	rb_light_color.max_instance = 40;
 	ARenderBin *light_color = (*world)->add_RenderBin("Light_Color", rb_light_color,
 													  ARenderBin::eType::DIFFUSE_COLORED);
 
 	//Creating RenderBin for Light that uses LightContainer
 	ARenderBin::Params rb_light;
-	rb_light.shader       = &rm.getShader("BasicColor");
-	rb_light.model        = &rm.getModel("BlueBox");
+	rb_light.shader       = &rm.getShader("MultiPointDirSpotLight");
+	rb_light.model        = &rm.getModel("WhiteBox");
 	rb_light.max_instance = 100000;
 	ARenderBin *light = (*world)->add_RenderBin("Light", rb_light,
 												ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
 
 	//Creating Lights
 	PointLight::Params params_point;
-	params_point.diffuse_color = glm::vec3(1.0f, 0.0f, 0.0f);
 	params_point.model_rb      = light_color;
-	params_point.pos           = glm::vec3(0.0f, 5.0f, 0.0f);
 	params_point.model_scale   = glm::vec3(0.1f);
+	params_point.diffuse_color = glm::vec3(1.0f, 0.0f, 0.0f);
+	params_point.pos           = glm::vec3(0.0f, 5.0f, 0.0f);
 	(*world)->add_PointLight(params_point);
 
 	params_point.diffuse_color = glm::vec3(0.0f, 1.0f, 0.0f);
-	params_point.pos           = glm::vec3(20.0f, 5.0f, 0.0f);
+	params_point.pos           = glm::vec3(5.0f, 0.0f, 0.0f);
 	(*world)->add_PointLight(params_point);
 
-	params_point.diffuse_color = glm::vec3(0.0f, 1.0f, 1.0f);
-	params_point.pos           = glm::vec3(0.0f, 5.0f, 10.0f);
+	params_point.diffuse_color = glm::vec3(0.0f, 0.0f, 1.0f);
+	params_point.pos           = glm::vec3(0.0f, 0.0f, 5.0f);
 	(*world)->add_PointLight(params_point);
-
-	params_point.diffuse_color = glm::vec3(1.0f, 1.0f, 1.0f);
-	params_point.pos           = glm::vec3(20.0f, 5.0f, 10.0f);
-	(*world)->add_PointLight(params_point);
-
-
+	
 	//Creating Prop
 	Prop::Params prop_params;
 	prop_params.render_bin  = light;
 	prop_params.orientation = glm::vec3(0.0f);
-	prop_params.scale       = glm::vec3(0.1f);
-	for (size_t i = 0; i < 10; ++i)
-	{
-		for (size_t j = 0; j < 10; ++j)
-		{
-			prop_params.pos = glm::vec3(2.0f * i, 0.0f, 1.0f * j);
-			(*world)->add_Prop(prop_params);
-		}
-	}
+	prop_params.scale       = glm::vec3(1.0f);
+	prop_params.pos         = glm::vec3(0.0f);
+	(*world)->add_Prop(prop_params);
 }
 
 static void init_program(TestLight **world, RessourceManager &rm, Glfw_manager &manager)
@@ -94,7 +83,7 @@ static void init_program(TestLight **world, RessourceManager &rm, Glfw_manager &
 	load_test_level(manager, rm, world);
 }
 
-void InitRunTestLight(Glfw_manager &manager)
+void InitRunTestMultiLight(Glfw_manager &manager)
 {
 	RessourceManager rm;
 	TestLight        *world = nullptr;

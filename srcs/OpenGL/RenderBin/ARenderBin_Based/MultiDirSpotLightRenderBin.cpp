@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MultiLightPointDirSpotLightRenderBin.cpp           :+:      :+:    :+:   */
+/*   MultiPointDirSpotLightRenderBin.cpp           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "OpenGL/RenderBin/ARenderBin_Based/MultiLightPointDirSpotLightRenderBin.hpp"
+#include "OpenGL/RenderBin/ARenderBin_Based/MultiDirSpotLightRenderBin.hpp"
 
-MultiLightPointDirSpotLightRenderBin::MultiLightPointDirSpotLightRenderBin(ARenderBin::Params const &params,
+MultiPointDirSpotLightRenderBin::MultiPointDirSpotLightRenderBin(ARenderBin::Params const &params,
 																		   LightContainer const *lc) :
 		ARenderBin(params),
 		_lc(lc)
@@ -21,17 +21,17 @@ MultiLightPointDirSpotLightRenderBin::MultiLightPointDirSpotLightRenderBin(ARend
 	std::cout << "Creating MultiLightPointDirSpotLight RenderBin" << std::endl;
 }
 
-MultiLightPointDirSpotLightRenderBin::~MultiLightPointDirSpotLightRenderBin(void)
+MultiPointDirSpotLightRenderBin::~MultiPointDirSpotLightRenderBin(void)
 {
 }
 
-MultiLightPointDirSpotLightRenderBin::MultiLightPointDirSpotLightRenderBin(MultiLightPointDirSpotLightRenderBin &&src) :
+MultiPointDirSpotLightRenderBin::MultiPointDirSpotLightRenderBin(MultiPointDirSpotLightRenderBin &&src) :
 		ARenderBin(std::move(src)), _lc(src.getLightContainer())
 {
 }
 
-MultiLightPointDirSpotLightRenderBin &MultiLightPointDirSpotLightRenderBin::operator=(
-		MultiLightPointDirSpotLightRenderBin &&rhs)
+MultiPointDirSpotLightRenderBin &MultiPointDirSpotLightRenderBin::operator=(
+		MultiPointDirSpotLightRenderBin &&rhs)
 {
 	ARenderBin::operator=(std::move(rhs));
 	this->_lc = rhs.getLightContainer();
@@ -42,7 +42,7 @@ MultiLightPointDirSpotLightRenderBin &MultiLightPointDirSpotLightRenderBin::oper
  * Draw
  */
 
-void MultiLightPointDirSpotLightRenderBin::draw(void)
+void MultiPointDirSpotLightRenderBin::draw(void)
 {
 	GLint  uniform_light_diffuse_id;
 	GLint  uniform_mat_perspec_mult_view_id;
@@ -83,7 +83,7 @@ void MultiLightPointDirSpotLightRenderBin::draw(void)
  * Getter
  */
 
-LightContainer const *MultiLightPointDirSpotLightRenderBin::getLightContainer(void)
+LightContainer const *MultiPointDirSpotLightRenderBin::getLightContainer(void)
 {
 	return (this->_lc);
 }

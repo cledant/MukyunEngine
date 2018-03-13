@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MultiLightPointDirSpotLightRenderBin.hpp           :+:      :+:    :+:   */
+/*   MultiPointDirSpotLightRenderBin.hpp           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -16,17 +16,17 @@
 # include "OpenGL/RenderBin/ARenderBin.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
 
-class MultiLightPointDirSpotLightRenderBin : public ARenderBin
+class MultiPointDirSpotLightRenderBin : public ARenderBin
 {
 	public :
 
-		MultiLightPointDirSpotLightRenderBin(ARenderBin::Params const &params,
+		MultiPointDirSpotLightRenderBin(ARenderBin::Params const &params,
 											 LightContainer const *lc);
-		virtual ~MultiLightPointDirSpotLightRenderBin(void);
-		MultiLightPointDirSpotLightRenderBin(MultiLightPointDirSpotLightRenderBin const &src) = delete;
-		MultiLightPointDirSpotLightRenderBin &operator=(MultiLightPointDirSpotLightRenderBin const &rhs) = delete;
-		MultiLightPointDirSpotLightRenderBin(MultiLightPointDirSpotLightRenderBin &&src);
-		MultiLightPointDirSpotLightRenderBin &operator=(MultiLightPointDirSpotLightRenderBin &&rhs);
+		virtual ~MultiPointDirSpotLightRenderBin(void);
+		MultiPointDirSpotLightRenderBin(MultiPointDirSpotLightRenderBin const &src) = delete;
+		MultiPointDirSpotLightRenderBin &operator=(MultiPointDirSpotLightRenderBin const &rhs) = delete;
+		MultiPointDirSpotLightRenderBin(MultiPointDirSpotLightRenderBin &&src);
+		MultiPointDirSpotLightRenderBin &operator=(MultiPointDirSpotLightRenderBin &&rhs);
 
 		/*
 		 * Draw
