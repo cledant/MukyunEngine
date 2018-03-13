@@ -15,7 +15,7 @@
 PointLight::Params::Params() : ALight::Params()
 {
 	this->pos               = glm::vec3(0.0f);
-	this->attenuation_coeff = glm::vec3(0.0f);
+	this->attenuation_coeff = glm::vec3(1.0f);
 }
 
 PointLight::Params::~Params()

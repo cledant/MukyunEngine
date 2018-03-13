@@ -79,19 +79,19 @@ void main()
 {
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
-    vec3 result;
+    vec3 result = vec3(0.0f);
 
     //1) DirLight
-    for(int i = 0; i < nb_dir_light; i++)
-        result = CalcDirLight(dir[i], norm, viewDir);
+//    for(int i = 0; i < nb_dir_light; i++)
+//        result = CalcDirLight(dir[i], norm, viewDir);
 
     //2) PointLight
-    for(int i = 0; i < nb_point_light; i++)
+    for(int i = 0; i < 1; i++)
         result += CalcPointLight(point[i], norm, FragPos, viewDir);
 
     //3) SpotLight
-    for(int i = 0; i < nb_spot_light; i++)
-        result += CalcSpotLight(spot[i], norm, FragPos, viewDir);
+//    for(int i = 0; i < nb_spot_light; i++)
+  //      result += CalcSpotLight(spot[i], norm, FragPos, viewDir);
 
     //Final Color
     FragColor = vec4(result, 1.0);
@@ -131,13 +131,14 @@ vec3 CalcPointLight(PointLightDataGL light, vec3 normal, vec3 fragPos, vec3 view
     float attenuation = 1.0 / (light.attenuation_coeff.x + light.attenuation_coeff.y * distance + light.attenuation_coeff.z * pow(distance, 2));
 
     //All
-    vec3 ambient = vec3(light.ambient_color) * vec3(texture(uniform_material.tex_diffuse, TexCoords));
+    vec3 ambient = vec3(light.ambient_color);// * vec3(texture(uniform_material.tex_diffuse, TexCoords));
     vec3 diffuse = vec3(light.diffuse_color) * diff * vec3(texture(uniform_material.tex_diffuse, TexCoords));
-    vec3 specular = vec3(light.specular_color) * spec * vec3(texture(uniform_material.tex_specular, TexCoords));
-    ambient *= attenuation;
-    diffuse *= attenuation;
-    specular *= attenuation;
-    return (ambient + diffuse + specular);
+    vec3 specular = vec3(light.specular_color);// * spec * vec3(texture(uniform_material.tex_specular, TexCoords));
+//    ambient *= attenuation;
+//    diffuse *= attenuation;
+//    specular *= attenuation;
+//    return (ambient + diffuse + specular);
+    return (diffuse);
 }
 
 vec3 CalcSpotLight(SpotLightDataGL light, vec3 normal, vec3 fragPos, vec3 viewDir)

@@ -16,7 +16,7 @@ SpotLight::Params::Params() : ALight::Params()
 {
 	this->pos               = glm::vec3(0.0f);
 	this->dir               = glm::vec3(0.0f);
-	this->attenuation_coeff = glm::vec3(0.0f);
+	this->attenuation_coeff = glm::vec3(1.0f);
 	this->cutoff            = glm::vec2(0.0f);
 }
 
