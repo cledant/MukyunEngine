@@ -38,7 +38,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	ARenderBin::Params rb_light_color;
 	rb_light_color.shader       = &rm.getShader("DiffuseColored");
 	rb_light_color.model        = &rm.getModel("WhiteBox");
-	rb_light_color.max_instance = 40;
+	rb_light_color.max_instance = DEFAULT_MAX_LIGHT;
 	ARenderBin *light_color = (*world)->add_RenderBin("Light_Color", rb_light_color,
 													  ARenderBin::eType::DIFFUSE_COLORED);
 

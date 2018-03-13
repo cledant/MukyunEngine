@@ -14,9 +14,9 @@
 
 LightContainer::Params::Params(void)
 {
-	this->max_point_light = 10;
-	this->max_dir_light   = 10;
-	this->max_spot_light  = 10;
+	this->max_point_light = DEFAULT_NB_MAX_POINT_LIGHT;
+	this->max_dir_light   = DEFAULT_NB_MAX_DIR_LIGHT;
+	this->max_spot_light  = DEFAULT_NB_MAX_SPOT_LIGHT;
 }
 
 LightContainer::Params::~Params(void)
