@@ -21,6 +21,8 @@ static void init_ressources(RessourceManager &rm)
 				  "./shaders/BasicColor/BasicColor.fs");
 	rm.add_shader("DiffuseColored", "./shaders/DiffuseColored/DiffuseColored.vs",
 				  "./shaders/DiffuseColored/DiffuseColored.fs");
+	rm.add_shader("MultiPointDirSpotLight", "./shaders/MultiPointDirSpotLight/MultiPointDirSpotLight_vs.glsl",
+				  "./shaders/MultiPointDirSpotLight/MultiPointDirSpotLight_fs.glsl");
 	rm.add_model("WhiteBox", "./assets/models/WhiteBox/WhiteBox.obj");
 	rm.add_model("BlueBox", "./assets/models/BlueBox/BlueBox.obj");
 	rm.add_model("RedBox", "./assets/models/RedBox/RedBox.obj");
