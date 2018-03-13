@@ -17,8 +17,8 @@ static void init_ressources(RessourceManager &rm)
 {
 	rm.add_texture("default_texture", "./assets/default_texture/default_texture.tga",
 				   Texture::eTextureType::TEX_DIFFUSE_SPECULAR);
-	rm.add_shader("DiffuseColored", "./shaders/DiffuseColored/DiffuseColored.vs",
-				  "./shaders/DiffuseColored/DiffuseColored.fs");
+	rm.add_shader("DiffuseColored", "./shaders/DiffuseColored/DiffuseColored_vs.glsl",
+				  "./shaders/DiffuseColored/DiffuseColored_fs.glsl");
 	rm.add_shader("MultiPointDirSpotLight", "./shaders/MultiPointDirSpotLight/MultiPointDirSpotLight_vs.glsl",
 				  "./shaders/MultiPointDirSpotLight/MultiPointDirSpotLight_fs.glsl");
 	rm.add_model("WhiteBox", "./assets/models/WhiteBox/WhiteBox.obj");
@@ -65,7 +65,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	params_point.diffuse_color = glm::vec3(0.0f, 0.0f, 1.0f);
 	params_point.pos           = glm::vec3(0.0f, 0.0f, 5.0f);
 	(*world)->add_PointLight(params_point);
-	
+
 	//Creating Prop
 	Prop::Params prop_params;
 	prop_params.render_bin  = light;

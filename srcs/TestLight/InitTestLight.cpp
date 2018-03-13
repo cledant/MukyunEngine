@@ -17,10 +17,10 @@ static void init_ressources(RessourceManager &rm)
 {
 	rm.add_texture("default_texture", "./assets/default_texture/default_texture.tga",
 				   Texture::eTextureType::TEX_DIFFUSE_SPECULAR);
-	rm.add_shader("BasicColor", "./shaders/BasicColor/BasicColor.vs",
-				  "./shaders/BasicColor/BasicColor.fs");
-	rm.add_shader("DiffuseColored", "./shaders/DiffuseColored/DiffuseColored.vs",
-				  "./shaders/DiffuseColored/DiffuseColored.fs");
+	rm.add_shader("BasicColor", "./shaders/BasicColor/BasicColor_vs.glsl",
+				  "./shaders/BasicColor/BasicColor_fs.glsl");
+	rm.add_shader("DiffuseColored", "./shaders/DiffuseColored/DiffuseColored_vs.glsl",
+				  "./shaders/DiffuseColored/DiffuseColored_fs.glsl");
 	rm.add_model("WhiteBox", "./assets/models/WhiteBox/WhiteBox.obj");
 	rm.add_model("BlueBox", "./assets/models/BlueBox/BlueBox.obj");
 	rm.add_model("RedBox", "./assets/models/RedBox/RedBox.obj");
