@@ -83,8 +83,17 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	(*world)->add_DirectionalLight(params_dir);
 
 	//Creating Spot Lights
-//	SpotLight::Params params_dir;
-
+	SpotLight::Params params_spot;
+	params_spot.model_rb          = light_color;
+	params_spot.pos               = glm::vec3(0.0f, 0.0f, 25.0f);
+	params_spot.model_scale       = glm::vec3(0.1f);
+	params_spot.ambient_color     = glm::vec3(0.05f);
+	params_spot.diffuse_color     = glm::vec3(1.0f);
+	params_spot.specular_color    = params_spot.diffuse_color;
+	params_spot.dir               = glm::vec3(0.0f, 0.0f, -1.0f);
+	params_spot.attenuation_coeff = glm::vec3(1.0f, 0.5f, 0.1f);
+	params_spot.cutoff            = glm::vec2(20.0f, 15.0f);
+	(*world)->add_SpotLight(params_spot);
 
 	//Creating Prop
 	Prop::Params prop_params;
@@ -92,6 +101,12 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	prop_params.orientation = glm::vec3(0.0f);
 	prop_params.scale       = glm::vec3(2.0f);
 	prop_params.pos         = glm::vec3(0.0f);
+	(*world)->add_Prop(prop_params);
+
+	prop_params.pos = glm::vec3(0.0f, 0.0f, 20.0f);
+	(*world)->add_Prop(prop_params);
+
+	prop_params.pos = glm::vec3(0.0f, 0.0f, -20.0f);
 	(*world)->add_Prop(prop_params);
 }
 

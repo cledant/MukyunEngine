@@ -303,6 +303,7 @@ inline void LightContainer::_create_spot_light_gl_data(SpotLight const *ptr)
 	tmp.diffuse_color     = glm::vec4(ptr->getLightDiffuseColor(), 1.0f);
 	tmp.ambient_color     = glm::vec4(ptr->getLightAmbientColor(), 1.0f);
 	tmp.specular_color    = glm::vec4(ptr->getLightSpecularColor(), 1.0f);
-	tmp.cutoff            = glm::vec4(ptr->getCutoff(), 1.0f, 1.0f);
+	glm::vec2 tmp_rad = glm::radians(ptr->getCutoff());
+	tmp.cutoff = glm::vec4(glm::cos(tmp_rad.x), glm::cos(tmp_rad.y), 1.0f, 1.0f);
 	this->_data_spot_light.push_back(tmp);
 }
