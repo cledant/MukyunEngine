@@ -19,7 +19,7 @@ out                 vec2 tex_coord;
 void main()
 {
     FragPos = vec3(instanceMatrix * vec4(pos, 1.0));
-    Normal = mat3(instanceInverseMatrix) * norm;
+//    Normal = mat3(instanceInverseMatrix) * norm;
     Normal = norm;
     TexCoords = texCoord;
 
