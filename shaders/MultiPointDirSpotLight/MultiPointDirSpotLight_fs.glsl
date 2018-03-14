@@ -102,7 +102,7 @@ void main()
 
 vec3 CalcDirLight(DirLightDataGL light, vec3 normal, vec3 viewDir)
 {
-    vec3 lightDir = normalize(-vec3(light.dir));
+    vec3 lightDir = normalize(vec3(light.dir));
 
     //Diffuse
     float diff = max(dot(normal, lightDir), 0.0);
