@@ -147,7 +147,7 @@ void MultiPointDirSpotLightRenderBin::updateVBO(void)
 	this->_update_vector_inv_model();
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_inv_model_matrices);
 	glBufferSubData(GL_ARRAY_BUFFER, 0,
-					sizeof(glm::vec3) * this->_inv_model_matrices.size(),
+					sizeof(glm::mat4) * this->_inv_model_matrices.size(),
 					&(this->_inv_model_matrices[0]));
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
@@ -212,10 +212,9 @@ void MultiPointDirSpotLightRenderBin::_allocate_vbo(size_t max_size)
 
 void MultiPointDirSpotLightRenderBin::_update_vector_inv_model(void)
 {
+
 	for (auto it = this->_model_matrices.begin(); it != this->_model_matrices.end(); ++it)
-	{
 		this->_inv_model_matrices.push_back(glm::transpose(glm::inverse(*it)));
-	}
 }
 
 void MultiPointDirSpotLightRenderBin::_update_vao(void)
@@ -228,22 +227,23 @@ void MultiPointDirSpotLightRenderBin::_update_vao(void)
 		//Binding mesh vbo to vao
 		glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_inv_model_matrices);
 		glEnableVertexAttribArray(9);
-		glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4),
+		glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
 							  reinterpret_cast<void *>(0));
 		glEnableVertexAttribArray(10);
-		glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4),
+		glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
 							  reinterpret_cast<void *>(sizeof(glm::vec4)));
 		glEnableVertexAttribArray(11);
-		glVertexAttribPointer(11, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4),
+		glVertexAttribPointer(11, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
 							  reinterpret_cast<void *>(2 * sizeof(glm::vec4)));
 		glEnableVertexAttribArray(12);
-		glVertexAttribPointer(12, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4),
+		glVertexAttribPointer(12, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
 							  reinterpret_cast<void *>(3 * sizeof(glm::vec4)));
 		//Set VertexAttrib as one 1er instance
 		glVertexAttribDivisor(9, 1);
 		glVertexAttribDivisor(10, 1);
 		glVertexAttribDivisor(11, 1);
 		glVertexAttribDivisor(12, 1);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		//Get and set uniform block
 		GLuint uniformBlockIndexPointLight = glGetUniformBlockIndex(shader_id, "uniform_PointLight");
@@ -258,7 +258,6 @@ void MultiPointDirSpotLightRenderBin::_update_vao(void)
 						  sizeof(LightContainer::DirLightDataGL) * this->_lc->getMaxDirLightNumber());
 		glBindBufferRange(GL_UNIFORM_BUFFER, 2, this->_lc->getUboSpotLight(), 0,
 						  sizeof(LightContainer::SpotLightDataGL) * this->_lc->getMaxSpotLightNumber());
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 		oGL_check_error();
 	}
