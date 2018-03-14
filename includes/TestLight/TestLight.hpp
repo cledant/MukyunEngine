@@ -113,7 +113,6 @@ class TestLight
 		glm::vec2                                          _near_far;
 };
 
-void InitRunTestLight(Glfw_manager &manager);
 void InitRunTestMultiLight(Glfw_manager &manager);
 
 #endif

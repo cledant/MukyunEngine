@@ -18,7 +18,6 @@ static void display_help()
 {
 	std::cout << "Available option : " << std::endl;
 	std::cout << "		--instancing for Instancing Model Test" << std::endl;
-	std::cout << "		--light for Basic LightContainer Test" << std::endl;
 	std::cout << "		--multilight for MultiLight Test" << std::endl;
 }
 
@@ -26,8 +25,6 @@ static void InitRun(Glfw_manager &manager, std::string const &argv)
 {
 	if (argv.compare("--instancing") == 0)
 		InitRunTestInstancing(manager);
-	else if (argv.compare("--light") == 0)
-		InitRunTestLight(manager);
 	else if (argv.compare("--multilight") == 0)
 		InitRunTestMultiLight(manager);
 	else

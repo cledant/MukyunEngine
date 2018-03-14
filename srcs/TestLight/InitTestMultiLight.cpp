@@ -24,7 +24,6 @@ static void init_ressources(RessourceManager &rm)
 	rm.add_model("WhiteBox", "./assets/models/WhiteBox/WhiteBox.obj");
 	rm.add_model("BlueBox", "./assets/models/BlueBox/BlueBox.obj");
 	rm.add_model("RedBox", "./assets/models/RedBox/RedBox.obj");
-//	rm.add_model("Sakuya", "./assets/models/Sakuya/Sakuya_Izayoi.obj");
 }
 
 static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
@@ -51,14 +50,13 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	ARenderBin *light = (*world)->add_RenderBin("Light", rb_light,
 												ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
 
-	//Creating Lights
+	//Creating Point Lights
 	PointLight::Params params_point;
 	params_point.model_rb          = light_color;
 	params_point.model_scale       = glm::vec3(0.1f);
 	params_point.ambient_color     = glm::vec3(0.05f);
 	params_point.diffuse_color     = glm::vec3(1.0f, 0.0f, 0.0f);
 	params_point.specular_color    = glm::vec3(1.0f);
-//	params_point.pos               = glm::vec3(3.0f, 3.0f, 3.0f);
 	params_point.pos               = glm::vec3(0.0f, 3.0f, 1.0f);
 	params_point.attenuation_coeff = glm::vec3(1.0f, 0.5f, 0.1f);
 	(*world)->add_PointLight(params_point);
@@ -70,6 +68,10 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	params_point.diffuse_color = glm::vec3(0.0f, 0.0f, 1.0f);
 	params_point.pos           = glm::vec3(3.0f, -3.0f, -3.0f);
 	(*world)->add_PointLight(params_point);
+
+	//Creating Directional Lights
+	DirectionalLight::Params params_dir;
+	(*world)->add_DirectionalLight(params_dir);
 
 	//Creating Prop
 	Prop::Params prop_params;

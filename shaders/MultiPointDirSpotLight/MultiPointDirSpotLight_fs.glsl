@@ -85,16 +85,16 @@ void main()
     vec3 result = vec3(0.0f);
 
     //1) DirLight
-//    for(int i = 0; i < nb_dir_light; i++)
-//        result = CalcDirLight(dir[i], norm, viewDir);
+    for(int i = 0; i < nb_dir_light; i++)
+        result = CalcDirLight(dir[i], norm, viewDir);
 
     //2) PointLight
     for(int i = 0; i < nb_point_light; i++)
         result += CalcPointLight(point[i], norm, FragPos, viewDir);
 
     //3) SpotLight
-//    for(int i = 0; i < nb_spot_light; i++)
-  //      result += CalcSpotLight(spot[i], norm, FragPos, viewDir);
+    for(int i = 0; i < nb_spot_light; i++)
+        result += CalcSpotLight(spot[i], norm, FragPos, viewDir);
 
     //Final Color
     FragColor = vec4(result, 1.0);
@@ -137,11 +137,9 @@ vec3 CalcPointLight(PointLightDataGL light, vec3 normal, vec3 fragPos, vec3 view
     vec3 ambient = vec3(light.ambient_color) * vec3(texture(uniform_material.tex_diffuse, TexCoords)) * uniform_material.mat_ambient;
     vec3 diffuse = vec3(light.diffuse_color) * diff * vec3(texture(uniform_material.tex_diffuse, TexCoords)) * uniform_material.mat_diffuse;
     vec3 specular = vec3(light.specular_color) * spec * vec3(texture(uniform_material.tex_specular, TexCoords)) * uniform_material.mat_specular;
-//    vec3 specular = vec3(spec);
     ambient *= attenuation;
     diffuse *= attenuation;
     specular *= attenuation;
-//    return (vec3(spec));
     return (ambient + diffuse + specular);
 }
 
