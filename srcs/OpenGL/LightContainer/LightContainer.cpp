@@ -286,7 +286,7 @@ inline void LightContainer::_create_dir_light_gl_data(DirectionalLight const *pt
 {
 	struct LightContainer::DirLightDataGL tmp;
 
-	tmp.dir            = glm::vec4(ptr->getModelPos(), 1.0f);
+	tmp.dir            = glm::vec4(ptr->getDirection(), 1.0f);
 	tmp.diffuse_color  = glm::vec4(ptr->getLightDiffuseColor(), 1.0f);
 	tmp.ambient_color  = glm::vec4(ptr->getLightAmbientColor(), 1.0f);
 	tmp.specular_color = glm::vec4(ptr->getLightSpecularColor(), 1.0f);
