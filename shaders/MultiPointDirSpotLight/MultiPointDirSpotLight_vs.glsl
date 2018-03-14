@@ -20,6 +20,7 @@ void main()
 {
     FragPos = vec3(instanceMatrix * vec4(pos, 1.0));
     Normal = mat3(instanceInverseMatrix) * norm;
+    Normal = norm;
     TexCoords = texCoord;
 
     gl_Position = uniform_mat_perspec_mult_view * vec4(FragPos, 1.0);

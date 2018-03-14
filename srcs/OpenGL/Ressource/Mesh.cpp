@@ -34,7 +34,7 @@ Mesh::Material::Material(void)
 	this->ambient     = glm::vec3(0.0f);
 	this->diffuse     = glm::vec3(0.0f);
 	this->specular    = glm::vec3(0.0f);
-	this->shininess   = 0.0f;
+	this->shininess   = 2.0f;
 	this->diffuseMap  = 0;
 	this->specularMap = 0;
 }
@@ -182,13 +182,16 @@ void Mesh::_load_material(aiMesh *mesh, const aiScene *scene,
 void Mesh::_load_material_info(aiMaterial *mat)
 {
 	aiColor3D tmp;
+	float     tmp_shininess = 0.0f;
 
 	if (mat->Get(AI_MATKEY_COLOR_AMBIENT, tmp) == AI_SUCCESS)
-		this->_material.ambient  = glm::vec3(tmp.r, tmp.g, tmp.b);
+		this->_material.ambient   = glm::vec3(tmp.r, tmp.g, tmp.b);
 	if (mat->Get(AI_MATKEY_COLOR_DIFFUSE, tmp) == AI_SUCCESS)
-		this->_material.diffuse  = glm::vec3(tmp.r, tmp.g, tmp.b);
+		this->_material.diffuse   = glm::vec3(tmp.r, tmp.g, tmp.b);
 	if (mat->Get(AI_MATKEY_COLOR_SPECULAR, tmp) == AI_SUCCESS)
-		this->_material.specular = glm::vec3(tmp.r, tmp.g, tmp.b);
+		this->_material.specular  = glm::vec3(tmp.r, tmp.g, tmp.b);
+	if (mat->Get(AI_MATKEY_SHININESS, tmp_shininess) == AI_SUCCESS)
+		this->_material.shininess = tmp_shininess;
 }
 
 void Mesh::_load_texture(aiMaterial *mat, aiTextureType type,

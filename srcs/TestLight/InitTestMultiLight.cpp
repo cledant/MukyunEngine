@@ -24,6 +24,7 @@ static void init_ressources(RessourceManager &rm)
 	rm.add_model("WhiteBox", "./assets/models/WhiteBox/WhiteBox.obj");
 	rm.add_model("BlueBox", "./assets/models/BlueBox/BlueBox.obj");
 	rm.add_model("RedBox", "./assets/models/RedBox/RedBox.obj");
+//	rm.add_model("Sakuya", "./assets/models/Sakuya/Sakuya_Izayoi.obj");
 }
 
 static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
@@ -54,26 +55,27 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	PointLight::Params params_point;
 	params_point.model_rb          = light_color;
 	params_point.model_scale       = glm::vec3(0.1f);
-	params_point.ambient_color     = glm::vec3(0.1f);
+	params_point.ambient_color     = glm::vec3(0.05f);
 	params_point.diffuse_color     = glm::vec3(1.0f, 0.0f, 0.0f);
 	params_point.specular_color    = glm::vec3(1.0f);
-	params_point.pos               = glm::vec3(0.0f, 5.0f, 0.0f);
-	params_point.attenuation_coeff = glm::vec3(1.0f, 0.09f, 0.032f);
+//	params_point.pos               = glm::vec3(3.0f, 3.0f, 3.0f);
+	params_point.pos               = glm::vec3(0.0f, 3.0f, 1.0f);
+	params_point.attenuation_coeff = glm::vec3(1.0f, 0.5f, 0.1f);
 	(*world)->add_PointLight(params_point);
 
-/*	params_point.diffuse_color = glm::vec3(0.0f, 1.0f, 0.0f);
-	params_point.pos           = glm::vec3(5.0f, 0.0f, 0.0f);
+	params_point.diffuse_color = glm::vec3(0.0f, 1.0f, 0.0f);
+	params_point.pos           = glm::vec3(-3.0f, -3.0f, 3.0f);
 	(*world)->add_PointLight(params_point);
 
 	params_point.diffuse_color = glm::vec3(0.0f, 0.0f, 1.0f);
-	params_point.pos           = glm::vec3(0.0f, 0.0f, 5.0f);
-	(*world)->add_PointLight(params_point);*/
+	params_point.pos           = glm::vec3(3.0f, -3.0f, -3.0f);
+	(*world)->add_PointLight(params_point);
 
 	//Creating Prop
 	Prop::Params prop_params;
 	prop_params.render_bin  = light;
 	prop_params.orientation = glm::vec3(0.0f);
-	prop_params.scale       = glm::vec3(1.0f);
+	prop_params.scale       = glm::vec3(2.0f);
 	prop_params.pos         = glm::vec3(0.0f);
 	(*world)->add_Prop(prop_params);
 }
