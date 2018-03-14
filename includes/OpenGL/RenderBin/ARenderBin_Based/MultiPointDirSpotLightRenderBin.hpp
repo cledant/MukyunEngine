@@ -13,6 +13,7 @@
 #ifndef MULTILIGHTPOINTDIRSPOTLIGHTRENDERBIN_HPP
 # define MULTILIGHTPOINTDIRSPOTLIGHTRENDERBIN_HPP
 
+# include <memory>
 # include "OpenGL/RenderBin/ARenderBin.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
 

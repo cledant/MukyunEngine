@@ -18,6 +18,7 @@
 # define DEFAULT_NB_MAX_SPOT_LIGHT 10
 # define DEFAULT_MAX_LIGHT DEFAULT_NB_MAX_SPOT_LIGHT + DEFAULT_NB_MAX_POINT_LIGHT + DEFAULT_NB_MAX_SPOT_LIGHT
 
+# include <memory>
 # include "Light/ALight.hpp"
 # include "Interfaces/IEntity.hpp"
 # include "Light/ALight_Based/PointLight.hpp"

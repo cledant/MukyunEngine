@@ -13,6 +13,7 @@
 #ifndef DIFFUSECOLORED_HPP
 # define DIFFUSECOLORED_HPP
 
+# include <memory>
 # include "OpenGL/RenderBin/ARenderBin.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
 
