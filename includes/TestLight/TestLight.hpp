@@ -17,7 +17,7 @@
 # include "OpenGL/RenderBin/ARenderBin.hpp"
 # include "OpenGL/RenderBin/ARenderBin_Based/BasicPropRenderBin.hpp"
 # include "OpenGL/RenderBin/ARenderBin_Based/BasicColorRenderBin.hpp"
-# include "OpenGL/RenderBin/ARenderBin_Based/MultiDirSpotLightRenderBin.hpp"
+# include "OpenGL/RenderBin/ARenderBin_Based/MultiPointDirSpotLightRenderBin.hpp"
 # include "OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
 # include "Light/ALight_Based/PointLight.hpp"
