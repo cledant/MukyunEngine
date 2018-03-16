@@ -45,9 +45,14 @@ void RessourceManager::add_texture(std::string const &name,
 	this->_texture_list.insert(std::pair<std::string, Texture>(name, Texture(path, type)));
 }
 
-void RessourceManager::add_framebuffer(std::string const &name, int h, int w)
+void RessourceManager::add_image_framebuffer(std::string const &name, int h, int w)
 {
-	this->_framebuffer_list.insert(std::pair<std::string, Framebuffer>(name, Framebuffer(h, w)));
+	this->_framebuffer_list[name] = std::make_unique<ImageFramebuffer>(w, h);
+}
+
+void RessourceManager::add_directional_light_depthbuffer(std::string const &name, int h, int w)
+{
+	this->_framebuffer_list[name] = std::make_unique<DirectionalShadowMap>(w, h);
 }
 
 /*
@@ -81,13 +86,13 @@ Texture const &RessourceManager::getTexture(std::string const &name) const
 	return (it->second);
 }
 
-Framebuffer const &RessourceManager::getFramebuffer(std::string const &name) const
+AFramebuffer const &RessourceManager::getFramebuffer(std::string const &name) const
 {
 	auto it = this->_framebuffer_list.find(name);
 
 	if (it == this->_framebuffer_list.end())
 		throw RessourceManager::FramebufferNotFoundException(name);
-	return (it->second);
+	return (*it->second.get());
 }
 
 RessourceManager::ShaderNotFoundException::ShaderNotFoundException(void)

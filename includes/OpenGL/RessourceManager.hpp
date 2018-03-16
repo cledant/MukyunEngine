@@ -18,7 +18,9 @@
 # include "OpenGL/Ressource/Shader.hpp"
 # include "OpenGL/Ressource/Texture.hpp"
 # include "OpenGL/Ressource/Model.hpp"
-# include "OpenGL/Ressource/Framebuffer.hpp"
+# include "OpenGL/Ressource/AFramebuffer_Based/ImageFramebuffer.hpp"
+# include "OpenGL/Ressource/AFramebuffer_Based/DirectionalShadowMap.hpp"
+# include "OpenGL/Ressource/AFramebuffer.hpp"
 # include "Exceptions/GeneralException.hpp"
 # include <map>
 
@@ -43,7 +45,8 @@ class RessourceManager
 		void add_texture(std::string const &name,
 						 std::string const &path,
 						 Texture::eTextureType type);
-		void add_framebuffer(std::string const &name, int h, int w);
+		void add_image_framebuffer(std::string const &name, int h, int w);
+		void add_directional_light_depthbuffer(std::string const &name, int h, int w);
 
 		/*
 		 * Getter
@@ -52,7 +55,7 @@ class RessourceManager
 		Shader const &getShader(std::string const &name) const;
 		Model const &getModel(std::string const &name) const;
 		Texture const &getTexture(std::string const &name) const;
-		Framebuffer const &getFramebuffer(std::string const &name) const;
+		AFramebuffer const &getFramebuffer(std::string const &name) const;
 
 		class ShaderNotFoundException : public GeneralException
 		{
@@ -92,10 +95,10 @@ class RessourceManager
 
 	private :
 
-		std::map<std::string, Shader>      _shader_list;
-		std::map<std::string, Model>       _model_list;
-		std::map<std::string, Texture>     _texture_list;
-		std::map<std::string, Framebuffer> _framebuffer_list;
+		std::map<std::string, Shader>                        _shader_list;
+		std::map<std::string, Model>                         _model_list;
+		std::map<std::string, Texture>                       _texture_list;
+		std::map<std::string, std::unique_ptr<AFramebuffer>> _framebuffer_list;
 };
 
 #endif

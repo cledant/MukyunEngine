@@ -44,7 +44,6 @@ set(SOURCE_FILES
 		srcs/OpenGL/RessourceManager.cpp
 		srcs/OpenGL/oGL_utility.cpp
 		srcs/OpenGL/Ressource/Shader.cpp
-		srcs/OpenGL/Ressource/Framebuffer.cpp
 		srcs/OpenGL/Ressource/Mesh.cpp
 		srcs/OpenGL/Ressource/Model.cpp
 		srcs/OpenGL/Ressource/Texture.cpp
@@ -67,7 +66,10 @@ set(SOURCE_FILES
 		srcs/TestLight/TestLight.cpp
 		srcs/TestLight/InitTestMultiLight.cpp
 		srcs/OpenGL/LightContainer/LightContainer.cpp
-		srcs/OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.cpp)
+		srcs/OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.cpp
+		srcs/OpenGL/Ressource/AFramebuffer.cpp
+		srcs/OpenGL/Ressource/AFramebuffer_Based/ImageFramebuffer.cpp
+		srcs/OpenGL/Ressource/AFramebuffer_Based/DirectionalShadowMap.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
 target_link_libraries(primary glad glfw assimp)
 target_compile_options(primary PRIVATE -Wall -Wextra -g3)

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Framebuffer.hpp                                    :+:      :+:    :+:   */
+/*   AFramebuffer.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,24 +10,24 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FRAMEBUFFER_HPP
-# define FRAMEBUFFER_HPP
+#ifndef AFRAMEBUFFER_HPP
+# define AFRAMEBUFFER_HPP
 
 # include "glad/glad.h"
 # include "glfw3.h"
 # include "Exceptions/GeneralException.hpp"
 # include "glm/glm.hpp"
 
-class Framebuffer
+class AFramebuffer
 {
 	public :
 
-		Framebuffer(int h, int w);
-		virtual ~Framebuffer(void);
-		Framebuffer(Framebuffer const &src) = delete;
-		Framebuffer &operator=(Framebuffer const &rhs) = delete;
-		Framebuffer(Framebuffer &&src);
-		Framebuffer &operator=(Framebuffer &&rhs);
+		AFramebuffer(void);
+		virtual ~AFramebuffer(void);
+		AFramebuffer(AFramebuffer const &src) = delete;
+		AFramebuffer &operator=(AFramebuffer const &rhs) = delete;
+		AFramebuffer(AFramebuffer &&src);
+		AFramebuffer &operator=(AFramebuffer &&rhs);
 
 		void useFramebuffer(void) const;
 		void defaultFramebuffer(void) const;
@@ -37,32 +37,16 @@ class Framebuffer
 		 */
 
 		GLuint moveFramebuffer(void);
-		GLuint moveTextureColorBuffer(void);
+		GLuint moveTextureBuffer(void);
 		GLuint moveRBO(void);
-		GLuint getTextureColorBuffer(void) const;
+		GLuint getTextureBuffer(void) const;
 
-		class InitException : public GeneralException
-		{
-			public :
+	protected :
 
-				explicit InitException(void);
-				virtual ~InitException(void) throw();
-		};
-
-		class IncompleteBufferException : public GeneralException
-		{
-			public :
-
-				explicit IncompleteBufferException(void);
-				virtual ~IncompleteBufferException(void) throw();
-		};
-
-	private :
-
-		inline void _allocate_buffers(int h, int w);
+		virtual inline void _allocate_buffers(void) = 0;
 
 		GLuint _fbo;
-		GLuint _textureColorBuffer;
+		GLuint _textureBuffer;
 		GLuint _rbo;
 };
 
