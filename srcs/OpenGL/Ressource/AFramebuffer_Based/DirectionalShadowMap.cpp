@@ -40,8 +40,10 @@ DirectionalShadowMap::DirectionalShadowMap(DirectionalShadowMap &&src) : AFrameb
 DirectionalShadowMap &DirectionalShadowMap::operator=(DirectionalShadowMap &&rhs)
 {
 	AFramebuffer::operator=(std::move(rhs));
+	glBindTexture(GL_TEXTURE_2D, this->_textureBuffer);
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &this->_tex_w);
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &this->_tex_h);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	return (*this);
 }
 
