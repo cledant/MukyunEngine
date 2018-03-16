@@ -65,6 +65,8 @@ set(SOURCE_FILES
 		srcs/OpenGL/RenderBin/ARenderBin_Based/MultiPointDirSpotLightRenderBin.cpp
 		srcs/TestLight/TestLight.cpp
 		srcs/TestLight/InitTestMultiLight.cpp
+		srcs/TestDirectionalShadow/InitTestDirectionalShadow.cpp
+		srcs/TestDirectionalShadow/TestDirectionalShadow.cpp
 		srcs/OpenGL/LightContainer/LightContainer.cpp
 		srcs/OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.cpp
 		srcs/OpenGL/Ressource/AFramebuffer.cpp

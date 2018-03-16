@@ -24,6 +24,7 @@ static void init_ressources(RessourceManager &rm)
 	rm.add_model("WhiteBox", "./assets/models/WhiteBox/WhiteBox.obj");
 	rm.add_model("BlueBox", "./assets/models/BlueBox/BlueBox.obj");
 	rm.add_model("RedBox", "./assets/models/RedBox/RedBox.obj");
+	rm.add_model("TenshiPlane", "./assets/models/TenshiPlane/TenshiPlane.obj");
 }
 
 static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
@@ -45,31 +46,17 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	//Creating RenderBin for Light that uses LightContainer
 	ARenderBin::Params rb_light;
 	rb_light.shader       = &rm.getShader("MultiPointDirSpotLight");
-	rb_light.model        = &rm.getModel("WhiteBox");
+	rb_light.model        = &rm.getModel("BlueBox");
 	rb_light.max_instance = 100000;
-	ARenderBin *light = (*world)->add_RenderBin("Light", rb_light,
-												ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
+	ARenderBin *rb_box = (*world)->add_RenderBin("LightBlueBoxRB", rb_light,
+												 ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
 
-	//Creating Point Lights
-	PointLight::Params params_point;
-	params_point.model_rb          = light_color;
-	params_point.model_scale       = glm::vec3(0.1f);
-	params_point.ambient_color     = glm::vec3(0.05f);
-	params_point.diffuse_color     = glm::vec3(1.0f, 0.0f, 0.0f);
-	params_point.specular_color    = params_point.diffuse_color;
-	params_point.pos               = glm::vec3(0.0f, 3.0f, 1.0f);
-	params_point.attenuation_coeff = glm::vec3(1.0f, 0.5f, 0.1f);
-	(*world)->add_PointLight(params_point);
+	rb_light.shader       = &rm.getShader("MultiPointDirSpotLight");
+	rb_light.model        = &rm.getModel("TenshiPlane");
+	rb_light.max_instance = 100000;
+	ARenderBin *rb_plane = (*world)->add_RenderBin("TenshiPlaneRb", rb_light,
+												   ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
 
-	params_point.diffuse_color  = glm::vec3(0.0f, 1.0f, 0.0f);
-	params_point.specular_color = params_point.diffuse_color;
-	params_point.pos            = glm::vec3(-3.0f, -3.0f, 3.0f);
-	(*world)->add_PointLight(params_point);
-
-	params_point.diffuse_color  = glm::vec3(0.0f, 0.0f, 1.0f);
-	params_point.specular_color = params_point.diffuse_color;
-	params_point.pos            = glm::vec3(3.0f, -3.0f, -3.0f);
-	(*world)->add_PointLight(params_point);
 
 	//Creating Directional Lights
 	DirectionalLight::Params params_dir;
@@ -77,48 +64,42 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	params_dir.model_pos      = glm::vec3(-6.0f, 0.0f, -6.0f);
 	params_dir.model_scale    = glm::vec3(0.1f);
 	params_dir.ambient_color  = glm::vec3(0.05f);
-	params_dir.diffuse_color  = glm::vec3(0.6f, 0.2f, 0.8f);
+	params_dir.diffuse_color  = glm::vec3(1.0f);
 	params_dir.specular_color = params_dir.diffuse_color;
-	params_dir.dir            = glm::vec3(1.0f, 0.0f, 1.0f);
+	params_dir.dir            = glm::vec3(1.0f, -1.0f, 1.0f);
 	(*world)->add_DirectionalLight(params_dir);
-
-	//Creating Spot Lights
-	SpotLight::Params params_spot;
-	params_spot.model_rb          = light_color;
-	params_spot.pos               = glm::vec3(0.0f, 0.0f, 25.0f);
-	params_spot.model_scale       = glm::vec3(0.1f);
-	params_spot.ambient_color     = glm::vec3(0.05f);
-	params_spot.diffuse_color     = glm::vec3(1.0f);
-	params_spot.specular_color    = params_spot.diffuse_color;
-	params_spot.dir               = glm::vec3(0.0f, 0.0f, -1.0f);
-	params_spot.attenuation_coeff = glm::vec3(1.0f, 0.5f, 0.1f);
-	params_spot.cutoff            = glm::vec2(20.0f, 15.0f);
-	(*world)->add_SpotLight(params_spot);
 
 	//Creating Prop
 	Prop::Params prop_params;
-	prop_params.render_bin  = light;
+	prop_params.render_bin  = rb_box;
+	prop_params.orientation = glm::vec3(45.0f);
+	prop_params.scale       = glm::vec3(0.5f);
+	prop_params.pos         = glm::vec3(0.0f, 2.0f, 1.0f);
+	(*world)->add_Prop(prop_params);
+
 	prop_params.orientation = glm::vec3(0.0f);
-	prop_params.scale       = glm::vec3(2.0f);
-	prop_params.pos         = glm::vec3(0.0f);
+	prop_params.pos         = glm::vec3(0.0f, 0.0f, 0.0f);
 	(*world)->add_Prop(prop_params);
 
-	prop_params.pos = glm::vec3(0.0f, 0.0f, 20.0f);
+	prop_params.pos = glm::vec3(4.0f, 0.0f, 4.0f);
 	(*world)->add_Prop(prop_params);
 
-	prop_params.pos = glm::vec3(0.0f, 0.0f, -20.0f);
+	prop_params.render_bin  = rb_plane;
+	prop_params.orientation = glm::vec3(0.0f);
+	prop_params.scale       = glm::vec3(1.0f);
+	prop_params.pos         = glm::vec3(0.0f, -1.0f, 0.0f);
 	(*world)->add_Prop(prop_params);
 }
 
 static void init_program(TestLight **world, RessourceManager &rm, Glfw_manager &manager)
 {
-	manager.create_resizable_window("TestLight", 4, 1, 1280, 720);
+	manager.create_resizable_window("TestDirectionalShadow", 4, 1, 1280, 720);
 	manager.init_input_callback();
 	init_ressources(rm);
 	load_test_level(manager, rm, world);
 }
 
-void InitRunTestMultiLight(Glfw_manager &manager)
+void InitRunTestDirectionalShadow(Glfw_manager &manager)
 {
 	RessourceManager rm;
 	TestLight        *world = nullptr;
