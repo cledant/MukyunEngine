@@ -32,7 +32,7 @@ void main()
     vs_out.FragPos = vec3(instanceMatrix * vec4(pos, 1.0));
     vs_out.Normal = mat3(instanceInverseMatrix) * norm;
     vs_out.Tex_coord = texCoord;
-    for (int i= 0; i < NB_MAX_DIR_LIGHT; i++)
+    for (int i = 0; i < NB_MAX_DIR_LIGHT; i++)
         vs_out.FragPosLightSpace[i] = dir[i] * vec4(vs_out.FragPos, 1.0);
     gl_Position = uniform_mat_perspec_mult_view * vec4(vs_out.FragPos, 1.0);
 }

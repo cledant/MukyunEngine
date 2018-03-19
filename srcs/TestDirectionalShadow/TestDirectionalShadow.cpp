@@ -152,6 +152,15 @@ IEntity *TestDirectionalShadow::add_SpotLight(SpotLight::Params &params)
 }
 
 /*
+ * Getter
+ */
+
+glm::vec2 const &TestDirectionalShadow::getNearFar(void) const
+{
+	return (this->_near_far);
+}
+
+/*
  * Other
  */
 
