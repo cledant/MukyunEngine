@@ -77,6 +77,12 @@ class TestDirectionalShadow
 		IEntity *add_SpotLight(SpotLight::Params &params);
 
 		/*
+		 * Getter
+		 */
+
+		glm::vec2 const &getNearFar(void) const;
+
+		/*
 		 * Other
 		 */
 

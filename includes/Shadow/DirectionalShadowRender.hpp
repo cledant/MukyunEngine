@@ -60,7 +60,9 @@ class DirectionalShadowRender
 		Shader const                               *_dir_shadow_shader;
 		LightContainer const                       *_lc;
 		std::vector<std::unique_ptr<AFramebuffer>> _vec_depth_maps;
+		std::vector<GLuint>                        _vec_texture_depth_maps;
 		std::vector<glm::mat4>                     _vec_lightSpaceMatrix;
+		GLuint                                     _ubo_lightSpaceMatrix;
 		std::vector<ADepthBufferRenderBin const *> _db_rb_list;
 		glm::vec2                                  *_near_far;
 };

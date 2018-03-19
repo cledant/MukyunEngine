@@ -69,6 +69,7 @@ class ADepthBufferRenderBin : public ARenderBin
 	protected :
 
 		std::vector<std::unique_ptr<AFramebuffer>> const *_depthbuffer_list;
+		std::vector<GLuint>                              *_vector_texture_depth_maps;
 		LightContainer const                             *_lc;
 		glm::vec3 const                                  *_view_pos;
 		std::vector<glm::mat4>                           _inv_model_matrices;
