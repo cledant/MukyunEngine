@@ -38,8 +38,8 @@ class DirectionalShadowRender
 		virtual ~DirectionalShadowRender(void);
 		DirectionalShadowRender(DirectionalShadowRender const &src) = delete;
 		DirectionalShadowRender &operator=(DirectionalShadowRender const &rhs) = delete;
-		DirectionalShadowRender(DirectionalShadowRender &&src);
-		DirectionalShadowRender &operator=(DirectionalShadowRender &&rhs);
+		DirectionalShadowRender(DirectionalShadowRender &&src) = delete;
+		DirectionalShadowRender &operator=(DirectionalShadowRender &&rhs) = delete;
 
 		/*
 		 * Setter
@@ -60,7 +60,6 @@ class DirectionalShadowRender
 		Shader const                               *_dir_shadow_shader;
 		LightContainer const                       *_lc;
 		std::vector<std::unique_ptr<AFramebuffer>> _vec_depth_maps;
-		std::vector<GLuint>                        _vec_texture_depth_maps;
 		std::vector<glm::mat4>                     _vec_lightSpaceMatrix;
 		GLuint                                     _ubo_lightSpaceMatrix;
 		std::vector<ADepthBufferRenderBin const *> _db_rb_list;

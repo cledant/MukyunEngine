@@ -111,7 +111,7 @@ void ADepthBufferRenderBin::flushData(void)
  * Setter
  */
 
-void ADepthBufferRenderBin::setDepthBufferList(std::vector<std::unique_ptr<AFramebuffer const *>> const *ptr)
+void ADepthBufferRenderBin::setDepthBufferList(std::vector<std::unique_ptr<AFramebuffer>> const *ptr)
 {
 	this->_depthbuffer_list = ptr;
 }
@@ -120,7 +120,7 @@ void ADepthBufferRenderBin::setDepthBufferList(std::vector<std::unique_ptr<AFram
  * Getter
  */
 
-std::vector<std::unique_ptr<AFramebuffer const *>> const &ADepthBufferRenderBin::getDepthBufferList(void) const
+std::vector<std::unique_ptr<AFramebuffer>> const &ADepthBufferRenderBin::getDepthBufferList(void) const
 {
 	return (*this->_depthbuffer_list);
 }
