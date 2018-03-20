@@ -12,7 +12,13 @@
 
 #include "OpenGL/Ressource/AFramebuffer.hpp"
 
-AFramebuffer::AFramebuffer(void) : _fbo(0), _textureBuffer(0), _rbo(0)
+AFramebuffer::AFramebuffer(int h, int w) : _fbo(0), _textureBuffer(0), _rbo(0),
+										   _tex_h(h), _tex_w(w)
+{
+}
+
+AFramebuffer::AFramebuffer(void) : _fbo(0), _textureBuffer(0), _rbo(0),
+								   _tex_h(0), _tex_w(0)
 {
 }
 
@@ -33,6 +39,8 @@ AFramebuffer &AFramebuffer::operator=(AFramebuffer &&rhs)
 	this->_fbo           = rhs.moveFramebuffer();
 	this->_textureBuffer = rhs.moveTextureBuffer();
 	this->_rbo           = rhs.moveRBO();
+	this->_tex_h         = rhs.getTexHeight();
+	this->_tex_w         = rhs.getTexWidth();
 	return (*this);
 }
 
@@ -44,6 +52,11 @@ void AFramebuffer::useFramebuffer(void) const
 void AFramebuffer::defaultFramebuffer(void) const
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void AFramebuffer::setViewport(void) const
+{
+	glViewport(0, 0, this->_tex_w, this->_tex_h);
 }
 
 /*
@@ -77,4 +90,14 @@ GLuint AFramebuffer::moveRBO(void)
 GLuint AFramebuffer::getTextureBuffer(void) const
 {
 	return (this->_textureBuffer);
+}
+
+int AFramebuffer::getTexWidth(void) const
+{
+	return (this->_tex_w);
+}
+
+int AFramebuffer::getTexHeight(void) const
+{
+	return (this->_tex_h);
 }

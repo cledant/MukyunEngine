@@ -43,7 +43,7 @@ class ADepthBufferRenderBin : public ARenderBin
 		 */
 
 		virtual void draw(void) = 0;
-		virtual void drawShadow(void) = 0;
+		virtual void drawShadow(void) const = 0;
 		virtual void updateVBO(void);
 		virtual void flushData(void);
 

@@ -31,6 +31,7 @@ struct PointLightDataGL
 
 struct DirLightDataGL
 {
+    vec4 pos;
 	vec4 dir;
 	vec4 ambient_color;
 	vec4 diffuse_color;

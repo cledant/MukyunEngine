@@ -44,10 +44,7 @@ class DirectionalShadowMap : public AFramebuffer
 
 	protected :
 
-		virtual inline void _allocate_buffers(void);
-
-		int _tex_h;
-		int _tex_w;
+		inline void _allocate_buffers(void);
 };
 
 #endif

@@ -50,6 +50,7 @@ class LightContainer
 
 		struct DirLightDataGL
 		{
+			glm::vec4 pos;
 			glm::vec4 dir;
 			glm::vec4 ambient_color;
 			glm::vec4 diffuse_color;

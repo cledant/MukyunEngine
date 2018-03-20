@@ -22,6 +22,7 @@ DirectionalLight::Params::~Params()
 }
 
 DirectionalLight::DirectionalLight(DirectionalLight::Params const &params) : ALight(params),
+																			 _pos(params.pos),
 																			 _dir(params.dir)
 {
 	this->_type = ALight::eType::DIRECTIONAL;
@@ -41,12 +42,18 @@ DirectionalLight &DirectionalLight::operator=(DirectionalLight const &rhs)
 {
 	ALight::operator=(rhs);
 	this->_dir = rhs.getDirection();
+	this->_pos = rhs.getPos();
 	return (*this);
 }
 
 /*
  * Getter
  */
+
+glm::vec3 const &DirectionalLight::getPos() const
+{
+	return (this->_pos);
+}
 
 glm::vec3 const &DirectionalLight::getDirection() const
 {
@@ -56,6 +63,12 @@ glm::vec3 const &DirectionalLight::getDirection() const
 /*
  * Interface IEntity
  */
+
+void DirectionalLight::update(float time)
+{
+	this->_model_pos = this->_pos;
+	ALight::update(time);
+}
 
 void DirectionalLight::requestDraw()
 {

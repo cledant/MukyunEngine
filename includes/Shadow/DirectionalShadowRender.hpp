@@ -51,11 +51,13 @@ class DirectionalShadowRender
 		 * Computation
 		 */
 
-		void update(void);
-		void computeDirectionalShadows(void);
+		virtual void update(void);
+		virtual void computeDirectionalShadows(void);
 
 
 	protected :
+
+		inline void _allocate_memory(void);
 
 		Shader const                               *_dir_shadow_shader;
 		LightContainer const                       *_lc;

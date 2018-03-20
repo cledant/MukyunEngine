@@ -22,6 +22,7 @@ class AFramebuffer
 {
 	public :
 
+		AFramebuffer(int h, int w);
 		AFramebuffer(void);
 		virtual ~AFramebuffer(void);
 		AFramebuffer(AFramebuffer const &src) = delete;
@@ -31,6 +32,7 @@ class AFramebuffer
 
 		void useFramebuffer(void) const;
 		void defaultFramebuffer(void) const;
+		void setViewport(void) const;
 
 		/*
 		 * Getter
@@ -40,6 +42,8 @@ class AFramebuffer
 		GLuint moveTextureBuffer(void);
 		GLuint moveRBO(void);
 		GLuint getTextureBuffer(void) const;
+		int getTexWidth(void) const;
+		int getTexHeight(void) const;
 
 	protected :
 
@@ -48,6 +52,8 @@ class AFramebuffer
 		GLuint _fbo;
 		GLuint _textureBuffer;
 		GLuint _rbo;
+		int    _tex_h;
+		int    _tex_w;
 };
 
 # endif

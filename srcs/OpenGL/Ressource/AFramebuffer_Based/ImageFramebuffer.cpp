@@ -13,7 +13,7 @@
 #include "OpenGL/Ressource/AFramebuffer_Based/ImageFramebuffer.hpp"
 
 ImageFramebuffer::ImageFramebuffer(int h, int w) :
-		AFramebuffer(), _tex_h(h), _tex_w(w)
+		AFramebuffer(h, w)
 {
 	try
 	{
@@ -40,10 +40,6 @@ ImageFramebuffer::ImageFramebuffer(ImageFramebuffer &&src)
 ImageFramebuffer &ImageFramebuffer::operator=(ImageFramebuffer &&rhs)
 {
 	AFramebuffer::operator=(std::move(rhs));
-	glBindTexture(GL_TEXTURE_2D, this->_textureBuffer);
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &this->_tex_w);
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &this->_tex_h);
-	glBindTexture(GL_TEXTURE_2D, 0);
 	return (*this);
 }
 

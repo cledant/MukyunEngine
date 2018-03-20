@@ -24,6 +24,7 @@ class DirectionalLight : public ALight
 			Params(void);
 			~Params(void);
 
+			glm::vec3 pos;
 			glm::vec3 dir;
 		};
 
@@ -36,16 +37,19 @@ class DirectionalLight : public ALight
 		 * Getter
 		 */
 
+		glm::vec3 const &getPos(void) const;
 		glm::vec3 const &getDirection(void) const;
 
 		/*
 		 * Interface IEntity
 		 */
 
+		virtual void update(float time);
 		virtual void requestDraw(void);
 
 	protected :
 
+		glm::vec3 _pos;
 		glm::vec3 _dir;
 };
 
