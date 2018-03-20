@@ -54,7 +54,9 @@ DirectionalShadowRender::~DirectionalShadowRender(void)
 
 void DirectionalShadowRender::addRenderBufferToList(ADepthBufferRenderBin *ptr)
 {
-	ptr->setDepthBufferList(&this->_vec_depth_maps);
+	ptr->setDepthMapsList(&this->_vec_depth_maps);
+	ptr->setLightSpaceMatricesList(&this->_vec_lightSpaceMatrix);
+	ptr->setLightSpaceMatricesUbo(&this->_ubo_lightSpaceMatrix);
 	this->_db_rb_list.push_back(ptr);
 }
 

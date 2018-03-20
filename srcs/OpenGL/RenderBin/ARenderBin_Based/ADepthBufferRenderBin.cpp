@@ -23,14 +23,15 @@ ADepthBufferRenderBin::Params::~Params(void)
 }
 
 ADepthBufferRenderBin::ADepthBufferRenderBin(void) :
-		ARenderBin(), _depthbuffer_list(nullptr), _lc(nullptr), _view_pos(nullptr),
-		_vbo_inv_model_matrices(0)
+		ARenderBin(), _lc(nullptr), _view_pos(nullptr), _vbo_inv_model_matrices(0),
+		_vec_depth_maps(nullptr), _vec_lightSpaceMatrix(nullptr), _ubo_lightSpaceMatrix(nullptr)
 {
 }
 
 ADepthBufferRenderBin::ADepthBufferRenderBin(ADepthBufferRenderBin::Params const &params) :
-		ARenderBin(params), _depthbuffer_list(nullptr), _lc(params.lc),
-		_view_pos(params.viewPos), _vbo_inv_model_matrices(0)
+		ARenderBin(params), _lc(params.lc), _view_pos(params.viewPos),
+		_vbo_inv_model_matrices(0), _vec_depth_maps(nullptr), _vec_lightSpaceMatrix(nullptr),
+		_ubo_lightSpaceMatrix(nullptr)
 {
 	try
 	{
@@ -55,8 +56,9 @@ ADepthBufferRenderBin::~ADepthBufferRenderBin(void)
 }
 
 ADepthBufferRenderBin::ADepthBufferRenderBin(ADepthBufferRenderBin &&src) :
-		ARenderBin(std::move(src)), _depthbuffer_list(nullptr),
-		_lc(nullptr), _view_pos(nullptr), _vbo_inv_model_matrices(0)
+		ARenderBin(std::move(src)), _lc(nullptr), _view_pos(nullptr),
+		_vbo_inv_model_matrices(0), _vec_depth_maps(nullptr),
+		_vec_lightSpaceMatrix(nullptr), _ubo_lightSpaceMatrix(nullptr)
 {
 	*this = std::move(src);
 }
@@ -72,7 +74,9 @@ ADepthBufferRenderBin &ADepthBufferRenderBin::operator=(
 		this->_vbo_inv_model_matrices = rhs.moveVBOinvModelMatrices();
 		this->_lc                     = rhs.getLightContainer();
 		this->_view_pos               = rhs.getViewPos();
-		this->_depthbuffer_list       = &rhs.getDepthBufferList();
+		this->_vec_depth_maps         = rhs.getDepthMapsList();
+		this->_vec_lightSpaceMatrix   = rhs.getLightSpaceMatricesList();
+		this->_ubo_lightSpaceMatrix   = rhs.getLightSpaceMatricesUbo();
 	}
 	catch (std::exception &e)
 	{
@@ -111,19 +115,24 @@ void ADepthBufferRenderBin::flushData(void)
  * Setter
  */
 
-void ADepthBufferRenderBin::setDepthBufferList(std::vector<std::unique_ptr<AFramebuffer>> const *ptr)
+void ADepthBufferRenderBin::setDepthMapsList(std::vector<std::unique_ptr<AFramebuffer>> const *ptr)
 {
-	this->_depthbuffer_list = ptr;
+	this->_vec_depth_maps = ptr;
+}
+
+void ADepthBufferRenderBin::setLightSpaceMatricesList(std::vector<glm::mat4> const *ptr)
+{
+	this->_vec_lightSpaceMatrix = ptr;
+}
+
+void ADepthBufferRenderBin::setLightSpaceMatricesUbo(GLuint *ptr)
+{
+	this->_ubo_lightSpaceMatrix = ptr;
 }
 
 /*
  * Getter
  */
-
-std::vector<std::unique_ptr<AFramebuffer>> const &ADepthBufferRenderBin::getDepthBufferList(void) const
-{
-	return (*this->_depthbuffer_list);
-}
 
 LightContainer const *ADepthBufferRenderBin::getLightContainer(void) const
 {
@@ -161,6 +170,21 @@ GLuint ADepthBufferRenderBin::moveVBOinvModelMatrices(void)
 
 	this->_vbo_inv_model_matrices = 0;
 	return (tmp);
+}
+
+std::vector<std::unique_ptr<AFramebuffer>> const *ADepthBufferRenderBin::getDepthMapsList(void) const
+{
+	return (this->_vec_depth_maps);
+}
+
+std::vector<glm::mat4> const *ADepthBufferRenderBin::getLightSpaceMatricesList(void) const
+{
+	return (this->_vec_lightSpaceMatrix);
+}
+
+GLuint *ADepthBufferRenderBin::getLightSpaceMatricesUbo(void) const
+{
+	return (this->_ubo_lightSpaceMatrix);
 }
 
 void ADepthBufferRenderBin::_allocate_vbo(size_t max_size)

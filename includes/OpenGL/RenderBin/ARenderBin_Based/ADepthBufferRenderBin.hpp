@@ -51,13 +51,14 @@ class ADepthBufferRenderBin : public ARenderBin
 		 * Setter
 		 */
 
-		void setDepthBufferList(std::vector<std::unique_ptr<AFramebuffer>> const *ptr);
+		void setDepthMapsList(std::vector<std::unique_ptr<AFramebuffer>> const *ptr);
+		void setLightSpaceMatricesList(std::vector<glm::mat4> const *ptr);
+		void setLightSpaceMatricesUbo(GLuint *ptr);
 
 		/*
 		 * Getter
 		 */
 
-		std::vector<std::unique_ptr<AFramebuffer>> const &getDepthBufferList(void) const;
 		LightContainer const *getLightContainer(void) const;
 		glm::vec3 const *getViewPos(void);
 		std::vector<glm::mat4> const &getInvModelMatrices(void) const;
@@ -65,18 +66,23 @@ class ADepthBufferRenderBin : public ARenderBin
 		size_t getMaxInvModelMatricesNumber(void) const;
 		GLuint getVBOinvModelMatrices(void) const;
 		GLuint moveVBOinvModelMatrices(void);
+		std::vector<std::unique_ptr<AFramebuffer>> const *getDepthMapsList(void) const;
+		std::vector<glm::mat4> const *getLightSpaceMatricesList(void) const;
+		GLuint *getLightSpaceMatricesUbo(void) const;
 
 	protected :
 
-		std::vector<std::unique_ptr<AFramebuffer>> const *_depthbuffer_list;
 		LightContainer const                             *_lc;
 		glm::vec3 const                                  *_view_pos;
 		std::vector<glm::mat4>                           _inv_model_matrices;
 		GLuint                                           _vbo_inv_model_matrices;
+		std::vector<std::unique_ptr<AFramebuffer>> const *_vec_depth_maps;
+		std::vector<glm::mat4> const                     *_vec_lightSpaceMatrix;
+		GLuint                                           *_ubo_lightSpaceMatrix;
 
 		void _allocate_vbo(size_t max_size);
 		void _update_vector_inv_model(void);
-		void _update_vao(void);
+		virtual void _update_vao(void);
 };
 
 #endif

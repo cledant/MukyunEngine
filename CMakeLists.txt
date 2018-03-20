@@ -71,7 +71,10 @@ set(SOURCE_FILES
 		srcs/OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.cpp
 		srcs/OpenGL/Ressource/AFramebuffer.cpp
 		srcs/OpenGL/Ressource/AFramebuffer_Based/ImageFramebuffer.cpp
-		srcs/OpenGL/Ressource/AFramebuffer_Based/DirectionalShadowMap.cpp srcs/OpenGL/RenderBin/ARenderBin_Based/ADepthBufferRenderBin.cpp srcs/Shadow/DirectionalShadowRender.cpp)
+		srcs/OpenGL/Ressource/AFramebuffer_Based/DirectionalShadowMap.cpp
+		srcs/OpenGL/RenderBin/ARenderBin_Based/ADepthBufferRenderBin.cpp
+		srcs/Shadow/DirectionalShadowRender.cpp
+		srcs/OpenGL/RenderBin/ADepthBufferRenderBin_Based/MultiDirLightShadowRenderBin.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
 target_link_libraries(primary glad glfw assimp)
 target_compile_options(primary PRIVATE -Wall -Wextra -g3)
