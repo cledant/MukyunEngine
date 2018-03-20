@@ -46,9 +46,7 @@ void MultiDirLightShadowRenderBin::draw(void)
 	GLuint shader_id = this->_shader->getShaderProgram();
 	GLint  uniform_mat_perspec_mult_view_id;
 	GLint  uniform_viewPos;
-	GLint  uniform_nb_point_light;
 	GLint  uniform_nb_dir_light;
-	GLint  uniform_nb_spot_light;
 	GLint  uniform_mat_diffuse_map;
 	GLint  uniform_mat_specular_map;
 	GLint  uniform_mat_shininess;
@@ -67,9 +65,7 @@ void MultiDirLightShadowRenderBin::draw(void)
 	uniform_mat_perspec_mult_view_id = glGetUniformLocation(shader_id,
 															"uniform_mat_perspec_mult_view");
 	uniform_viewPos                  = glGetUniformLocation(shader_id, "viewPos");
-	uniform_nb_point_light           = glGetUniformLocation(shader_id, "nb_point_light");
 	uniform_nb_dir_light             = glGetUniformLocation(shader_id, "nb_dir_light");
-	uniform_nb_spot_light            = glGetUniformLocation(shader_id, "nb_spot_light");
 	uniform_mat_diffuse_map          = glGetUniformLocation(shader_id, "uniform_material.tex_diffuse");
 	uniform_mat_specular_map         = glGetUniformLocation(shader_id, "uniform_material.tex_specular");
 	uniform_mat_shininess            = glGetUniformLocation(shader_id, "uniform_material.shininess");
@@ -80,9 +76,7 @@ void MultiDirLightShadowRenderBin::draw(void)
 	this->_shader->use();
 	this->_shader->setMat4(uniform_mat_perspec_mult_view_id, *(this->_perspec_mult_view));
 	this->_shader->setVec3(uniform_viewPos, *(this->_view_pos));
-	this->_shader->setInt(uniform_nb_point_light, this->_lc->getCurrentPointLightNumber());
 	this->_shader->setInt(uniform_nb_dir_light, this->_lc->getCurrentDirLightNumber());
-	this->_shader->setInt(uniform_nb_spot_light, this->_lc->getCurrentSpotLightNumber());
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 	{
 
@@ -106,9 +100,20 @@ void MultiDirLightShadowRenderBin::draw(void)
 	}
 }
 
-void MultiDirLightShadowRenderBin::drawShadow() const
+void MultiDirLightShadowRenderBin::drawShadow(void) const
 {
-	
+	size_t i = 0;
+
+	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
+	{
+		glBindVertexArray(this->_vao_mesh[i]);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDrawArraysInstanced(GL_TRIANGLES, 0,
+							  (this->_model->getMeshList())[i].getNbVertices(),
+							  this->_model_matrices.size());
+		glBindVertexArray(0);
+		i++;
+	}
 }
 
 void MultiDirLightShadowRenderBin::_update_vao(void)

@@ -83,12 +83,17 @@ void DirectionalShadowRender::update(void)
 
 void DirectionalShadowRender::computeDirectionalShadows(void)
 {
+	GLuint shader_id                = this->_dir_shadow_shader->getShaderProgram();
+	GLint  uniform_lightSpaceMatrix = glGetUniformLocation(shader_id, "uniform_lightSpaceMatrix");
+
+	this->_dir_shadow_shader->use();
 	for (size_t i = 0; i < this->_vec_lightSpaceMatrix.size(); ++i)
 	{
+		this->_dir_shadow_shader->setMat4(uniform_lightSpaceMatrix, (this->_vec_lightSpaceMatrix)[i]);
 		this->_vec_depth_maps[i]->setViewport();
 		this->_vec_depth_maps[i]->useFramebuffer();
-		for (size_t j = 0; j < this->_db_rb_list.size(); ++i)
-			this->_db_rb_list[i]->drawShadow();
+		for (size_t j = 0; j < this->_db_rb_list.size(); ++j)
+			this->_db_rb_list[j]->drawShadow();
 	}
 }
 
