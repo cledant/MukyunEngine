@@ -97,7 +97,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 static void init_program(TestLight **world, RessourceManager &rm, Glfw_manager &manager)
 {
-	manager.create_resizable_window("TestDirectionalShadow", 4, 1, 1280, 720);
+	manager.create_window("TestDirectionalShadow", 4, 1, 1280, 720, false);
 	manager.init_input_callback();
 	init_ressources(rm);
 	load_test_level(manager, rm, world);

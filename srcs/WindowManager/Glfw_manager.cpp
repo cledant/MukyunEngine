@@ -78,9 +78,11 @@ bool Glfw_manager::getMouseMode(void) const
  * Other
  */
 
-void Glfw_manager::create_resizable_window(std::string const &name, int major, int minor,
-										   int w, int h)
+void Glfw_manager::create_window(std::string const &name, int major, int minor,
+								 int w, int h, bool resizable)
 {
+	if (!resizable)
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
 	glfwWindowHint(GLFW_RED_BITS, 8);

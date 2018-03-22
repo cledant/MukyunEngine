@@ -45,7 +45,7 @@ uniform int nb_dir_light;
 //material
 uniform material uniform_material;
 
-uniform sampler2DArray shadowMapArray;
+uniform sampler2D shadowMapArray[NB_MAX_DIR_LIGHT];
 
 float ShadowCalculation();
 vec3 CalcDirLight(vec3 normal, vec3 viewDir);
@@ -137,7 +137,6 @@ float ShadowCalculation()
             shadow = 0.0;
         total_shadow += shadow;
     }
-    if (total_shadow > 1.0)
-        total_shadow = 1.0;
+    total_shadow /= float(nb_dir_light);
     return (total_shadow);
 }

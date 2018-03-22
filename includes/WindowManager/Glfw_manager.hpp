@@ -52,8 +52,8 @@ class Glfw_manager
 		 * Other
 		 */
 
-		void create_resizable_window(std::string const &name, int major, int minor,
-									 int w, int h);
+		void create_window(std::string const &name, int major, int minor,
+						   int w, int h, bool resizable);
 		void destroy_window(void);
 		void init_input_callback(void);
 		void update_events(void);
