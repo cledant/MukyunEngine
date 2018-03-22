@@ -73,6 +73,18 @@ void DirectionalShadowRender::addRenderBufferToList(ADepthBufferRenderBin *ptr)
 }
 
 /*
+ * Getter
+ */
+
+GLuint DirectionalShadowRender::getFramebufferTexID(DirectionalShadowRender::eType type,
+													size_t index)
+{
+	if (type == DirectionalShadowRender::eType::LIGHT_POV)
+		return (this->_vec_depth_maps[index].get()->getTextureBuffer());
+	return (this->_vec_depth_maps_scene_pov[index].get()->getTextureBuffer());
+}
+
+/*
  * Computation
  */
 
@@ -109,6 +121,11 @@ void DirectionalShadowRender::computeDirectionalDepthMaps(void)
 		for (size_t j = 0; j < this->_db_rb_list.size(); ++j)
 			this->_db_rb_list[j]->drawShadow();
 	}
+}
+
+void DirectionalShadowRender::changeDirectionalDepthMapsPOV(void)
+{
+
 }
 
 void DirectionalShadowRender::_allocate_memory(int w, int h)

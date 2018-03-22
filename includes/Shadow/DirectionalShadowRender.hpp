@@ -37,6 +37,7 @@ class DirectionalShadowRender
 			Shader const         *debug_display;
 			LightContainer const *lc;
 			glm::vec2            *near_far;
+			glm::mat4            *perspec_mult_view;
 			int                  win_h;
 			int                  win_w;
 		};
@@ -93,6 +94,7 @@ class DirectionalShadowRender
 		GLuint                                     _ubo_lightSpaceMatrix;
 		std::vector<ADepthBufferRenderBin const *> _db_rb_list;
 		glm::vec2                                  *_near_far;
+		glm::mat4                                  *_perspec_mult_view;
 };
 
 #endif
