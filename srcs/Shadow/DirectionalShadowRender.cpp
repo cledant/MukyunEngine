@@ -60,7 +60,8 @@ DirectionalShadowRender::~DirectionalShadowRender(void)
 	glDeleteBuffers(1, &(this->_ubo_lightSpaceMatrix));
 }
 
-DirectionalShadowRender::DirectionalShadowRender(DirectionalShadowRender &&src)
+DirectionalShadowRender::DirectionalShadowRender(DirectionalShadowRender &&src) :
+		_ubo_lightSpaceMatrix(0)
 {
 	*this = std::move(src);
 }
@@ -69,10 +70,14 @@ DirectionalShadowRender &DirectionalShadowRender::operator=(DirectionalShadowRen
 {
 	try
 	{
+		this->_lc = rhs.getLightContainer();
+		this->_shadow_maps.reserve(this->_lc->getMaxDirLightNumber());
+		this->_depth_maps.reserve(this->_lc->getMaxDirLightNumber());
+		this->_vec_lightSpaceMatrix.reserve(this->_lc->getMaxDirLightNumber());
+		this->_db_rb_list.reserve(this->_lc->getMaxDirLightNumber());
 		this->_dir_depth_map_shader    = rhs.getDirDepthMapShader();
 		this->_dir_shadow_map_shader   = rhs.getDirShadowMapShader();
 		this->_fuse_shadow_maps_shader = rhs.getFuseShadowMapShader();
-		this->_lc                      = rhs.getLightContainer();
 		this->_depth_maps              = rhs.moveDepthMaps();
 		this->_shadow_maps             = rhs.moveShadowMaps();
 		this->_fused_shadow_map        = rhs.moveFusedShadowMap();
