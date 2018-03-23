@@ -114,6 +114,7 @@ void ShaderSurface::draw(void)
 		return;
 	}
 	this->_shader->use();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, this->_win->cur_win_w, this->_win->cur_win_h);
 	this->_shader->setVec2(id_resolution, glm::vec2{this->_win->cur_win_w,
 													this->_win->cur_win_h});

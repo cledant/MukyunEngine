@@ -69,11 +69,12 @@ void TestDirectionalShadow::startGameLoop(Glfw_manager &manager)
 			manager.update_title_fps();
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//			this->render();
 			this->_sr.update();
 			this->_sr.computeDirectionalDepthMaps();
 			this->_sr.computeShadowMaps();
-			this->_tss.draw();
+
+//			this->_tss.draw();
+			this->render();
 			manager.swap_buffers();
 			if (manager.should_window_be_closed())
 				manager.destroy_window();
@@ -107,6 +108,7 @@ void TestDirectionalShadow::update(void)
 
 void TestDirectionalShadow::render(void)
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
 		it->second.get()->draw();
 }

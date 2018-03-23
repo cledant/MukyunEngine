@@ -85,6 +85,7 @@ void TextureShaderSurface::draw(void)
 	GLint  id_uniform_tex = glGetUniformLocation(shader_id, "uniform_tex");
 
 	this->_shader->use();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, this->_win->cur_win_w, this->_win->cur_win_h);
 	glActiveTexture(GL_TEXTURE0);
 	glUniform1i(id_uniform_tex, 0);
