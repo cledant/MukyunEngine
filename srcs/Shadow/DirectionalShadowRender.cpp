@@ -229,9 +229,9 @@ void DirectionalShadowRender::update(void)
 	this->_vec_lightSpaceMatrix.clear();
 	for (size_t i = 0; i < this->_lc->getDirLightDataGL().size(); ++i)
 	{
-		glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, this->_near_far->x, this->_near_far->y);
+		glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 30.0f);
 		glm::mat4 lightView       = glm::lookAt(glm::vec3(this->_lc->getDirLightDataGL()[i].pos), glm::vec3(0.0f),
-												glm::vec3(0.0, 1.0, 0.0));
+												glm::vec3(0.0f, 1.0f, 0.0f));
 		this->_vec_lightSpaceMatrix.push_back(lightProjection * lightView);
 	}
 	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_lightSpaceMatrix);
@@ -251,13 +251,13 @@ void DirectionalShadowRender::computeDirectionalDepthMaps(void)
 	{
 		this->_depth_maps[i]->useFramebuffer();
 		this->_depth_maps[i]->setViewport();
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
 		this->_dir_depth_map_shader->setMat4(uniform_lightSpaceMatrix, (this->_vec_lightSpaceMatrix)[i]);
 		for (size_t j = 0; j < this->_db_rb_list.size(); ++j)
 			this->_db_rb_list[j]->drawNoShader();
 	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void DirectionalShadowRender::computeShadowMaps(void)

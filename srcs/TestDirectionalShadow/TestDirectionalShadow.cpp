@@ -40,8 +40,6 @@ TestDirectionalShadow::TestDirectionalShadow(Input const &input, GLFW_Window con
 	sr_params_cpy.near_far          = &this->_near_far;
 	sr_params_cpy.perspec_mult_view = &this->_perspec_mult_view;
 	this->_sr                       = DirectionalShadowRender(sr_params_cpy);
-
-	;
 }
 
 TestDirectionalShadow::~TestDirectionalShadow(void)
@@ -54,6 +52,7 @@ TestDirectionalShadow::~TestDirectionalShadow(void)
 
 void TestDirectionalShadow::startGameLoop(Glfw_manager &manager)
 {
+//	this->_tss.setTextureID(this->_sr.getFramebufferTexID(DirectionalShadowRender::eType::DEPTH_MAP, 0));
 	this->_tss.setTextureID(this->_sr.getFramebufferTexID(DirectionalShadowRender::eType::SINGLE_SHADOW_MAP, 0));
 	glEnable(GL_DEPTH_TEST);
 	while (Glfw_manager::getActiveWindowNumber())
