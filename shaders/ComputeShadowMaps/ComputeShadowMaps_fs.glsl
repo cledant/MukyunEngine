@@ -6,7 +6,7 @@ in VS_OUT
 {
     vec3 FragPos;
     vec3 Normal;
-    vec2 TexCoords;
+    vec2 Tex_coord;
     vec4 FragPosLightSpace;
 } fs_in;
 
