@@ -20,7 +20,7 @@
 # include "OpenGL/RenderBin/ARenderBin_Based/ADepthBufferRenderBin.hpp"
 # include <memory>
 
-# define DIRECTIONAL_DEPTHMAPSIZE 1024
+# define DEPTHMAPSIZE 1024
 
 class DirectionalShadowRender
 {

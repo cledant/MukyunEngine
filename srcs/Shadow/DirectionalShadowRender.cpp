@@ -161,8 +161,7 @@ void DirectionalShadowRender::_allocate_memory(int w, int h)
 	this->_db_rb_list.reserve(max_dir_light);
 	for (size_t i = 0; i < max_dir_light; ++i)
 	{
-		this->_depth_maps.emplace_back(new DirectionalShadowMap(DIRECTIONAL_DEPTHMAPSIZE,
-																DIRECTIONAL_DEPTHMAPSIZE));
+		this->_depth_maps.emplace_back(new DirectionalShadowMap(DEPTHMAPSIZE, DEPTHMAPSIZE));
 		this->_shadow_maps.emplace_back(new ImageFramebuffer(w, h));
 	}
 	glGenBuffers(1, &(this->_ubo_lightSpaceMatrix));
