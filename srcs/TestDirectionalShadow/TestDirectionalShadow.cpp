@@ -23,7 +23,8 @@ TestDirectionalShadow::TestDirectionalShadow(Input const &input, GLFW_Window con
 				glm::vec3(0.0f, 0.0f, -1.0f), -90.0f, 0.0f),
 		_fov(45.0f), _max_fps(max_fps), _max_frame_skip(max_frame_skip),
 		_next_update_tick(0.0f), _last_update_tick(0.0f), _delta_tick(0.0f),
-		_skip_loop(0), _near_far(near_far), _rm(rm)
+		_skip_loop(0), _near_far(near_far),
+		_tss(&win, &input, &rm.getShader("DisplayImage"), 0), _rm(rm)
 {
 	if (max_frame_skip == 0)
 		throw TestDirectionalShadow::TestDirectionalShadowFailException();
@@ -40,7 +41,7 @@ TestDirectionalShadow::TestDirectionalShadow(Input const &input, GLFW_Window con
 	sr_params_cpy.perspec_mult_view = &this->_perspec_mult_view;
 	this->_sr                       = DirectionalShadowRender(sr_params_cpy);
 
-	this->_tss.setShader(&rm.getShader("DisplayImage"));
+	this->_tss.setTextureID(this->_sr.getFramebufferTexID(DirectionalShadowRender::eType::SINGLE_SHADOW_MAP, 0));
 }
 
 TestDirectionalShadow::~TestDirectionalShadow(void)
@@ -68,7 +69,11 @@ void TestDirectionalShadow::startGameLoop(Glfw_manager &manager)
 			manager.update_title_fps();
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			this->render();
+//			this->render();
+			this->_sr.update();
+			this->_sr.computeDirectionalDepthMaps();
+			this->_sr.computeShadowMaps();
+			this->_tss.draw();
 			manager.swap_buffers();
 			if (manager.should_window_be_closed())
 				manager.destroy_window();
@@ -141,6 +146,21 @@ ARenderBin *TestDirectionalShadow::add_RenderBin(std::string const &name,
 	return (nullptr);
 }
 
+ARenderBin *TestDirectionalShadow::add_RenderBin(std::string const &name,
+												 ADepthBufferRenderBin::Params &params,
+												 ARenderBin::eType type)
+{
+	params.perspec_mult_view = &this->_perspec_mult_view;
+	params.lc                = &this->_light_container;
+	params.viewPos           = &this->_camera.getPos();
+	if (type == ARenderBin::eType::MULTIDIRLIGHT_SHADOW)
+	{
+		this->_render_bin_list[name] = std::make_unique<MultiDirLightShadowRenderBin>(params);
+		return (this->_render_bin_list[name].get());
+	}
+	return (nullptr);
+}
+
 IEntity *TestDirectionalShadow::add_Prop(Prop::Params &params)
 {
 	this->_entity_list.emplace_back(new Prop(params));
@@ -160,6 +180,14 @@ IEntity *TestDirectionalShadow::add_DirectionalLight(DirectionalLight::Params &p
 IEntity *TestDirectionalShadow::add_SpotLight(SpotLight::Params &params)
 {
 	return (this->_light_container.addLightInstance(params));
+}
+
+void TestDirectionalShadow::add_RenderBin_To_ShadowRenderer(std::string const &str)
+{
+	auto it = this->_render_bin_list.find(str);
+
+	if (it != this->_render_bin_list.end())
+		this->_sr.addRenderBufferToList(dynamic_cast<ADepthBufferRenderBin *>(it->second.get()));
 }
 
 /*

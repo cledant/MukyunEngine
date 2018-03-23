@@ -59,20 +59,6 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	ARenderBin *light_color = (*world)->add_RenderBin("Light_Color", rb_light_color,
 													  ARenderBin::eType::DIFFUSE_COLORED);
 
-	//Creating RenderBin for Light that uses LightContainer
-	ARenderBin::Params rb_light;
-	rb_light.shader       = &rm.getShader("MultiPointDirSpotLight");
-	rb_light.model        = &rm.getModel("BlueBox");
-	rb_light.max_instance = 100000;
-	ARenderBin *rb_box = (*world)->add_RenderBin("LightBlueBoxRB", rb_light,
-												 ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
-
-	rb_light.shader       = &rm.getShader("MultiPointDirSpotLight");
-	rb_light.model        = &rm.getModel("TenshiPlane");
-	rb_light.max_instance = 100000;
-	ARenderBin *rb_plane = (*world)->add_RenderBin("TenshiPlaneRb", rb_light,
-												   ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
-
 	//Creating Directional Lights
 	DirectionalLight::Params params_dir;
 	params_dir.model_rb       = light_color;
@@ -83,6 +69,24 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	params_dir.specular_color = params_dir.diffuse_color;
 	params_dir.dir            = glm::vec3(1.0f, -1.0f, 1.0f);
 	(*world)->add_DirectionalLight(params_dir);
+
+	//Creating RenderBin for Light that uses LightContainer
+	ADepthBufferRenderBin::Params rb_light;
+	rb_light.shader       = &rm.getShader("MultiPointDirSpotLight");
+	rb_light.model        = &rm.getModel("BlueBox");
+	rb_light.max_instance = 100000;
+	ARenderBin *rb_box = (*world)->add_RenderBin("LightBlueBoxRB", rb_light,
+												 ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
+
+	rb_light.shader       = &rm.getShader("MultiPointDirSpotLight");
+	rb_light.model        = &rm.getModel("TenshiPlane");
+	rb_light.max_instance = 100000;
+	ARenderBin *rb_plane = (*world)->add_RenderBin("TenshiPlaneRB", rb_light,
+												   ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
+
+	//Adding RenderBin to ShadowRenderer
+	(*world)->add_RenderBin_To_ShadowRenderer("LightBlueBoxRB");
+	(*world)->add_RenderBin_To_ShadowRenderer("TenshiPlaneRB");
 
 	//Creating Prop
 	Prop::Params prop_params;

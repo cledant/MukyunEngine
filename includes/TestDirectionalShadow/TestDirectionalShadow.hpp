@@ -19,6 +19,7 @@
 # include "OpenGL/RenderBin/ARenderBin_Based/BasicColorRenderBin.hpp"
 # include "OpenGL/RenderBin/ARenderBin_Based/MultiPointDirSpotLightRenderBin.hpp"
 # include "OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.hpp"
+# include "OpenGL/RenderBin/ADepthBufferRenderBin_Based/MultDirLightShadowRenderBin.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
 # include "Shadow/DirectionalShadowRender.hpp"
 # include "Light/ALight_Based/PointLight.hpp"
@@ -76,10 +77,14 @@ class TestDirectionalShadow
 		ARenderBin *add_RenderBin(std::string const &name,
 								  ARenderBin::Params &params,
 								  ARenderBin::eType type);
+		ARenderBin *add_RenderBin(std::string const &name,
+								  ADepthBufferRenderBin::Params &params,
+								  ARenderBin::eType type);
 		IEntity *add_Prop(Prop::Params &params);
 		IEntity *add_PointLight(PointLight::Params &params);
 		IEntity *add_DirectionalLight(DirectionalLight::Params &params);
 		IEntity *add_SpotLight(SpotLight::Params &params);
+		void add_RenderBin_To_ShadowRenderer(std::string const &str);
 
 		/*
 		 * Getter
