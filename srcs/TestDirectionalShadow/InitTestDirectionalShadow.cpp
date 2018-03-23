@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   InitTestLight.cpp                                  :+:      :+:    :+:   */
+/*   InitTestDirectionalShadow.cpp                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "OpenGL/RessourceManager.hpp"
-#include "TestLight/TestLight.hpp"
+#include "TestDirectionalShadow/TestDirectionalShadow.hpp"
 
 static void init_ressources(RessourceManager &rm)
 {
@@ -36,12 +36,20 @@ static void init_ressources(RessourceManager &rm)
 }
 
 static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
-							TestLight **world)
+							TestDirectionalShadow **world)
 {
-	(*world) = new TestLight(manager.getInput(), manager.getWindow(),
-							 glm::vec3(0.0f, 0.0f, 10.0f),
-							 glm::vec2(0.1f, 1000.0f), 60.0f, 10,
-							 LightContainer::Params());
+	//Setting Shadow Renderer params
+	DirectionalShadowRender::Params sr_params;
+	sr_params.dir_depth_map_shader  = &rm.getShader("ComputeDirLightDepthMap");
+	sr_params.dir_shadow_map_shader = &rm.getShader("ComputeShadowMaps");
+	sr_params.dir_shadow_map_shader = &rm.getShader("ComputeShadowMaps");
+	sr_params.win_w                 = manager.getWindow().cur_win_w;
+	sr_params.win_h                 = manager.getWindow().cur_win_h;
+
+	(*world) = new TestDirectionalShadow(manager.getInput(), manager.getWindow(),
+										 glm::vec3(0.0f, 0.0f, 10.0f),
+										 glm::vec2(0.1f, 1000.0f), 60.0f, 10,
+										 LightContainer::Params(), sr_params, rm);
 
 	//Creating RenderBin for LightBox Indication in scene
 	ARenderBin::Params rb_light_color;
@@ -64,7 +72,6 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	rb_light.max_instance = 100000;
 	ARenderBin *rb_plane = (*world)->add_RenderBin("TenshiPlaneRb", rb_light,
 												   ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
-
 
 	//Creating Directional Lights
 	DirectionalLight::Params params_dir;
@@ -99,7 +106,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	(*world)->add_Prop(prop_params);
 }
 
-static void init_program(TestLight **world, RessourceManager &rm, Glfw_manager &manager)
+static void init_program(TestDirectionalShadow **world, RessourceManager &rm, Glfw_manager &manager)
 {
 	manager.create_window("TestDirectionalShadow", 4, 1, 1280, 720, false);
 	manager.init_input_callback();
@@ -109,8 +116,8 @@ static void init_program(TestLight **world, RessourceManager &rm, Glfw_manager &
 
 void InitRunTestDirectionalShadow(Glfw_manager &manager)
 {
-	RessourceManager rm;
-	TestLight        *world = nullptr;
+	RessourceManager      rm;
+	TestDirectionalShadow *world = nullptr;
 
 	try
 	{

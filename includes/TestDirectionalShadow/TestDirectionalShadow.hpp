@@ -20,6 +20,7 @@
 # include "OpenGL/RenderBin/ARenderBin_Based/MultiPointDirSpotLightRenderBin.hpp"
 # include "OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
+# include "Shadow/DirectionalShadowRender.hpp"
 # include "Light/ALight_Based/PointLight.hpp"
 # include "Light/ALight_Based/DirectionalLight.hpp"
 # include "Light/ALight_Based/SpotLight.hpp"
@@ -33,6 +34,8 @@
 # include "WindowManager/Glfw_manager.hpp"
 # include "WindowManager/Window.hpp"
 # include "WindowManager/Input.hpp"
+# include "UI/ShaderSurface/TextureShaderSurface.hpp"
+# include "OpenGL/RessourceManager.hpp"
 # include <iostream>
 # include <vector>
 # include <fstream>
@@ -46,7 +49,9 @@ class TestDirectionalShadow
 		TestDirectionalShadow(Input const &input, GLFW_Window const &win,
 							  glm::vec3 const &cam_pos, glm::vec2 const &near_far,
 							  float max_fps, size_t max_frame_skip,
-							  LightContainer::Params const &lc_params);
+							  LightContainer::Params const &lc_params,
+							  DirectionalShadowRender::Params const &sr_params,
+							  RessourceManager const &rm);
 		virtual ~TestDirectionalShadow(void);
 		TestDirectionalShadow(TestDirectionalShadow const &src) = delete;
 		TestDirectionalShadow &operator=(TestDirectionalShadow const &rhs) = delete;
@@ -104,6 +109,7 @@ class TestDirectionalShadow
 		std::map<std::string, std::unique_ptr<ARenderBin>> _render_bin_list;
 		std::vector<std::unique_ptr<IEntity>>              _entity_list;
 		LightContainer                                     _light_container;
+		DirectionalShadowRender                            _sr;
 		GLFW_Window const                                  &_window;
 		glm::mat4                                          _perspective;
 		Camera                                             _camera;
@@ -117,6 +123,8 @@ class TestDirectionalShadow
 		float                                              _delta_tick;
 		size_t                                             _skip_loop;
 		glm::vec2                                          _near_far;
+		TextureShaderSurface                               _tss;
+		RessourceManager const                             &_rm;
 };
 
 void InitRunTestDirectionalShadow(Glfw_manager &manager);

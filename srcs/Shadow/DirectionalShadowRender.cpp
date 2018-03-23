@@ -14,14 +14,14 @@
 
 DirectionalShadowRender::Params::Params(void)
 {
-	this->dir_shadow_shader     = nullptr;
-	this->dir_shadow_shader_pov = nullptr;
-	this->fuse_depth_maps       = nullptr;
-	this->lc                    = nullptr;
-	this->near_far              = nullptr;
-	this->perspec_mult_view     = nullptr;
-	this->win_h                 = 720;
-	this->win_w                 = 1280;
+	this->dir_depth_map_shader    = nullptr;
+	this->dir_shadow_map_shader   = nullptr;
+	this->fuse_shadow_maps_shader = nullptr;
+	this->lc                      = nullptr;
+	this->near_far                = nullptr;
+	this->perspec_mult_view       = nullptr;
+	this->win_h                   = 720;
+	this->win_w                   = 1280;
 }
 
 DirectionalShadowRender::Params::~Params(void)
@@ -36,9 +36,9 @@ DirectionalShadowRender::DirectionalShadowRender(void) :
 }
 
 DirectionalShadowRender::DirectionalShadowRender(DirectionalShadowRender::Params const &params) :
-		_dir_depth_map_shader(params.dir_shadow_shader),
-		_dir_shadow_map_shader(params.dir_shadow_shader_pov),
-		_fuse_shadow_maps_shader(params.fuse_depth_maps), _lc(params.lc),
+		_dir_depth_map_shader(params.dir_depth_map_shader),
+		_dir_shadow_map_shader(params.dir_shadow_map_shader),
+		_fuse_shadow_maps_shader(params.fuse_shadow_maps_shader), _lc(params.lc),
 		_fused_shadow_map(nullptr), _ubo_lightSpaceMatrix(0), _near_far(params.near_far),
 		_perspec_mult_view(params.perspec_mult_view)
 {
@@ -60,6 +60,37 @@ DirectionalShadowRender::~DirectionalShadowRender(void)
 	glDeleteBuffers(1, &(this->_ubo_lightSpaceMatrix));
 }
 
+DirectionalShadowRender::DirectionalShadowRender(DirectionalShadowRender &&src)
+{
+	*this = std::move(src);
+}
+
+DirectionalShadowRender &DirectionalShadowRender::operator=(DirectionalShadowRender &&rhs)
+{
+	try
+	{
+		this->_dir_depth_map_shader    = rhs.getDirDepthMapShader();
+		this->_dir_shadow_map_shader   = rhs.getDirShadowMapShader();
+		this->_fuse_shadow_maps_shader = rhs.getFuseShadowMapShader();
+		this->_lc                      = rhs.getLightContainer();
+		this->_depth_maps              = rhs.moveDepthMaps();
+		this->_shadow_maps             = rhs.moveShadowMaps();
+		this->_fused_shadow_map        = rhs.moveFusedShadowMap();
+		this->_vec_lightSpaceMatrix    = rhs.getVecLightSpaceMatrix();
+		this->_ubo_lightSpaceMatrix    = rhs.moveUboLightSpaceMatrix();
+		this->_db_rb_list              = rhs.getDbRbList();
+		this->_near_far                = rhs.getNearFar();
+		this->_perspec_mult_view       = rhs.getPerspecMultView();
+	}
+	catch (std::exception &e)
+	{
+		glDeleteBuffers(1, &(this->_ubo_lightSpaceMatrix));
+		std::cout << "DirectionalShadowRender Move Error" << std::endl;
+		throw;
+	}
+	return (*this);
+}
+
 /*
  * Setter
  */
@@ -72,18 +103,116 @@ void DirectionalShadowRender::addRenderBufferToList(ADepthBufferRenderBin *ptr)
 	this->_db_rb_list.push_back(ptr);
 }
 
+void DirectionalShadowRender::setLightContainer(LightContainer const *ptr)
+{
+	this->_lc = ptr;
+}
+
+void DirectionalShadowRender::setPerspecMultView(glm::mat4 const *ptr)
+{
+	this->_perspec_mult_view = ptr;
+}
+
+void DirectionalShadowRender::setNearFar(glm::vec2 const *ptr)
+{
+	this->_near_far = ptr;
+}
+
 /*
  * Getter
  */
 
 GLuint DirectionalShadowRender::getFramebufferTexID(DirectionalShadowRender::eType type,
-													size_t index)
+													size_t index) const
 {
 	if (type == DirectionalShadowRender::eType::DEPTH_MAP)
 		return (this->_depth_maps[index].get()->getTextureBuffer());
 	else if (type == DirectionalShadowRender::eType::SINGLE_SHADOW_MAP)
 		return (this->_shadow_maps[index].get()->getTextureBuffer());
 	return (this->_fused_shadow_map->getTextureBuffer());
+}
+
+Shader const *DirectionalShadowRender::getDirDepthMapShader() const
+{
+	return (this->_dir_depth_map_shader);
+}
+
+Shader const *DirectionalShadowRender::getDirShadowMapShader() const
+{
+	return (this->_dir_shadow_map_shader);
+}
+
+Shader const *DirectionalShadowRender::getFuseShadowMapShader() const
+{
+	return (this->_fuse_shadow_maps_shader);
+}
+
+LightContainer const *DirectionalShadowRender::getLightContainer() const
+{
+	return (this->_lc);
+}
+
+std::vector<std::unique_ptr<AFramebuffer>> const &DirectionalShadowRender::getDepthMaps() const
+{
+	return (this->_depth_maps);
+}
+
+std::vector<std::unique_ptr<AFramebuffer>> DirectionalShadowRender::moveDepthMaps()
+{
+	return (std::move(this->_depth_maps));
+}
+
+std::vector<std::unique_ptr<AFramebuffer>> const &DirectionalShadowRender::getShadowMaps() const
+{
+	return (this->_shadow_maps);
+}
+
+std::vector<std::unique_ptr<AFramebuffer>> DirectionalShadowRender::moveShadowMaps()
+{
+	return (std::move(this->_shadow_maps));
+}
+
+std::unique_ptr<AFramebuffer> const &DirectionalShadowRender::getFusedShadowMap(void) const
+{
+	return (this->_fused_shadow_map);
+}
+
+std::unique_ptr<AFramebuffer> DirectionalShadowRender::moveFusedShadowMap(void)
+{
+	return (std::move(this->_fused_shadow_map));
+}
+
+std::vector<glm::mat4> const &DirectionalShadowRender::getVecLightSpaceMatrix(void) const
+{
+	return (this->_vec_lightSpaceMatrix);
+}
+
+GLuint DirectionalShadowRender::getUboLightSpaceMatrix(void) const
+{
+	return (this->_ubo_lightSpaceMatrix);
+}
+
+GLuint DirectionalShadowRender::moveUboLightSpaceMatrix(void)
+{
+	GLuint tmp = this->_ubo_lightSpaceMatrix;
+
+	this->_ubo_lightSpaceMatrix = 0;
+	return (tmp);
+}
+
+std::vector<ADepthBufferRenderBin const *> const &DirectionalShadowRender::getDbRbList(void)
+{
+	return (this->_db_rb_list);
+}
+
+glm::vec2 const *DirectionalShadowRender::getNearFar(void) const
+{
+	return (this->_near_far);
+}
+
+glm::mat4 const *DirectionalShadowRender::getPerspecMultView(void) const
+{
+	return (this->_perspec_mult_view);
 }
 
 /*
@@ -138,6 +267,7 @@ void DirectionalShadowRender::computeShadowMaps(void)
 	{
 		this->_shadow_maps[i]->useFramebuffer();
 		this->_shadow_maps[i]->setViewport();
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
 		this->_dir_shadow_map_shader->setMat4(uniform_lightSpaceMatrix, (this->_vec_lightSpaceMatrix)[i]);
@@ -149,6 +279,10 @@ void DirectionalShadowRender::computeShadowMaps(void)
 		for (size_t j = 0; j < this->_db_rb_list.size(); ++j)
 			this->_db_rb_list[j]->drawNoShader();
 	}
+}
+
+void DirectionalShadowRender::fuseShadowMaps(void)
+{
 }
 
 void DirectionalShadowRender::_allocate_memory(int w, int h)
