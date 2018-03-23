@@ -89,7 +89,7 @@ void TextureShaderSurface::draw(void)
 	glViewport(0, 0, this->_win->cur_win_w, this->_win->cur_win_h);
 	glActiveTexture(GL_TEXTURE0);
 	glUniform1i(id_uniform_tex, 0);
-	glBindTexture(GL_TEXTURE_2D, id_uniform_tex);
+	glBindTexture(GL_TEXTURE_2D, this->_tex_id);
 	glBindVertexArray(this->_vao);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, TextureShaderSurface::_tex_nb_faces);

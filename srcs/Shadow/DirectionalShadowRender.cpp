@@ -251,6 +251,7 @@ void DirectionalShadowRender::computeDirectionalDepthMaps(void)
 	{
 		this->_depth_maps[i]->useFramebuffer();
 		this->_depth_maps[i]->setViewport();
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
 		this->_dir_depth_map_shader->setMat4(uniform_lightSpaceMatrix, (this->_vec_lightSpaceMatrix)[i]);
