@@ -31,7 +31,7 @@ class MultiDirLightShadowRenderBin : public ADepthBufferRenderBin
 		 */
 
 		virtual void draw(void);
-		virtual void drawShadow(void) const;
+		virtual void drawNoShader(void) const;
 
 	protected :
 

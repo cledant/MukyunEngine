@@ -76,16 +76,16 @@ void TextureShaderSurface::setTextureID(GLuint id)
 
 void TextureShaderSurface::draw(void)
 {
-	GLuint shader_id = this->_shader->getShaderProgram();
-	GLint id_uniform_tex;
+	GLuint shader_id      = this->_shader->getShaderProgram();
+	GLint  id_uniform_tex = glGetUniformLocation(shader_id, "uniform_tex");
 
-	id_uniform_tex = glGetUniformLocation(shader_id, "uniform_tex");
 	if (this->_shader == nullptr || this->_win == nullptr || this->_input == nullptr)
 	{
 		std::cout << "Warning : Can't draw TextureShaderSurface" << std::endl;
 		return;
 	}
 	this->_shader->use();
+	glViewport(0, 0, this->_win->cur_win_w, this->_win->cur_win_h);
 	glActiveTexture(GL_TEXTURE0);
 	glUniform1i(id_uniform_tex, 0);
 	glBindTexture(GL_TEXTURE_2D, id_uniform_tex);

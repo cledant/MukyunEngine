@@ -106,7 +106,7 @@ void MultiDirLightShadowRenderBin::draw(void)
 	}
 }
 
-void MultiDirLightShadowRenderBin::drawShadow(void) const
+void MultiDirLightShadowRenderBin::drawNoShader(void) const
 {
 	size_t i = 0;
 

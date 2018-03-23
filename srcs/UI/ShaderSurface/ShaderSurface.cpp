@@ -104,12 +104,9 @@ void ShaderSurface::setShader(Shader const *shader)
 
 void ShaderSurface::draw(void)
 {
-	GLuint shader_id = this->_shader->getShaderProgram();
-	GLint  id_time;
-	GLint  id_resolution;
-
-	id_time       = glGetUniformLocation(shader_id, "uniform_time");
-	id_resolution = glGetUniformLocation(shader_id, "uniform_resolution");
+	GLuint shader_id     = this->_shader->getShaderProgram();
+	GLint  id_time       = glGetUniformLocation(shader_id, "uniform_time");
+	GLint  id_resolution = glGetUniformLocation(shader_id, "uniform_resolution");
 
 	if (this->_shader == nullptr || this->_win == nullptr || this->_input == nullptr)
 	{
@@ -117,6 +114,7 @@ void ShaderSurface::draw(void)
 		return;
 	}
 	this->_shader->use();
+	glViewport(0, 0, this->_win->cur_win_w, this->_win->cur_win_h);
 	this->_shader->setVec2(id_resolution, glm::vec2{this->_win->cur_win_w,
 													this->_win->cur_win_h});
 	this->_shader->setFloat(id_time, Glfw_manager::getTime());

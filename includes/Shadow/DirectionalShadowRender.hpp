@@ -34,7 +34,6 @@ class DirectionalShadowRender
 			Shader const         *dir_shadow_shader;
 			Shader const         *dir_shadow_shader_pov;
 			Shader const         *fuse_depth_maps;
-			Shader const         *debug_display;
 			LightContainer const *lc;
 			glm::vec2            *near_far;
 			glm::mat4            *perspec_mult_view;
@@ -44,8 +43,9 @@ class DirectionalShadowRender
 
 		enum eType
 		{
-			LIGHT_POV,
-			SCENE_POV
+			DEPTH_MAP,
+			SINGLE_SHADOW_MAP,
+			TOTAL_SHADOW_MAP,
 		};
 
 		DirectionalShadowRender(void);
@@ -74,22 +74,20 @@ class DirectionalShadowRender
 
 		virtual void update(void);
 		virtual void computeDirectionalDepthMaps(void);
-		virtual void changeDirectionalDepthMapsPOV(void);
-		virtual void computeShadowMap(void);
-		virtual void computeScene(void);
+		virtual void computeShadowMaps(void);
+		virtual void fuseShadowMaps(void);
 
 	protected :
 
 		inline void _allocate_memory(int w, int h);
 
-		Shader const                               *_dir_shadow_shader;
-		Shader const                               *_dir_shadow_shader_pov;
-		Shader const                               *_fuse_depth_maps;
-		Shader const                               *_debug_display;
+		Shader const                               *_dir_depth_map_shader;
+		Shader const                               *_dir_shadow_map_shader;
+		Shader const                               *_fuse_shadow_maps_shader;
 		LightContainer const                       *_lc;
-		std::vector<std::unique_ptr<AFramebuffer>> _vec_depth_maps;
-		std::vector<std::unique_ptr<AFramebuffer>> _vec_depth_maps_scene_pov;
-		std::unique_ptr<AFramebuffer>              _shadow_map;
+		std::vector<std::unique_ptr<AFramebuffer>> _depth_maps;
+		std::vector<std::unique_ptr<AFramebuffer>> _shadow_maps;
+		std::unique_ptr<AFramebuffer>              _fused_shadow_map;
 		std::vector<glm::mat4>                     _vec_lightSpaceMatrix;
 		GLuint                                     _ubo_lightSpaceMatrix;
 		std::vector<ADepthBufferRenderBin const *> _db_rb_list;
