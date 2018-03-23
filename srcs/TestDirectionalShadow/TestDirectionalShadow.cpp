@@ -53,7 +53,7 @@ TestDirectionalShadow::~TestDirectionalShadow(void)
 void TestDirectionalShadow::startGameLoop(Glfw_manager &manager)
 {
 //	this->_tss.setTextureID(this->_sr.getFramebufferTexID(DirectionalShadowRender::eType::DEPTH_MAP, 0));
-	this->_tss.setTextureID(this->_sr.getFramebufferTexID(DirectionalShadowRender::eType::SINGLE_SHADOW_MAP, 0));
+	this->_tss.setTextureID(this->_sr.getFramebufferTexID(DirectionalShadowRender::eType::SINGLE_SHADOW_MAP, 1));
 	glEnable(GL_DEPTH_TEST);
 	while (Glfw_manager::getActiveWindowNumber())
 	{

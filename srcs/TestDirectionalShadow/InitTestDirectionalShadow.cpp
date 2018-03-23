@@ -68,7 +68,13 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	params_dir.diffuse_color  = glm::vec3(1.0f);
 	params_dir.specular_color = params_dir.diffuse_color;
 	params_dir.dir            = glm::vec3(1.0f, -1.0f, 1.0f);
-	params_dir.draw_model     = true;
+	params_dir.draw_model     = false;
+	(*world)->add_DirectionalLight(params_dir);
+
+	params_dir.model_rb       = light_color;
+	params_dir.pos            = glm::vec3(15.0f, 10.0f, 15.0f);
+	params_dir.dir            = glm::vec3(-1.0f, -1.0f, -1.0f);
+	params_dir.draw_model     = false;
 	(*world)->add_DirectionalLight(params_dir);
 
 	//Creating RenderBin for Light that uses LightContainer

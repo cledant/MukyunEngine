@@ -229,6 +229,7 @@ void DirectionalShadowRender::update(void)
 	this->_vec_lightSpaceMatrix.clear();
 	for (size_t i = 0; i < this->_lc->getDirLightDataGL().size(); ++i)
 	{
+		//Modif pour donner un near far a la creation
 		glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 30.0f);
 		glm::mat4 lightView       = glm::lookAt(glm::vec3(this->_lc->getDirLightDataGL()[i].pos), glm::vec3(0.0f),
 												glm::vec3(0.0f, 1.0f, 0.0f));
