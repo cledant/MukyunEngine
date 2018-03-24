@@ -45,6 +45,7 @@ class TextureShaderSurface : public ShaderSurface
 		 */
 
 		virtual void draw(void);
+		virtual void drawInFrameBuffer(void);
 
 	protected :
 

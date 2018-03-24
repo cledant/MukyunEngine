@@ -18,6 +18,7 @@
 # include "OpenGL/Ressource/AFramebuffer_Based/DirectionalShadowMap.hpp"
 # include "OpenGL/Ressource/AFramebuffer_Based/ImageFramebuffer.hpp"
 # include "OpenGL/RenderBin/ARenderBin_Based/ADepthBufferRenderBin.hpp"
+# include "UI/ShaderSurface/TextureShaderSurface.hpp"
 # include <memory>
 
 # define DEPTHMAPSIZE 1024
@@ -86,6 +87,7 @@ class DirectionalShadowRender
 		std::vector<ADepthBufferRenderBin const *> const &getDbRbList(void);
 		glm::vec2 const *getNearFar(void) const;
 		glm::mat4 const *getPerspecMultView(void) const;
+		TextureShaderSurface movePrinter(void);
 
 		/*
 		 * Computation
@@ -112,6 +114,7 @@ class DirectionalShadowRender
 		std::vector<ADepthBufferRenderBin const *> _db_rb_list;
 		glm::vec2 const                            *_near_far;
 		glm::mat4 const                            *_perspec_mult_view;
+		TextureShaderSurface                       _printer;
 };
 
 #endif

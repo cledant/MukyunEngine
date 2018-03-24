@@ -40,11 +40,11 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 {
 	//Setting Shadow Renderer params
 	DirectionalShadowRender::Params sr_params;
-	sr_params.dir_depth_map_shader  = &rm.getShader("ComputeDirLightDepthMap");
-	sr_params.dir_shadow_map_shader = &rm.getShader("ComputeShadowMaps");
-	sr_params.dir_shadow_map_shader = &rm.getShader("ComputeShadowMaps");
-	sr_params.win_w                 = manager.getWindow().cur_win_w;
-	sr_params.win_h                 = manager.getWindow().cur_win_h;
+	sr_params.dir_depth_map_shader    = &rm.getShader("ComputeDirLightDepthMap");
+	sr_params.dir_shadow_map_shader   = &rm.getShader("ComputeShadowMaps");
+	sr_params.fuse_shadow_maps_shader = &rm.getShader("DisplayImage");
+	sr_params.win_w                   = manager.getWindow().cur_win_w;
+	sr_params.win_h                   = manager.getWindow().cur_win_h;
 
 	(*world) = new TestDirectionalShadow(manager.getInput(), manager.getWindow(),
 										 glm::vec3(0.0f, 0.0f, 10.0f),
@@ -71,10 +71,10 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	params_dir.draw_model     = false;
 	(*world)->add_DirectionalLight(params_dir);
 
-	params_dir.model_rb       = light_color;
-	params_dir.pos            = glm::vec3(15.0f, 10.0f, 15.0f);
-	params_dir.dir            = glm::vec3(-1.0f, -1.0f, -1.0f);
-	params_dir.draw_model     = false;
+	params_dir.model_rb   = light_color;
+	params_dir.pos        = glm::vec3(15.0f, 10.0f, 15.0f);
+	params_dir.dir        = glm::vec3(-1.0f, -1.0f, -1.0f);
+	params_dir.draw_model = false;
 	(*world)->add_DirectionalLight(params_dir);
 
 	//Creating RenderBin for Light that uses LightContainer

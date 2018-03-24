@@ -31,7 +31,7 @@ DirectionalShadowRender::Params::~Params(void)
 DirectionalShadowRender::DirectionalShadowRender(void) :
 		_dir_depth_map_shader(nullptr), _dir_shadow_map_shader(nullptr),
 		_fuse_shadow_maps_shader(nullptr), _lc(nullptr), _ubo_lightSpaceMatrix(0),
-		_near_far(nullptr), _perspec_mult_view(nullptr)
+		_near_far(nullptr), _perspec_mult_view(nullptr), _printer(nullptr, nullptr, nullptr, 0)
 {
 }
 
@@ -40,7 +40,7 @@ DirectionalShadowRender::DirectionalShadowRender(DirectionalShadowRender::Params
 		_dir_shadow_map_shader(params.dir_shadow_map_shader),
 		_fuse_shadow_maps_shader(params.fuse_shadow_maps_shader), _lc(params.lc),
 		_fused_shadow_map(nullptr), _ubo_lightSpaceMatrix(0), _near_far(params.near_far),
-		_perspec_mult_view(params.perspec_mult_view)
+		_perspec_mult_view(params.perspec_mult_view), _printer(nullptr, nullptr, nullptr, 0)
 {
 	try
 	{
@@ -86,6 +86,7 @@ DirectionalShadowRender &DirectionalShadowRender::operator=(DirectionalShadowRen
 		this->_db_rb_list              = rhs.getDbRbList();
 		this->_near_far                = rhs.getNearFar();
 		this->_perspec_mult_view       = rhs.getPerspecMultView();
+		this->_printer                 = rhs.movePrinter();
 	}
 	catch (std::exception &e)
 	{
@@ -220,6 +221,11 @@ glm::mat4 const *DirectionalShadowRender::getPerspecMultView(void) const
 	return (this->_perspec_mult_view);
 }
 
+TextureShaderSurface DirectionalShadowRender::movePrinter()
+{
+	return (std::move(this->_printer));
+}
+
 /*
  * Computation
  */
@@ -290,6 +296,31 @@ void DirectionalShadowRender::computeShadowMaps(void)
 
 void DirectionalShadowRender::fuseShadowMaps(void)
 {
+	this->_printer.setShader(this->_fuse_shadow_maps_shader);
+	this->_fused_shadow_map.get()->useFramebuffer();
+	this->_fused_shadow_map.get()->setViewport();
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	//size_t i  = 1;
+	for (size_t i = 0; i < this->_vec_lightSpaceMatrix.size(); ++i)
+	{
+		if (!i)
+		{
+			glDepthFunc(GL_LESS);
+			glDisable(GL_BLEND);
+		}
+		else
+		{
+			glDepthFunc(GL_EQUAL);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_ONE, GL_ONE);
+		}
+		this->_printer.setTextureID(this->_shadow_maps[i]->getTextureBuffer());
+		this->_printer.drawInFrameBuffer();
+	}
+	glDepthFunc(GL_LESS);
+	glDisable(GL_BLEND);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void DirectionalShadowRender::_allocate_memory(int w, int h)

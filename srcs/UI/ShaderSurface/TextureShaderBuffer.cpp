@@ -96,6 +96,21 @@ void TextureShaderSurface::draw(void)
 	glBindVertexArray(0);
 }
 
+void TextureShaderSurface::drawInFrameBuffer(void)
+{
+	GLuint shader_id      = this->_shader->getShaderProgram();
+	GLint  id_uniform_tex = glGetUniformLocation(shader_id, "uniform_tex");
+
+	this->_shader->use();
+	glActiveTexture(GL_TEXTURE0);
+	glUniform1i(id_uniform_tex, 0);
+	glBindTexture(GL_TEXTURE_2D, this->_tex_id);
+	glBindVertexArray(this->_vao);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glDrawArrays(GL_TRIANGLES, 0, TextureShaderSurface::_tex_nb_faces);
+	glBindVertexArray(0);
+}
+
 void TextureShaderSurface::_allocate_tex_buffer(void)
 {
 	//Allocating VBO

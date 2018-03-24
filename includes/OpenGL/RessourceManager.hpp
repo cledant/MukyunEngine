@@ -23,6 +23,7 @@
 # include "OpenGL/Ressource/AFramebuffer.hpp"
 # include "Exceptions/GeneralException.hpp"
 # include <map>
+# include <memory>
 
 class RessourceManager
 {
