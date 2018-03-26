@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DIRECTIONALSHADOWRENDER_HPP
-# define DIRECTIONALSHADOWRENDER_HPP
+#ifndef SHADOWRENDERER_HPP
+# define SHADOWRENDERER_HPP
 
 # include "OpenGL/RenderBin/ARenderBin.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"

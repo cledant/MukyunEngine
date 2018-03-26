@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ADEPTHBUFFERRENDERBIN_HPP
-# define ADEPTHBUFFERRENDERBIN_HPP
+#ifndef ASHADOWRENDERBIN_HPP
+# define ASHADOWRENDERBIN_HPP
 
 # include "OpenGL/RenderBin/ARenderBin.hpp"
 # include "OpenGL/Ressource/AFramebuffer.hpp"

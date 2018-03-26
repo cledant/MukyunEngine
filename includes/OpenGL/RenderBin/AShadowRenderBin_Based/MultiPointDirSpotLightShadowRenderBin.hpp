@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MULTIDIRLIGHTSHADOWRENDERBIN_HPP
-# define MULTIDIRLIGHTSHADOWRENDERBIN_HPP
+#ifndef MULTIPOINTDIRSPOTLIGHTSHADOWRENDERBIN_HPP
+# define MULTIPOINTDIRSPOTLIGHTSHADOWRENDERBIN_HPP
 
 # include "OpenGL/RenderBin/ARenderBin_Based/AShadowRenderBin.hpp"
 
