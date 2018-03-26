@@ -36,7 +36,7 @@ class DirectionalShadowRender
 			Shader const         *dir_shadow_map_shader;
 			Shader const         *fuse_shadow_maps_shader;
 			LightContainer const *lc;
-			glm::vec2            *near_far;
+			glm::vec2            near_far;
 			glm::mat4            *perspec_mult_view;
 			int                  win_h;
 			int                  win_w;
@@ -64,7 +64,7 @@ class DirectionalShadowRender
 		void addRenderBufferToList(ADepthBufferRenderBin *ptr);
 		void setLightContainer(LightContainer const *ptr);
 		void setPerspecMultView(glm::mat4 const *ptr);
-		void setNearFar(glm::vec2 const *ptr);
+		void setNearFar(glm::vec2 const vec);
 
 		/*
 		 * Getter
@@ -85,7 +85,7 @@ class DirectionalShadowRender
 		GLuint getUboLightSpaceMatrix(void) const;
 		GLuint moveUboLightSpaceMatrix(void);
 		std::vector<ADepthBufferRenderBin const *> const &getDbRbList(void);
-		glm::vec2 const *getNearFar(void) const;
+		glm::vec2 const getNearFar(void) const;
 		glm::mat4 const *getPerspecMultView(void) const;
 		TextureShaderSurface movePrinter(void);
 
@@ -112,7 +112,7 @@ class DirectionalShadowRender
 		std::vector<glm::mat4>                     _vec_lightSpaceMatrix;
 		GLuint                                     _ubo_lightSpaceMatrix;
 		std::vector<ADepthBufferRenderBin const *> _db_rb_list;
-		glm::vec2 const                            *_near_far;
+		glm::vec2                                  _near_far;
 		glm::mat4 const                            *_perspec_mult_view;
 		TextureShaderSurface                       _printer;
 };

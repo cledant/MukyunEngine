@@ -129,7 +129,7 @@ class TestDirectionalShadow
 		size_t                                             _skip_loop;
 		glm::vec2                                          _near_far;
 		TextureShaderSurface                               _tss;
-		RessourceManager const                             &_rm;
+		ImageFramebuffer                                   _final_image;
 };
 
 void InitRunTestDirectionalShadow(Glfw_manager &manager);

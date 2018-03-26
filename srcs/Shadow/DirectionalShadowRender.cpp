@@ -18,7 +18,7 @@ DirectionalShadowRender::Params::Params(void)
 	this->dir_shadow_map_shader   = nullptr;
 	this->fuse_shadow_maps_shader = nullptr;
 	this->lc                      = nullptr;
-	this->near_far                = nullptr;
+	this->near_far                = glm::vec2(1.0f, 30.0f);
 	this->perspec_mult_view       = nullptr;
 	this->win_h                   = 720;
 	this->win_w                   = 1280;
@@ -31,7 +31,7 @@ DirectionalShadowRender::Params::~Params(void)
 DirectionalShadowRender::DirectionalShadowRender(void) :
 		_dir_depth_map_shader(nullptr), _dir_shadow_map_shader(nullptr),
 		_fuse_shadow_maps_shader(nullptr), _lc(nullptr), _ubo_lightSpaceMatrix(0),
-		_near_far(nullptr), _perspec_mult_view(nullptr), _printer(nullptr, nullptr, nullptr, 0)
+		_near_far(glm::vec2(1.0f, 30.0f)), _perspec_mult_view(nullptr), _printer(nullptr, nullptr, nullptr, 0)
 {
 }
 
@@ -119,9 +119,9 @@ void DirectionalShadowRender::setPerspecMultView(glm::mat4 const *ptr)
 	this->_perspec_mult_view = ptr;
 }
 
-void DirectionalShadowRender::setNearFar(glm::vec2 const *ptr)
+void DirectionalShadowRender::setNearFar(glm::vec2 const vec)
 {
-	this->_near_far = ptr;
+	this->_near_far = vec;
 }
 
 /*
@@ -211,7 +211,7 @@ std::vector<ADepthBufferRenderBin const *> const &DirectionalShadowRender::getDb
 	return (this->_db_rb_list);
 }
 
-glm::vec2 const *DirectionalShadowRender::getNearFar(void) const
+glm::vec2 const DirectionalShadowRender::getNearFar(void) const
 {
 	return (this->_near_far);
 }
@@ -235,8 +235,8 @@ void DirectionalShadowRender::update(void)
 	this->_vec_lightSpaceMatrix.clear();
 	for (size_t i = 0; i < this->_lc->getDirLightDataGL().size(); ++i)
 	{
-		//Modif pour donner un near far a la creation
-		glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 30.0f);
+		glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,
+											   this->_near_far.x, this->_near_far.y);
 		glm::mat4 lightView       = glm::lookAt(glm::vec3(this->_lc->getDirLightDataGL()[i].pos), glm::vec3(0.0f),
 												glm::vec3(0.0f, 1.0f, 0.0f));
 		this->_vec_lightSpaceMatrix.push_back(lightProjection * lightView);
@@ -301,7 +301,6 @@ void DirectionalShadowRender::fuseShadowMaps(void)
 	this->_fused_shadow_map.get()->setViewport();
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	//size_t i  = 1;
 	for (size_t i = 0; i < this->_vec_lightSpaceMatrix.size(); ++i)
 	{
 		if (!i)

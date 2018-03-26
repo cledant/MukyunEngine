@@ -24,7 +24,8 @@ TestDirectionalShadow::TestDirectionalShadow(Input const &input, GLFW_Window con
 		_fov(45.0f), _max_fps(max_fps), _max_frame_skip(max_frame_skip),
 		_next_update_tick(0.0f), _last_update_tick(0.0f), _delta_tick(0.0f),
 		_skip_loop(0), _near_far(near_far),
-		_tss(&win, &input, &rm.getShader("DisplayImage"), 0), _rm(rm)
+		_tss(&win, &input, &rm.getShader("DisplayImage"), 0),
+		_final_image(win.cur_win_h, win.cur_win_w)
 {
 	if (max_frame_skip == 0)
 		throw TestDirectionalShadow::TestDirectionalShadowFailException();
@@ -37,9 +38,10 @@ TestDirectionalShadow::TestDirectionalShadow(Input const &input, GLFW_Window con
 	//Can't be initialized before because of nullptr for light container params
 	DirectionalShadowRender::Params sr_params_cpy = sr_params;
 	sr_params_cpy.lc                = &this->_light_container;
-	sr_params_cpy.near_far          = &this->_near_far;
+	sr_params_cpy.near_far          = glm::vec2(1.0f, 35.0f);
 	sr_params_cpy.perspec_mult_view = &this->_perspec_mult_view;
 	this->_sr                       = DirectionalShadowRender(sr_params_cpy);
+	this->_tss.setTextureID(this->_final_image.getTextureBuffer());
 }
 
 TestDirectionalShadow::~TestDirectionalShadow(void)
@@ -52,9 +54,6 @@ TestDirectionalShadow::~TestDirectionalShadow(void)
 
 void TestDirectionalShadow::startGameLoop(Glfw_manager &manager)
 {
-//	this->_tss.setTextureID(this->_sr.getFramebufferTexID(DirectionalShadowRender::eType::DEPTH_MAP, 0));
-//	this->_tss.setTextureID(this->_sr.getFramebufferTexID(DirectionalShadowRender::eType::SINGLE_SHADOW_MAP, 1));
-	this->_tss.setTextureID(this->_sr.getFramebufferTexID(DirectionalShadowRender::eType::TOTAL_SHADOW_MAP, 0));
 	glEnable(GL_DEPTH_TEST);
 	while (Glfw_manager::getActiveWindowNumber())
 	{
@@ -68,14 +67,19 @@ void TestDirectionalShadow::startGameLoop(Glfw_manager &manager)
 			}
 			manager.calculate_fps();
 			manager.update_title_fps();
-			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			this->_sr.update();
 			this->_sr.computeDirectionalDepthMaps();
 			this->_sr.computeShadowMaps();
 			this->_sr.fuseShadowMaps();
+			this->_final_image.useFramebuffer();
+			this->_final_image.setViewport();
+			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			this->render();
+			this->_final_image.defaultFramebuffer();
+			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			this->_tss.draw();
-//			this->render();
 			manager.swap_buffers();
 			if (manager.should_window_be_closed())
 				manager.destroy_window();
@@ -109,7 +113,6 @@ void TestDirectionalShadow::update(void)
 
 void TestDirectionalShadow::render(void)
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
 		it->second.get()->draw();
 }
