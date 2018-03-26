@@ -10,30 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "OpenGL/RenderBin/ADepthBufferRenderBin_Based/MultDirLightShadowRenderBin.hpp"
+#include "OpenGL/RenderBin/AShadowRenderBin_Based/MultiPointDirSpotLightShadowRenderBin.hpp"
 
-MultiDirLightShadowRenderBin::MultiDirLightShadowRenderBin(ADepthBufferRenderBin::Params const &params) :
-		ADepthBufferRenderBin(params)
+MultiPointDirSpotLightShadowRenderBin::MultiPointDirSpotLightShadowRenderBin(AShadowRenderBin::Params const &params) :
+		AShadowRenderBin(params)
 {
 	this->_update_vao();
 	this->_type = ARenderBin::eType::MULTIDIRLIGHT_SHADOW;
 	std::cout << "Creating MultiDirLightShadow RenderBin" << std::endl;
 }
 
-MultiDirLightShadowRenderBin::~MultiDirLightShadowRenderBin(void)
+MultiPointDirSpotLightShadowRenderBin::~MultiPointDirSpotLightShadowRenderBin(void)
 {
 }
 
-MultiDirLightShadowRenderBin::MultiDirLightShadowRenderBin(MultiDirLightShadowRenderBin &&src) :
-		ADepthBufferRenderBin(std::move(src))
+MultiPointDirSpotLightShadowRenderBin::MultiPointDirSpotLightShadowRenderBin(MultiPointDirSpotLightShadowRenderBin &&src) :
+		AShadowRenderBin(std::move(src))
 {
 	*this = std::move(src);
 }
 
-MultiDirLightShadowRenderBin &MultiDirLightShadowRenderBin::operator=(
-		MultiDirLightShadowRenderBin &&rhs)
+MultiPointDirSpotLightShadowRenderBin &MultiPointDirSpotLightShadowRenderBin::operator=(
+		MultiPointDirSpotLightShadowRenderBin &&rhs)
 {
-	ADepthBufferRenderBin::operator=(std::move(rhs));
+	AShadowRenderBin::operator=(std::move(rhs));
 	return (*this);
 }
 
@@ -41,7 +41,7 @@ MultiDirLightShadowRenderBin &MultiDirLightShadowRenderBin::operator=(
  * Draw
  */
 
-void MultiDirLightShadowRenderBin::draw(void)
+void MultiPointDirSpotLightShadowRenderBin::draw(void)
 {
 	if (this->_shader == nullptr || this->_perspec_mult_view == nullptr ||
 		this->_model == nullptr)
@@ -98,7 +98,7 @@ void MultiDirLightShadowRenderBin::draw(void)
 	}
 }
 
-void MultiDirLightShadowRenderBin::drawNoShader(void) const
+void MultiPointDirSpotLightShadowRenderBin::drawNoShader(void) const
 {
 	size_t i = 0;
 
@@ -114,7 +114,7 @@ void MultiDirLightShadowRenderBin::drawNoShader(void) const
 	}
 }
 
-void MultiDirLightShadowRenderBin::_update_vao(void)
+void MultiPointDirSpotLightShadowRenderBin::_update_vao(void)
 {
 	GLuint shader_id = this->_shader->getShaderProgram();
 

@@ -72,9 +72,9 @@ set(SOURCE_FILES
 		srcs/OpenGL/Ressource/AFramebuffer.cpp
 		srcs/OpenGL/Ressource/AFramebuffer_Based/ImageFramebuffer.cpp
 		srcs/OpenGL/Ressource/AFramebuffer_Based/DirectionalShadowMap.cpp
-		srcs/OpenGL/RenderBin/ARenderBin_Based/ADepthBufferRenderBin.cpp
-		srcs/Shadow/DirectionalShadowRender.cpp
-		srcs/OpenGL/RenderBin/ADepthBufferRenderBin_Based/MultiDirLightShadowRenderBin.cpp
+		srcs/OpenGL/RenderBin/ARenderBin_Based/AShadowRenderBin.cpp
+		srcs/Shadow/ShadowRenderer.cpp
+		srcs/OpenGL/RenderBin/AShadowRenderBin_Based/MultiDirLightShadowRenderBin.cpp
 		srcs/UI/ShaderSurface/ShaderSurface.cpp
 		srcs/UI/ShaderSurface/TextureShaderBuffer.cpp)
 add_library(primary STATIC ${SOURCE_FILES})

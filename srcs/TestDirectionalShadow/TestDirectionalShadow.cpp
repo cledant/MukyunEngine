@@ -16,7 +16,7 @@ TestDirectionalShadow::TestDirectionalShadow(Input const &input, GLFW_Window con
 											 glm::vec3 const &cam_pos, glm::vec2 const &near_far,
 											 float max_fps, size_t max_frame_skip,
 											 LightContainer::Params const &lc_params,
-											 DirectionalShadowRender::Params const &sr_params,
+											 ShadowRenderer::Params const &sr_params,
 											 RessourceManager const &rm) :
 		_light_container(lc_params), _sr(), _window(win),
 		_camera(&input, cam_pos, glm::vec3(0.0f, 1.0f, 0.0f),
@@ -36,11 +36,11 @@ TestDirectionalShadow::TestDirectionalShadow(Input const &input, GLFW_Window con
 										  near_far.y);
 
 	//Can't be initialized before because of nullptr for light container params
-	DirectionalShadowRender::Params sr_params_cpy = sr_params;
+	ShadowRenderer::Params sr_params_cpy = sr_params;
 	sr_params_cpy.lc                = &this->_light_container;
 	sr_params_cpy.near_far          = glm::vec2(1.0f, 35.0f);
 	sr_params_cpy.perspec_mult_view = &this->_perspec_mult_view;
-	this->_sr                       = DirectionalShadowRender(sr_params_cpy);
+	this->_sr                       = ShadowRenderer(sr_params_cpy);
 	this->_tss.setTextureID(this->_final_image.getTextureBuffer());
 }
 
@@ -153,7 +153,7 @@ ARenderBin *TestDirectionalShadow::add_RenderBin(std::string const &name,
 }
 
 ARenderBin *TestDirectionalShadow::add_RenderBin(std::string const &name,
-												 ADepthBufferRenderBin::Params &params,
+												 AShadowRenderBin::Params &params,
 												 ARenderBin::eType type)
 {
 	params.perspec_mult_view = &this->_perspec_mult_view;
@@ -161,7 +161,7 @@ ARenderBin *TestDirectionalShadow::add_RenderBin(std::string const &name,
 	params.viewPos           = &this->_camera.getPos();
 	if (type == ARenderBin::eType::MULTIDIRLIGHT_SHADOW)
 	{
-		this->_render_bin_list[name] = std::make_unique<MultiDirLightShadowRenderBin>(params);
+		this->_render_bin_list[name] = std::make_unique<MultiPointDirSpotLightShadowRenderBin>(params);
 		return (this->_render_bin_list[name].get());
 	}
 	return (nullptr);
@@ -193,7 +193,7 @@ void TestDirectionalShadow::add_RenderBin_To_ShadowRenderer(std::string const &s
 	auto it = this->_render_bin_list.find(str);
 
 	if (it != this->_render_bin_list.end())
-		this->_sr.addRenderBufferToList(dynamic_cast<ADepthBufferRenderBin *>(it->second.get()));
+		this->_sr.addRenderBufferToList(dynamic_cast<AShadowRenderBin *>(it->second.get()));
 }
 
 /*

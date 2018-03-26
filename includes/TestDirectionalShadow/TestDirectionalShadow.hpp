@@ -19,9 +19,9 @@
 # include "OpenGL/RenderBin/ARenderBin_Based/BasicColorRenderBin.hpp"
 # include "OpenGL/RenderBin/ARenderBin_Based/MultiPointDirSpotLightRenderBin.hpp"
 # include "OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.hpp"
-# include "OpenGL/RenderBin/ADepthBufferRenderBin_Based/MultDirLightShadowRenderBin.hpp"
+# include "OpenGL/RenderBin/AShadowRenderBin_Based/MultiPointDirSpotLightShadowRenderBin.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
-# include "Shadow/DirectionalShadowRender.hpp"
+# include "Shadow/ShadowRenderer.hpp"
 # include "Light/ALight_Based/PointLight.hpp"
 # include "Light/ALight_Based/DirectionalLight.hpp"
 # include "Light/ALight_Based/SpotLight.hpp"
@@ -51,7 +51,7 @@ class TestDirectionalShadow
 							  glm::vec3 const &cam_pos, glm::vec2 const &near_far,
 							  float max_fps, size_t max_frame_skip,
 							  LightContainer::Params const &lc_params,
-							  DirectionalShadowRender::Params const &sr_params,
+							  ShadowRenderer::Params const &sr_params,
 							  RessourceManager const &rm);
 		virtual ~TestDirectionalShadow(void);
 		TestDirectionalShadow(TestDirectionalShadow const &src) = delete;
@@ -78,7 +78,7 @@ class TestDirectionalShadow
 								  ARenderBin::Params &params,
 								  ARenderBin::eType type);
 		ARenderBin *add_RenderBin(std::string const &name,
-								  ADepthBufferRenderBin::Params &params,
+								  AShadowRenderBin::Params &params,
 								  ARenderBin::eType type);
 		IEntity *add_Prop(Prop::Params &params);
 		IEntity *add_PointLight(PointLight::Params &params);
@@ -114,7 +114,7 @@ class TestDirectionalShadow
 		std::map<std::string, std::unique_ptr<ARenderBin>> _render_bin_list;
 		std::vector<std::unique_ptr<IEntity>>              _entity_list;
 		LightContainer                                     _light_container;
-		DirectionalShadowRender                            _sr;
+		ShadowRenderer                            _sr;
 		GLFW_Window const                                  &_window;
 		glm::mat4                                          _perspective;
 		Camera                                             _camera;

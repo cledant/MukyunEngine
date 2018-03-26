@@ -17,7 +17,7 @@
 # include "OpenGL/Ressource/AFramebuffer.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
 
-class ADepthBufferRenderBin : public ARenderBin
+class AShadowRenderBin : public ARenderBin
 {
 	public :
 
@@ -33,13 +33,13 @@ class ADepthBufferRenderBin : public ARenderBin
 			int                  win_h;
 		};
 
-		ADepthBufferRenderBin(void);
-		ADepthBufferRenderBin(ADepthBufferRenderBin::Params const &params);
-		virtual ~ADepthBufferRenderBin(void);
-		ADepthBufferRenderBin(ADepthBufferRenderBin const &src) = delete;
-		ADepthBufferRenderBin &operator=(ADepthBufferRenderBin const &rhs) = delete;
-		ADepthBufferRenderBin(ADepthBufferRenderBin &&src);
-		ADepthBufferRenderBin &operator=(ADepthBufferRenderBin &&rhs);
+		AShadowRenderBin(void);
+		AShadowRenderBin(AShadowRenderBin::Params const &params);
+		virtual ~AShadowRenderBin(void);
+		AShadowRenderBin(AShadowRenderBin const &src) = delete;
+		AShadowRenderBin &operator=(AShadowRenderBin const &rhs) = delete;
+		AShadowRenderBin(AShadowRenderBin &&src);
+		AShadowRenderBin &operator=(AShadowRenderBin &&rhs);
 
 		/*
 		 * Draw

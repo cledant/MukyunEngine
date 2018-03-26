@@ -13,18 +13,18 @@
 #ifndef MULTIDIRLIGHTSHADOWRENDERBIN_HPP
 # define MULTIDIRLIGHTSHADOWRENDERBIN_HPP
 
-# include "OpenGL/RenderBin/ARenderBin_Based/ADepthBufferRenderBin.hpp"
+# include "OpenGL/RenderBin/ARenderBin_Based/AShadowRenderBin.hpp"
 
-class MultiDirLightShadowRenderBin : public ADepthBufferRenderBin
+class MultiPointDirSpotLightShadowRenderBin : public AShadowRenderBin
 {
 	public :
 
-		MultiDirLightShadowRenderBin(ADepthBufferRenderBin::Params const &params);
-		virtual ~MultiDirLightShadowRenderBin(void);
-		MultiDirLightShadowRenderBin(MultiDirLightShadowRenderBin const &src) = delete;
-		MultiDirLightShadowRenderBin &operator=(MultiDirLightShadowRenderBin const &rhs) = delete;
-		MultiDirLightShadowRenderBin(MultiDirLightShadowRenderBin &&src);
-		MultiDirLightShadowRenderBin &operator=(MultiDirLightShadowRenderBin &&rhs);
+		MultiPointDirSpotLightShadowRenderBin(AShadowRenderBin::Params const &params);
+		virtual ~MultiPointDirSpotLightShadowRenderBin(void);
+		MultiPointDirSpotLightShadowRenderBin(MultiPointDirSpotLightShadowRenderBin const &src) = delete;
+		MultiPointDirSpotLightShadowRenderBin &operator=(MultiPointDirSpotLightShadowRenderBin const &rhs) = delete;
+		MultiPointDirSpotLightShadowRenderBin(MultiPointDirSpotLightShadowRenderBin &&src);
+		MultiPointDirSpotLightShadowRenderBin &operator=(MultiPointDirSpotLightShadowRenderBin &&rhs);
 
 		/*
 		 * Draw

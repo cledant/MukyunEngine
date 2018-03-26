@@ -42,7 +42,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 							TestDirectionalShadow **world)
 {
 	//Setting Shadow Renderer params
-	DirectionalShadowRender::Params sr_params;
+	ShadowRenderer::Params sr_params;
 	sr_params.dir_depth_map_shader    = &rm.getShader("ComputeDirLightDepthMap");
 	sr_params.dir_shadow_map_shader   = &rm.getShader("ComputeShadowMaps");
 	sr_params.fuse_shadow_maps_shader = &rm.getShader("DisplayImage");
@@ -81,7 +81,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	(*world)->add_DirectionalLight(params_dir);
 
 	//Creating RenderBin for Light that uses LightContainer
-	ADepthBufferRenderBin::Params rb_light;
+	AShadowRenderBin::Params rb_light;
 	rb_light.shader       = &rm.getShader("MultiPointDirSpotLightWithShadowMap");
 	rb_light.model        = &rm.getModel("BlueBox");
 	rb_light.win_h        = manager.getWindow().cur_win_h;

@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "OpenGL/RenderBin/ARenderBin_Based/ADepthBufferRenderBin.hpp"
+#include "OpenGL/RenderBin/ARenderBin_Based/AShadowRenderBin.hpp"
 
-ADepthBufferRenderBin::Params::Params(void) : ARenderBin::Params()
+AShadowRenderBin::Params::Params(void) : ARenderBin::Params()
 {
 	this->lc             = nullptr;
 	this->viewPos        = nullptr;
@@ -21,18 +21,18 @@ ADepthBufferRenderBin::Params::Params(void) : ARenderBin::Params()
 	this->win_h          = 720;
 }
 
-ADepthBufferRenderBin::Params::~Params(void)
+AShadowRenderBin::Params::~Params(void)
 {
 }
 
-ADepthBufferRenderBin::ADepthBufferRenderBin(void) :
+AShadowRenderBin::AShadowRenderBin(void) :
 		ARenderBin(), _lc(nullptr), _view_pos(nullptr), _vbo_inv_model_matrices(0),
 		_vec_depth_maps(nullptr), _vec_lightSpaceMatrix(nullptr),
 		_win_w(1280), _win_h(720)
 {
 }
 
-ADepthBufferRenderBin::ADepthBufferRenderBin(ADepthBufferRenderBin::Params const &params) :
+AShadowRenderBin::AShadowRenderBin(AShadowRenderBin::Params const &params) :
 		ARenderBin(params), _lc(params.lc), _view_pos(params.viewPos),
 		_vbo_inv_model_matrices(0), _vec_depth_maps(nullptr),
 		_vec_lightSpaceMatrix(nullptr), _win_w(params.win_w), _win_h(params.win_h)
@@ -54,12 +54,12 @@ ADepthBufferRenderBin::ADepthBufferRenderBin(ADepthBufferRenderBin::Params const
 	}
 }
 
-ADepthBufferRenderBin::~ADepthBufferRenderBin(void)
+AShadowRenderBin::~AShadowRenderBin(void)
 {
 	glDeleteBuffers(1, &(this->_vbo_inv_model_matrices));
 }
 
-ADepthBufferRenderBin::ADepthBufferRenderBin(ADepthBufferRenderBin &&src) :
+AShadowRenderBin::AShadowRenderBin(AShadowRenderBin &&src) :
 		ARenderBin(std::move(src)), _lc(nullptr), _view_pos(nullptr),
 		_vbo_inv_model_matrices(0), _vec_depth_maps(nullptr),
 		_vec_lightSpaceMatrix(nullptr)
@@ -67,8 +67,8 @@ ADepthBufferRenderBin::ADepthBufferRenderBin(ADepthBufferRenderBin &&src) :
 	*this = std::move(src);
 }
 
-ADepthBufferRenderBin &ADepthBufferRenderBin::operator=(
-		ADepthBufferRenderBin &&rhs)
+AShadowRenderBin &AShadowRenderBin::operator=(
+		AShadowRenderBin &&rhs)
 {
 	ARenderBin::operator=(std::move(rhs));
 	try
@@ -100,7 +100,7 @@ ADepthBufferRenderBin &ADepthBufferRenderBin::operator=(
  * Draw
  */
 
-void ADepthBufferRenderBin::updateVBO(void)
+void AShadowRenderBin::updateVBO(void)
 {
 	ARenderBin::updateVBO();
 	this->_update_vector_inv_model();
@@ -111,7 +111,7 @@ void ADepthBufferRenderBin::updateVBO(void)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void ADepthBufferRenderBin::flushData(void)
+void AShadowRenderBin::flushData(void)
 {
 	ARenderBin::flushData();
 	this->_inv_model_matrices.clear();
@@ -121,17 +121,17 @@ void ADepthBufferRenderBin::flushData(void)
  * Setter
  */
 
-void ADepthBufferRenderBin::setDepthMapsList(std::vector<std::unique_ptr<AFramebuffer>> const *ptr)
+void AShadowRenderBin::setDepthMapsList(std::vector<std::unique_ptr<AFramebuffer>> const *ptr)
 {
 	this->_vec_depth_maps = ptr;
 }
 
-void ADepthBufferRenderBin::setLightSpaceMatricesList(std::vector<glm::mat4> const *ptr)
+void AShadowRenderBin::setLightSpaceMatricesList(std::vector<glm::mat4> const *ptr)
 {
 	this->_vec_lightSpaceMatrix = ptr;
 }
 
-void ADepthBufferRenderBin::setTexShadowMap(GLuint id)
+void AShadowRenderBin::setTexShadowMap(GLuint id)
 {
 	this->_tex_shadow_map = id;
 }
@@ -140,37 +140,37 @@ void ADepthBufferRenderBin::setTexShadowMap(GLuint id)
  * Getter
  */
 
-LightContainer const *ADepthBufferRenderBin::getLightContainer(void) const
+LightContainer const *AShadowRenderBin::getLightContainer(void) const
 {
 	return (this->_lc);
 }
 
-glm::vec3 const *ADepthBufferRenderBin::getViewPos(void)
+glm::vec3 const *AShadowRenderBin::getViewPos(void)
 {
 	return (this->_view_pos);
 }
 
-std::vector<glm::mat4> const &ADepthBufferRenderBin::getInvModelMatrices(void) const
+std::vector<glm::mat4> const &AShadowRenderBin::getInvModelMatrices(void) const
 {
 	return (this->_inv_model_matrices);
 }
 
-size_t ADepthBufferRenderBin::getCurrentInvModelMatricesNumber() const
+size_t AShadowRenderBin::getCurrentInvModelMatricesNumber() const
 {
 	return (this->_inv_model_matrices.size());
 }
 
-size_t ADepthBufferRenderBin::getMaxInvModelMatricesNumber(void) const
+size_t AShadowRenderBin::getMaxInvModelMatricesNumber(void) const
 {
 	return (this->_inv_model_matrices.capacity());
 }
 
-GLuint ADepthBufferRenderBin::getVBOinvModelMatrices(void) const
+GLuint AShadowRenderBin::getVBOinvModelMatrices(void) const
 {
 	return (this->_vbo_inv_model_matrices);
 }
 
-GLuint ADepthBufferRenderBin::moveVBOinvModelMatrices(void)
+GLuint AShadowRenderBin::moveVBOinvModelMatrices(void)
 {
 	GLuint tmp = this->_vbo_inv_model_matrices;
 
@@ -178,32 +178,32 @@ GLuint ADepthBufferRenderBin::moveVBOinvModelMatrices(void)
 	return (tmp);
 }
 
-std::vector<std::unique_ptr<AFramebuffer>> const *ADepthBufferRenderBin::getDepthMapsList(void) const
+std::vector<std::unique_ptr<AFramebuffer>> const *AShadowRenderBin::getDepthMapsList(void) const
 {
 	return (this->_vec_depth_maps);
 }
 
-std::vector<glm::mat4> const *ADepthBufferRenderBin::getLightSpaceMatricesList(void) const
+std::vector<glm::mat4> const *AShadowRenderBin::getLightSpaceMatricesList(void) const
 {
 	return (this->_vec_lightSpaceMatrix);
 }
 
-GLuint ADepthBufferRenderBin::getTexShadowMap() const
+GLuint AShadowRenderBin::getTexShadowMap() const
 {
 	return (this->_tex_shadow_map);
 }
 
-int ADepthBufferRenderBin::getWinHeight() const
+int AShadowRenderBin::getWinHeight() const
 {
 	return (this->_win_h);
 }
 
-int ADepthBufferRenderBin::getWinWidth() const
+int AShadowRenderBin::getWinWidth() const
 {
 	return (this->_win_w);
 }
 
-void ADepthBufferRenderBin::_allocate_vbo(size_t max_size)
+void AShadowRenderBin::_allocate_vbo(size_t max_size)
 {
 	glGenBuffers(1, &(this->_vbo_inv_model_matrices));
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_inv_model_matrices);
@@ -213,14 +213,14 @@ void ADepthBufferRenderBin::_allocate_vbo(size_t max_size)
 	oGL_check_error();
 }
 
-void ADepthBufferRenderBin::_update_vector_inv_model(void)
+void AShadowRenderBin::_update_vector_inv_model(void)
 {
 
 	for (auto it = this->_model_matrices.begin(); it != this->_model_matrices.end(); ++it)
 		this->_inv_model_matrices.push_back(glm::transpose(glm::inverse(*it)));
 }
 
-void ADepthBufferRenderBin::_update_vao(void)
+void AShadowRenderBin::_update_vao(void)
 {
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 	{

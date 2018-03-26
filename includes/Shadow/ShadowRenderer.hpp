@@ -17,13 +17,13 @@
 # include "OpenGL/LightContainer/LightContainer.hpp"
 # include "OpenGL/Ressource/AFramebuffer_Based/DirectionalShadowMap.hpp"
 # include "OpenGL/Ressource/AFramebuffer_Based/ImageFramebuffer.hpp"
-# include "OpenGL/RenderBin/ARenderBin_Based/ADepthBufferRenderBin.hpp"
+# include "OpenGL/RenderBin/ARenderBin_Based/AShadowRenderBin.hpp"
 # include "UI/ShaderSurface/TextureShaderSurface.hpp"
 # include <memory>
 
 # define DEPTHMAPSIZE 1024
 
-class DirectionalShadowRender
+class ShadowRenderer
 {
 	public :
 
@@ -49,19 +49,19 @@ class DirectionalShadowRender
 			TOTAL_SHADOW_MAP,
 		};
 
-		DirectionalShadowRender(void);
-		DirectionalShadowRender(DirectionalShadowRender::Params const &params);
-		virtual ~DirectionalShadowRender(void);
-		DirectionalShadowRender(DirectionalShadowRender const &src) = delete;
-		DirectionalShadowRender &operator=(DirectionalShadowRender const &rhs) = delete;
-		DirectionalShadowRender(DirectionalShadowRender &&src);
-		DirectionalShadowRender &operator=(DirectionalShadowRender &&rhs);
+		ShadowRenderer(void);
+		ShadowRenderer(ShadowRenderer::Params const &params);
+		virtual ~ShadowRenderer(void);
+		ShadowRenderer(ShadowRenderer const &src) = delete;
+		ShadowRenderer &operator=(ShadowRenderer const &rhs) = delete;
+		ShadowRenderer(ShadowRenderer &&src);
+		ShadowRenderer &operator=(ShadowRenderer &&rhs);
 
 		/*
 		 * Setter
 		 */
 
-		void addRenderBufferToList(ADepthBufferRenderBin *ptr);
+		void addRenderBufferToList(AShadowRenderBin *ptr);
 		void setLightContainer(LightContainer const *ptr);
 		void setPerspecMultView(glm::mat4 const *ptr);
 		void setNearFar(glm::vec2 const vec);
@@ -70,7 +70,7 @@ class DirectionalShadowRender
 		 * Getter
 		 */
 
-		GLuint getFramebufferTexID(DirectionalShadowRender::eType type, size_t index) const;
+		GLuint getFramebufferTexID(ShadowRenderer::eType type, size_t index) const;
 		Shader const *getDirDepthMapShader(void) const;
 		Shader const *getDirShadowMapShader(void) const;
 		Shader const *getFuseShadowMapShader(void) const;
@@ -82,7 +82,7 @@ class DirectionalShadowRender
 		std::unique_ptr<AFramebuffer> const &getFusedShadowMap(void) const;
 		std::unique_ptr<AFramebuffer> moveFusedShadowMap(void);
 		std::vector<glm::mat4> const &getVecLightSpaceMatrix(void) const;
-		std::vector<ADepthBufferRenderBin const *> const &getDbRbList(void);
+		std::vector<AShadowRenderBin const *> const &getDbRbList(void);
 		glm::vec2 const getNearFar(void) const;
 		glm::mat4 const *getPerspecMultView(void) const;
 		TextureShaderSurface movePrinter(void);
@@ -108,7 +108,7 @@ class DirectionalShadowRender
 		std::vector<std::unique_ptr<AFramebuffer>> _shadow_maps;
 		std::unique_ptr<AFramebuffer>              _fused_shadow_map;
 		std::vector<glm::mat4>                     _vec_lightSpaceMatrix;
-		std::vector<ADepthBufferRenderBin const *> _db_rb_list;
+		std::vector<AShadowRenderBin const *> _db_rb_list;
 		glm::vec2                                  _near_far;
 		glm::mat4 const                            *_perspec_mult_view;
 		TextureShaderSurface                       _printer;
