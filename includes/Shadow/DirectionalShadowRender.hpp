@@ -82,8 +82,6 @@ class DirectionalShadowRender
 		std::unique_ptr<AFramebuffer> const &getFusedShadowMap(void) const;
 		std::unique_ptr<AFramebuffer> moveFusedShadowMap(void);
 		std::vector<glm::mat4> const &getVecLightSpaceMatrix(void) const;
-		GLuint getUboLightSpaceMatrix(void) const;
-		GLuint moveUboLightSpaceMatrix(void);
 		std::vector<ADepthBufferRenderBin const *> const &getDbRbList(void);
 		glm::vec2 const getNearFar(void) const;
 		glm::mat4 const *getPerspecMultView(void) const;
@@ -110,7 +108,6 @@ class DirectionalShadowRender
 		std::vector<std::unique_ptr<AFramebuffer>> _shadow_maps;
 		std::unique_ptr<AFramebuffer>              _fused_shadow_map;
 		std::vector<glm::mat4>                     _vec_lightSpaceMatrix;
-		GLuint                                     _ubo_lightSpaceMatrix;
 		std::vector<ADepthBufferRenderBin const *> _db_rb_list;
 		glm::vec2                                  _near_far;
 		glm::mat4 const                            *_perspec_mult_view;

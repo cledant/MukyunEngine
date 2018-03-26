@@ -28,14 +28,14 @@ ADepthBufferRenderBin::Params::~Params(void)
 ADepthBufferRenderBin::ADepthBufferRenderBin(void) :
 		ARenderBin(), _lc(nullptr), _view_pos(nullptr), _vbo_inv_model_matrices(0),
 		_vec_depth_maps(nullptr), _vec_lightSpaceMatrix(nullptr),
-		_ubo_lightSpaceMatrix(nullptr), _win_w(1280), _win_h(720)
+		_win_w(1280), _win_h(720)
 {
 }
 
 ADepthBufferRenderBin::ADepthBufferRenderBin(ADepthBufferRenderBin::Params const &params) :
 		ARenderBin(params), _lc(params.lc), _view_pos(params.viewPos),
-		_vbo_inv_model_matrices(0), _vec_depth_maps(nullptr), _vec_lightSpaceMatrix(nullptr),
-		_ubo_lightSpaceMatrix(nullptr), _win_w(params.win_w), _win_h(params.win_h)
+		_vbo_inv_model_matrices(0), _vec_depth_maps(nullptr),
+		_vec_lightSpaceMatrix(nullptr), _win_w(params.win_w), _win_h(params.win_h)
 {
 	try
 	{
@@ -62,7 +62,7 @@ ADepthBufferRenderBin::~ADepthBufferRenderBin(void)
 ADepthBufferRenderBin::ADepthBufferRenderBin(ADepthBufferRenderBin &&src) :
 		ARenderBin(std::move(src)), _lc(nullptr), _view_pos(nullptr),
 		_vbo_inv_model_matrices(0), _vec_depth_maps(nullptr),
-		_vec_lightSpaceMatrix(nullptr), _ubo_lightSpaceMatrix(nullptr)
+		_vec_lightSpaceMatrix(nullptr)
 {
 	*this = std::move(src);
 }
@@ -80,7 +80,6 @@ ADepthBufferRenderBin &ADepthBufferRenderBin::operator=(
 		this->_view_pos               = rhs.getViewPos();
 		this->_vec_depth_maps         = rhs.getDepthMapsList();
 		this->_vec_lightSpaceMatrix   = rhs.getLightSpaceMatricesList();
-		this->_ubo_lightSpaceMatrix   = rhs.getLightSpaceMatricesUbo();
 		this->_tex_shadow_map         = rhs.getTexShadowMap();
 		this->_win_h                  = rhs.getWinHeight();
 		this->_win_w                  = rhs.getWinWidth();
@@ -130,11 +129,6 @@ void ADepthBufferRenderBin::setDepthMapsList(std::vector<std::unique_ptr<AFrameb
 void ADepthBufferRenderBin::setLightSpaceMatricesList(std::vector<glm::mat4> const *ptr)
 {
 	this->_vec_lightSpaceMatrix = ptr;
-}
-
-void ADepthBufferRenderBin::setLightSpaceMatricesUbo(GLuint *ptr)
-{
-	this->_ubo_lightSpaceMatrix = ptr;
 }
 
 void ADepthBufferRenderBin::setTexShadowMap(GLuint id)
@@ -192,11 +186,6 @@ std::vector<std::unique_ptr<AFramebuffer>> const *ADepthBufferRenderBin::getDept
 std::vector<glm::mat4> const *ADepthBufferRenderBin::getLightSpaceMatricesList(void) const
 {
 	return (this->_vec_lightSpaceMatrix);
-}
-
-GLuint *ADepthBufferRenderBin::getLightSpaceMatricesUbo(void) const
-{
-	return (this->_ubo_lightSpaceMatrix);
 }
 
 GLuint ADepthBufferRenderBin::getTexShadowMap() const
