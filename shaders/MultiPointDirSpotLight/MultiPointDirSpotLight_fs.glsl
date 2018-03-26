@@ -87,7 +87,7 @@ void main()
 
     //1) DirLight
     for(int i = 0; i < nb_dir_light; i++)
-        result = CalcDirLight(dir[i], norm, viewDir);
+        result += CalcDirLight(dir[i], norm, viewDir);
 
     //2) PointLight
     for(int i = 0; i < nb_point_light; i++)

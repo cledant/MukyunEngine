@@ -74,7 +74,6 @@ void MultiDirLightShadowRenderBin::draw(void)
 	this->_shader->setInt(uniform_nb_spot_light, this->_lc->getCurrentSpotLightNumber());
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 	{
-
 		glActiveTexture(GL_TEXTURE0);
 		glUniform1i(uniform_mat_diffuse_map, 0);
 		glBindTexture(GL_TEXTURE_2D, (this->_model->getMeshList())[i].getMaterial().diffuseMap);
@@ -84,7 +83,6 @@ void MultiDirLightShadowRenderBin::draw(void)
 		glActiveTexture(GL_TEXTURE2);
 		glUniform1i(uniform_shadow_map, 2);
 		glBindTexture(GL_TEXTURE_2D, this->_tex_shadow_map);
-		//A modif
 		this->_shader->setVec2(uniform_resolution, glm::vec2(this->_win_w, this->_win_h));
 		this->_shader->setFloat(uniform_mat_shininess, (this->_model->getMeshList())[i].getMaterial().shininess);
 		this->_shader->setVec3(uniform_mat_ambient, (this->_model->getMeshList())[i].getMaterial().ambient);
