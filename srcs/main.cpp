@@ -51,7 +51,7 @@ static void display_help()
 static void InitRun(Glfw_manager &manager, int argc, char **argv)
 {
 	std::string arg        = argv[1];
-	glm::ivec2  resolution = glm::uvec2(1280, 720);
+	glm::uvec2  resolution = glm::uvec2(1280, 720);
 
 	if (arg.compare("--instancing") == 0)
 		InitRunTestInstancing(manager);

@@ -84,6 +84,8 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	ADepthBufferRenderBin::Params rb_light;
 	rb_light.shader       = &rm.getShader("MultiPointDirSpotLightWithShadowMap");
 	rb_light.model        = &rm.getModel("BlueBox");
+	rb_light.win_h        = manager.getWindow().cur_win_h;
+	rb_light.win_w        = manager.getWindow().cur_win_w;
 	rb_light.max_instance = 100000;
 	ARenderBin *rb_box = (*world)->add_RenderBin("LightBlueBoxRB", rb_light,
 												 ARenderBin::eType::MULTIDIRLIGHT_SHADOW);

@@ -85,7 +85,7 @@ void MultiDirLightShadowRenderBin::draw(void)
 		glUniform1i(uniform_shadow_map, 2);
 		glBindTexture(GL_TEXTURE_2D, this->_tex_shadow_map);
 		//A modif
-		this->_shader->setVec2(uniform_resolution, glm::vec2(1280.0f, 720.0f));
+		this->_shader->setVec2(uniform_resolution, glm::vec2(this->_win_w, this->_win_h));
 		this->_shader->setFloat(uniform_mat_shininess, (this->_model->getMeshList())[i].getMaterial().shininess);
 		this->_shader->setVec3(uniform_mat_ambient, (this->_model->getMeshList())[i].getMaterial().ambient);
 		this->_shader->setVec3(uniform_mat_diffuse, (this->_model->getMeshList())[i].getMaterial().diffuse);

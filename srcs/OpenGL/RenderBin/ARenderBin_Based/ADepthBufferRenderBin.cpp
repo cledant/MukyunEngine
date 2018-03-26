@@ -17,6 +17,8 @@ ADepthBufferRenderBin::Params::Params(void) : ARenderBin::Params()
 	this->lc             = nullptr;
 	this->viewPos        = nullptr;
 	this->tex_shadow_map = 0;
+	this->win_w          = 1280;
+	this->win_h          = 720;
 }
 
 ADepthBufferRenderBin::Params::~Params(void)
@@ -25,14 +27,15 @@ ADepthBufferRenderBin::Params::~Params(void)
 
 ADepthBufferRenderBin::ADepthBufferRenderBin(void) :
 		ARenderBin(), _lc(nullptr), _view_pos(nullptr), _vbo_inv_model_matrices(0),
-		_vec_depth_maps(nullptr), _vec_lightSpaceMatrix(nullptr), _ubo_lightSpaceMatrix(nullptr)
+		_vec_depth_maps(nullptr), _vec_lightSpaceMatrix(nullptr),
+		_ubo_lightSpaceMatrix(nullptr), _win_w(1280), _win_h(720)
 {
 }
 
 ADepthBufferRenderBin::ADepthBufferRenderBin(ADepthBufferRenderBin::Params const &params) :
 		ARenderBin(params), _lc(params.lc), _view_pos(params.viewPos),
 		_vbo_inv_model_matrices(0), _vec_depth_maps(nullptr), _vec_lightSpaceMatrix(nullptr),
-		_ubo_lightSpaceMatrix(nullptr)
+		_ubo_lightSpaceMatrix(nullptr), _win_w(params.win_w), _win_h(params.win_h)
 {
 	try
 	{
@@ -79,6 +82,8 @@ ADepthBufferRenderBin &ADepthBufferRenderBin::operator=(
 		this->_vec_lightSpaceMatrix   = rhs.getLightSpaceMatricesList();
 		this->_ubo_lightSpaceMatrix   = rhs.getLightSpaceMatricesUbo();
 		this->_tex_shadow_map         = rhs.getTexShadowMap();
+		this->_win_h                  = rhs.getWinHeight();
+		this->_win_w                  = rhs.getWinWidth();
 	}
 	catch (std::exception &e)
 	{
@@ -194,9 +199,19 @@ GLuint *ADepthBufferRenderBin::getLightSpaceMatricesUbo(void) const
 	return (this->_ubo_lightSpaceMatrix);
 }
 
-GLuint ADepthBufferRenderBin::getTexShadowMap()
+GLuint ADepthBufferRenderBin::getTexShadowMap() const
 {
 	return (this->_tex_shadow_map);
+}
+
+int ADepthBufferRenderBin::getWinHeight() const
+{
+	return (this->_win_h);
+}
+
+int ADepthBufferRenderBin::getWinWidth() const
+{
+	return (this->_win_w);
 }
 
 void ADepthBufferRenderBin::_allocate_vbo(size_t max_size)
