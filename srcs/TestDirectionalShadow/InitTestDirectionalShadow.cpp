@@ -29,6 +29,8 @@ static void init_ressources(RessourceManager &rm)
 				  "./shaders/DisplayDepthMap/DisplayDepthMap_fs.glsl");
 	rm.add_shader("DisplayImage", "./shaders/DisplayImage/DisplayImage_vs.glsl",
 				  "./shaders/DisplayImage/DisplayImage_fs.glsl");
+	rm.add_shader("MultiPointDirSpotLightWithShadowMap", "./shaders/MultiPointDirSpotLightFusedWithShadowMap/MultiPointDirSpotLightFusedWithShadowMap_vs.glsl",
+				  "./shaders/MultiPointDirSpotLightFusedWithShadowMap/MultiPointDirSpotLightFusedWithShadowMap_fs.glsl");
 	rm.add_model("WhiteBox", "./assets/models/WhiteBox/WhiteBox.obj");
 	rm.add_model("BlueBox", "./assets/models/BlueBox/BlueBox.obj");
 	rm.add_model("RedBox", "./assets/models/RedBox/RedBox.obj");
