@@ -28,6 +28,7 @@ class ADepthBufferRenderBin : public ARenderBin
 
 			LightContainer const *lc;
 			glm::vec3 const      *viewPos;
+			GLuint               tex_shadow_map;
 		};
 
 		ADepthBufferRenderBin(void);
@@ -54,6 +55,7 @@ class ADepthBufferRenderBin : public ARenderBin
 		void setDepthMapsList(std::vector<std::unique_ptr<AFramebuffer>> const *ptr);
 		void setLightSpaceMatricesList(std::vector<glm::mat4> const *ptr);
 		void setLightSpaceMatricesUbo(GLuint *ptr);
+		void setTexShadowMap(GLuint id);
 
 		/*
 		 * Getter
@@ -69,6 +71,7 @@ class ADepthBufferRenderBin : public ARenderBin
 		std::vector<std::unique_ptr<AFramebuffer>> const *getDepthMapsList(void) const;
 		std::vector<glm::mat4> const *getLightSpaceMatricesList(void) const;
 		GLuint *getLightSpaceMatricesUbo(void) const;
+		GLuint getTexShadowMap(void);
 
 	protected :
 
@@ -79,6 +82,7 @@ class ADepthBufferRenderBin : public ARenderBin
 		std::vector<std::unique_ptr<AFramebuffer>> const *_vec_depth_maps;
 		std::vector<glm::mat4> const                     *_vec_lightSpaceMatrix;
 		GLuint                                           *_ubo_lightSpaceMatrix;
+		GLuint                                           _tex_shadow_map;
 
 		void _allocate_vbo(size_t max_size);
 		void _update_vector_inv_model(void);

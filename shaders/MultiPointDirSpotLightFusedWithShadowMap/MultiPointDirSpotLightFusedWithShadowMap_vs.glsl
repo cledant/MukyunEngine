@@ -14,8 +14,6 @@ out vec2 TexCoords;
 
 uniform mat4		uniform_mat_perspec_mult_view;
 
-out                 vec2 tex_coord;
-
 void main()
 {
     FragPos = vec3(instanceMatrix * vec4(pos, 1.0));

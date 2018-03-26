@@ -106,6 +106,7 @@ void DirectionalShadowRender::addRenderBufferToList(ADepthBufferRenderBin *ptr)
 	ptr->setDepthMapsList(&this->_depth_maps);
 	ptr->setLightSpaceMatricesList(&this->_vec_lightSpaceMatrix);
 	ptr->setLightSpaceMatricesUbo(&this->_ubo_lightSpaceMatrix);
+	ptr->setTexShadowMap(this->_fused_shadow_map->getTextureBuffer());
 	this->_db_rb_list.push_back(ptr);
 }
 

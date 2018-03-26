@@ -14,8 +14,9 @@
 
 ADepthBufferRenderBin::Params::Params(void) : ARenderBin::Params()
 {
-	this->lc      = nullptr;
-	this->viewPos = nullptr;
+	this->lc             = nullptr;
+	this->viewPos        = nullptr;
+	this->tex_shadow_map = 0;
 }
 
 ADepthBufferRenderBin::Params::~Params(void)
@@ -77,6 +78,7 @@ ADepthBufferRenderBin &ADepthBufferRenderBin::operator=(
 		this->_vec_depth_maps         = rhs.getDepthMapsList();
 		this->_vec_lightSpaceMatrix   = rhs.getLightSpaceMatricesList();
 		this->_ubo_lightSpaceMatrix   = rhs.getLightSpaceMatricesUbo();
+		this->_tex_shadow_map         = rhs.getTexShadowMap();
 	}
 	catch (std::exception &e)
 	{
@@ -128,6 +130,11 @@ void ADepthBufferRenderBin::setLightSpaceMatricesList(std::vector<glm::mat4> con
 void ADepthBufferRenderBin::setLightSpaceMatricesUbo(GLuint *ptr)
 {
 	this->_ubo_lightSpaceMatrix = ptr;
+}
+
+void ADepthBufferRenderBin::setTexShadowMap(GLuint id)
+{
+	this->_tex_shadow_map = id;
 }
 
 /*
@@ -185,6 +192,11 @@ std::vector<glm::mat4> const *ADepthBufferRenderBin::getLightSpaceMatricesList(v
 GLuint *ADepthBufferRenderBin::getLightSpaceMatricesUbo(void) const
 {
 	return (this->_ubo_lightSpaceMatrix);
+}
+
+GLuint ADepthBufferRenderBin::getTexShadowMap()
+{
+	return (this->_tex_shadow_map);
 }
 
 void ADepthBufferRenderBin::_allocate_vbo(size_t max_size)

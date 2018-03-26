@@ -132,6 +132,6 @@ class TestDirectionalShadow
 		ImageFramebuffer                                   _final_image;
 };
 
-void InitRunTestDirectionalShadow(Glfw_manager &manager);
+void InitRunTestDirectionalShadow(Glfw_manager &manager, glm::uvec2 const &res);
 
 #endif

@@ -79,10 +79,10 @@ uniform material uniform_material;
 uniform vec2 uniform_resolution;
 uniform sampler2D shadowMap;
 
-vec3 CalcDirLight(DirLightDataGL light, vec3 normal, vec3 viewDir, float shadowVal);
-vec3 CalcPointLight(PointLightDataGL light, vec3 normal, vec3 fragPos, vec3 viewDir, float shadowVal);
-vec3 CalcSpotLight(SpotLightDataGL light, vec3 normal, vec3 fragPos, vec3 viewDir, float shadowVal);
-float FindShadowValue(vec2 resolution);
+vec3 CalcDirLight(DirLightDataGL light, vec3 normal, vec3 viewDir, vec3 shadowVal);
+vec3 CalcPointLight(PointLightDataGL light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 shadowVal);
+vec3 CalcSpotLight(SpotLightDataGL light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 shadowVal);
+vec3 FindShadowValue(vec2 resolution);
 
 void main()
 {
@@ -91,25 +91,25 @@ void main()
     vec3 result = vec3(0.0f);
 
 	//0) Shadow value
-	float shadowValue = 1.0 - FindShadowValue(uniform_resolution);
+	vec3 shadowValue = vec3(1.0) - FindShadowValue(uniform_resolution);
 
     //1) DirLight
     for(int i = 0; i < nb_dir_light; i++)
-        result = CalcDirLight(dir[i], norm, viewDir);
+        result = CalcDirLight(dir[i], norm, viewDir, shadowValue);
 
     //2) PointLight
     for(int i = 0; i < nb_point_light; i++)
-        result += CalcPointLight(point[i], norm, FragPos, viewDir);
+        result += CalcPointLight(point[i], norm, FragPos, viewDir, shadowValue);
 
     //3) SpotLight
     for(int i = 0; i < nb_spot_light; i++)
-        result += CalcSpotLight(spot[i], norm, FragPos, viewDir);
+        result += CalcSpotLight(spot[i], norm, FragPos, viewDir, shadowValue);
 
     //Final Color
     FragColor = vec4(result, 1.0);
 }
 
-vec3 CalcDirLight(DirLightDataGL light, vec3 normal, vec3 viewDir, float shadowVal)
+vec3 CalcDirLight(DirLightDataGL light, vec3 normal, vec3 viewDir, vec3 shadowVal)
 {
     vec3 lightDir = normalize(-vec3(light.dir));
 
@@ -129,7 +129,7 @@ vec3 CalcDirLight(DirLightDataGL light, vec3 normal, vec3 viewDir, float shadowV
     return (ambient + diffuse + specular);
 }
 
-vec3 CalcPointLight(PointLightDataGL light, vec3 normal, vec3 fragPos, vec3 viewDir, float shadowVal)
+vec3 CalcPointLight(PointLightDataGL light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 shadowVal)
 {
     vec3 lightDir = normalize(vec3(light.pos) - fragPos);
 
@@ -154,7 +154,7 @@ vec3 CalcPointLight(PointLightDataGL light, vec3 normal, vec3 fragPos, vec3 view
     return (ambient + diffuse + specular);
 }
 
-vec3 CalcSpotLight(SpotLightDataGL light, vec3 normal, vec3 fragPos, vec3 viewDir, float shadowVal)
+vec3 CalcSpotLight(SpotLightDataGL light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 shadowVal)
 {
     vec3 lightDir = normalize(vec3(light.pos) - fragPos);
 
@@ -184,9 +184,9 @@ vec3 CalcSpotLight(SpotLightDataGL light, vec3 normal, vec3 fragPos, vec3 viewDi
     return (ambient + diffuse + specular);
 }
 
-float FindShadowValue(vec2 resolution)
+vec3 FindShadowValue(vec2 resolution)
 {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
-    float value = texture(shadowMap, uv);
+    vec3 value = vec3(texture(shadowMap, uv));
     return (value);
 }

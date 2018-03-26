@@ -29,7 +29,8 @@ static void init_ressources(RessourceManager &rm)
 				  "./shaders/DisplayDepthMap/DisplayDepthMap_fs.glsl");
 	rm.add_shader("DisplayImage", "./shaders/DisplayImage/DisplayImage_vs.glsl",
 				  "./shaders/DisplayImage/DisplayImage_fs.glsl");
-	rm.add_shader("MultiPointDirSpotLightWithShadowMap", "./shaders/MultiPointDirSpotLightFusedWithShadowMap/MultiPointDirSpotLightFusedWithShadowMap_vs.glsl",
+	rm.add_shader("MultiPointDirSpotLightWithShadowMap",
+				  "./shaders/MultiPointDirSpotLightFusedWithShadowMap/MultiPointDirSpotLightFusedWithShadowMap_vs.glsl",
 				  "./shaders/MultiPointDirSpotLightFusedWithShadowMap/MultiPointDirSpotLightFusedWithShadowMap_fs.glsl");
 	rm.add_model("WhiteBox", "./assets/models/WhiteBox/WhiteBox.obj");
 	rm.add_model("BlueBox", "./assets/models/BlueBox/BlueBox.obj");
@@ -81,13 +82,13 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating RenderBin for Light that uses LightContainer
 	ADepthBufferRenderBin::Params rb_light;
-	rb_light.shader       = &rm.getShader("MultiPointDirSpotLight");
+	rb_light.shader       = &rm.getShader("MultiPointDirSpotLightWithShadowMap");
 	rb_light.model        = &rm.getModel("BlueBox");
 	rb_light.max_instance = 100000;
 	ARenderBin *rb_box = (*world)->add_RenderBin("LightBlueBoxRB", rb_light,
 												 ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
 
-	rb_light.shader       = &rm.getShader("MultiPointDirSpotLight");
+	rb_light.shader       = &rm.getShader("MultiPointDirSpotLightWithShadowMap");
 	rb_light.model        = &rm.getModel("TenshiPlane");
 	rb_light.max_instance = 100000;
 	ARenderBin *rb_plane = (*world)->add_RenderBin("TenshiPlaneRB", rb_light,
@@ -119,22 +120,23 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	(*world)->add_Prop(prop_params);
 }
 
-static void init_program(TestDirectionalShadow **world, RessourceManager &rm, Glfw_manager &manager)
+static void init_program(TestDirectionalShadow **world, RessourceManager &rm,
+						 Glfw_manager &manager, glm::uvec2 res)
 {
-	manager.create_window("TestDirectionalShadow", 4, 1, 1280, 720, false);
+	manager.create_window("TestDirectionalShadow", 4, 1, res.x, res.y, false);
 	manager.init_input_callback();
 	init_ressources(rm);
 	load_test_level(manager, rm, world);
 }
 
-void InitRunTestDirectionalShadow(Glfw_manager &manager)
+void InitRunTestDirectionalShadow(Glfw_manager &manager, glm::uvec2 const &res)
 {
 	RessourceManager      rm;
 	TestDirectionalShadow *world = nullptr;
 
 	try
 	{
-		init_program(&world, rm, manager);
+		init_program(&world, rm, manager, res);
 	}
 	catch (std::exception &e)
 	{
