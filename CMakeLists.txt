@@ -76,7 +76,8 @@ set(SOURCE_FILES
 		srcs/Shadow/ShadowRenderer.cpp
 		srcs/OpenGL/RenderBin/AShadowRenderBin_Based/MultiDirLightShadowRenderBin.cpp
 		srcs/UI/ShaderSurface/ShaderSurface.cpp
-		srcs/UI/ShaderSurface/TextureShaderBuffer.cpp)
+		srcs/UI/ShaderSurface/TextureShaderBuffer.cpp
+		srcs/OpenGL/Ressource/AFramebuffer_Based/OmnidirectionalDepthMap.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
 target_link_libraries(primary glad glfw assimp)
 target_compile_options(primary PRIVATE -Wall -Wextra -g3)
