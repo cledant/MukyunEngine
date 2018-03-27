@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "OpenGL/Ressource/AFramebuffer_Based/DirectionalShadowMap.hpp"
+# include "OpenGL/Ressource/AFramebuffer_Based/DirectionalDepthMap.hpp"
 
-DirectionalShadowMap::DirectionalShadowMap(int h, int w) :
+DirectionalDepthMap::DirectionalDepthMap(int h, int w) :
 		AFramebuffer(h, w)
 {
 	try
@@ -28,40 +28,40 @@ DirectionalShadowMap::DirectionalShadowMap(int h, int w) :
 	}
 }
 
-DirectionalShadowMap::~DirectionalShadowMap()
+DirectionalDepthMap::~DirectionalDepthMap()
 {
 }
 
-DirectionalShadowMap::DirectionalShadowMap(DirectionalShadowMap &&src) : AFramebuffer()
+DirectionalDepthMap::DirectionalDepthMap(DirectionalDepthMap &&src) : AFramebuffer()
 {
 	*this = std::move(src);
 }
 
-DirectionalShadowMap &DirectionalShadowMap::operator=(DirectionalShadowMap &&rhs)
+DirectionalDepthMap &DirectionalDepthMap::operator=(DirectionalDepthMap &&rhs)
 {
 	AFramebuffer::operator=(std::move(rhs));
 	return (*this);
 }
 
-DirectionalShadowMap::InitException::InitException(void)
+DirectionalDepthMap::InitException::InitException(void)
 {
 	this->_msg = "DirectionalShadowMap : Failed initialize framebuffer";
 }
 
-DirectionalShadowMap::InitException::~InitException(void) throw()
+DirectionalDepthMap::InitException::~InitException(void) throw()
 {
 }
 
-DirectionalShadowMap::IncompleteBufferException::IncompleteBufferException(void)
+DirectionalDepthMap::IncompleteBufferException::IncompleteBufferException(void)
 {
 	this->_msg = "DirectionalShadowMap : Framebuffer is incomplet";
 }
 
-DirectionalShadowMap::IncompleteBufferException::~IncompleteBufferException(void) throw()
+DirectionalDepthMap::IncompleteBufferException::~IncompleteBufferException(void) throw()
 {
 }
 
-inline void DirectionalShadowMap::_allocate_buffers(void)
+inline void DirectionalDepthMap::_allocate_buffers(void)
 {
 	float borderColor[] = {1.0, 1.0, 1.0, 1.0};
 
@@ -80,8 +80,8 @@ inline void DirectionalShadowMap::_allocate_buffers(void)
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	if (glGetError() != GL_NO_ERROR)
-		throw DirectionalShadowMap::InitException();
+		throw DirectionalDepthMap::InitException();
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		throw DirectionalShadowMap::IncompleteBufferException();
+		throw DirectionalDepthMap::IncompleteBufferException();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

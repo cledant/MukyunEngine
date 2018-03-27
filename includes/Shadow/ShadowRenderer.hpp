@@ -15,7 +15,7 @@
 
 # include "OpenGL/RenderBin/ARenderBin.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
-# include "OpenGL/Ressource/AFramebuffer_Based/DirectionalShadowMap.hpp"
+# include "OpenGL/Ressource/AFramebuffer_Based/DirectionalDepthMap.hpp"
 # include "OpenGL/Ressource/AFramebuffer_Based/ImageFramebuffer.hpp"
 # include "OpenGL/RenderBin/ARenderBin_Based/AShadowRenderBin.hpp"
 # include "UI/ShaderSurface/TextureShaderSurface.hpp"

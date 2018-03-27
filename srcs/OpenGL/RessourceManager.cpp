@@ -50,9 +50,9 @@ void RessourceManager::add_image_framebuffer(std::string const &name, int h, int
 	this->_framebuffer_list[name] = std::make_unique<ImageFramebuffer>(w, h);
 }
 
-void RessourceManager::add_directional_light_depthbuffer(std::string const &name, int h, int w)
+void RessourceManager::add_directional_depthbuffer(std::string const &name, int h, int w)
 {
-	this->_framebuffer_list[name] = std::make_unique<DirectionalShadowMap>(w, h);
+	this->_framebuffer_list[name] = std::make_unique<DirectionalDepthMap>(w, h);
 }
 
 /*

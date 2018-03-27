@@ -309,7 +309,7 @@ void ShadowRenderer::_allocate_memory(int w, int h)
 	this->_db_rb_list.reserve(max_dir_light);
 	for (size_t i = 0; i < max_dir_light; ++i)
 	{
-		this->_depth_maps.emplace_back(new DirectionalShadowMap(DEPTHMAPSIZE, DEPTHMAPSIZE));
+		this->_depth_maps.emplace_back(new DirectionalDepthMap(DEPTHMAPSIZE, DEPTHMAPSIZE));
 		this->_shadow_maps.emplace_back(new ImageFramebuffer(h, w));
 	}
 }

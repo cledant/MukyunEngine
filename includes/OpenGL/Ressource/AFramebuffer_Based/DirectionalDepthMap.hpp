@@ -10,21 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DIRECTIONALSHADOWMAP_HPP
-# define DIRECTIONALSHADOWMAP_HPP
+#ifndef DIRECTIONALDEPTHMAP_HPP
+# define DIRECTIONALDEPTHMAP_HPP
 
 # include "OpenGL/Ressource/AFramebuffer.hpp"
 
-class DirectionalShadowMap : public AFramebuffer
+class DirectionalDepthMap : public AFramebuffer
 {
 	public :
 
-		DirectionalShadowMap(int w, int h);
-		virtual ~DirectionalShadowMap(void);
-		DirectionalShadowMap(DirectionalShadowMap const &src) = delete;
-		DirectionalShadowMap &operator=(DirectionalShadowMap const &rhs) = delete;
-		DirectionalShadowMap(DirectionalShadowMap &&src);
-		DirectionalShadowMap &operator=(DirectionalShadowMap &&rhs);
+		DirectionalDepthMap(int w, int h);
+		virtual ~DirectionalDepthMap(void);
+		DirectionalDepthMap(DirectionalDepthMap const &src) = delete;
+		DirectionalDepthMap &operator=(DirectionalDepthMap const &rhs) = delete;
+		DirectionalDepthMap(DirectionalDepthMap &&src);
+		DirectionalDepthMap &operator=(DirectionalDepthMap &&rhs);
 
 		class InitException : public GeneralException
 		{

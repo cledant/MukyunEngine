@@ -19,7 +19,7 @@
 # include "OpenGL/Ressource/Texture.hpp"
 # include "OpenGL/Ressource/Model.hpp"
 # include "OpenGL/Ressource/AFramebuffer_Based/ImageFramebuffer.hpp"
-# include "OpenGL/Ressource/AFramebuffer_Based/DirectionalShadowMap.hpp"
+# include "OpenGL/Ressource/AFramebuffer_Based/DirectionalDepthMap.hpp"
 # include "OpenGL/Ressource/AFramebuffer.hpp"
 # include "Exceptions/GeneralException.hpp"
 # include <map>
@@ -47,7 +47,7 @@ class RessourceManager
 						 std::string const &path,
 						 Texture::eTextureType type);
 		void add_image_framebuffer(std::string const &name, int h, int w);
-		void add_directional_light_depthbuffer(std::string const &name, int h, int w);
+		void add_directional_depthbuffer(std::string const &name, int h, int w);
 
 		/*
 		 * Getter

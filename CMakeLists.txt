@@ -71,7 +71,7 @@ set(SOURCE_FILES
 		srcs/OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.cpp
 		srcs/OpenGL/Ressource/AFramebuffer.cpp
 		srcs/OpenGL/Ressource/AFramebuffer_Based/ImageFramebuffer.cpp
-		srcs/OpenGL/Ressource/AFramebuffer_Based/DirectionalShadowMap.cpp
+		srcs/OpenGL/Ressource/AFramebuffer_Based/DirectionalDepthMap.cpp
 		srcs/OpenGL/RenderBin/ARenderBin_Based/AShadowRenderBin.cpp
 		srcs/Shadow/ShadowRenderer.cpp
 		srcs/OpenGL/RenderBin/AShadowRenderBin_Based/MultiDirLightShadowRenderBin.cpp
