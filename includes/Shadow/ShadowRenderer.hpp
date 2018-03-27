@@ -41,6 +41,7 @@ class ShadowRenderer
 			Shader const         *fuse_shadow_maps_shader;
 			LightContainer const *lc;
 			glm::vec2            dir_near_far;
+			glm::vec2            omni_near_far;
 			glm::mat4            *perspec_mult_view;
 			int                  win_h;
 			int                  win_w;
@@ -96,6 +97,7 @@ class ShadowRenderer
 		std::vector<glm::mat4> const &getVecDirLightSpaceMatrix(void) const;
 		std::vector<AShadowRenderBin const *> const &getShadowRbList(void);
 		glm::vec2 const getDirNearFar(void) const;
+		glm::vec2 const getOmniNearFar(void) const;
 		glm::mat4 const *getPerspecMultView(void) const;
 		TextureShaderSurface movePrinter(void);
 
@@ -126,6 +128,7 @@ class ShadowRenderer
 		std::vector<glm::mat4>                     _vec_dir_lightSpaceMatrix;
 		std::vector<AShadowRenderBin const *>      _shadow_rb_list;
 		glm::vec2                                  _dir_near_far;
+		glm::vec2                                  _omni_near_far;
 		glm::mat4 const                            *_perspec_mult_view;
 		TextureShaderSurface                       _printer;
 };

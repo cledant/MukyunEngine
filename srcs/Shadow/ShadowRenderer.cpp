@@ -21,6 +21,7 @@ ShadowRenderer::Params::Params(void)
 	this->fuse_shadow_maps_shader = nullptr;
 	this->lc                      = nullptr;
 	this->dir_near_far            = glm::vec2(1.0f, 30.0f);
+	this->omni_near_far           = glm::vec2(1.0f, 30.0f);
 	this->perspec_mult_view       = nullptr;
 	this->win_h                   = 720;
 	this->win_w                   = 1280;
@@ -32,17 +33,22 @@ ShadowRenderer::Params::~Params(void)
 
 ShadowRenderer::ShadowRenderer(void) :
 		_dir_depth_map_shader(nullptr), _dir_shadow_map_shader(nullptr),
+		_omni_depth_map_shader(nullptr), _omni_shadow_map_shader(nullptr),
 		_fuse_shadow_maps_shader(nullptr), _lc(nullptr), _dir_near_far(glm::vec2(1.0f, 30.0f)),
-		_perspec_mult_view(nullptr), _printer(nullptr, nullptr, nullptr, 0)
+		_omni_near_far(glm::vec2(1.0f, 30.0f)), _perspec_mult_view(nullptr),
+		_printer(nullptr, nullptr, nullptr, 0)
 {
 }
 
 ShadowRenderer::ShadowRenderer(ShadowRenderer::Params const &params) :
 		_dir_depth_map_shader(params.dir_depth_map_shader),
 		_dir_shadow_map_shader(params.dir_shadow_map_shader),
+		_omni_depth_map_shader(params.omni_depth_map_shader),
+		_omni_shadow_map_shader(params.omni_shadow_map_shader),
 		_fuse_shadow_maps_shader(params.fuse_shadow_maps_shader), _lc(params.lc),
 		_fused_shadow_map(nullptr), _dir_near_far(params.dir_near_far),
-		_perspec_mult_view(params.perspec_mult_view), _printer(nullptr, nullptr, nullptr, 0)
+		_omni_near_far(params.omni_near_far), _perspec_mult_view(params.perspec_mult_view),
+		_printer(nullptr, nullptr, nullptr, 0)
 {
 	try
 	{
@@ -72,6 +78,8 @@ ShadowRenderer &ShadowRenderer::operator=(ShadowRenderer &&rhs)
 		this->_lc = rhs.getLightContainer();
 		this->_dir_shadow_maps.reserve(this->_lc->getMaxDirLightNumber());
 		this->_dir_depth_maps.reserve(this->_lc->getMaxDirLightNumber());
+		this->_omni_shadow_maps.reserve(this->_lc->getMaxPointLightNumber());
+		this->_omni_depth_maps.reserve(this->_lc->getMaxPointLightNumber());
 		this->_vec_dir_lightSpaceMatrix.reserve(this->_lc->getMaxDirLightNumber());
 		this->_shadow_rb_list.reserve(INITIAL_SHADOW_RB_SIZE);
 		this->_dir_depth_map_shader     = rhs.getDirDepthMapShader();
@@ -89,6 +97,7 @@ ShadowRenderer &ShadowRenderer::operator=(ShadowRenderer &&rhs)
 		this->_printer                  = rhs.movePrinter();
 		this->_omni_shadow_maps         = rhs.moveOmniShadowMaps();
 		this->_omni_depth_maps          = rhs.moveOmniDepthMaps();
+		this->_omni_near_far            = rhs.getOmniNearFar();
 	}
 	catch (std::exception &e)
 	{
@@ -236,6 +245,11 @@ std::vector<AShadowRenderBin const *> const &ShadowRenderer::getShadowRbList(voi
 glm::vec2 const ShadowRenderer::getDirNearFar(void) const
 {
 	return (this->_dir_near_far);
+}
+
+glm::vec2 const ShadowRenderer::getOmniNearFar(void) const
+{
+	return (this->_omni_near_far);
 }
 
 glm::mat4 const *ShadowRenderer::getPerspecMultView(void) const
