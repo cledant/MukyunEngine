@@ -71,7 +71,7 @@ ShadowRenderer &ShadowRenderer::operator=(ShadowRenderer &&rhs)
 		this->_dir_shadow_maps.reserve(this->_lc->getMaxDirLightNumber());
 		this->_dir_depth_maps.reserve(this->_lc->getMaxDirLightNumber());
 		this->_vec_lightSpaceMatrix.reserve(this->_lc->getMaxDirLightNumber());
-		this->_db_rb_list.reserve(this->_lc->getMaxDirLightNumber());
+		this->_shadow_rb_list.reserve(this->_lc->getMaxDirLightNumber());
 		this->_dir_depth_map_shader    = rhs.getDirDepthMapShader();
 		this->_dir_shadow_map_shader   = rhs.getDirShadowMapShader();
 		this->_fuse_shadow_maps_shader = rhs.getFuseShadowMapShader();
@@ -79,7 +79,7 @@ ShadowRenderer &ShadowRenderer::operator=(ShadowRenderer &&rhs)
 		this->_dir_shadow_maps         = rhs.moveDirShadowMaps();
 		this->_fused_shadow_map        = rhs.moveFusedShadowMap();
 		this->_vec_lightSpaceMatrix    = rhs.getVecLightSpaceMatrix();
-		this->_db_rb_list              = rhs.getDbRbList();
+		this->_shadow_rb_list          = rhs.getShadowRbList();
 		this->_dir_near_far            = rhs.getNearFar();
 		this->_perspec_mult_view       = rhs.getPerspecMultView();
 		this->_printer                 = rhs.movePrinter();
@@ -99,7 +99,7 @@ ShadowRenderer &ShadowRenderer::operator=(ShadowRenderer &&rhs)
 void ShadowRenderer::addRenderBufferToList(AShadowRenderBin *ptr)
 {
 	ptr->setTexFusedShadowMap(this->_fused_shadow_map->getTextureBuffer());
-	this->_db_rb_list.push_back(ptr);
+	this->_shadow_rb_list.push_back(ptr);
 }
 
 void ShadowRenderer::setLightContainer(LightContainer const *ptr)
@@ -188,9 +188,9 @@ std::vector<glm::mat4> const &ShadowRenderer::getVecLightSpaceMatrix(void) const
 	return (this->_vec_lightSpaceMatrix);
 }
 
-std::vector<AShadowRenderBin const *> const &ShadowRenderer::getDbRbList(void)
+std::vector<AShadowRenderBin const *> const &ShadowRenderer::getShadowRbList(void)
 {
-	return (this->_db_rb_list);
+	return (this->_shadow_rb_list);
 }
 
 glm::vec2 const ShadowRenderer::getNearFar(void) const
@@ -238,8 +238,8 @@ void ShadowRenderer::computeDirectionalDepthMaps(void)
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
 		this->_dir_depth_map_shader->setMat4(uniform_lightSpaceMatrix, (this->_vec_lightSpaceMatrix)[i]);
-		for (size_t j = 0; j < this->_db_rb_list.size(); ++j)
-			this->_db_rb_list[j]->drawNoShader();
+		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
+			this->_shadow_rb_list[j]->drawNoShader();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -266,8 +266,8 @@ void ShadowRenderer::computeShadowMaps(void)
 		glActiveTexture(GL_TEXTURE0);
 		glUniform1i(shadowMap, 0);
 		glBindTexture(GL_TEXTURE_2D, this->_dir_depth_maps[i].get()->getTextureBuffer());
-		for (size_t j = 0; j < this->_db_rb_list.size(); ++j)
-			this->_db_rb_list[j]->drawNoShader();
+		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
+			this->_shadow_rb_list[j]->drawNoShader();
 	}
 }
 
@@ -306,7 +306,7 @@ void ShadowRenderer::_allocate_memory(int w, int h)
 	this->_dir_shadow_maps.reserve(max_dir_light);
 	this->_dir_depth_maps.reserve(max_dir_light);
 	this->_vec_lightSpaceMatrix.reserve(max_dir_light);
-	this->_db_rb_list.reserve(max_dir_light);
+	this->_shadow_rb_list.reserve(max_dir_light);
 	for (size_t i = 0; i < max_dir_light; ++i)
 	{
 		this->_dir_depth_maps.emplace_back(new DirectionalDepthMap(DEPTHMAPSIZE, DEPTHMAPSIZE));

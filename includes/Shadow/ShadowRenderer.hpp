@@ -84,7 +84,7 @@ class ShadowRenderer
 		std::unique_ptr<AFramebuffer> const &getFusedShadowMap(void) const;
 		std::unique_ptr<AFramebuffer> moveFusedShadowMap(void);
 		std::vector<glm::mat4> const &getVecLightSpaceMatrix(void) const;
-		std::vector<AShadowRenderBin const *> const &getDbRbList(void);
+		std::vector<AShadowRenderBin const *> const &getShadowRbList(void);
 		glm::vec2 const getNearFar(void) const;
 		glm::mat4 const *getPerspecMultView(void) const;
 		TextureShaderSurface movePrinter(void);
@@ -110,7 +110,7 @@ class ShadowRenderer
 		std::vector<std::unique_ptr<AFramebuffer>> _dir_shadow_maps;
 		std::unique_ptr<AFramebuffer>              _fused_shadow_map;
 		std::vector<glm::mat4>                     _vec_lightSpaceMatrix;
-		std::vector<AShadowRenderBin const *>      _db_rb_list;
+		std::vector<AShadowRenderBin const *>      _shadow_rb_list;
 		glm::vec2                                  _dir_near_far;
 		glm::mat4 const                            *_perspec_mult_view;
 		TextureShaderSurface                       _printer;
