@@ -36,7 +36,7 @@ class ShadowRenderer
 			Shader const         *dir_shadow_map_shader;
 			Shader const         *fuse_shadow_maps_shader;
 			LightContainer const *lc;
-			glm::vec2            near_far;
+			glm::vec2            dir_near_far;
 			glm::mat4            *perspec_mult_view;
 			int                  win_h;
 			int                  win_w;
@@ -44,8 +44,10 @@ class ShadowRenderer
 
 		enum eType
 		{
-			DEPTH_MAP,
-			SINGLE_SHADOW_MAP,
+			DIR_DEPTH_MAP,
+			DIR_SINGLE_SHADOW_MAP,
+			OMNI_DEPTH_MAP,
+			OMNI_SINGLE_SHADOW_MAP,
 			TOTAL_SHADOW_MAP,
 		};
 
@@ -64,7 +66,7 @@ class ShadowRenderer
 		void addRenderBufferToList(AShadowRenderBin *ptr);
 		void setLightContainer(LightContainer const *ptr);
 		void setPerspecMultView(glm::mat4 const *ptr);
-		void setNearFar(glm::vec2 const vec);
+		void setDirNearFar(glm::vec2 const vec);
 
 		/*
 		 * Getter
@@ -75,10 +77,10 @@ class ShadowRenderer
 		Shader const *getDirShadowMapShader(void) const;
 		Shader const *getFuseShadowMapShader(void) const;
 		LightContainer const *getLightContainer(void) const;
-		std::vector<std::unique_ptr<AFramebuffer>> const &getDepthMaps(void) const;
-		std::vector<std::unique_ptr<AFramebuffer>> moveDepthMaps(void);
-		std::vector<std::unique_ptr<AFramebuffer>> const &getShadowMaps(void) const;
-		std::vector<std::unique_ptr<AFramebuffer>> moveShadowMaps(void);
+		std::vector<std::unique_ptr<AFramebuffer>> const &getDirDepthMaps(void) const;
+		std::vector<std::unique_ptr<AFramebuffer>> moveDirDepthMaps(void);
+		std::vector<std::unique_ptr<AFramebuffer>> const &getDirShadowMaps(void) const;
+		std::vector<std::unique_ptr<AFramebuffer>> moveDirShadowMaps(void);
 		std::unique_ptr<AFramebuffer> const &getFusedShadowMap(void) const;
 		std::unique_ptr<AFramebuffer> moveFusedShadowMap(void);
 		std::vector<glm::mat4> const &getVecLightSpaceMatrix(void) const;
@@ -104,12 +106,12 @@ class ShadowRenderer
 		Shader const                               *_dir_shadow_map_shader;
 		Shader const                               *_fuse_shadow_maps_shader;
 		LightContainer const                       *_lc;
-		std::vector<std::unique_ptr<AFramebuffer>> _depth_maps;
-		std::vector<std::unique_ptr<AFramebuffer>> _shadow_maps;
+		std::vector<std::unique_ptr<AFramebuffer>> _dir_depth_maps;
+		std::vector<std::unique_ptr<AFramebuffer>> _dir_shadow_maps;
 		std::unique_ptr<AFramebuffer>              _fused_shadow_map;
 		std::vector<glm::mat4>                     _vec_lightSpaceMatrix;
-		std::vector<AShadowRenderBin const *> _db_rb_list;
-		glm::vec2                                  _near_far;
+		std::vector<AShadowRenderBin const *>      _db_rb_list;
+		glm::vec2                                  _dir_near_far;
 		glm::mat4 const                            *_perspec_mult_view;
 		TextureShaderSurface                       _printer;
 };

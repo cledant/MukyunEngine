@@ -54,9 +54,7 @@ class AShadowRenderBin : public ARenderBin
 		 * Setter
 		 */
 
-		void setDepthMapsList(std::vector<std::unique_ptr<AFramebuffer>> const *ptr);
-		void setLightSpaceMatricesList(std::vector<glm::mat4> const *ptr);
-		void setTexShadowMap(GLuint id);
+		void setTexFusedShadowMap(GLuint id);
 
 		/*
 		 * Getter
@@ -69,23 +67,19 @@ class AShadowRenderBin : public ARenderBin
 		size_t getMaxInvModelMatricesNumber(void) const;
 		GLuint getVBOinvModelMatrices(void) const;
 		GLuint moveVBOinvModelMatrices(void);
-		std::vector<std::unique_ptr<AFramebuffer>> const *getDepthMapsList(void) const;
-		std::vector<glm::mat4> const *getLightSpaceMatricesList(void) const;
-		GLuint getTexShadowMap(void) const;
+		GLuint getTexFusedShadowMap(void) const;
 		int getWinHeight(void) const;
 		int getWinWidth(void) const;
 
 	protected :
 
-		LightContainer const                             *_lc;
-		glm::vec3 const                                  *_view_pos;
-		std::vector<glm::mat4>                           _inv_model_matrices;
-		GLuint                                           _vbo_inv_model_matrices;
-		std::vector<std::unique_ptr<AFramebuffer>> const *_vec_depth_maps;
-		std::vector<glm::mat4> const                     *_vec_lightSpaceMatrix;
-		GLuint                                           _tex_shadow_map;
-		int                                              _win_w;
-		int                                              _win_h;
+		LightContainer const   *_lc;
+		glm::vec3 const        *_view_pos;
+		std::vector<glm::mat4> _inv_model_matrices;
+		GLuint                 _vbo_inv_model_matrices;
+		GLuint                 _tex_fused_shadow_map;
+		int                    _win_w;
+		int                    _win_h;
 
 		void _allocate_vbo(size_t max_size);
 		void _update_vector_inv_model(void);

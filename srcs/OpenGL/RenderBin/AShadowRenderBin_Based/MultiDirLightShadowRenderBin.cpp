@@ -24,7 +24,8 @@ MultiPointDirSpotLightShadowRenderBin::~MultiPointDirSpotLightShadowRenderBin(vo
 {
 }
 
-MultiPointDirSpotLightShadowRenderBin::MultiPointDirSpotLightShadowRenderBin(MultiPointDirSpotLightShadowRenderBin &&src) :
+MultiPointDirSpotLightShadowRenderBin::MultiPointDirSpotLightShadowRenderBin(
+		MultiPointDirSpotLightShadowRenderBin &&src) :
 		AShadowRenderBin(std::move(src))
 {
 	*this = std::move(src);
@@ -82,7 +83,7 @@ void MultiPointDirSpotLightShadowRenderBin::draw(void)
 		glBindTexture(GL_TEXTURE_2D, (this->_model->getMeshList())[i].getMaterial().specularMap);
 		glActiveTexture(GL_TEXTURE2);
 		glUniform1i(uniform_shadow_map, 2);
-		glBindTexture(GL_TEXTURE_2D, this->_tex_shadow_map);
+		glBindTexture(GL_TEXTURE_2D, this->_tex_fused_shadow_map);
 		this->_shader->setVec2(uniform_resolution, glm::vec2(this->_win_w, this->_win_h));
 		this->_shader->setFloat(uniform_mat_shininess, (this->_model->getMeshList())[i].getMaterial().shininess);
 		this->_shader->setVec3(uniform_mat_ambient, (this->_model->getMeshList())[i].getMaterial().ambient);

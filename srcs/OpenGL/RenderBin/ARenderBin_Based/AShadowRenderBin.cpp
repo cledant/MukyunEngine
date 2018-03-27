@@ -27,15 +27,13 @@ AShadowRenderBin::Params::~Params(void)
 
 AShadowRenderBin::AShadowRenderBin(void) :
 		ARenderBin(), _lc(nullptr), _view_pos(nullptr), _vbo_inv_model_matrices(0),
-		_vec_depth_maps(nullptr), _vec_lightSpaceMatrix(nullptr),
 		_win_w(1280), _win_h(720)
 {
 }
 
 AShadowRenderBin::AShadowRenderBin(AShadowRenderBin::Params const &params) :
 		ARenderBin(params), _lc(params.lc), _view_pos(params.viewPos),
-		_vbo_inv_model_matrices(0), _vec_depth_maps(nullptr),
-		_vec_lightSpaceMatrix(nullptr), _win_w(params.win_w), _win_h(params.win_h)
+		_vbo_inv_model_matrices(0), _win_w(params.win_w), _win_h(params.win_h)
 {
 	try
 	{
@@ -61,8 +59,7 @@ AShadowRenderBin::~AShadowRenderBin(void)
 
 AShadowRenderBin::AShadowRenderBin(AShadowRenderBin &&src) :
 		ARenderBin(std::move(src)), _lc(nullptr), _view_pos(nullptr),
-		_vbo_inv_model_matrices(0), _vec_depth_maps(nullptr),
-		_vec_lightSpaceMatrix(nullptr)
+		_vbo_inv_model_matrices(0)
 {
 	*this = std::move(src);
 }
@@ -78,9 +75,7 @@ AShadowRenderBin &AShadowRenderBin::operator=(
 		this->_vbo_inv_model_matrices = rhs.moveVBOinvModelMatrices();
 		this->_lc                     = rhs.getLightContainer();
 		this->_view_pos               = rhs.getViewPos();
-		this->_vec_depth_maps         = rhs.getDepthMapsList();
-		this->_vec_lightSpaceMatrix   = rhs.getLightSpaceMatricesList();
-		this->_tex_shadow_map         = rhs.getTexShadowMap();
+		this->_tex_fused_shadow_map   = rhs.getTexFusedShadowMap();
 		this->_win_h                  = rhs.getWinHeight();
 		this->_win_w                  = rhs.getWinWidth();
 	}
@@ -121,19 +116,9 @@ void AShadowRenderBin::flushData(void)
  * Setter
  */
 
-void AShadowRenderBin::setDepthMapsList(std::vector<std::unique_ptr<AFramebuffer>> const *ptr)
+void AShadowRenderBin::setTexFusedShadowMap(GLuint id)
 {
-	this->_vec_depth_maps = ptr;
-}
-
-void AShadowRenderBin::setLightSpaceMatricesList(std::vector<glm::mat4> const *ptr)
-{
-	this->_vec_lightSpaceMatrix = ptr;
-}
-
-void AShadowRenderBin::setTexShadowMap(GLuint id)
-{
-	this->_tex_shadow_map = id;
+	this->_tex_fused_shadow_map = id;
 }
 
 /*
@@ -178,19 +163,9 @@ GLuint AShadowRenderBin::moveVBOinvModelMatrices(void)
 	return (tmp);
 }
 
-std::vector<std::unique_ptr<AFramebuffer>> const *AShadowRenderBin::getDepthMapsList(void) const
+GLuint AShadowRenderBin::getTexFusedShadowMap() const
 {
-	return (this->_vec_depth_maps);
-}
-
-std::vector<glm::mat4> const *AShadowRenderBin::getLightSpaceMatricesList(void) const
-{
-	return (this->_vec_lightSpaceMatrix);
-}
-
-GLuint AShadowRenderBin::getTexShadowMap() const
-{
-	return (this->_tex_shadow_map);
+	return (this->_tex_fused_shadow_map);
 }
 
 int AShadowRenderBin::getWinHeight() const
