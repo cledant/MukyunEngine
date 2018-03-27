@@ -80,7 +80,7 @@ ShadowRenderer &ShadowRenderer::operator=(ShadowRenderer &&rhs)
 		this->_fused_shadow_map        = rhs.moveFusedShadowMap();
 		this->_vec_lightSpaceMatrix    = rhs.getVecLightSpaceMatrix();
 		this->_shadow_rb_list          = rhs.getShadowRbList();
-		this->_dir_near_far            = rhs.getNearFar();
+		this->_dir_near_far            = rhs.getDirNearFar();
 		this->_perspec_mult_view       = rhs.getPerspecMultView();
 		this->_printer                 = rhs.movePrinter();
 	}
@@ -193,7 +193,7 @@ std::vector<AShadowRenderBin const *> const &ShadowRenderer::getShadowRbList(voi
 	return (this->_shadow_rb_list);
 }
 
-glm::vec2 const ShadowRenderer::getNearFar(void) const
+glm::vec2 const ShadowRenderer::getDirNearFar(void) const
 {
 	return (this->_dir_near_far);
 }
@@ -231,7 +231,7 @@ void ShadowRenderer::computeDirectionalDepthMaps(void)
 	GLint  uniform_lightSpaceMatrix = glGetUniformLocation(shader_id, "uniform_lightSpaceMatrix");
 
 	this->_dir_depth_map_shader->use();
-	for (size_t i = 0; i < this->_vec_lightSpaceMatrix.size(); ++i)
+	for (size_t i = 0; i < this->_lc->getCurrentDirLightNumber(); ++i)
 	{
 		this->_dir_depth_maps[i]->useFramebuffer();
 		this->_dir_depth_maps[i]->setViewport();
@@ -244,7 +244,7 @@ void ShadowRenderer::computeDirectionalDepthMaps(void)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ShadowRenderer::computeShadowMaps(void)
+void ShadowRenderer::computeDirectionalShadowMaps(void)
 {
 	GLuint shader_id                     = this->_dir_shadow_map_shader->getShaderProgram();
 	GLint  uniform_lightSpaceMatrix      = glGetUniformLocation(shader_id, "uniform_lightSpaceMatrix");
@@ -253,7 +253,7 @@ void ShadowRenderer::computeShadowMaps(void)
 	GLint  shadowMap                     = glGetUniformLocation(shader_id, "shadowMap");
 
 	this->_dir_shadow_map_shader->use();
-	for (size_t i = 0; i < this->_vec_lightSpaceMatrix.size(); ++i)
+	for (size_t i = 0; i < this->_lc->getCurrentDirLightNumber(); ++i)
 	{
 		this->_dir_shadow_maps[i]->useFramebuffer();
 		this->_dir_shadow_maps[i]->setViewport();
@@ -278,7 +278,7 @@ void ShadowRenderer::fuseShadowMaps(void)
 	this->_fused_shadow_map.get()->setViewport();
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	for (size_t i = 0; i < this->_vec_lightSpaceMatrix.size(); ++i)
+	for (size_t i = 0; i < this->_lc->getCurrentDirLightNumber(); ++i)
 	{
 		if (!i)
 		{
@@ -301,12 +301,14 @@ void ShadowRenderer::fuseShadowMaps(void)
 
 void ShadowRenderer::_allocate_memory(int w, int h)
 {
-	size_t max_dir_light = this->_lc->getMaxDirLightNumber();
+	size_t max_dir_light   = this->_lc->getMaxDirLightNumber();
+	size_t max_spot_light  = this->_lc->getMaxSpotLightNumber();
+	size_t max_point_light = this->_lc->getMaxPointLightNumber();
 
 	this->_dir_shadow_maps.reserve(max_dir_light);
 	this->_dir_depth_maps.reserve(max_dir_light);
 	this->_vec_lightSpaceMatrix.reserve(max_dir_light);
-	this->_shadow_rb_list.reserve(max_dir_light);
+	this->_shadow_rb_list.reserve(max_dir_light + max_point_light + max_spot_light);
 	for (size_t i = 0; i < max_dir_light; ++i)
 	{
 		this->_dir_depth_maps.emplace_back(new DirectionalDepthMap(DEPTHMAPSIZE, DEPTHMAPSIZE));

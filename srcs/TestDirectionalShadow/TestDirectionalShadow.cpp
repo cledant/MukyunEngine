@@ -69,7 +69,7 @@ void TestDirectionalShadow::startGameLoop(Glfw_manager &manager)
 			manager.update_title_fps();
 			this->_sr.update();
 			this->_sr.computeDirectionalDepthMaps();
-			this->_sr.computeShadowMaps();
+			this->_sr.computeDirectionalShadowMaps();
 			this->_sr.fuseShadowMaps();
 			this->_final_image.useFramebuffer();
 			this->_final_image.setViewport();

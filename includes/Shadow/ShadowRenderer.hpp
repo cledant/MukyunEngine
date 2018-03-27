@@ -85,7 +85,7 @@ class ShadowRenderer
 		std::unique_ptr<AFramebuffer> moveFusedShadowMap(void);
 		std::vector<glm::mat4> const &getVecLightSpaceMatrix(void) const;
 		std::vector<AShadowRenderBin const *> const &getShadowRbList(void);
-		glm::vec2 const getNearFar(void) const;
+		glm::vec2 const getDirNearFar(void) const;
 		glm::mat4 const *getPerspecMultView(void) const;
 		TextureShaderSurface movePrinter(void);
 
@@ -95,7 +95,7 @@ class ShadowRenderer
 
 		virtual void update(void);
 		virtual void computeDirectionalDepthMaps(void);
-		virtual void computeShadowMaps(void);
+		virtual void computeDirectionalShadowMaps(void);
 		virtual void fuseShadowMaps(void);
 
 	protected :
