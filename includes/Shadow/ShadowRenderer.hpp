@@ -47,6 +47,11 @@ class ShadowRenderer
 			int                  win_w;
 		};
 
+		struct OmniProjMatrices
+		{
+			glm::mat4 mat[6];
+		};
+
 		enum eType
 		{
 			DIR_DEPTH_MAP,
@@ -71,7 +76,8 @@ class ShadowRenderer
 		void addRenderBufferToList(AShadowRenderBin *ptr);
 		void setLightContainer(LightContainer const *ptr);
 		void setPerspecMultView(glm::mat4 const *ptr);
-		void setDirNearFar(glm::vec2 const vec);
+		void setDirNearFar(glm::vec2 const &vec);
+		void setOmniNearFar(glm::vec2 const &vec);
 
 		/*
 		 * Getter
@@ -100,6 +106,8 @@ class ShadowRenderer
 		glm::vec2 const getOmniNearFar(void) const;
 		glm::mat4 const *getPerspecMultView(void) const;
 		TextureShaderSurface movePrinter(void);
+		glm::mat4 const &getOmniProjMatrix(void) const;
+		std::vector<ShadowRenderer::OmniProjMatrices> const &getVecOmniLightSpaceMatrix(void) const;
 
 		/*
 		 * Computation
@@ -108,6 +116,8 @@ class ShadowRenderer
 		virtual void update(void);
 		virtual void computeDirectionalDepthMaps(void);
 		virtual void computeDirectionalShadowMaps(void);
+		virtual void computeOmniDepthMaps(void);
+		virtual void computeOmniShadowMaps(void);
 		virtual void fuseShadowMaps(void);
 
 	protected :
@@ -126,6 +136,8 @@ class ShadowRenderer
 		std::vector<std::unique_ptr<AFramebuffer>> _omni_shadow_maps;
 		std::unique_ptr<AFramebuffer>              _fused_shadow_map;
 		std::vector<glm::mat4>                     _vec_dir_lightSpaceMatrix;
+		glm::mat4                                  _omni_proj_matrix;
+		std::vector<OmniProjMatrices>              _vec_omni_lightSpaceMatrix;
 		std::vector<AShadowRenderBin const *>      _shadow_rb_list;
 		glm::vec2                                  _dir_near_far;
 		glm::vec2                                  _omni_near_far;
