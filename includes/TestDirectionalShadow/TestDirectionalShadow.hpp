@@ -114,7 +114,7 @@ class TestDirectionalShadow
 		std::map<std::string, std::unique_ptr<ARenderBin>> _render_bin_list;
 		std::vector<std::unique_ptr<IEntity>>              _entity_list;
 		LightContainer                                     _light_container;
-		ShadowRenderer                            _sr;
+		ShadowRenderer                                     _sr;
 		GLFW_Window const                                  &_window;
 		glm::mat4                                          _perspective;
 		Camera                                             _camera;
@@ -133,5 +133,6 @@ class TestDirectionalShadow
 };
 
 void InitRunTestDirectionalShadow(Glfw_manager &manager, glm::uvec2 const &res);
+void InitRunTestOmniShadow(Glfw_manager &manager, glm::uvec2 const &res);
 
 #endif

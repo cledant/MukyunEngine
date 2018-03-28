@@ -29,14 +29,38 @@ Shader::Shader(std::string const &vs_path, std::string const &fs_path) : _shader
 	}
 	catch (std::exception &e)
 	{
-		if (vs != 0)
-			glDeleteShader(vs);
-		if (fs != 0)
-			glDeleteShader(fs);
+		glDeleteShader(vs);
+		glDeleteShader(fs);
 		throw;
 	}
 	glDeleteShader(vs);
 	glDeleteShader(fs);
+}
+
+Shader::Shader(std::string const &vs_path, std::string const &gs_path,
+			   std::string const &fs_path) : _shader_program(0)
+{
+	GLuint vs = 0;
+	GLuint fs = 0;
+	GLuint gs = 0;
+
+	try
+	{
+		vs = Shader::_load_shader(vs_path, GL_VERTEX_SHADER);
+		fs = Shader::_load_shader(fs_path, GL_FRAGMENT_SHADER);
+		gs = Shader::_load_shader(gs_path, GL_GEOMETRY_SHADER);
+		this->_shader_program = Shader::_compile_program(vs, gs, fs);
+	}
+	catch (std::exception &e)
+	{
+		glDeleteShader(vs);
+		glDeleteShader(fs);
+		glDeleteShader(gs);
+		throw;
+	}
+	glDeleteShader(vs);
+	glDeleteShader(fs);
+	glDeleteShader(gs);
 }
 
 Shader::~Shader(void)
@@ -145,6 +169,26 @@ GLuint Shader::_compile_program(GLuint vs, GLuint fs)
 	if ((prog = glCreateProgram()) == 0)
 		throw Shader::AllocationException();
 	glAttachShader(prog, vs);
+	glAttachShader(prog, fs);
+	glLinkProgram(prog);
+	glGetProgramiv(prog, GL_LINK_STATUS, &success);
+	if (success != GL_TRUE)
+	{
+		Shader::_get_shader_error(prog);
+		throw Shader::LinkException();
+	}
+	return (prog);
+}
+
+GLuint Shader::_compile_program(GLuint vs, GLuint gs, GLuint fs)
+{
+	GLuint prog = 0;
+	GLint  success;
+
+	if ((prog = glCreateProgram()) == 0)
+		throw Shader::AllocationException();
+	glAttachShader(prog, vs);
+	glAttachShader(prog, gs);
 	glAttachShader(prog, fs);
 	glLinkProgram(prog);
 	glGetProgramiv(prog, GL_LINK_STATUS, &success);

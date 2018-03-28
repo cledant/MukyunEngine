@@ -41,6 +41,10 @@ class RessourceManager
 		void add_shader(std::string const &name,
 						std::string const &vs_path,
 						std::string const &fs_path);
+		void add_shader(std::string const &name,
+						std::string const &vs_path,
+						std::string const &gs_path,
+						std::string const &fs_path);
 		void add_model(std::string const &name,
 					   std::string const &path);
 		void add_texture(std::string const &name,

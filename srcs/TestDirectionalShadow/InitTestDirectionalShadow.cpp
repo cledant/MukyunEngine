@@ -23,8 +23,11 @@ static void init_ressources(RessourceManager &rm)
 				  "./shaders/MultiPointDirSpotLight/MultiPointDirSpotLight_fs.glsl");
 	rm.add_shader("ComputeDirLightDepthMap", "./shaders/ComputeDirLightDepthMap/ComputeDirLightDepthMap_vs.glsl",
 				  "./shaders/ComputeDirLightDepthMap/ComputeDirLightDepthMap_fs.glsl");
-	rm.add_shader("ComputeShadowMaps", "./shaders/ComputeShadowMaps/ComputeShadowMaps_vs.glsl",
-				  "./shaders/ComputeShadowMaps/ComputeShadowMaps_fs.glsl");
+	rm.add_shader("ComputeOmniDepthMap", "./shaders/ComputeOmniDepthMap/ComputeOmniDepthMap_vs.glsl",
+				  "./shaders/ComputeOmniDepthMap/ComputeOmniDepthMap_gs.glsl",
+				  "./shaders/ComputeOmniDepthMap/ComputeOmniDepthMap_fs.glsl");
+	rm.add_shader("ComputeDirShadowMaps", "./shaders/ComputeDirShadowMaps/ComputeDirShadowMaps_vs.glsl",
+				  "./shaders/ComputeDirShadowMaps/ComputeDirShadowMaps_fs.glsl");
 	rm.add_shader("DisplayDepthMap", "./shaders/DisplayDepthMap/DisplayDepthMap_vs.glsl",
 				  "./shaders/DisplayDepthMap/DisplayDepthMap_fs.glsl");
 	rm.add_shader("DisplayImage", "./shaders/DisplayImage/DisplayImage_vs.glsl",
@@ -44,7 +47,8 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	//Setting Shadow Renderer params
 	ShadowRenderer::Params sr_params;
 	sr_params.dir_depth_map_shader    = &rm.getShader("ComputeDirLightDepthMap");
-	sr_params.dir_shadow_map_shader   = &rm.getShader("ComputeShadowMaps");
+	sr_params.dir_shadow_map_shader   = &rm.getShader("ComputeDirShadowMaps");
+	sr_params.omni_depth_map_shader   = &rm.getShader("ComputeOmniDepthMap");
 	sr_params.fuse_shadow_maps_shader = &rm.getShader("DisplayImage");
 	sr_params.win_w                   = manager.getWindow().cur_win_w;
 	sr_params.win_h                   = manager.getWindow().cur_win_h;

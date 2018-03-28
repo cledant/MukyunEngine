@@ -31,6 +31,14 @@ void RessourceManager::add_shader(std::string const &name,
 															 Shader(vs_path, fs_path)));
 }
 
+void RessourceManager::add_shader(std::string const &name, std::string const &vs_path,
+								  std::string const &gs_path, std::string const &fs_path)
+{
+	this->_shader_list.insert(std::pair<std::string, Shader>(name,
+															 Shader(vs_path, gs_path,
+																	fs_path)));
+}
+
 void RessourceManager::add_model(std::string const &name,
 								 std::string const &path)
 {

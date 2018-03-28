@@ -21,6 +21,7 @@
 # include "OpenGL/RenderBin/ARenderBin_Based/AShadowRenderBin.hpp"
 # include "UI/ShaderSurface/TextureShaderSurface.hpp"
 # include <memory>
+# include <string>
 
 # define DEPTHMAPSIZE 1024
 # define INITIAL_SHADOW_RB_SIZE 1024

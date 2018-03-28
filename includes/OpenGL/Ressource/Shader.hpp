@@ -26,6 +26,8 @@ class Shader
 
 		Shader(void);
 		Shader(std::string const &vs_path, std::string const &fs_path);
+		Shader(std::string const &vs_path, std::string const &gs_path,
+			   std::string const &fs_path);
 		Shader(Shader const &src) = delete;
 		Shader &operator=(Shader const &rhs) = delete;
 		Shader(Shader &&src);
@@ -89,10 +91,11 @@ class Shader
 
 		GLuint _shader_program;
 
-		static GLuint _load_shader(std::string const &path, GLenum type);
-		static GLuint _compile_program(GLuint vs, GLuint fs);
-		static void _get_shader_error(GLuint shader);
-		static void _read_file(std::string const &path, std::string &content);
+		inline GLuint _load_shader(std::string const &path, GLenum type);
+		inline GLuint _compile_program(GLuint vs, GLuint fs);
+		inline GLuint _compile_program(GLuint vs, GLuint gs, GLuint fs);
+		inline void _get_shader_error(GLuint shader);
+		inline void _read_file(std::string const &path, std::string &content);
 };
 
 #endif

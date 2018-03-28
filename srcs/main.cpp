@@ -46,6 +46,8 @@ static void display_help()
 	std::cout << "		--multilight for MultiLight Test" << std::endl;
 	std::cout << "		--directional_shadow for DirectionalShadow Test" << std::endl;
 	std::cout << "			Resolution can be set for this one with --Res=WIDTHxHEIGHT" << std::endl;
+	std::cout << "		--omnidirectional_shadow for OmniDirectionalShadow Test" << std::endl;
+	std::cout << "			Resolution can be set for this one with --Res=WIDTHxHEIGHT" << std::endl;
 }
 
 static void InitRun(Glfw_manager &manager, int argc, char **argv)
@@ -72,6 +74,22 @@ static void InitRun(Glfw_manager &manager, int argc, char **argv)
 			}
 		}
 		InitRunTestDirectionalShadow(manager, resolution);
+	}
+	else if (arg.compare("--omnidirectional_shadow") == 0)
+	{
+		if (argc >= 3)
+		{
+			try
+			{
+				resolution = parse_resolution(std::string(argv[2]));
+			}
+			catch (std::exception &e)
+			{
+				std::cout << "Invalid Resolution" << std::endl;
+				exit(-1);
+			}
+		}
+		InitRunTestOmniShadow(manager, resolution);
 	}
 	else
 		display_help();
