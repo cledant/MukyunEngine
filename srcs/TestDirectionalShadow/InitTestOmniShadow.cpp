@@ -69,17 +69,18 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	//Creating Point Lights
 	PointLight::Params params_dir;
 	params_dir.model_rb       = light_color;
-	params_dir.pos            = glm::vec3(-15.0f, 10.0f, -15.0f);
+	params_dir.pos            = glm::vec3(0.0f, 4.0f, 0.0f);
 	params_dir.model_scale    = glm::vec3(0.1f);
 	params_dir.ambient_color  = glm::vec3(0.05f);
 	params_dir.diffuse_color  = glm::vec3(1.0f);
 	params_dir.specular_color = params_dir.diffuse_color;
-	params_dir.attenuation_coeff = glm::vec3(0.05f, 0.0005f, 0.0001f);
+	params_dir.attenuation_coeff = glm::vec3(1.0f, 0.007f, 0.0002f);
+//	params_dir.attenuation_coeff = glm::vec3(1.0f, 0.5f, 0.1f);
 	params_dir.draw_model     = false;
 	(*world)->add_PointLight(params_dir);
 
 	params_dir.model_rb   = light_color;
-	params_dir.pos        = glm::vec3(15.0f, 10.0f, 15.0f);
+	params_dir.pos        = glm::vec3(6.0f, 1.0f, 6.0f);
 	params_dir.draw_model = false;
 	(*world)->add_PointLight(params_dir);
 

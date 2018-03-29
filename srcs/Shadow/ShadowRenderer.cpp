@@ -421,7 +421,7 @@ void ShadowRenderer::fuseShadowMaps(void)
 	this->_printer.setShader(this->_fuse_shadow_maps_shader);
 	this->_fused_shadow_map.get()->useFramebuffer();
 	this->_fused_shadow_map.get()->setViewport();
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	for (size_t i = 0; i < this->_lc->getCurrentDirLightNumber(); ++i)
 	{
