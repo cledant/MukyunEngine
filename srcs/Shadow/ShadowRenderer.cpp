@@ -23,6 +23,7 @@ ShadowRenderer::Params::Params(void)
 	this->dir_near_far            = glm::vec2(1.0f, 30.0f);
 	this->omni_near_far           = glm::vec2(1.0f, 30.0f);
 	this->perspec_mult_view       = nullptr;
+	this->viewPos                 = nullptr;
 	this->win_h                   = 720;
 	this->win_w                   = 1280;
 }
@@ -36,7 +37,7 @@ ShadowRenderer::ShadowRenderer(void) :
 		_omni_depth_map_shader(nullptr), _omni_shadow_map_shader(nullptr),
 		_fuse_shadow_maps_shader(nullptr), _lc(nullptr), _dir_near_far(glm::vec2(1.0f, 30.0f)),
 		_omni_near_far(glm::vec2(1.0f, 30.0f)), _perspec_mult_view(nullptr),
-		_printer(nullptr, nullptr, nullptr, 0)
+		_viewPos(nullptr), _printer(nullptr, nullptr, nullptr, 0)
 {
 }
 
@@ -48,7 +49,7 @@ ShadowRenderer::ShadowRenderer(ShadowRenderer::Params const &params) :
 		_fuse_shadow_maps_shader(params.fuse_shadow_maps_shader), _lc(params.lc),
 		_fused_shadow_map(nullptr), _dir_near_far(params.dir_near_far),
 		_omni_near_far(params.omni_near_far), _perspec_mult_view(params.perspec_mult_view),
-		_printer(nullptr, nullptr, nullptr, 0)
+		_viewPos(params.viewPos), _printer(nullptr, nullptr, nullptr, 0)
 {
 	try
 	{
@@ -111,6 +112,7 @@ ShadowRenderer &ShadowRenderer::operator=(ShadowRenderer &&rhs)
 		this->_dir_near_far              = rhs.getDirNearFar();
 		this->_omni_near_far             = rhs.getOmniNearFar();
 		this->_printer                   = rhs.movePrinter();
+		this->_viewPos                   = rhs.getViewPos();
 	}
 	catch (std::exception &e)
 	{
@@ -290,6 +292,11 @@ std::vector<ShadowRenderer::OmniProjMatrices> const &ShadowRenderer::getVecOmniL
 	return (this->_vec_omni_lightSpaceMatrix);
 }
 
+glm::vec3 const *ShadowRenderer::getViewPos(void) const
+{
+	return (this->_viewPos);
+}
+
 /*
  * Computation
  */
@@ -403,7 +410,8 @@ void ShadowRenderer::computeOmniDepthMaps(void)
 		{
 			std::string name                    = "uniform_shadowMatrices[" + std::to_string(k) + "]";
 			GLint       uniform_shadowMatricies = glGetUniformLocation(shader_id, name.c_str());
-			this->_omni_depth_map_shader->setMat4(uniform_shadowMatricies, (this->_vec_omni_lightSpaceMatrix)[i].mat[k]);
+			this->_omni_depth_map_shader
+				->setMat4(uniform_shadowMatricies, (this->_vec_omni_lightSpaceMatrix)[i].mat[k]);
 		}
 		this->_omni_depth_map_shader->setVec3(uniform_lightPos, glm::vec3(this->_lc->getPointLightDataGL()[i].pos));
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)

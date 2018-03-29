@@ -75,7 +75,6 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	params_dir.diffuse_color  = glm::vec3(1.0f);
 	params_dir.specular_color = params_dir.diffuse_color;
 	params_dir.attenuation_coeff = glm::vec3(1.0f, 0.007f, 0.0002f);
-//	params_dir.attenuation_coeff = glm::vec3(1.0f, 0.5f, 0.1f);
 	params_dir.draw_model     = false;
 	(*world)->add_PointLight(params_dir);
 

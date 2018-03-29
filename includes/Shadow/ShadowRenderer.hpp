@@ -43,7 +43,8 @@ class ShadowRenderer
 			LightContainer const *lc;
 			glm::vec2            dir_near_far;
 			glm::vec2            omni_near_far;
-			glm::mat4            *perspec_mult_view;
+			glm::mat4 const      *perspec_mult_view;
+			glm::vec3 const      *viewPos;
 			int                  win_h;
 			int                  win_w;
 		};
@@ -109,6 +110,7 @@ class ShadowRenderer
 		TextureShaderSurface movePrinter(void);
 		glm::mat4 const &getOmniProjMatrix(void) const;
 		std::vector<ShadowRenderer::OmniProjMatrices> const &getVecOmniLightSpaceMatrix(void) const;
+		glm::vec3 const *getViewPos(void) const;
 
 		/*
 		 * Computation
@@ -143,6 +145,7 @@ class ShadowRenderer
 		glm::vec2                                  _dir_near_far;
 		glm::vec2                                  _omni_near_far;
 		glm::mat4 const                            *_perspec_mult_view;
+		glm::vec3 const                            *_viewPos;
 		TextureShaderSurface                       _printer;
 };
 
