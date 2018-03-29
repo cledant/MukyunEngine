@@ -21,7 +21,7 @@ ShadowRenderer::Params::Params(void)
 	this->fuse_shadow_maps_shader = nullptr;
 	this->lc                      = nullptr;
 	this->dir_near_far            = glm::vec2(1.0f, 30.0f);
-	this->omni_near_far           = glm::vec2(1.0f, 30.0f);
+	this->omni_near_far           = glm::vec2(1.0f, 10.0f);
 	this->perspec_mult_view       = nullptr;
 	this->viewPos                 = nullptr;
 	this->win_h                   = 720;
@@ -422,6 +422,31 @@ void ShadowRenderer::computeOmniDepthMaps(void)
 
 void ShadowRenderer::computeOmniShadowMaps(void)
 {
+	GLuint shader_id                     = this->_omni_shadow_map_shader->getShaderProgram();
+	GLint  uniform_mat_perspec_mult_view = glGetUniformLocation(shader_id, "uniform_mat_perspec_mult_view");
+	GLint  uniform_light_pos             = glGetUniformLocation(shader_id, "uniform_lightPos");
+	GLint  uniform_viewPos               = glGetUniformLocation(shader_id, "uniform_viewPos");
+	GLint  uniform_farPlane              = glGetUniformLocation(shader_id, "uniform_farPlane");
+	GLint  depthMap                      = glGetUniformLocation(shader_id, "depthMap");
+
+	this->_omni_shadow_map_shader->use();
+	this->_omni_shadow_map_shader->setVec3(uniform_viewPos, *(this->_viewPos));
+	this->_omni_shadow_map_shader->setFloat(uniform_farPlane, this->_omni_near_far.y);
+	for (size_t i = 0; i < this->_lc->getCurrentPointLightNumber(); ++i)
+	{
+		this->_omni_shadow_maps[i]->useFramebuffer();
+		this->_omni_shadow_maps[i]->setViewport();
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		glDepthFunc(GL_LESS);
+		this->_omni_shadow_map_shader->setMat4(uniform_mat_perspec_mult_view, *(this->_perspec_mult_view));
+		this->_omni_shadow_map_shader->setVec3(uniform_light_pos, glm::vec3(this->_lc->getPointLightDataGL()[i].pos));
+		glActiveTexture(GL_TEXTURE0);
+		glUniform1i(depthMap, 0);
+		glBindTexture(GL_TEXTURE_2D, this->_omni_depth_maps[i].get()->getTextureBuffer());
+		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
+			this->_shadow_rb_list[j]->drawNoShader();
+	}
 }
 
 void ShadowRenderer::fuseShadowMaps(void)
@@ -445,6 +470,14 @@ void ShadowRenderer::fuseShadowMaps(void)
 			glBlendFunc(GL_ONE, GL_ONE);
 		}
 		this->_printer.setTextureID(this->_dir_shadow_maps[i]->getTextureBuffer());
+		this->_printer.drawInFrameBuffer();
+	}
+	for (size_t i = 0; i < this->_lc->getCurrentPointLightNumber(); ++i)
+	{
+		glDepthFunc(GL_EQUAL);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE);
+		this->_printer.setTextureID(this->_omni_shadow_maps[i]->getTextureBuffer());
 		this->_printer.drawInFrameBuffer();
 	}
 	glDepthFunc(GL_LESS);

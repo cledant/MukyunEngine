@@ -28,6 +28,8 @@ static void init_ressources(RessourceManager &rm)
 				  "./shaders/ComputeOmniDepthMap/ComputeOmniDepthMap_fs.glsl");
 	rm.add_shader("ComputeDirShadowMaps", "./shaders/ComputeDirShadowMaps/ComputeDirShadowMaps_vs.glsl",
 				  "./shaders/ComputeDirShadowMaps/ComputeDirShadowMaps_fs.glsl");
+	rm.add_shader("ComputeOmniShadowMaps", "./shaders/ComputeOmniShadowMaps/ComputeOmniShadowMaps_vs.glsl",
+				  "./shaders/ComputeOmniShadowMaps/ComputeOmniShadowMaps_fs.glsl");
 	rm.add_shader("DisplayDepthMap", "./shaders/DisplayDepthMap/DisplayDepthMap_vs.glsl",
 				  "./shaders/DisplayDepthMap/DisplayDepthMap_fs.glsl");
 	rm.add_shader("DisplayImage", "./shaders/DisplayImage/DisplayImage_vs.glsl",
@@ -49,6 +51,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	sr_params.dir_depth_map_shader    = &rm.getShader("ComputeDirLightDepthMap");
 	sr_params.dir_shadow_map_shader   = &rm.getShader("ComputeDirShadowMaps");
 	sr_params.omni_depth_map_shader   = &rm.getShader("ComputeOmniDepthMap");
+	sr_params.omni_shadow_map_shader  = &rm.getShader("ComputeOmniShadowMaps");
 	sr_params.fuse_shadow_maps_shader = &rm.getShader("DisplayImage");
 	sr_params.win_w                   = manager.getWindow().cur_win_w;
 	sr_params.win_h                   = manager.getWindow().cur_win_h;
@@ -68,19 +71,19 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating Point Lights
 	PointLight::Params params_dir;
-	params_dir.model_rb       = light_color;
-	params_dir.pos            = glm::vec3(0.0f, 4.0f, 0.0f);
-	params_dir.model_scale    = glm::vec3(0.1f);
-	params_dir.ambient_color  = glm::vec3(0.05f);
-	params_dir.diffuse_color  = glm::vec3(1.0f);
-	params_dir.specular_color = params_dir.diffuse_color;
+	params_dir.model_rb          = light_color;
+	params_dir.pos               = glm::vec3(0.0f, 10.0f, 0.0f);
+	params_dir.model_scale       = glm::vec3(0.1f);
+	params_dir.ambient_color     = glm::vec3(0.05f);
+	params_dir.diffuse_color     = glm::vec3(1.0f);
+	params_dir.specular_color    = params_dir.diffuse_color;
 	params_dir.attenuation_coeff = glm::vec3(1.0f, 0.007f, 0.0002f);
-	params_dir.draw_model     = false;
+	params_dir.draw_model        = true;
 	(*world)->add_PointLight(params_dir);
 
 	params_dir.model_rb   = light_color;
-	params_dir.pos        = glm::vec3(6.0f, 1.0f, 6.0f);
-	params_dir.draw_model = false;
+	params_dir.pos        = glm::vec3(6.0f, 10.0f, 6.0f);
+	params_dir.draw_model = true;
 	(*world)->add_PointLight(params_dir);
 
 	//Creating RenderBin for Light that uses LightContainer

@@ -49,6 +49,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	sr_params.dir_depth_map_shader    = &rm.getShader("ComputeDirLightDepthMap");
 	sr_params.dir_shadow_map_shader   = &rm.getShader("ComputeDirShadowMaps");
 	sr_params.omni_depth_map_shader   = &rm.getShader("ComputeOmniDepthMap");
+	sr_params.omni_shadow_map_shader  = &rm.getShader("ComputeOmniShadowMaps");
 	sr_params.fuse_shadow_maps_shader = &rm.getShader("DisplayImage");
 	sr_params.win_w                   = manager.getWindow().cur_win_w;
 	sr_params.win_h                   = manager.getWindow().cur_win_h;
