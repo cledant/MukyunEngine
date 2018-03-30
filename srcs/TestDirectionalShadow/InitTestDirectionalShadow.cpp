@@ -28,6 +28,8 @@ static void init_ressources(RessourceManager &rm)
 				  "./shaders/ComputeOmniDepthMap/ComputeOmniDepthMap_fs.glsl");
 	rm.add_shader("ComputeDirShadowMaps", "./shaders/ComputeDirShadowMaps/ComputeDirShadowMaps_vs.glsl",
 				  "./shaders/ComputeDirShadowMaps/ComputeDirShadowMaps_fs.glsl");
+	rm.add_shader("ComputeOmniShadowMaps", "./shaders/ComputeOmniShadowMaps/ComputeOmniShadowMaps_vs.glsl",
+				  "./shaders/ComputeOmniShadowMaps/ComputeOmniShadowMaps_fs.glsl");
 	rm.add_shader("DisplayDepthMap", "./shaders/DisplayDepthMap/DisplayDepthMap_vs.glsl",
 				  "./shaders/DisplayDepthMap/DisplayDepthMap_fs.glsl");
 	rm.add_shader("DisplayImage", "./shaders/DisplayImage/DisplayImage_vs.glsl",

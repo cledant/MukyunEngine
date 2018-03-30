@@ -21,7 +21,7 @@ ShadowRenderer::Params::Params(void)
 	this->fuse_shadow_maps_shader = nullptr;
 	this->lc                      = nullptr;
 	this->dir_near_far            = glm::vec2(1.0f, 30.0f);
-	this->omni_near_far           = glm::vec2(1.0f, 10.0f);
+	this->omni_near_far           = glm::vec2(1.0f, 30.0f);
 	this->perspec_mult_view       = nullptr;
 	this->viewPos                 = nullptr;
 	this->win_h                   = 720;
@@ -39,6 +39,10 @@ ShadowRenderer::ShadowRenderer(void) :
 		_omni_near_far(glm::vec2(1.0f, 30.0f)), _perspec_mult_view(nullptr),
 		_viewPos(nullptr), _printer(nullptr, nullptr, nullptr, 0)
 {
+	//1.0f as shadow WIDTH and HEIGHT are the same with defines
+	this->_omni_proj_matrix = glm::perspective(glm::radians(90.0f), 1.0f,
+											   this->_omni_near_far.x,
+											   this->_omni_near_far.y);
 }
 
 ShadowRenderer::ShadowRenderer(ShadowRenderer::Params const &params) :
@@ -313,33 +317,33 @@ void ShadowRenderer::update(void)
 												glm::vec3(0.0f, 1.0f, 0.0f));
 		this->_vec_dir_lightSpaceMatrix.push_back(lightProjection * lightView);
 	}
-	this->_vec_omni_lightSpaceMatrix.clear();
 	//refresh for omnidirectional light matricies
-	for (size_t i = 0; i < this->_lc->getSpotLightDataGL().size(); ++i)
+	this->_vec_omni_lightSpaceMatrix.clear();
+	for (size_t i = 0; i < this->_lc->getPointLightDataGL().size(); ++i)
 	{
 		OmniProjMatrices tmp;
-		tmp.mat[0] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getDirLightDataGL()[i].pos),
-															glm::vec3(this->_lc->getDirLightDataGL()[i].pos) +
+		tmp.mat[0] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getPointLightDataGL()[i].pos),
+															glm::vec3(this->_lc->getPointLightDataGL()[i].pos) +
 															glm::vec3(1.0f, 0.0f, 0.0f),
 															glm::vec3(0.0f, -1.0f, 0.0f)));
-		tmp.mat[1] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getDirLightDataGL()[i].pos),
-															glm::vec3(this->_lc->getDirLightDataGL()[i].pos) +
+		tmp.mat[1] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getPointLightDataGL()[i].pos),
+															glm::vec3(this->_lc->getPointLightDataGL()[i].pos) +
 															glm::vec3(-1.0f, 0.0f, 0.0f),
 															glm::vec3(0.0f, -1.0f, 0.0f)));
-		tmp.mat[2] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getDirLightDataGL()[i].pos),
-															glm::vec3(this->_lc->getDirLightDataGL()[i].pos) +
+		tmp.mat[2] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getPointLightDataGL()[i].pos),
+															glm::vec3(this->_lc->getPointLightDataGL()[i].pos) +
 															glm::vec3(0.0f, 1.0f, 0.0f),
 															glm::vec3(0.0f, 0.0f, 1.0f)));
-		tmp.mat[3] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getDirLightDataGL()[i].pos),
-															glm::vec3(this->_lc->getDirLightDataGL()[i].pos) +
+		tmp.mat[3] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getPointLightDataGL()[i].pos),
+															glm::vec3(this->_lc->getPointLightDataGL()[i].pos) +
 															glm::vec3(0.0f, -1.0f, 0.0f),
 															glm::vec3(0.0f, 0.0f, -1.0f)));
-		tmp.mat[4] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getDirLightDataGL()[i].pos),
-															glm::vec3(this->_lc->getDirLightDataGL()[i].pos) +
+		tmp.mat[4] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getPointLightDataGL()[i].pos),
+															glm::vec3(this->_lc->getPointLightDataGL()[i].pos) +
 															glm::vec3(0.0f, 0.0f, 1.0f),
 															glm::vec3(0.0f, -1.0f, 0.0f)));
-		tmp.mat[5] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getDirLightDataGL()[i].pos),
-															glm::vec3(this->_lc->getDirLightDataGL()[i].pos) +
+		tmp.mat[5] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getPointLightDataGL()[i].pos),
+															glm::vec3(this->_lc->getPointLightDataGL()[i].pos) +
 															glm::vec3(0.0f, 0.0f, -1.0f),
 															glm::vec3(0.0f, -1.0f, 0.0f)));
 		this->_vec_omni_lightSpaceMatrix.push_back(tmp);
@@ -395,7 +399,7 @@ void ShadowRenderer::computeDirectionalShadowMaps(void)
 void ShadowRenderer::computeOmniDepthMaps(void)
 {
 	GLuint shader_id         = this->_omni_depth_map_shader->getShaderProgram();
-	GLint  uniform_far_plane = glGetUniformLocation(shader_id, "uniform_far_plane");
+	GLint  uniform_far_plane = glGetUniformLocation(shader_id, "uniform_farPlane");
 	GLint  uniform_lightPos  = glGetUniformLocation(shader_id, "uniform_lightPos");
 
 	this->_omni_depth_map_shader->use();
@@ -432,6 +436,7 @@ void ShadowRenderer::computeOmniShadowMaps(void)
 	this->_omni_shadow_map_shader->use();
 	this->_omni_shadow_map_shader->setVec3(uniform_viewPos, *(this->_viewPos));
 	this->_omni_shadow_map_shader->setFloat(uniform_farPlane, this->_omni_near_far.y);
+	this->_omni_shadow_map_shader->setMat4(uniform_mat_perspec_mult_view, *(this->_perspec_mult_view));
 	for (size_t i = 0; i < this->_lc->getCurrentPointLightNumber(); ++i)
 	{
 		this->_omni_shadow_maps[i]->useFramebuffer();
@@ -439,11 +444,10 @@ void ShadowRenderer::computeOmniShadowMaps(void)
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
-		this->_omni_shadow_map_shader->setMat4(uniform_mat_perspec_mult_view, *(this->_perspec_mult_view));
 		this->_omni_shadow_map_shader->setVec3(uniform_light_pos, glm::vec3(this->_lc->getPointLightDataGL()[i].pos));
 		glActiveTexture(GL_TEXTURE0);
 		glUniform1i(depthMap, 0);
-		glBindTexture(GL_TEXTURE_2D, this->_omni_depth_maps[i].get()->getTextureBuffer());
+		glBindTexture(GL_TEXTURE_CUBE_MAP, this->_omni_depth_maps[i].get()->getTextureBuffer());
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
 			this->_shadow_rb_list[j]->drawNoShader();
 	}
