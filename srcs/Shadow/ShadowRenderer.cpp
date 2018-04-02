@@ -57,7 +57,7 @@ ShadowRenderer::ShadowRenderer(ShadowRenderer::Params const &params) :
 {
 	try
 	{
-		this->_fused_shadow_map = std::make_unique<ImageFramebuffer>(params.win_w, params.win_h);
+		this->_fused_shadow_map = std::make_unique<ImageFramebuffer>(params.win_h, params.win_w);
 		this->_allocate_memory(params.win_w, params.win_h);
 	}
 	catch (std::exception &e)
