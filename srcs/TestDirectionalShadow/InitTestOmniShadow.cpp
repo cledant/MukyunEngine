@@ -84,7 +84,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	params_dir.model_rb   = light_color;
 	params_dir.pos        = glm::vec3(6.0f, 10.0f, 6.0f);
 	params_dir.draw_model = false;
-//	(*world)->add_PointLight(params_dir);
+	(*world)->add_PointLight(params_dir);
 
 	//Creating RenderBin for Light that uses LightContainer
 	AShadowRenderBin::Params rb_light;

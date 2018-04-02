@@ -31,12 +31,16 @@ float ShadowCalculation(vec3 fragPos)
     // now get current linear depth as the length between the fragment and light position
     float currentDepth = length(fragToLight);
 
-    float shadow = 0.0;
-    float bias = 0.15;
+    // calculate bias (based on depth map resolution and slope)
+    vec3 normal = normalize(fs_in.Normal);
+    vec3 lightDir = normalize(uniform_lightPos - fs_in.FragPos);
+    float bias = tan(acos(dot(normal, lightDir))) * 0.005;
+    bias *= uniform_farPlane;
 
     float viewDistance = length(uniform_viewPos - fragPos);
     float diskRadius = (1.0 + (viewDistance / uniform_farPlane)) / 25.0;
 
+    float shadow = 0.0;
     int samples = 20;
     for(int i = 0; i < samples; ++i)
     {

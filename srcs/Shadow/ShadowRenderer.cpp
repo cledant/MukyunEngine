@@ -355,6 +355,7 @@ void ShadowRenderer::computeDirectionalDepthMaps(void)
 	GLuint shader_id                = this->_dir_depth_map_shader->getShaderProgram();
 	GLint  uniform_lightSpaceMatrix = glGetUniformLocation(shader_id, "uniform_lightSpaceMatrix");
 
+	glCullFace(GL_FRONT);
 	this->_dir_depth_map_shader->use();
 	for (size_t i = 0; i < this->_lc->getCurrentDirLightNumber(); ++i)
 	{
@@ -367,6 +368,7 @@ void ShadowRenderer::computeDirectionalDepthMaps(void)
 			this->_shadow_rb_list[j]->drawNoShader();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glCullFace(GL_BACK);
 }
 
 void ShadowRenderer::computeDirectionalShadowMaps(void)
@@ -402,6 +404,7 @@ void ShadowRenderer::computeOmniDepthMaps(void)
 	GLint  uniform_far_plane = glGetUniformLocation(shader_id, "uniform_farPlane");
 	GLint  uniform_lightPos  = glGetUniformLocation(shader_id, "uniform_lightPos");
 
+	glCullFace(GL_FRONT);
 	this->_omni_depth_map_shader->use();
 	this->_omni_depth_map_shader->setFloat(uniform_far_plane, this->_omni_near_far.y);
 	for (size_t i = 0; i < this->_lc->getCurrentPointLightNumber(); ++i)
@@ -422,6 +425,7 @@ void ShadowRenderer::computeOmniDepthMaps(void)
 			this->_shadow_rb_list[j]->drawNoShader();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glCullFace(GL_BACK);
 }
 
 void ShadowRenderer::computeOmniShadowMaps(void)
@@ -455,6 +459,8 @@ void ShadowRenderer::computeOmniShadowMaps(void)
 
 void ShadowRenderer::fuseShadowMaps(void)
 {
+	bool first_blend_flag = true;
+
 	this->_printer.setShader(this->_fuse_shadow_maps_shader);
 	this->_fused_shadow_map.get()->useFramebuffer();
 	this->_fused_shadow_map.get()->setViewport();
@@ -462,10 +468,11 @@ void ShadowRenderer::fuseShadowMaps(void)
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	for (size_t i = 0; i < this->_lc->getCurrentDirLightNumber(); ++i)
 	{
-		if (!i)
+		if (first_blend_flag)
 		{
 			glDepthFunc(GL_LESS);
 			glDisable(GL_BLEND);
+			first_blend_flag = false;
 		}
 		else
 		{
@@ -478,9 +485,18 @@ void ShadowRenderer::fuseShadowMaps(void)
 	}
 	for (size_t i = 0; i < this->_lc->getCurrentPointLightNumber(); ++i)
 	{
-		glDepthFunc(GL_EQUAL);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE, GL_ONE);
+		if (first_blend_flag)
+		{
+			glDepthFunc(GL_LESS);
+			glDisable(GL_BLEND);
+			first_blend_flag = false;
+		}
+		else
+		{
+			glDepthFunc(GL_EQUAL);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_ONE, GL_ONE);
+		}
 		this->_printer.setTextureID(this->_omni_shadow_maps[i]->getTextureBuffer());
 		this->_printer.drawInFrameBuffer();
 	}
