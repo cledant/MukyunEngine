@@ -91,7 +91,7 @@ void main()
     vec3 result = vec3(0.0f);
 
 	//0) Shadow value
-	vec3 shadowValue = vec3(1.0) - FindShadowValue(uniform_resolution);
+	vec3 shadowValue = FindShadowValue(uniform_resolution);
 
     //1) DirLight
     for(int i = 0; i < nb_dir_light; i++)
