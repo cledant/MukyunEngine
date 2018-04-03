@@ -67,6 +67,7 @@ class Glfw_manager
 		void triggerWindowClose(void);
 		void disableVsync(void);
 		void enableVsync(void);
+		void displayGpuInfo(void);
 
 		class InitFailException : public GeneralException
 		{

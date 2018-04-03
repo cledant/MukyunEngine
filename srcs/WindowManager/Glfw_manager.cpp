@@ -268,6 +268,12 @@ void Glfw_manager::enableVsync(void)
 	glfwSwapInterval(1);
 }
 
+void Glfw_manager::displayGpuInfo(void)
+{
+	std::cout << glGetString(GL_VENDOR) << std::endl;
+	std::cout << glGetString(GL_RENDERER) << std::endl;
+}
+
 void Glfw_manager::_window_creation_callback_setup(void)
 {
 	auto close_callback = [](GLFWwindow *win)

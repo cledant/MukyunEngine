@@ -133,6 +133,7 @@ static void init_program(TestDirectionalShadow **world, RessourceManager &rm,
 						 Glfw_manager &manager, glm::uvec2 res)
 {
 	manager.create_window("TestDirectionalShadow", 4, 1, res.x, res.y, false);
+	manager.displayGpuInfo();
 	manager.init_input_callback();
 	init_ressources(rm);
 	load_test_level(manager, rm, world);
