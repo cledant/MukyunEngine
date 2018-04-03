@@ -44,7 +44,7 @@ TestDirectionalShadow::TestDirectionalShadow(Input const &input, GLFW_Window con
 	this->_sr                       = ShadowRenderer(sr_params_cpy);
 	this->_tss.setTextureID(this->_final_image.getTextureBuffer());
 //	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::OMNI_SINGLE_SHADOW_MAP, 0));
-//	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::TOTAL_SHADOW_MAP, 0));
+	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::TOTAL_SHADOW_MAP, 0));
 }
 
 TestDirectionalShadow::~TestDirectionalShadow(void)

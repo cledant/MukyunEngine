@@ -48,6 +48,8 @@ static void display_help()
 	std::cout << "			Resolution can be set for this one with --Res=WIDTHxHEIGHT" << std::endl;
 	std::cout << "		--omnidirectional_shadow for OmniDirectionalShadow Test" << std::endl;
 	std::cout << "			Resolution can be set for this one with --Res=WIDTHxHEIGHT" << std::endl;
+	std::cout << "		--spot_shadow for SpotShadow Test" << std::endl;
+	std::cout << "			Resolution can be set for this one with --Res=WIDTHxHEIGHT" << std::endl;
 }
 
 static void InitRun(Glfw_manager &manager, int argc, char **argv)
@@ -90,6 +92,22 @@ static void InitRun(Glfw_manager &manager, int argc, char **argv)
 			}
 		}
 		InitRunTestOmniShadow(manager, resolution);
+	}
+	else if (arg.compare("--spot_shadow") == 0)
+	{
+		if (argc >= 3)
+		{
+			try
+			{
+				resolution = parse_resolution(std::string(argv[2]));
+			}
+			catch (std::exception &e)
+			{
+				std::cout << "Invalid Resolution" << std::endl;
+				exit(-1);
+			}
+		}
+		InitRunTestSpotShadow(manager, resolution);
 	}
 	else
 		display_help();

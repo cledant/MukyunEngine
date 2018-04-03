@@ -67,6 +67,7 @@ set(SOURCE_FILES
 		srcs/TestLight/InitTestMultiLight.cpp
 		srcs/TestDirectionalShadow/InitTestDirectionalShadow.cpp
 		srcs/TestDirectionalShadow/InitTestOmniShadow.cpp
+		srcs/TestDirectionalShadow/InitTestSpotShadow.cpp
 		srcs/TestDirectionalShadow/TestDirectionalShadow.cpp
 		srcs/OpenGL/LightContainer/LightContainer.cpp
 		srcs/OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.cpp

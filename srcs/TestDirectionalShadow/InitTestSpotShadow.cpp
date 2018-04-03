@@ -73,22 +73,25 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	ARenderBin *light_color = (*world)->add_RenderBin("Light_Color", rb_light_color,
 													  ARenderBin::eType::DIFFUSE_COLORED);
 
-	//Creating Point Lights
-	PointLight::Params params_dir;
-	params_dir.model_rb          = light_color;
-	params_dir.pos               = glm::vec3(0.0f, 5.0f, 0.0f);
-	params_dir.model_scale       = glm::vec3(0.1f);
-	params_dir.ambient_color     = glm::vec3(0.05f);
-	params_dir.diffuse_color     = glm::vec3(1.0f);
-	params_dir.specular_color    = params_dir.diffuse_color;
-	params_dir.attenuation_coeff = glm::vec3(1.0f, 0.007f, 0.0002f);
-	params_dir.draw_model        = true;
-	(*world)->add_PointLight(params_dir);
+	//Creating Directional Lights
+	SpotLight::Params params_dir;
+	params_dir.model_rb       = light_color;
+	params_dir.pos            = glm::vec3(6.0f, 4.0f, 6.0f);
+	params_dir.model_scale    = glm::vec3(0.1f);
+	params_dir.ambient_color  = glm::vec3(0.05f);
+	params_dir.diffuse_color  = glm::vec3(1.0f);
+	params_dir.specular_color = params_dir.diffuse_color;
+	params_dir.dir            = glm::vec3(1.0f, -1.0f, 1.0f);
+	params_dir.cutoff         = glm::vec2(20.0f, 15.0f);
+	params_dir.draw_model     = false;
+	(*world)->add_SpotLight(params_dir);
 
 	params_dir.model_rb   = light_color;
-	params_dir.pos        = glm::vec3(6.0f, 4.0f, 6.0f);
-	params_dir.draw_model = true;
-	(*world)->add_PointLight(params_dir);
+	params_dir.pos        = glm::vec3(-6.0f, 4.0f, -6.0f);
+	params_dir.dir        = glm::vec3(0.0f, 1.0f, 0.0f);
+	params_dir.cutoff     = glm::vec2(20.0f, 15.0f);
+	params_dir.draw_model = false;
+	(*world)->add_SpotLight(params_dir);
 
 	//Creating RenderBin for Light that uses LightContainer
 	AShadowRenderBin::Params rb_light;
@@ -135,14 +138,14 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 static void init_program(TestDirectionalShadow **world, RessourceManager &rm,
 						 Glfw_manager &manager, glm::uvec2 res)
 {
-	manager.create_window("TestOmniDirectionalShadow", 4, 1, res.x, res.y, false);
+	manager.create_window("TestSpotShadow", 4, 1, res.x, res.y, false);
 	manager.displayGpuInfo();
 	manager.init_input_callback();
 	init_ressources(rm);
 	load_test_level(manager, rm, world);
 }
 
-void InitRunTestOmniShadow(Glfw_manager &manager, glm::uvec2 const &res)
+void InitRunTestSpotShadow(Glfw_manager &manager, glm::uvec2 const &res)
 {
 	RessourceManager      rm;
 	TestDirectionalShadow *world = nullptr;
