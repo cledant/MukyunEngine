@@ -134,5 +134,6 @@ class TestDirectionalShadow
 
 void InitRunTestDirectionalShadow(Glfw_manager &manager, glm::uvec2 const &res);
 void InitRunTestOmniShadow(Glfw_manager &manager, glm::uvec2 const &res);
+void InitRunTestSpotShadow(Glfw_manager &manager, glm::uvec2 const &res);
 
 #endif
