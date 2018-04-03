@@ -51,7 +51,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
     if(projCoords.z > 1.0)
         shadow = 0.0;
-    return (shadow);
+    return (1.0 - shadow);
 }
 
 void main()

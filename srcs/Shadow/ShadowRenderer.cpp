@@ -384,7 +384,7 @@ void ShadowRenderer::computeDirectionalShadowMaps(void)
 	{
 		this->_dir_shadow_maps[i]->useFramebuffer();
 		this->_dir_shadow_maps[i]->setViewport();
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
 		this->_dir_shadow_map_shader->setMat4(uniform_lightSpaceMatrix, (this->_vec_dir_lightSpaceMatrix)[i]);
@@ -477,8 +477,10 @@ void ShadowRenderer::fuseShadowMaps(void)
 		else
 		{
 			glDepthFunc(GL_EQUAL);
+			glBlendEquation(GL_FUNC_ADD);
 			glEnable(GL_BLEND);
-			glBlendFunc(GL_ONE, GL_ONE);
+			glBlendColor(0.5f, 0.5f, 0.5f, 0.5f);
+			glBlendFunc(GL_CONSTANT_COLOR, GL_CONSTANT_COLOR);
 		}
 		this->_printer.setTextureID(this->_dir_shadow_maps[i]->getTextureBuffer());
 		this->_printer.drawInFrameBuffer();
