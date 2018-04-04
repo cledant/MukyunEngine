@@ -360,6 +360,12 @@ glm::vec3 const *ShadowRenderer::getViewPos(void) const
 
 void ShadowRenderer::update(void)
 {
+	/*
+	 * Careful about the lookat point as in some cases
+	 * it can lead to invisible shadow for the light pov
+	 * Example : light at vec3(0, 10, 0) and lookat at (0, 0, 0)
+	 */
+
 	//refresh for directional light matricies
 	this->_vec_dir_lightSpaceMatrix.clear();
 	for (size_t i = 0; i < this->_lc->getDirLightDataGL().size(); ++i)
@@ -524,9 +530,6 @@ void ShadowRenderer::computeSpotDirDepthMaps(void)
 {
 	GLuint shader_id                = this->_spot_dir_depth_map_shader->getShaderProgram();
 	GLint  uniform_lightSpaceMatrix = glGetUniformLocation(shader_id, "uniform_lightSpaceMatrix");
-//	GLint  uniform_lightDir         = glGetUniformLocation(shader_id, "uniform_lightDir");
-//	GLint  uniform_lightPos         = glGetUniformLocation(shader_id, "uniform_lightPos");
-//	GLint  uniform_cutoff           = glGetUniformLocation(shader_id, "uniform_cutoff");
 
 	glCullFace(GL_FRONT);
 	this->_spot_dir_depth_map_shader->use();
@@ -537,9 +540,6 @@ void ShadowRenderer::computeSpotDirDepthMaps(void)
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
 		this->_spot_dir_depth_map_shader->setMat4(uniform_lightSpaceMatrix, (this->_vec_spot_dir_lightSpaceMatrix)[i]);
-//		this->_spot_dir_depth_map_shader->setVec4(uniform_lightDir, (this->_lc->getSpotLightDataGL())[i].dir);
-//		this->_spot_dir_depth_map_shader->setVec4(uniform_lightPos, (this->_lc->getSpotLightDataGL())[i].pos);
-//		this->_spot_dir_depth_map_shader->setVec4(uniform_cutoff, (this->_lc->getSpotLightDataGL())[i].cutoff);
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
 			this->_shadow_rb_list[j]->drawNoShader();
 	}
@@ -553,6 +553,8 @@ void ShadowRenderer::computeSpotDirShadowMaps(void)
 	GLint  uniform_lightSpaceMatrix      = glGetUniformLocation(shader_id, "uniform_lightSpaceMatrix");
 	GLint  uniform_mat_perspec_mult_view = glGetUniformLocation(shader_id, "uniform_mat_perspec_mult_view");
 	GLint  uniform_light_pos             = glGetUniformLocation(shader_id, "uniform_lightPos");
+	GLint  uniform_lightDir              = glGetUniformLocation(shader_id, "uniform_lightDir");
+	GLint  uniform_cutoff                = glGetUniformLocation(shader_id, "uniform_cutoff");
 	GLint  shadowMap                     = glGetUniformLocation(shader_id, "shadowMap");
 
 	this->_spot_dir_shadow_map_shader->use();
@@ -567,6 +569,10 @@ void ShadowRenderer::computeSpotDirShadowMaps(void)
 		this->_spot_dir_shadow_map_shader->setMat4(uniform_mat_perspec_mult_view, *(this->_perspec_mult_view));
 		this->_spot_dir_shadow_map_shader
 			->setVec3(uniform_light_pos, glm::vec3(this->_lc->getSpotLightDataGL()[i].pos));
+		this->_spot_dir_shadow_map_shader
+			->setVec3(uniform_lightDir, glm::vec3(this->_lc->getSpotLightDataGL()[i].dir));
+		this->_spot_dir_shadow_map_shader
+			->setVec2(uniform_cutoff, glm::vec3(this->_lc->getSpotLightDataGL()[i].cutoff));
 		glActiveTexture(GL_TEXTURE0);
 		glUniform1i(shadowMap, 0);
 		glBindTexture(GL_TEXTURE_2D, this->_spot_dir_depth_maps[i].get()->getTextureBuffer());
