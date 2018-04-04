@@ -62,6 +62,8 @@ class ShadowRenderer
 			DIR_SINGLE_SHADOW_MAP,
 			OMNI_DEPTH_MAP,
 			OMNI_SINGLE_SHADOW_MAP,
+			SPOT_DEPTH_MAP,
+			SPOT_SINGLE_SHADOW_MAP,
 			TOTAL_SHADOW_MAP,
 		};
 
@@ -132,7 +134,7 @@ class ShadowRenderer
 		virtual void computeOmniShadowMaps(void);
 		virtual void computeSpotDirDepthMaps(void);
 		virtual void computeSpotDirShadowMaps(void);
-		virtual void fuseShadowMaps(void);
+		virtual void fuseShadowMaps(bool activate_shadow);
 
 	protected :
 

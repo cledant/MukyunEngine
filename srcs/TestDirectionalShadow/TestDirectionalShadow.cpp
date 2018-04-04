@@ -43,8 +43,8 @@ TestDirectionalShadow::TestDirectionalShadow(Input const &input, GLFW_Window con
 	sr_params_cpy.viewPos           = &this->_camera.getPos();
 	this->_sr                       = ShadowRenderer(sr_params_cpy);
 	this->_tss.setTextureID(this->_final_image.getTextureBuffer());
-//	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::OMNI_SINGLE_SHADOW_MAP, 0));
-	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::TOTAL_SHADOW_MAP, 0));
+//	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::SPOT_SINGLE_SHADOW_MAP, 0));
+//	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::TOTAL_SHADOW_MAP, 0));
 }
 
 TestDirectionalShadow::~TestDirectionalShadow(void)
@@ -77,7 +77,7 @@ void TestDirectionalShadow::startGameLoop(Glfw_manager &manager)
 			this->_sr.computeOmniShadowMaps();
 			this->_sr.computeSpotDirDepthMaps();
 			this->_sr.computeSpotDirShadowMaps();
-			this->_sr.fuseShadowMaps();
+			this->_sr.fuseShadowMaps(true);
 			this->_final_image.useFramebuffer();
 			this->_final_image.setViewport();
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
