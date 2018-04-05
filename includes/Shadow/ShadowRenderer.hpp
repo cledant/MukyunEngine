@@ -59,11 +59,8 @@ class ShadowRenderer
 		enum eType
 		{
 			DIR_DEPTH_MAP,
-			DIR_SINGLE_SHADOW_MAP,
 			OMNI_DEPTH_MAP,
-			OMNI_SINGLE_SHADOW_MAP,
 			SPOT_DEPTH_MAP,
-			SPOT_SINGLE_SHADOW_MAP,
 			TOTAL_SHADOW_MAP,
 		};
 
@@ -100,16 +97,13 @@ class ShadowRenderer
 		LightContainer const *getLightContainer(void) const;
 		std::vector<std::unique_ptr<AFramebuffer>> const &getDirDepthMaps(void) const;
 		std::vector<std::unique_ptr<AFramebuffer>> moveDirDepthMaps(void);
-		std::vector<std::unique_ptr<AFramebuffer>> const &getDirShadowMaps(void) const;
-		std::vector<std::unique_ptr<AFramebuffer>> moveDirShadowMaps(void);
+
 		std::vector<std::unique_ptr<AFramebuffer>> const &getOmniDepthMaps(void) const;
 		std::vector<std::unique_ptr<AFramebuffer>> moveOmniDepthMaps(void);
-		std::vector<std::unique_ptr<AFramebuffer>> const &getOmniShadowMaps(void) const;
-		std::vector<std::unique_ptr<AFramebuffer>> moveOmniShadowMaps(void);
+
 		std::vector<std::unique_ptr<AFramebuffer>> const &getSpotDirDepthMaps(void) const;
 		std::vector<std::unique_ptr<AFramebuffer>> moveSpotDirDepthMaps(void);
-		std::vector<std::unique_ptr<AFramebuffer>> const &getSpotDirShadowMaps(void) const;
-		std::vector<std::unique_ptr<AFramebuffer>> moveSpotDirShadowMaps(void);
+
 		std::unique_ptr<AFramebuffer> const &getFusedShadowMap(void) const;
 		std::unique_ptr<AFramebuffer> moveFusedShadowMap(void);
 		std::vector<glm::mat4> const &getVecDirLightSpaceMatrix(void) const;
@@ -129,12 +123,9 @@ class ShadowRenderer
 
 		virtual void update(void);
 		virtual void computeDirectionalDepthMaps(void);
-		virtual void computeDirectionalShadowMaps(void);
 		virtual void computeOmniDepthMaps(void);
-		virtual void computeOmniShadowMaps(void);
 		virtual void computeSpotDirDepthMaps(void);
-		virtual void computeSpotDirShadowMaps(void);
-		virtual void fuseShadowMaps(bool activate_shadow);
+		virtual void computeAllShadowMaps(bool activate_shadow);
 
 	protected :
 
@@ -149,11 +140,8 @@ class ShadowRenderer
 		Shader const                               *_fuse_shadow_maps_shader;
 		LightContainer const                       *_lc;
 		std::vector<std::unique_ptr<AFramebuffer>> _dir_depth_maps;
-		std::vector<std::unique_ptr<AFramebuffer>> _dir_shadow_maps;
 		std::vector<std::unique_ptr<AFramebuffer>> _omni_depth_maps;
-		std::vector<std::unique_ptr<AFramebuffer>> _omni_shadow_maps;
 		std::vector<std::unique_ptr<AFramebuffer>> _spot_dir_depth_maps;
-		std::vector<std::unique_ptr<AFramebuffer>> _spot_dir_shadow_maps;
 		std::unique_ptr<AFramebuffer>              _fused_shadow_map;
 		std::vector<glm::mat4>                     _vec_dir_lightSpaceMatrix;
 		std::vector<glm::mat4>                     _vec_spot_dir_lightSpaceMatrix;

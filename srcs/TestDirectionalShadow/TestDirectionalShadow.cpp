@@ -46,7 +46,6 @@ TestDirectionalShadow::TestDirectionalShadow(Input const &input, GLFW_Window con
 
 	//Debug
 //	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::SPOT_DEPTH_MAP, 0));
-//	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::SPOT_SINGLE_SHADOW_MAP, 0));
 //	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::TOTAL_SHADOW_MAP, 0));
 }
 
@@ -74,18 +73,19 @@ void TestDirectionalShadow::startGameLoop(Glfw_manager &manager)
 			manager.calculate_fps();
 			manager.update_title_fps();
 			this->_sr.update();
+			//Compute depth maps
 			this->_sr.computeDirectionalDepthMaps();
-			this->_sr.computeDirectionalShadowMaps();
 			this->_sr.computeOmniDepthMaps();
-			this->_sr.computeOmniShadowMaps();
 			this->_sr.computeSpotDirDepthMaps();
-			this->_sr.computeSpotDirShadowMaps();
-			this->_sr.fuseShadowMaps(true);
+			//Compute and fuse shadowmaps
+			this->_sr.computeAllShadowMaps(true);
+			//Compute diffuse
 			this->_final_image.useFramebuffer();
 			this->_final_image.setViewport();
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			this->render();
+			//Display final image
 			this->_final_image.defaultFramebuffer();
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
