@@ -83,6 +83,7 @@ class AShadowRenderBin : public ARenderBin
 
 		void _allocate_vbo(size_t max_size);
 		void _update_vector_inv_model(void);
+		virtual void _bind_light_ubo(void);
 		virtual void _update_vao(void);
 };
 

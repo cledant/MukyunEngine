@@ -15,7 +15,6 @@
 MultiPointDirSpotLightShadowRenderBin::MultiPointDirSpotLightShadowRenderBin(AShadowRenderBin::Params const &params) :
 		AShadowRenderBin(params)
 {
-	this->_update_vao();
 	this->_type = ARenderBin::eType::MULTIDIRLIGHT_SHADOW;
 	std::cout << "Creating MultiDirLightShadow RenderBin" << std::endl;
 }
@@ -112,29 +111,5 @@ void MultiPointDirSpotLightShadowRenderBin::drawNoShader(void) const
 							  this->_model_matrices.size());
 		glBindVertexArray(0);
 		i++;
-	}
-}
-
-void MultiPointDirSpotLightShadowRenderBin::_update_vao(void)
-{
-	GLuint shader_id = this->_shader->getShaderProgram();
-
-	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
-	{
-		//Get and set uniform block
-		GLuint uniformBlockIndexPointLight = glGetUniformBlockIndex(shader_id, "uniform_PointLight");
-		GLuint uniformBlockIndexDirLight   = glGetUniformBlockIndex(shader_id, "uniform_DirLight");
-		GLuint uniformBlockIndexSpotLight  = glGetUniformBlockIndex(shader_id, "uniform_SpotLight");
-		glUniformBlockBinding(shader_id, uniformBlockIndexPointLight, 0);
-		glUniformBlockBinding(shader_id, uniformBlockIndexDirLight, 1);
-		glUniformBlockBinding(shader_id, uniformBlockIndexSpotLight, 2);
-		glBindBufferRange(GL_UNIFORM_BUFFER, 0, this->_lc->getUboPointLight(), 0,
-						  sizeof(LightContainer::PointLightDataGL) * this->_lc->getMaxPointLightNumber());
-		glBindBufferRange(GL_UNIFORM_BUFFER, 1, this->_lc->getUboDirLight(), 0,
-						  sizeof(LightContainer::DirLightDataGL) * this->_lc->getMaxDirLightNumber());
-		glBindBufferRange(GL_UNIFORM_BUFFER, 2, this->_lc->getUboSpotLight(), 0,
-						  sizeof(LightContainer::SpotLightDataGL) * this->_lc->getMaxSpotLightNumber());
-		glBindVertexArray(0);
-		oGL_check_error();
 	}
 }

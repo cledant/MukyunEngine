@@ -32,10 +32,6 @@ class MultiPointDirSpotLightShadowRenderBin : public AShadowRenderBin
 
 		virtual void draw(void);
 		virtual void drawNoShader(void) const;
-
-	protected :
-
-		virtual void _update_vao(void);
 };
 
 #endif

@@ -40,6 +40,7 @@ AShadowRenderBin::AShadowRenderBin(AShadowRenderBin::Params const &params) :
 		this->_inv_model_matrices.reserve(params.max_instance);
 		this->_allocate_vbo(params.max_instance);
 		this->_update_vao();
+		this->_bind_light_ubo();
 	}
 	catch (std::exception &e)
 	{
@@ -193,6 +194,25 @@ void AShadowRenderBin::_update_vector_inv_model(void)
 
 	for (auto it = this->_model_matrices.begin(); it != this->_model_matrices.end(); ++it)
 		this->_inv_model_matrices.push_back(glm::transpose(glm::inverse(*it)));
+}
+
+void AShadowRenderBin::_bind_light_ubo(void)
+{
+	GLuint shader_id                   = this->_shader->getShaderProgram();
+	GLuint uniformBlockIndexPointLight = glGetUniformBlockIndex(shader_id, "uniform_PointLight");
+	GLuint uniformBlockIndexDirLight   = glGetUniformBlockIndex(shader_id, "uniform_DirLight");
+	GLuint uniformBlockIndexSpotLight  = glGetUniformBlockIndex(shader_id, "uniform_SpotLight");
+
+	glUniformBlockBinding(shader_id, uniformBlockIndexPointLight, 0);
+	glUniformBlockBinding(shader_id, uniformBlockIndexDirLight, 1);
+	glUniformBlockBinding(shader_id, uniformBlockIndexSpotLight, 2);
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, this->_lc->getUboPointLight(), 0,
+					  sizeof(LightContainer::PointLightDataGL) * this->_lc->getMaxPointLightNumber());
+	glBindBufferRange(GL_UNIFORM_BUFFER, 1, this->_lc->getUboDirLight(), 0,
+					  sizeof(LightContainer::DirLightDataGL) * this->_lc->getMaxDirLightNumber());
+	glBindBufferRange(GL_UNIFORM_BUFFER, 2, this->_lc->getUboSpotLight(), 0,
+					  sizeof(LightContainer::SpotLightDataGL) * this->_lc->getMaxSpotLightNumber());
+	oGL_check_error();
 }
 
 void AShadowRenderBin::_update_vao(void)
