@@ -76,6 +76,7 @@ Shader::Shader(Shader &&src)
 Shader &Shader::operator=(Shader &&rhs)
 {
 	this->_shader_program = rhs.moveShaderProgram();
+	this->_uniform_id_map = rhs.getUniformIdMap();
 	return (*this);
 }
 
@@ -99,6 +100,11 @@ GLuint Shader::moveShaderProgram(void)
 
 	this->_shader_program = 0;
 	return (tmp);
+}
+
+std::map<std::string, GLint> const &Shader::getUniformIdMap(void) const
+{
+	return (this->_uniform_id_map);
 }
 
 /*

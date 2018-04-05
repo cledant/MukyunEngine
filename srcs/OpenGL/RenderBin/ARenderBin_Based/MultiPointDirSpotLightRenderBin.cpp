@@ -78,19 +78,6 @@ MultiPointDirSpotLightRenderBin &MultiPointDirSpotLightRenderBin::operator=(
 
 void MultiPointDirSpotLightRenderBin::draw(void)
 {
-	GLuint shader_id = this->_shader->getShaderProgram();
-	GLint  uniform_mat_perspec_mult_view_id;
-	GLint  uniform_viewPos;
-	GLint  uniform_nb_point_light;
-	GLint  uniform_nb_dir_light;
-	GLint  uniform_nb_spot_light;
-	GLint  uniform_mat_diffuse_map;
-	GLint  uniform_mat_specular_map;
-	GLint  uniform_mat_shininess;
-	GLint  uniform_mat_ambient;
-	GLint  uniform_mat_diffuse;
-	GLint  uniform_mat_specular;
-
 	size_t i = 0;
 
 	if (this->_shader == nullptr || this->_perspec_mult_view == nullptr ||
@@ -99,38 +86,24 @@ void MultiPointDirSpotLightRenderBin::draw(void)
 		std::cout << "Can't Render MultiLightPointDirSpotLight" << std::endl;
 		return;
 	}
-	uniform_mat_perspec_mult_view_id = glGetUniformLocation(shader_id,
-															"uniform_mat_perspec_mult_view");
-	uniform_viewPos                  = glGetUniformLocation(shader_id, "viewPos");
-	uniform_nb_point_light           = glGetUniformLocation(shader_id, "nb_point_light");
-	uniform_nb_dir_light             = glGetUniformLocation(shader_id, "nb_dir_light");
-	uniform_nb_spot_light            = glGetUniformLocation(shader_id, "nb_spot_light");
-	uniform_mat_diffuse_map          = glGetUniformLocation(shader_id, "uniform_material.tex_diffuse");
-	uniform_mat_specular_map         = glGetUniformLocation(shader_id, "uniform_material.tex_specular");
-	uniform_mat_shininess            = glGetUniformLocation(shader_id, "uniform_material.shininess");
-	uniform_mat_ambient              = glGetUniformLocation(shader_id, "uniform_material.mat_ambient");
-	uniform_mat_diffuse              = glGetUniformLocation(shader_id, "uniform_material.mat_diffuse");
-	uniform_mat_specular             = glGetUniformLocation(shader_id, "uniform_material.mat_specular");
-
 	this->_shader->use();
-	this->_shader->setMat4(uniform_mat_perspec_mult_view_id, *(this->_perspec_mult_view));
-	this->_shader->setVec3(uniform_viewPos, *(this->_view_pos));
-	this->_shader->setInt(uniform_nb_point_light, this->_lc->getCurrentPointLightNumber());
-	this->_shader->setInt(uniform_nb_dir_light, this->_lc->getCurrentDirLightNumber());
-	this->_shader->setInt(uniform_nb_spot_light, this->_lc->getCurrentSpotLightNumber());
+	this->_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
+	this->_shader->setVec3("viewPos", *(this->_view_pos));
+	this->_shader->setInt("nb_point_light", this->_lc->getCurrentPointLightNumber());
+	this->_shader->setInt("nb_dir_light", this->_lc->getCurrentDirLightNumber());
+	this->_shader->setInt("nb_spot_light", this->_lc->getCurrentSpotLightNumber());
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 	{
-
 		glActiveTexture(GL_TEXTURE0);
-		glUniform1i(uniform_mat_diffuse_map, 0);
+		this->_shader->setInt("uniform_material.tex_diffuse", 0);
 		glBindTexture(GL_TEXTURE_2D, (this->_model->getMeshList())[i].getMaterial().diffuseMap);
 		glActiveTexture(GL_TEXTURE1);
-		glUniform1i(uniform_mat_specular_map, 1);
+		this->_shader->setInt("uniform_material.tex_specular", 1);
 		glBindTexture(GL_TEXTURE_2D, (this->_model->getMeshList())[i].getMaterial().specularMap);
-		this->_shader->setFloat(uniform_mat_shininess, (this->_model->getMeshList())[i].getMaterial().shininess);
-		this->_shader->setVec3(uniform_mat_ambient, (this->_model->getMeshList())[i].getMaterial().ambient);
-		this->_shader->setVec3(uniform_mat_diffuse, (this->_model->getMeshList())[i].getMaterial().diffuse);
-		this->_shader->setVec3(uniform_mat_specular, (this->_model->getMeshList())[i].getMaterial().specular);
+		this->_shader->setFloat("uniform_material.shininess", (this->_model->getMeshList())[i].getMaterial().shininess);
+		this->_shader->setVec3("uniform_material.mat_ambient", (this->_model->getMeshList())[i].getMaterial().ambient);
+		this->_shader->setVec3("uniform_material.mat_diffuse", (this->_model->getMeshList())[i].getMaterial().diffuse);
+		this->_shader->setVec3("uniform_material.mat_specular", (this->_model->getMeshList())[i].getMaterial().specular);
 		glBindVertexArray(this->_vao_mesh[i]);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0,

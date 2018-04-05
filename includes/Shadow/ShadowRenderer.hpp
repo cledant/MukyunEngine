@@ -35,13 +35,13 @@ class ShadowRenderer
 			Params(void);
 			virtual ~Params(void);
 
-			Shader const         *dir_depth_map_shader;
-			Shader const         *dir_shadow_map_shader;
-			Shader const         *omni_depth_map_shader;
-			Shader const         *omni_shadow_map_shader;
-			Shader const         *spot_dir_depth_map_shader;
-			Shader const         *spot_dir_shadow_map_shader;
-			Shader const         *fuse_shadow_maps_shader;
+			Shader               *dir_depth_map_shader;
+			Shader               *dir_shadow_map_shader;
+			Shader               *omni_depth_map_shader;
+			Shader               *omni_shadow_map_shader;
+			Shader               *spot_dir_depth_map_shader;
+			Shader               *spot_dir_shadow_map_shader;
+			Shader               *fuse_shadow_maps_shader;
 			LightContainer const *lc;
 			glm::vec2            dir_near_far;
 			glm::vec2            omni_near_far;
@@ -87,13 +87,13 @@ class ShadowRenderer
 		 */
 
 		GLuint getFramebufferTexID(ShadowRenderer::eType type, size_t index) const;
-		Shader const *getDirDepthMapShader(void) const;
-		Shader const *getDirShadowMapShader(void) const;
-		Shader const *getOmniDepthMapShader(void) const;
-		Shader const *getOmniShadowMapShader(void) const;
-		Shader const *getSpotDirDepthMapShader(void) const;
-		Shader const *getSpotDirShadowMapShader(void) const;
-		Shader const *getFuseShadowMapShader(void) const;
+		Shader *getDirDepthMapShader(void) const;
+		Shader *getDirShadowMapShader(void) const;
+		Shader *getOmniDepthMapShader(void) const;
+		Shader *getOmniShadowMapShader(void) const;
+		Shader *getSpotDirDepthMapShader(void) const;
+		Shader *getSpotDirShadowMapShader(void) const;
+		Shader *getFuseShadowMapShader(void) const;
 		LightContainer const *getLightContainer(void) const;
 		std::vector<std::unique_ptr<AFramebuffer>> const &getDirDepthMaps(void) const;
 		std::vector<std::unique_ptr<AFramebuffer>> moveDirDepthMaps(void);
@@ -131,13 +131,13 @@ class ShadowRenderer
 
 		inline void _allocate_memory(int w, int h);
 
-		Shader const                               *_dir_depth_map_shader;
-		Shader const                               *_dir_shadow_map_shader;
-		Shader const                               *_omni_depth_map_shader;
-		Shader const                               *_omni_shadow_map_shader;
-		Shader const                               *_spot_dir_depth_map_shader;
-		Shader const                               *_spot_dir_shadow_map_shader;
-		Shader const                               *_fuse_shadow_maps_shader;
+		Shader                                     *_dir_depth_map_shader;
+		Shader                                     *_dir_shadow_map_shader;
+		Shader                                     *_omni_depth_map_shader;
+		Shader                                     *_omni_shadow_map_shader;
+		Shader                                     *_spot_dir_depth_map_shader;
+		Shader                                     *_spot_dir_shadow_map_shader;
+		Shader                                     *_fuse_shadow_maps_shader;
 		LightContainer const                       *_lc;
 		std::vector<std::unique_ptr<AFramebuffer>> _dir_depth_maps;
 		std::vector<std::unique_ptr<AFramebuffer>> _omni_depth_maps;

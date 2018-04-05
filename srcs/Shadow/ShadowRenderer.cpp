@@ -181,37 +181,37 @@ GLuint ShadowRenderer::getFramebufferTexID(ShadowRenderer::eType type,
 	return (0);
 }
 
-Shader const *ShadowRenderer::getDirDepthMapShader() const
+Shader *ShadowRenderer::getDirDepthMapShader() const
 {
 	return (this->_dir_depth_map_shader);
 }
 
-Shader const *ShadowRenderer::getDirShadowMapShader() const
+Shader *ShadowRenderer::getDirShadowMapShader() const
 {
 	return (this->_dir_shadow_map_shader);
 }
 
-Shader const *ShadowRenderer::getOmniDepthMapShader() const
+Shader *ShadowRenderer::getOmniDepthMapShader() const
 {
 	return (this->_omni_depth_map_shader);
 }
 
-Shader const *ShadowRenderer::getOmniShadowMapShader() const
+Shader *ShadowRenderer::getOmniShadowMapShader() const
 {
 	return (this->_omni_shadow_map_shader);
 }
 
-Shader const *ShadowRenderer::getSpotDirDepthMapShader() const
+Shader *ShadowRenderer::getSpotDirDepthMapShader() const
 {
 	return (this->_spot_dir_depth_map_shader);
 }
 
-Shader const *ShadowRenderer::getSpotDirShadowMapShader() const
+Shader *ShadowRenderer::getSpotDirShadowMapShader() const
 {
 	return (this->_spot_dir_shadow_map_shader);
 }
 
-Shader const *ShadowRenderer::getFuseShadowMapShader() const
+Shader *ShadowRenderer::getFuseShadowMapShader() const
 {
 	return (this->_fuse_shadow_maps_shader);
 }
@@ -379,9 +379,6 @@ void ShadowRenderer::update(void)
 
 void ShadowRenderer::computeDirectionalDepthMaps(void)
 {
-	GLuint shader_id                = this->_dir_depth_map_shader->getShaderProgram();
-	GLint  uniform_lightSpaceMatrix = glGetUniformLocation(shader_id, "uniform_lightSpaceMatrix");
-
 	glCullFace(GL_FRONT);
 	this->_dir_depth_map_shader->use();
 	for (size_t i = 0; i < this->_lc->getCurrentDirLightNumber(); ++i)
@@ -390,7 +387,7 @@ void ShadowRenderer::computeDirectionalDepthMaps(void)
 		this->_dir_depth_maps[i]->setViewport();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
-		this->_dir_depth_map_shader->setMat4(uniform_lightSpaceMatrix, (this->_vec_dir_lightSpaceMatrix)[i]);
+		this->_dir_depth_map_shader->setMat4("uniform_lightSpaceMatrix", (this->_vec_dir_lightSpaceMatrix)[i]);
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
 			this->_shadow_rb_list[j]->drawNoShader();
 	}
@@ -400,13 +397,9 @@ void ShadowRenderer::computeDirectionalDepthMaps(void)
 
 void ShadowRenderer::computeOmniDepthMaps(void)
 {
-	GLuint shader_id         = this->_omni_depth_map_shader->getShaderProgram();
-	GLint  uniform_far_plane = glGetUniformLocation(shader_id, "uniform_farPlane");
-	GLint  uniform_lightPos  = glGetUniformLocation(shader_id, "uniform_lightPos");
-
 	glCullFace(GL_FRONT);
 	this->_omni_depth_map_shader->use();
-	this->_omni_depth_map_shader->setFloat(uniform_far_plane, this->_omni_near_far.y);
+	this->_omni_depth_map_shader->setFloat("uniform_farPlane", this->_omni_near_far.y);
 	for (size_t i = 0; i < this->_lc->getCurrentPointLightNumber(); ++i)
 	{
 		this->_omni_depth_maps[i]->useFramebuffer();
@@ -415,12 +408,10 @@ void ShadowRenderer::computeOmniDepthMaps(void)
 		glDepthFunc(GL_LESS);
 		for (size_t k = 0; k < 6; ++k)
 		{
-			std::string name                    = "uniform_shadowMatrices[" + std::to_string(k) + "]";
-			GLint       uniform_shadowMatricies = glGetUniformLocation(shader_id, name.c_str());
-			this->_omni_depth_map_shader
-				->setMat4(uniform_shadowMatricies, (this->_vec_omni_lightSpaceMatrix)[i].mat[k]);
+			std::string name = "uniform_shadowMatrices[" + std::to_string(k) + "]";
+			this->_omni_depth_map_shader->setMat4(name, (this->_vec_omni_lightSpaceMatrix)[i].mat[k]);
 		}
-		this->_omni_depth_map_shader->setVec3(uniform_lightPos, glm::vec3(this->_lc->getPointLightDataGL()[i].pos));
+		this->_omni_depth_map_shader->setVec3("uniform_lightPos", glm::vec3(this->_lc->getPointLightDataGL()[i].pos));
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
 			this->_shadow_rb_list[j]->drawNoShader();
 	}
@@ -430,9 +421,6 @@ void ShadowRenderer::computeOmniDepthMaps(void)
 
 void ShadowRenderer::computeSpotDirDepthMaps(void)
 {
-	GLuint shader_id                = this->_spot_dir_depth_map_shader->getShaderProgram();
-	GLint  uniform_lightSpaceMatrix = glGetUniformLocation(shader_id, "uniform_lightSpaceMatrix");
-
 	glCullFace(GL_FRONT);
 	this->_spot_dir_depth_map_shader->use();
 	for (size_t i = 0; i < this->_lc->getCurrentSpotLightNumber(); ++i)
@@ -441,7 +429,8 @@ void ShadowRenderer::computeSpotDirDepthMaps(void)
 		this->_spot_dir_depth_maps[i]->setViewport();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
-		this->_spot_dir_depth_map_shader->setMat4(uniform_lightSpaceMatrix, (this->_vec_spot_dir_lightSpaceMatrix)[i]);
+		this->_spot_dir_depth_map_shader
+			->setMat4("uniform_lightSpaceMatrix", (this->_vec_spot_dir_lightSpaceMatrix)[i]);
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
 			this->_shadow_rb_list[j]->drawNoShader();
 	}
@@ -451,17 +440,7 @@ void ShadowRenderer::computeSpotDirDepthMaps(void)
 
 void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 {
-	int    blend_flag                    = 0;
-	GLuint shader_id                     = 0;
-	GLint  uniform_lightSpaceMatrix      = 0;
-	GLint  uniform_mat_perspec_mult_view = 0;
-	GLint  uniform_light_pos             = 0;
-	GLint  shadowMap                     = 0;
-	GLint  uniform_viewPos               = 0;
-	GLint  uniform_farPlane              = 0;
-	GLint  depthMap                      = 0;
-	GLint  uniform_lightDir              = 0;
-	GLint  uniform_cutoff                = 0;
+	int blend_flag = 0;
 
 	this->_fused_shadow_map.get()->useFramebuffer();
 	this->_fused_shadow_map.get()->setViewport();
@@ -479,11 +458,6 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 	//Directional Light
-	shader_id                     = this->_dir_shadow_map_shader->getShaderProgram();
-	uniform_lightSpaceMatrix      = glGetUniformLocation(shader_id, "uniform_lightSpaceMatrix");
-	uniform_mat_perspec_mult_view = glGetUniformLocation(shader_id, "uniform_mat_perspec_mult_view");
-	uniform_light_pos             = glGetUniformLocation(shader_id, "uniform_lightPos");
-	shadowMap                     = glGetUniformLocation(shader_id, "shadowMap");
 	this->_dir_shadow_map_shader->use();
 	for (size_t i = 0; i < this->_lc->getCurrentDirLightNumber(); ++i)
 	{
@@ -502,27 +476,21 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 			glBlendFunc(GL_CONSTANT_COLOR, GL_CONSTANT_COLOR);
 			blend_flag++;
 		}
-		this->_dir_shadow_map_shader->setMat4(uniform_lightSpaceMatrix, (this->_vec_dir_lightSpaceMatrix)[i]);
-		this->_dir_shadow_map_shader->setMat4(uniform_mat_perspec_mult_view, *(this->_perspec_mult_view));
-		this->_dir_shadow_map_shader->setVec3(uniform_light_pos, glm::vec3(this->_lc->getDirLightDataGL()[i].pos));
+		this->_dir_shadow_map_shader->setMat4("uniform_lightSpaceMatrix", (this->_vec_dir_lightSpaceMatrix)[i]);
+		this->_dir_shadow_map_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
+		this->_dir_shadow_map_shader->setVec3("uniform_lightPos", glm::vec3(this->_lc->getDirLightDataGL()[i].pos));
 		glActiveTexture(GL_TEXTURE0);
-		glUniform1i(shadowMap, 0);
+		this->_dir_shadow_map_shader->setInt("shadowMap", 0);
 		glBindTexture(GL_TEXTURE_2D, this->_dir_depth_maps[i].get()->getTextureBuffer());
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
 			this->_shadow_rb_list[j]->drawNoShader();
 	}
 
 	//Omnidirectional ShadowMap
-	shader_id                     = this->_omni_shadow_map_shader->getShaderProgram();
-	uniform_mat_perspec_mult_view = glGetUniformLocation(shader_id, "uniform_mat_perspec_mult_view");
-	uniform_light_pos             = glGetUniformLocation(shader_id, "uniform_lightPos");
-	uniform_viewPos               = glGetUniformLocation(shader_id, "uniform_viewPos");
-	uniform_farPlane              = glGetUniformLocation(shader_id, "uniform_farPlane");
-	depthMap                      = glGetUniformLocation(shader_id, "depthMap");
 	this->_omni_shadow_map_shader->use();
-	this->_omni_shadow_map_shader->setVec3(uniform_viewPos, *(this->_viewPos));
-	this->_omni_shadow_map_shader->setFloat(uniform_farPlane, this->_omni_near_far.y);
-	this->_omni_shadow_map_shader->setMat4(uniform_mat_perspec_mult_view, *(this->_perspec_mult_view));
+	this->_omni_shadow_map_shader->setVec3("uniform_viewPos", *(this->_viewPos));
+	this->_omni_shadow_map_shader->setFloat("uniform_farPlane", this->_omni_near_far.y);
+	this->_omni_shadow_map_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
 	for (size_t i = 0; i < this->_lc->getCurrentPointLightNumber(); ++i)
 	{
 		if (!blend_flag)
@@ -540,22 +508,15 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 			glBlendFunc(GL_CONSTANT_COLOR, GL_CONSTANT_COLOR);
 			blend_flag++;
 		}
-		this->_omni_shadow_map_shader->setVec3(uniform_light_pos, glm::vec3(this->_lc->getPointLightDataGL()[i].pos));
+		this->_omni_shadow_map_shader->setVec3("uniform_lightPos", glm::vec3(this->_lc->getPointLightDataGL()[i].pos));
 		glActiveTexture(GL_TEXTURE0);
-		glUniform1i(depthMap, 0);
+		this->_omni_shadow_map_shader->setInt("depthMap", 0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, this->_omni_depth_maps[i].get()->getTextureBuffer());
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
 			this->_shadow_rb_list[j]->drawNoShader();
 	}
 
 	//SpotLight Shadow
-	shader_id                     = this->_spot_dir_shadow_map_shader->getShaderProgram();
-	uniform_lightSpaceMatrix      = glGetUniformLocation(shader_id, "uniform_lightSpaceMatrix");
-	uniform_mat_perspec_mult_view = glGetUniformLocation(shader_id, "uniform_mat_perspec_mult_view");
-	uniform_light_pos             = glGetUniformLocation(shader_id, "uniform_lightPos");
-	uniform_lightDir              = glGetUniformLocation(shader_id, "uniform_lightDir");
-	uniform_cutoff                = glGetUniformLocation(shader_id, "uniform_cutoff");
-	shadowMap                     = glGetUniformLocation(shader_id, "shadowMap");
 	this->_spot_dir_shadow_map_shader->use();
 	for (size_t i = 0; i < this->_lc->getCurrentSpotLightNumber(); ++i)
 	{
@@ -574,16 +535,17 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 			glBlendFunc(GL_CONSTANT_COLOR, GL_CONSTANT_COLOR);
 			blend_flag++;
 		}
-		this->_spot_dir_shadow_map_shader->setMat4(uniform_lightSpaceMatrix, (this->_vec_spot_dir_lightSpaceMatrix)[i]);
-		this->_spot_dir_shadow_map_shader->setMat4(uniform_mat_perspec_mult_view, *(this->_perspec_mult_view));
 		this->_spot_dir_shadow_map_shader
-			->setVec3(uniform_light_pos, glm::vec3(this->_lc->getSpotLightDataGL()[i].pos));
-		this->_spot_dir_shadow_map_shader
-			->setVec3(uniform_lightDir, glm::vec3(this->_lc->getSpotLightDataGL()[i].dir));
-		this->_spot_dir_shadow_map_shader
-			->setVec2(uniform_cutoff, glm::vec3(this->_lc->getSpotLightDataGL()[i].cutoff));
+			->setMat4("uniform_lightSpaceMatrix", (this->_vec_spot_dir_lightSpaceMatrix)[i]);
+		this->_spot_dir_shadow_map_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
+		this->_spot_dir_shadow_map_shader->setVec3("uniform_lightPos",
+												   glm::vec3(this->_lc->getSpotLightDataGL()[i].pos));
+		this->_spot_dir_shadow_map_shader->setVec3("uniform_lightDir",
+												   glm::vec3(this->_lc->getSpotLightDataGL()[i].dir));
+		this->_spot_dir_shadow_map_shader->setVec2("uniform_cutoff",
+												   glm::vec3(this->_lc->getSpotLightDataGL()[i].cutoff));
 		glActiveTexture(GL_TEXTURE0);
-		glUniform1i(shadowMap, 0);
+		this->_spot_dir_shadow_map_shader->setInt("shadowMap", 0);
 		glBindTexture(GL_TEXTURE_2D, this->_spot_dir_depth_maps[i].get()->getTextureBuffer());
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
 			this->_shadow_rb_list[j]->drawNoShader();

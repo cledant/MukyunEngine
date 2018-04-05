@@ -52,7 +52,7 @@ class TestDirectionalShadow
 							  float max_fps, size_t max_frame_skip,
 							  LightContainer::Params const &lc_params,
 							  ShadowRenderer::Params const &sr_params,
-							  RessourceManager const &rm);
+							  RessourceManager &rm);
 		virtual ~TestDirectionalShadow(void);
 		TestDirectionalShadow(TestDirectionalShadow const &src) = delete;
 		TestDirectionalShadow &operator=(TestDirectionalShadow const &rhs) = delete;

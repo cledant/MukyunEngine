@@ -43,7 +43,7 @@ class Shader
 
 		GLuint getShaderProgram(void) const;
 		GLuint moveShaderProgram(void);
-		std::map<std::string, GLint> getUniformIdMap(void) const;
+		std::map<std::string, GLint> const &getUniformIdMap(void) const;
 
 		/*
 		 * Setter
@@ -55,7 +55,6 @@ class Shader
 		void setVec2(std::string const &name, glm::vec2 const &float2);
 		void setFloat(std::string const &name, float value);
 		void setInt(std::string const &name, int value);
-		void setTexture(std::string const &name, int index);
 
 		class FileOpenException : public GeneralException
 		{

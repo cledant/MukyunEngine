@@ -17,7 +17,7 @@ TestDirectionalShadow::TestDirectionalShadow(Input const &input, GLFW_Window con
 											 float max_fps, size_t max_frame_skip,
 											 LightContainer::Params const &lc_params,
 											 ShadowRenderer::Params const &sr_params,
-											 RessourceManager const &rm) :
+											 RessourceManager &rm) :
 		_light_container(lc_params), _sr(), _window(win),
 		_camera(&input, cam_pos, glm::vec3(0.0f, 1.0f, 0.0f),
 				glm::vec3(0.0f, 0.0f, -1.0f), -90.0f, 0.0f),

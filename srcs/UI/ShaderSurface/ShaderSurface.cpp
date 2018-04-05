@@ -18,8 +18,8 @@ ShaderSurface::ShaderSurface(void) : _win(nullptr), _input(nullptr), _shader(nul
 }
 
 ShaderSurface::ShaderSurface(GLFW_Window const *win, Input const *input,
-							 Shader const *shader) : _win(win), _input(input),
-													 _shader(shader), _vao(0), _vbo(0)
+							 Shader *shader) : _win(win), _input(input),
+											   _shader(shader), _vao(0), _vbo(0)
 {
 	try
 	{
@@ -58,7 +58,7 @@ ShaderSurface &ShaderSurface::operator=(ShaderSurface &&rhs)
  * Getter
  */
 
-Shader const *ShaderSurface::getShader(void) const
+Shader *ShaderSurface::getShader(void) const
 {
 	return (this->_shader);
 }
@@ -93,7 +93,7 @@ GLuint ShaderSurface::moveVBO(void)
  * Setter
  */
 
-void ShaderSurface::setShader(Shader const *shader)
+void ShaderSurface::setShader(Shader *shader)
 {
 	this->_shader = shader;
 }
@@ -104,10 +104,6 @@ void ShaderSurface::setShader(Shader const *shader)
 
 void ShaderSurface::draw(void)
 {
-	GLuint shader_id     = this->_shader->getShaderProgram();
-	GLint  id_time       = glGetUniformLocation(shader_id, "uniform_time");
-	GLint  id_resolution = glGetUniformLocation(shader_id, "uniform_resolution");
-
 	if (this->_shader == nullptr || this->_win == nullptr || this->_input == nullptr)
 	{
 		std::cout << "Warning : Can't draw ShaderSurface" << std::endl;
@@ -116,9 +112,9 @@ void ShaderSurface::draw(void)
 	this->_shader->use();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, this->_win->cur_win_w, this->_win->cur_win_h);
-	this->_shader->setVec2(id_resolution, glm::vec2{this->_win->cur_win_w,
-													this->_win->cur_win_h});
-	this->_shader->setFloat(id_time, Glfw_manager::getTime());
+	this->_shader->setVec2("uniform_resolution", glm::vec2{this->_win->cur_win_w,
+														   this->_win->cur_win_h});
+	this->_shader->setFloat("uniform_time", Glfw_manager::getTime());
 	glBindVertexArray(this->_vao);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, ShaderSurface::_nb_faces);

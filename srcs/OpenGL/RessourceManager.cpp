@@ -67,7 +67,7 @@ void RessourceManager::add_directional_depthbuffer(std::string const &name, int 
  * Getter
  */
 
-Shader const &RessourceManager::getShader(std::string const &name) const
+Shader &RessourceManager::getShader(std::string const &name)
 {
 	auto it = this->_shader_list.find(name);
 

@@ -57,7 +57,7 @@ class RessourceManager
 		 * Getter
 		 */
 
-		Shader const &getShader(std::string const &name) const;
+		Shader &getShader(std::string const &name);
 		Model const &getModel(std::string const &name) const;
 		Texture const &getTexture(std::string const &name) const;
 		AFramebuffer const &getFramebuffer(std::string const &name) const;

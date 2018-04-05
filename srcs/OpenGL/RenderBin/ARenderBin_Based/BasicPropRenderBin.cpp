@@ -34,6 +34,8 @@ BasicPropRenderBin &BasicPropRenderBin::operator=(BasicPropRenderBin &&rhs)
 
 void BasicPropRenderBin::draw(void)
 {
+	size_t i = 0;
+
 	if (this->_shader == nullptr || this->_perspec_mult_view == nullptr ||
 		this->_model == nullptr)
 	{
@@ -44,9 +46,8 @@ void BasicPropRenderBin::draw(void)
 	this->_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 	{
-
 		glActiveTexture(GL_TEXTURE0);
-		this->_shader->setTexture("uniform_tex_diffuse", 0);
+		this->_shader->setInt("uniform_tex_diffuse", 0);
 		glBindTexture(GL_TEXTURE_2D, (this->_model->getMeshList())[i].getMaterial().diffuseMap);
 		glBindVertexArray(this->_vao_mesh[i]);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

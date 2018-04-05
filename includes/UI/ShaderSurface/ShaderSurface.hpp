@@ -24,7 +24,7 @@ class ShaderSurface
 	public :
 
 		ShaderSurface(void);
-		ShaderSurface(GLFW_Window const *win, Input const *input, Shader const *shader);
+		ShaderSurface(GLFW_Window const *win, Input const *input, Shader *shader);
 		virtual ~ShaderSurface(void);
 		ShaderSurface(ShaderSurface const &src) = delete;
 		ShaderSurface &operator=(ShaderSurface const &rhs) = delete;
@@ -35,7 +35,7 @@ class ShaderSurface
 		 * Getter
 		 */
 
-		Shader const *getShader(void) const;
+		Shader *getShader(void) const;
 		Input const *getInput(void) const;
 		GLFW_Window const *getWindow(void) const;
 		GLuint moveVAO(void);
@@ -45,7 +45,7 @@ class ShaderSurface
 		 * Setter
 		 */
 
-		void setShader(Shader const *shader);
+		void setShader(Shader *shader);
 
 
 		/*
@@ -66,7 +66,7 @@ class ShaderSurface
 
 		GLFW_Window const *_win;
 		Input const       *_input;
-		Shader const      *_shader;
+		Shader            *_shader;
 		GLuint            _vao;
 		GLuint            _vbo;
 

@@ -66,9 +66,9 @@ ARenderBin::ARenderBin(ARenderBin &&src) : _vbo_model_matrices(0)
 ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 {
 	this->_type              = rhs.getType();
-	this->_shader            = getShader();
-	this->_perspec_mult_view = getPerspecMultView();
-	this->_model             = getModel();
+	this->_shader            = rhs.getShader();
+	this->_perspec_mult_view = rhs.getPerspecMultView();
+	this->_model             = rhs.getModel();
 	try
 	{
 		this->_model_matrices.reserve(rhs.getMaxInstanceNumber());
@@ -115,7 +115,7 @@ ARenderBin::eType ARenderBin::getType(void) const
 	return (this->_type);
 }
 
-Shader const *ARenderBin::getShader(void) const
+Shader *ARenderBin::getShader(void) const
 {
 	return (this->_shader);
 }

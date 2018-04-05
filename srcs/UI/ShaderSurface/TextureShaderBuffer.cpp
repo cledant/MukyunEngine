@@ -18,7 +18,7 @@ TextureShaderSurface::TextureShaderSurface(void) :
 }
 
 TextureShaderSurface::TextureShaderSurface(GLFW_Window const *win, Input const *input,
-										   Shader const *shader, GLuint tex_id) :
+										   Shader *shader, GLuint tex_id) :
 		ShaderSurface(), _tex_id(tex_id)
 {
 	this->_win    = win;

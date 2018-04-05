@@ -73,7 +73,7 @@ class ARenderBin
 		 */
 
 		ARenderBin::eType getType(void) const;
-		Shader const *getShader(void) const;
+		Shader *getShader(void) const;
 		glm::mat4 const *getPerspecMultView(void) const;
 		Model const *getModel(void) const;
 		std::vector<glm::mat4> const &getModelMatrices(void) const;

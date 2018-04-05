@@ -20,7 +20,7 @@ class TextureShaderSurface : public ShaderSurface
 	public :
 
 		TextureShaderSurface(void);
-		TextureShaderSurface(GLFW_Window const *win, Input const *input, Shader const *shader,
+		TextureShaderSurface(GLFW_Window const *win, Input const *input, Shader *shader,
 							 GLuint tex_id);
 		virtual ~TextureShaderSurface(void);
 		TextureShaderSurface(TextureShaderSurface const &src) = delete;
