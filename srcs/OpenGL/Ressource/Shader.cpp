@@ -105,36 +105,59 @@ GLuint Shader::moveShaderProgram(void)
  * Setter
  */
 
-void Shader::setMat4(GLint uniform_id, glm::mat4 const &mat4) const
+void Shader::setMat4(std::string const &name, glm::mat4 const &mat4)
 {
-	glUniformMatrix4fv(uniform_id, 1, GL_FALSE,
+	auto it = this->_uniform_id_map.find(name);
+
+	if (it == this->_uniform_id_map.end())
+		this->_uniform_id_map[name] = glGetUniformLocation(this->_shader_program, name.c_str());
+	glUniformMatrix4fv(this->_uniform_id_map[name], 1, GL_FALSE,
 					   reinterpret_cast<const GLfloat *>(&mat4));
 }
 
-void Shader::setVec4(GLint uniform_id, glm::vec4 const &float4) const
+void Shader::setVec4(std::string const &name, glm::vec4 const &float4)
 {
-	glUniform4fv(uniform_id, 1, reinterpret_cast<const GLfloat *>(&float4));
+	auto it = this->_uniform_id_map.find(name);
+
+	if (it == this->_uniform_id_map.end())
+		this->_uniform_id_map[name] = glGetUniformLocation(this->_shader_program, name.c_str());
+	glUniform4fv(this->_uniform_id_map[name], 1, reinterpret_cast<const GLfloat *>(&float4));
 }
 
-
-void Shader::setVec3(GLint uniform_id, glm::vec3 const &float3) const
+void Shader::setVec3(std::string const &name, glm::vec3 const &float3)
 {
-	glUniform3fv(uniform_id, 1, reinterpret_cast<const GLfloat *>(&float3));
+	auto it = this->_uniform_id_map.find(name);
+
+	if (it == this->_uniform_id_map.end())
+		this->_uniform_id_map[name] = glGetUniformLocation(this->_shader_program, name.c_str());
+	glUniform3fv(this->_uniform_id_map[name], 1, reinterpret_cast<const GLfloat *>(&float3));
 }
 
-void Shader::setVec2(GLint uniform_id, glm::vec2 const &float2) const
+void Shader::setVec2(std::string const &name, glm::vec2 const &float2)
 {
-	glUniform2fv(uniform_id, 1, reinterpret_cast<const GLfloat *>(&float2));
+	auto it = this->_uniform_id_map.find(name);
+
+	if (it == this->_uniform_id_map.end())
+		this->_uniform_id_map[name] = glGetUniformLocation(this->_shader_program, name.c_str());
+	glUniform2fv(this->_uniform_id_map[name], 1, reinterpret_cast<const GLfloat *>(&float2));
 }
 
-void Shader::setFloat(GLint uniform_id, float value) const
+void Shader::setFloat(std::string const &name, float value)
 {
-	glUniform1f(uniform_id, static_cast<GLfloat>(value));
+	auto it = this->_uniform_id_map.find(name);
+
+	if (it == this->_uniform_id_map.end())
+		this->_uniform_id_map[name] = glGetUniformLocation(this->_shader_program, name.c_str());
+	glUniform1f(this->_uniform_id_map[name], static_cast<GLfloat>(value));
 }
 
-void Shader::setInt(GLint uniform_id, int value) const
+void Shader::setInt(std::string const &name, int value)
 {
-	glUniform1i(uniform_id, value);
+	auto it = this->_uniform_id_map.find(name);
+
+	if (it == this->_uniform_id_map.end())
+		this->_uniform_id_map[name] = glGetUniformLocation(this->_shader_program, name.c_str());
+	glUniform1i(this->_uniform_id_map[name], value);
 }
 
 GLuint Shader::_load_shader(std::string const &path, GLenum type)

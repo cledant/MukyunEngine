@@ -30,7 +30,7 @@ class ARenderBin
 			Params(void);
 			virtual ~Params(void);
 
-			Shader const    *shader;
+			Shader          *shader;
 			glm::mat4 const *perspec_mult_view;
 			Model const     *model;
 			size_t          max_instance;
@@ -87,7 +87,7 @@ class ARenderBin
 	protected :
 
 		ARenderBin::eType      _type;
-		Shader const           *_shader;
+		Shader                 *_shader;
 		glm::mat4 const        *_perspec_mult_view;
 		Model const            *_model;
 		std::vector<glm::mat4> _model_matrices;

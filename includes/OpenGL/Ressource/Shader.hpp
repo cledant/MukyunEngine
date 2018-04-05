@@ -19,6 +19,7 @@
 # include "glm/glm.hpp"
 # include <iostream>
 # include <fstream>
+# include <map>
 
 class Shader
 {
@@ -42,17 +43,19 @@ class Shader
 
 		GLuint getShaderProgram(void) const;
 		GLuint moveShaderProgram(void);
+		std::map<std::string, GLint> getUniformIdMap(void) const;
 
 		/*
 		 * Setter
 		 */
 
-		void setMat4(GLint uniform_id, glm::mat4 const &mat4) const;
-		void setVec4(GLint uniform_id, glm::vec4 const &float4) const;
-		void setVec3(GLint uniform_id, glm::vec3 const &float3) const;
-		void setVec2(GLint uniform_id, glm::vec2 const &float2) const;
-		void setFloat(GLint uniform_id, float value) const;
-		void setInt(GLint uniform_id, int value) const;
+		void setMat4(std::string const &name, glm::mat4 const &mat4);
+		void setVec4(std::string const &name, glm::vec4 const &float4);
+		void setVec3(std::string const &name, glm::vec3 const &float3);
+		void setVec2(std::string const &name, glm::vec2 const &float2);
+		void setFloat(std::string const &name, float value);
+		void setInt(std::string const &name, int value);
+		void setTexture(std::string const &name, int index);
 
 		class FileOpenException : public GeneralException
 		{
@@ -89,7 +92,8 @@ class Shader
 
 	private :
 
-		GLuint _shader_program;
+		GLuint                       _shader_program;
+		std::map<std::string, GLint> _uniform_id_map;
 
 		inline GLuint _load_shader(std::string const &path, GLenum type);
 		inline GLuint _compile_program(GLuint vs, GLuint fs);
