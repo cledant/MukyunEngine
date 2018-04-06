@@ -178,7 +178,7 @@ void MultiPointDirSpotLightRenderBin::_allocate_vbo(size_t max_size)
 	glGenBuffers(1, &(this->_vbo_inv_model_matrices));
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_inv_model_matrices);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * max_size,
-				 &(this->_inv_model_matrices[0]), GL_STATIC_DRAW);
+				 &(this->_inv_model_matrices[0]), GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	oGL_check_error();
 }

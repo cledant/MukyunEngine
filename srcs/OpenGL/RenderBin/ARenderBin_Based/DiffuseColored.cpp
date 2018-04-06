@@ -160,7 +160,7 @@ void DiffuseColored::_allocate_vbo(size_t max_size)
 	glGenBuffers(1, &(this->_vbo_light_diffuse));
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_light_diffuse);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * max_size,
-				 &(this->_vector_light_diffuse[0]), GL_STATIC_DRAW);
+				 &(this->_vector_light_diffuse[0]), GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	oGL_check_error();
 }

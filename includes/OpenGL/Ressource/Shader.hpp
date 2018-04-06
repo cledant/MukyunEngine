@@ -44,6 +44,7 @@ class Shader
 		GLuint getShaderProgram(void) const;
 		GLuint moveShaderProgram(void);
 		std::map<std::string, GLint> const &getUniformIdMap(void) const;
+		std::map<std::string, GLuint> const &getUboUniformIdMap(void) const;
 
 		/*
 		 * Setter
@@ -55,6 +56,8 @@ class Shader
 		void setVec2(std::string const &name, glm::vec2 const &float2);
 		void setFloat(std::string const &name, float value);
 		void setInt(std::string const &name, int value);
+		void setUbo(std::string const &name, unsigned int index, GLuint ubo,
+					size_t size);
 
 		class FileOpenException : public GeneralException
 		{
@@ -91,8 +94,9 @@ class Shader
 
 	private :
 
-		GLuint                       _shader_program;
-		std::map<std::string, GLint> _uniform_id_map;
+		GLuint                        _shader_program;
+		std::map<std::string, GLint>  _uniform_id_map;
+		std::map<std::string, GLuint> _ubo_uniform_id_map;
 
 		inline GLuint _load_shader(std::string const &path, GLenum type);
 		inline GLuint _compile_program(GLuint vs, GLuint fs);

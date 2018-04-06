@@ -75,8 +75,9 @@ Shader::Shader(Shader &&src)
 
 Shader &Shader::operator=(Shader &&rhs)
 {
-	this->_shader_program = rhs.moveShaderProgram();
-	this->_uniform_id_map = rhs.getUniformIdMap();
+	this->_shader_program     = rhs.moveShaderProgram();
+	this->_uniform_id_map     = rhs.getUniformIdMap();
+	this->_ubo_uniform_id_map = rhs.getUboUniformIdMap();
 	return (*this);
 }
 
@@ -105,6 +106,11 @@ GLuint Shader::moveShaderProgram(void)
 std::map<std::string, GLint> const &Shader::getUniformIdMap(void) const
 {
 	return (this->_uniform_id_map);
+}
+
+std::map<std::string, GLuint> const &Shader::getUboUniformIdMap(void) const
+{
+	return (this->_ubo_uniform_id_map);
 }
 
 /*
@@ -164,6 +170,16 @@ void Shader::setInt(std::string const &name, int value)
 	if (it == this->_uniform_id_map.end())
 		this->_uniform_id_map[name] = glGetUniformLocation(this->_shader_program, name.c_str());
 	glUniform1i(this->_uniform_id_map[name], value);
+}
+
+void Shader::setUbo(std::string const &name, unsigned int index, GLuint ubo, size_t size)
+{
+	auto it = this->_ubo_uniform_id_map.find(name);
+
+	if (it == this->_ubo_uniform_id_map.end())
+		this->_ubo_uniform_id_map[name] = glGetUniformBlockIndex(this->_shader_program, name.c_str());
+	glUniformBlockBinding(this->_shader_program, this->_ubo_uniform_id_map[name], index);
+	glBindBufferRange(GL_UNIFORM_BUFFER, index, ubo, 0, size);
 }
 
 GLuint Shader::_load_shader(std::string const &path, GLenum type)

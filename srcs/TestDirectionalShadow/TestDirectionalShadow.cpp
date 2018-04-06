@@ -25,7 +25,9 @@ TestDirectionalShadow::TestDirectionalShadow(Input const &input, GLFW_Window con
 		_next_update_tick(0.0f), _last_update_tick(0.0f), _delta_tick(0.0f),
 		_skip_loop(0), _near_far(near_far),
 		_tss(&win, &input, &rm.getShader("DisplayImage"), 0),
-		_final_image(win.cur_win_h, win.cur_win_w)
+		_final_image(win.cur_win_h, win.cur_win_w),
+		_screen_res(glm::vec2(win.cur_win_w, win.cur_win_h)),
+		_ubo_perspec_mult_view(0), _ubo_view_pos(0), _ubo_screen_resolution(0)
 {
 	if (max_frame_skip == 0)
 		throw TestDirectionalShadow::TestDirectionalShadowFailException();
@@ -43,6 +45,8 @@ TestDirectionalShadow::TestDirectionalShadow(Input const &input, GLFW_Window con
 	sr_params_cpy.viewPos           = &this->_camera.getPos();
 	this->_sr                       = ShadowRenderer(sr_params_cpy);
 	this->_tss.setTextureID(this->_final_image.getTextureBuffer());
+
+	this->_allocate_ubo();
 
 	//Debug
 //	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::SPOT_DEPTH_MAP, 0));
@@ -105,7 +109,10 @@ void TestDirectionalShadow::startGameLoop(Glfw_manager &manager)
 void TestDirectionalShadow::update(void)
 {
 	if (this->_window.resized)
+	{
 		this->updatePerspective(this->_fov);
+		this->_screen_res = glm::vec2(this->_window.cur_win_w, this->_window.cur_win_h);
+	}
 	this->_camera.update();
 	this->_perspec_mult_view = this->_perspective * this->_camera.getViewMatrix();
 	this->_light_container.flushData();
@@ -119,6 +126,7 @@ void TestDirectionalShadow::update(void)
 	}
 	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
 		it->second.get()->updateVBO();
+	this->updateUBO();
 }
 
 void TestDirectionalShadow::render(void)
@@ -250,6 +258,35 @@ bool TestDirectionalShadow::should_be_updated(float time)
 		return (true);
 	}
 	return (false);
+}
+
+void TestDirectionalShadow::updateUBO(void)
+{
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_perspec_mult_view);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &(this->_perspec_mult_view));
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_view_pos);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), &(this->_camera.getPos()));
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_screen_resolution);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec2), &(this->_screen_res));
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void TestDirectionalShadow::_allocate_ubo()
+{
+	glGenBuffers(1, &(this->_ubo_perspec_mult_view));
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_perspec_mult_view);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), &(this->_perspec_mult_view),
+				 GL_DYNAMIC_DRAW);
+	glGenBuffers(1, &(this->_ubo_view_pos));
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_view_pos);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec3), &(this->_camera.getPos()),
+				 GL_DYNAMIC_DRAW);
+	glGenBuffers(1, &(this->_ubo_screen_resolution));
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_screen_resolution);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec2), &(this->_screen_res),
+				 GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	oGL_check_error();
 }
 
 TestDirectionalShadow::TestDirectionalShadowFailException::TestDirectionalShadowFailException(void)

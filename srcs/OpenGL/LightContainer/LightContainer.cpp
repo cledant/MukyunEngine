@@ -257,15 +257,15 @@ inline void LightContainer::_allocate_memory(LightContainer::Params const &param
 	glGenBuffers(1, &(this->_ubo_point_light));
 	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_point_light);
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(PointLightDataGL) * params.max_point_light,
-				 &(this->_data_point_light[0]), GL_STATIC_DRAW);
+				 &(this->_data_point_light[0]), GL_DYNAMIC_DRAW);
 	glGenBuffers(1, &(this->_ubo_dir_light));
 	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_dir_light);
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(DirLightDataGL) * params.max_dir_light,
-				 &(this->_data_dir_light[0]), GL_STATIC_DRAW);
+				 &(this->_data_dir_light[0]), GL_DYNAMIC_DRAW);
 	glGenBuffers(1, &(this->_ubo_spot_light));
 	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_spot_light);
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(SpotLightDataGL) * params.max_spot_light,
-				 &(this->_data_spot_light[0]), GL_STATIC_DRAW);
+				 &(this->_data_spot_light[0]), GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	oGL_check_error();
 }

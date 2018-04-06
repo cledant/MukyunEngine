@@ -100,6 +100,7 @@ class TestDirectionalShadow
 		void reset_update_timer(float time);
 		bool should_be_updated(float time);
 		void reset_skip_loop(void);
+		void updateUBO(void);
 
 		class TestDirectionalShadowFailException : public GeneralException
 		{
@@ -130,6 +131,12 @@ class TestDirectionalShadow
 		glm::vec2                                          _near_far;
 		TextureShaderSurface                               _tss;
 		ImageFramebuffer                                   _final_image;
+		glm::vec2                                          _screen_res;
+		GLuint                                             _ubo_perspec_mult_view;
+		GLuint                                             _ubo_view_pos;
+		GLuint                                             _ubo_screen_resolution;
+
+		void _allocate_ubo(void);
 };
 
 void InitRunTestDirectionalShadow(Glfw_manager &manager, glm::uvec2 const &res);

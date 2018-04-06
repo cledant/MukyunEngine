@@ -459,6 +459,7 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 
 	//Directional Light
 	this->_dir_shadow_map_shader->use();
+	this->_dir_shadow_map_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
 	for (size_t i = 0; i < this->_lc->getCurrentDirLightNumber(); ++i)
 	{
 		if (!blend_flag)
@@ -477,7 +478,6 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 			blend_flag++;
 		}
 		this->_dir_shadow_map_shader->setMat4("uniform_lightSpaceMatrix", (this->_vec_dir_lightSpaceMatrix)[i]);
-		this->_dir_shadow_map_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
 		this->_dir_shadow_map_shader->setVec3("uniform_lightPos", glm::vec3(this->_lc->getDirLightDataGL()[i].pos));
 		glActiveTexture(GL_TEXTURE0);
 		this->_dir_shadow_map_shader->setInt("shadowMap", 0);
@@ -518,6 +518,7 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 
 	//SpotLight Shadow
 	this->_spot_dir_shadow_map_shader->use();
+	this->_spot_dir_shadow_map_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
 	for (size_t i = 0; i < this->_lc->getCurrentSpotLightNumber(); ++i)
 	{
 		if (!blend_flag)
@@ -535,9 +536,8 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 			glBlendFunc(GL_CONSTANT_COLOR, GL_CONSTANT_COLOR);
 			blend_flag++;
 		}
-		this->_spot_dir_shadow_map_shader
-			->setMat4("uniform_lightSpaceMatrix", (this->_vec_spot_dir_lightSpaceMatrix)[i]);
-		this->_spot_dir_shadow_map_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
+		this->_spot_dir_shadow_map_shader->setMat4("uniform_lightSpaceMatrix",
+												   (this->_vec_spot_dir_lightSpaceMatrix)[i]);
 		this->_spot_dir_shadow_map_shader->setVec3("uniform_lightPos",
 												   glm::vec3(this->_lc->getSpotLightDataGL()[i].pos));
 		this->_spot_dir_shadow_map_shader->setVec3("uniform_lightDir",

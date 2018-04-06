@@ -180,7 +180,7 @@ void ARenderBin::_create_vbo_model_matrices(size_t max_size)
 	glGenBuffers(1, &(this->_vbo_model_matrices));
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_model_matrices);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * max_size, &(this->_model_matrices[0]),
-				 GL_STATIC_DRAW);
+				 GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	oGL_check_error();
 }

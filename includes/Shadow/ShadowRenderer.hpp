@@ -153,6 +153,7 @@ class ShadowRenderer
 		glm::mat4 const                            *_perspec_mult_view;
 		glm::vec3 const                            *_viewPos;
 		TextureShaderSurface                       _printer;
+
 };
 
 #endif
