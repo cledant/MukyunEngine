@@ -14,10 +14,13 @@
 
 ARenderBin::Params::Params(void)
 {
-	this->shader            = nullptr;
-	this->perspec_mult_view = nullptr;
-	this->model             = nullptr;
-	this->max_instance      = 100;
+	this->shader                = nullptr;
+	this->perspec_mult_view     = nullptr;
+	this->model                 = nullptr;
+	this->ubo_perspec_mult_view = 0;
+	this->ubo_view_pos          = 0;
+	this->ubo_view_pos          = 0;
+	this->max_instance          = 100;
 }
 
 ARenderBin::Params::~Params(void)
@@ -26,14 +29,17 @@ ARenderBin::Params::~Params(void)
 
 ARenderBin::ARenderBin(void) :
 		_type(ARenderBin::eType::NONE), _shader(nullptr), _perspec_mult_view(nullptr),
-		_model(nullptr), _vbo_model_matrices(0)
+		_model(nullptr), _vbo_model_matrices(0), _ubo_perspec_mult_view(0),
+		_ubo_view_pos(0), _ubo_screen_resolution(0)
 {
 }
 
 ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		_type(ARenderBin::eType::NONE), _shader(params.shader),
 		_perspec_mult_view(params.perspec_mult_view), _model(params.model),
-		_vbo_model_matrices(0)
+		_vbo_model_matrices(0), _ubo_perspec_mult_view(params.ubo_perspec_mult_view),
+		_ubo_view_pos(params.ubo_view_pos),
+		_ubo_screen_resolution(params.ubo_screen_resolution)
 {
 	try
 	{
@@ -65,10 +71,13 @@ ARenderBin::ARenderBin(ARenderBin &&src) : _vbo_model_matrices(0)
 
 ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 {
-	this->_type              = rhs.getType();
-	this->_shader            = rhs.getShader();
-	this->_perspec_mult_view = rhs.getPerspecMultView();
-	this->_model             = rhs.getModel();
+	this->_type                  = rhs.getType();
+	this->_shader                = rhs.getShader();
+	this->_perspec_mult_view     = rhs.getPerspecMultView();
+	this->_model                 = rhs.getModel();
+	this->_ubo_screen_resolution = rhs.getUboScreenResolution();
+	this->_ubo_view_pos          = rhs.getUboViewPos();
+	this->_ubo_perspec_mult_view = rhs.getUboPerspecMultView();
 	try
 	{
 		this->_model_matrices.reserve(rhs.getMaxInstanceNumber());
@@ -174,6 +183,25 @@ size_t ARenderBin::getMaxInstanceNumber(void) const
 {
 	return (this->_model_matrices.capacity());
 }
+
+GLuint ARenderBin::getUboPerspecMultView() const
+{
+	return (this->_ubo_perspec_mult_view);
+}
+
+GLuint ARenderBin::getUboViewPos() const
+{
+	return (this->_ubo_view_pos);
+}
+
+GLuint ARenderBin::getUboScreenResolution() const
+{
+	return (this->_ubo_screen_resolution);
+}
+
+/*
+ * Protected Functions
+ */
 
 void ARenderBin::_create_vbo_model_matrices(size_t max_size)
 {

@@ -33,6 +33,9 @@ class ARenderBin
 			Shader          *shader;
 			glm::mat4 const *perspec_mult_view;
 			Model const     *model;
+			GLuint          ubo_perspec_mult_view;
+			GLuint          ubo_view_pos;
+			GLuint          ubo_screen_resolution;
 			size_t          max_instance;
 		};
 
@@ -83,6 +86,9 @@ class ARenderBin
 		std::vector<GLuint> moveVaoMeshes(void);
 		size_t getCurrentInstanceNumber(void) const;
 		size_t getMaxInstanceNumber(void) const;
+		GLuint getUboPerspecMultView(void) const;
+		GLuint getUboViewPos(void) const;
+		GLuint getUboScreenResolution(void) const;
 
 	protected :
 
@@ -93,6 +99,13 @@ class ARenderBin
 		std::vector<glm::mat4> _model_matrices;
 		GLuint                 _vbo_model_matrices;
 		std::vector<GLuint>    _vao_mesh;
+		GLuint                 _ubo_perspec_mult_view;
+		GLuint                 _ubo_view_pos;
+		GLuint                 _ubo_screen_resolution;
+
+		/*
+		 * Protected Functions
+		 */
 
 		void _create_vbo_model_matrices(size_t max_size);
 		void _create_vao_mesh(void);

@@ -43,7 +43,8 @@ void BasicPropRenderBin::draw(void)
 		return;
 	}
 	this->_shader->use();
-	this->_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
+	this->_shader->setUbo("uniform_mat_perspec_mult_view", 0,
+						  this->_ubo_perspec_mult_view, sizeof(glm::mat4));
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 	{
 		glActiveTexture(GL_TEXTURE0);
