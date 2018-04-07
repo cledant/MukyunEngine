@@ -56,30 +56,29 @@ set(SOURCE_FILES
 		srcs/GameEntities/Utility/CollisionBox.cpp
 		srcs/Cameras/Camera.cpp
 		srcs/GameEntities/Prop.cpp
-		srcs/TestInstancing/TestInstancing.cpp
-		srcs/TestInstancing/InitTestInstancing.cpp
 		srcs/Light/ALight.cpp
 		srcs/Light/ALight_Based/PointLight.cpp
 		srcs/Light/ALight_Based/DirectionalLight.cpp
 		srcs/Light/ALight_Based/SpotLight.cpp
 		srcs/OpenGL/RenderBin/ARenderBin_Based/MultiPointDirSpotLightRenderBin.cpp
-		srcs/TestLight/TestLight.cpp
-		srcs/TestLight/InitTestMultiLight.cpp
-		srcs/TestDirectionalShadow/InitTestDirectionalShadow.cpp
-		srcs/TestDirectionalShadow/InitTestOmniShadow.cpp
-		srcs/TestDirectionalShadow/InitTestSpotShadow.cpp
-		srcs/TestDirectionalShadow/TestDirectionalShadow.cpp
+		srcs/Engine/Init/InitTestInstancing.cpp
+		srcs/Engine/Init/InitTestMultiLight.cpp
+		srcs/Engine/Init/InitTestDirectionalShadow.cpp
+		srcs/Engine/Init/InitTestOmniShadow.cpp
+		srcs/Engine/Init/InitTestSpotShadow.cpp
 		srcs/OpenGL/LightContainer/LightContainer.cpp
 		srcs/OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.cpp
 		srcs/OpenGL/Ressource/AFramebuffer.cpp
 		srcs/OpenGL/Ressource/AFramebuffer_Based/ImageFramebuffer.cpp
 		srcs/OpenGL/Ressource/AFramebuffer_Based/DirectionalDepthMap.cpp
 		srcs/OpenGL/RenderBin/ARenderBin_Based/AShadowRenderBin.cpp
-		srcs/Shadow/ShadowRenderer.cpp
+		srcs/OpenGL/Shadow/ShadowRenderer.cpp
 		srcs/OpenGL/RenderBin/AShadowRenderBin_Based/MultiDirLightShadowRenderBin.cpp
 		srcs/UI/ShaderSurface/ShaderSurface.cpp
 		srcs/UI/ShaderSurface/TextureShaderBuffer.cpp
-		srcs/OpenGL/Ressource/AFramebuffer_Based/OmnidirectionalDepthMap.cpp)
+		srcs/OpenGL/Ressource/AFramebuffer_Based/OmnidirectionalDepthMap.cpp
+		srcs/Engine/Engine.cpp
+		srcs/Engine/Init/ShaderLoading/ShaderLoading.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
 target_link_libraries(primary glad glfw assimp)
 target_compile_options(primary PRIVATE -Wall -Wextra -g3)

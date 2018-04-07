@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Shadow/ShadowRenderer.hpp"
+#include "OpenGL/Shadow/ShadowRenderer.hpp"
 
 ShadowRenderer::Params::Params(void)
 {

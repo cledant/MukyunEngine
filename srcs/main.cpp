@@ -11,9 +11,7 @@
 /* ************************************************************************** */
 
 #include "WindowManager/Glfw_manager.hpp"
-#include "TestInstancing/TestInstancing.hpp"
-#include "TestLight/TestLight.hpp"
-#include "TestDirectionalShadow/TestDirectionalShadow.hpp"
+#include "Engine/Engine.hpp"
 #include <regex>
 
 static glm::uvec2 parse_resolution(std::string const &arg)
