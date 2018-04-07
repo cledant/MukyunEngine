@@ -87,8 +87,16 @@ void MultiPointDirSpotLightRenderBin::draw(void)
 		return;
 	}
 	this->_shader->use();
-	this->_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
-	this->_shader->setVec3("viewPos", *(this->_view_pos));
+	this->_shader->setUbo("uniform_PointLight", 0, this->_lc->getUboPointLight(),
+						  sizeof(LightContainer::PointLightDataGL) * this->_lc->getMaxPointLightNumber());
+	this->_shader->setUbo("uniform_DirLight", 1, this->_lc->getUboDirLight(),
+						  sizeof(LightContainer::DirLightDataGL) * this->_lc->getMaxDirLightNumber());
+	this->_shader->setUbo("uniform_SpotLight", 2, this->_lc->getUboSpotLight(),
+						  sizeof(LightContainer::SpotLightDataGL) * this->_lc->getMaxSpotLightNumber());
+	this->_shader->setUbo("uniform_mat_perspec_mult_view", 3, this->_ubo_perspec_mult_view,
+						  sizeof(glm::mat4));
+	this->_shader->setUbo("uniform_view_pos", 4, this->_ubo_view_pos,
+						  sizeof(glm::vec3));
 	this->_shader->setInt("nb_point_light", this->_lc->getCurrentPointLightNumber());
 	this->_shader->setInt("nb_dir_light", this->_lc->getCurrentDirLightNumber());
 	this->_shader->setInt("nb_spot_light", this->_lc->getCurrentSpotLightNumber());
@@ -103,7 +111,8 @@ void MultiPointDirSpotLightRenderBin::draw(void)
 		this->_shader->setFloat("uniform_material.shininess", (this->_model->getMeshList())[i].getMaterial().shininess);
 		this->_shader->setVec3("uniform_material.mat_ambient", (this->_model->getMeshList())[i].getMaterial().ambient);
 		this->_shader->setVec3("uniform_material.mat_diffuse", (this->_model->getMeshList())[i].getMaterial().diffuse);
-		this->_shader->setVec3("uniform_material.mat_specular", (this->_model->getMeshList())[i].getMaterial().specular);
+		this->_shader->setVec3("uniform_material.mat_specular",
+							   (this->_model->getMeshList())[i].getMaterial().specular);
 		glBindVertexArray(this->_vao_mesh[i]);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0,
@@ -192,22 +201,6 @@ void MultiPointDirSpotLightRenderBin::_update_vector_inv_model(void)
 
 void MultiPointDirSpotLightRenderBin::_update_vao(void)
 {
-	GLuint shader_id = this->_shader->getShaderProgram();
-
-	//Get and set uniform block
-	GLuint uniformBlockIndexPointLight = glGetUniformBlockIndex(shader_id, "uniform_PointLight");
-	GLuint uniformBlockIndexDirLight   = glGetUniformBlockIndex(shader_id, "uniform_DirLight");
-	GLuint uniformBlockIndexSpotLight  = glGetUniformBlockIndex(shader_id, "uniform_SpotLight");
-	glUniformBlockBinding(shader_id, uniformBlockIndexPointLight, 0);
-	glUniformBlockBinding(shader_id, uniformBlockIndexDirLight, 1);
-	glUniformBlockBinding(shader_id, uniformBlockIndexSpotLight, 2);
-	glBindBufferRange(GL_UNIFORM_BUFFER, 0, this->_lc->getUboPointLight(), 0,
-					  sizeof(LightContainer::PointLightDataGL) * this->_lc->getMaxPointLightNumber());
-	glBindBufferRange(GL_UNIFORM_BUFFER, 1, this->_lc->getUboDirLight(), 0,
-					  sizeof(LightContainer::DirLightDataGL) * this->_lc->getMaxDirLightNumber());
-	glBindBufferRange(GL_UNIFORM_BUFFER, 2, this->_lc->getUboSpotLight(), 0,
-					  sizeof(LightContainer::SpotLightDataGL) * this->_lc->getMaxSpotLightNumber());
-
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 	{
 		glBindVertexArray(*it);

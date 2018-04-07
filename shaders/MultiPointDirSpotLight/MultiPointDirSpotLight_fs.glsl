@@ -65,7 +65,10 @@ layout (std140) uniform uniform_SpotLight
 };
 
 //Camera Pos
-uniform vec3 viewPos;
+layout (std140) uniform uniform_view_pos
+{
+	vec3	viewPos;
+};
 
 //Actual Light number
 uniform int nb_point_light;
