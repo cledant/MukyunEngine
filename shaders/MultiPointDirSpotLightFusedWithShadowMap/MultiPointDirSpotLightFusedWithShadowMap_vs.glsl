@@ -12,7 +12,10 @@ out vec3 FragPos;
 out vec3 Normal;
 out vec2 TexCoords;
 
-uniform mat4		uniform_mat_perspec_mult_view;
+layout (std140) uniform uniform_mat_perspec_mult_view
+{
+	mat4	mat_perspec_mult_view;
+};
 
 void main()
 {
@@ -20,5 +23,5 @@ void main()
     Normal = mat3(instanceInverseMatrix) * norm;
     TexCoords = texCoord;
 
-    gl_Position = uniform_mat_perspec_mult_view * vec4(FragPos, 1.0);
+    gl_Position = mat_perspec_mult_view * vec4(FragPos, 1.0);
 }

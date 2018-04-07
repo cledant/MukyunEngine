@@ -65,7 +65,10 @@ layout (std140) uniform uniform_SpotLight
 };
 
 //Camera Pos
-uniform vec3 viewPos;
+layout (std140) uniform uniform_view_pos
+{
+	vec3	viewPos;
+};
 
 //Actual Light number
 uniform int nb_point_light;
@@ -76,7 +79,10 @@ uniform int nb_spot_light;
 uniform material uniform_material;
 
 //Shadow
-uniform vec2 uniform_resolution;
+layout (std140) uniform uniform_resolution
+{
+	vec2	resolution;
+};
 uniform sampler2D shadowMap;
 
 vec3 CalcDirLight(DirLightDataGL light, vec3 normal, vec3 viewDir, vec3 shadowVal);
@@ -91,7 +97,7 @@ void main()
     vec3 result = vec3(0.0f);
 
 	//0) Shadow value
-	vec3 shadowValue = FindShadowValue(uniform_resolution);
+	vec3 shadowValue = FindShadowValue(resolution);
 
     //1) DirLight
     for(int i = 0; i < nb_dir_light; i++)

@@ -52,15 +52,18 @@ void MultiPointDirSpotLightShadowRenderBin::draw(void)
 		return;
 	}
 	this->_shader->use();
-	this->_shader->setVec2("uniform_resolution", glm::vec2(this->_win_w, this->_win_h));
-	this->_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
-	this->_shader->setVec3("viewPos", *(this->_view_pos));
 	this->_shader->setUbo("uniform_PointLight", 0, this->_lc->getUboPointLight(),
 						  sizeof(LightContainer::PointLightDataGL) * this->_lc->getMaxPointLightNumber());
 	this->_shader->setUbo("uniform_DirLight", 1, this->_lc->getUboDirLight(),
 						  sizeof(LightContainer::DirLightDataGL) * this->_lc->getMaxDirLightNumber());
 	this->_shader->setUbo("uniform_SpotLight", 2, this->_lc->getUboSpotLight(),
 						  sizeof(LightContainer::SpotLightDataGL) * this->_lc->getMaxSpotLightNumber());
+	this->_shader->setUbo("uniform_mat_perspec_mult_view", 3, this->_ubo_perspec_mult_view,
+						  sizeof(glm::mat4));
+	this->_shader->setUbo("uniform_view_pos", 4, this->_ubo_view_pos,
+						  sizeof(glm::vec3));
+	this->_shader->setUbo("uniform_resolution", 5, this->_ubo_screen_resolution,
+						  sizeof(glm::vec2));
 	this->_shader->setInt("nb_point_light", this->_lc->getCurrentPointLightNumber());
 	this->_shader->setInt("nb_dir_light", this->_lc->getCurrentDirLightNumber());
 	this->_shader->setInt("nb_spot_light", this->_lc->getCurrentSpotLightNumber());
