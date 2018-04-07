@@ -49,6 +49,9 @@ class ShadowRenderer
 			glm::vec3 const      *viewPos;
 			int                  win_h;
 			int                  win_w;
+			GLuint               ubo_perspec_mult_view;
+			GLuint               ubo_view_pos;
+			GLuint               ubo_screen_resolution;
 		};
 
 		struct OmniProjMatrices
@@ -97,13 +100,10 @@ class ShadowRenderer
 		LightContainer const *getLightContainer(void) const;
 		std::vector<std::unique_ptr<AFramebuffer>> const &getDirDepthMaps(void) const;
 		std::vector<std::unique_ptr<AFramebuffer>> moveDirDepthMaps(void);
-
 		std::vector<std::unique_ptr<AFramebuffer>> const &getOmniDepthMaps(void) const;
 		std::vector<std::unique_ptr<AFramebuffer>> moveOmniDepthMaps(void);
-
 		std::vector<std::unique_ptr<AFramebuffer>> const &getSpotDirDepthMaps(void) const;
 		std::vector<std::unique_ptr<AFramebuffer>> moveSpotDirDepthMaps(void);
-
 		std::unique_ptr<AFramebuffer> const &getFusedShadowMap(void) const;
 		std::unique_ptr<AFramebuffer> moveFusedShadowMap(void);
 		std::vector<glm::mat4> const &getVecDirLightSpaceMatrix(void) const;
@@ -116,6 +116,9 @@ class ShadowRenderer
 		TextureShaderSurface movePrinter(void);
 		glm::mat4 const &getOmniProjMatrix(void) const;
 		glm::vec3 const *getViewPos(void) const;
+		GLuint getUboPerspecMultView(void) const;
+		GLuint getUboViewPos(void) const;
+		GLuint getUboScreenResolution(void) const;
 
 		/*
 		 * Computation
@@ -128,8 +131,6 @@ class ShadowRenderer
 		virtual void computeAllShadowMaps(bool activate_shadow);
 
 	protected :
-
-		inline void _allocate_memory(int w, int h);
 
 		Shader                                     *_dir_depth_map_shader;
 		Shader                                     *_dir_shadow_map_shader;
@@ -153,6 +154,15 @@ class ShadowRenderer
 		glm::mat4 const                            *_perspec_mult_view;
 		glm::vec3 const                            *_viewPos;
 		TextureShaderSurface                       _printer;
+		GLuint                                     _ubo_perspec_mult_view;
+		GLuint                                     _ubo_view_pos;
+		GLuint                                     _ubo_screen_resolution;
+
+		/*
+		 * Protected functions
+		 */
+
+		inline void _allocate_memory(int w, int h);
 };
 
 #endif

@@ -28,6 +28,9 @@ ShadowRenderer::Params::Params(void)
 	this->viewPos                    = nullptr;
 	this->win_h                      = 720;
 	this->win_w                      = 1280;
+	this->ubo_perspec_mult_view      = 0;
+	this->ubo_view_pos               = 0;
+	this->ubo_view_pos               = 0;
 }
 
 ShadowRenderer::Params::~Params(void)
@@ -40,7 +43,8 @@ ShadowRenderer::ShadowRenderer(void) :
 		_spot_dir_depth_map_shader(nullptr), _spot_dir_shadow_map_shader(nullptr),
 		_fuse_shadow_maps_shader(nullptr), _lc(nullptr), _dir_near_far(glm::vec2(1.0f, 30.0f)),
 		_omni_near_far(glm::vec2(1.0f, 30.0f)), _perspec_mult_view(nullptr),
-		_viewPos(nullptr), _printer(nullptr, nullptr, nullptr, 0)
+		_viewPos(nullptr), _printer(nullptr, nullptr, nullptr, 0), _ubo_perspec_mult_view(0),
+		_ubo_view_pos(0), _ubo_screen_resolution(0)
 {
 	//1.0f as shadow WIDTH and HEIGHT are the same with defines
 	this->_omni_proj_matrix = glm::perspective(glm::radians(90.0f), 1.0f,
@@ -58,11 +62,12 @@ ShadowRenderer::ShadowRenderer(ShadowRenderer::Params const &params) :
 		_fuse_shadow_maps_shader(params.fuse_shadow_maps_shader), _lc(params.lc),
 		_fused_shadow_map(nullptr), _dir_near_far(params.dir_near_far),
 		_omni_near_far(params.omni_near_far), _perspec_mult_view(params.perspec_mult_view),
-		_viewPos(params.viewPos), _printer(nullptr, nullptr, nullptr, 0)
+		_viewPos(params.viewPos), _printer(nullptr, nullptr, nullptr, 0),
+		_ubo_perspec_mult_view(params.ubo_perspec_mult_view), _ubo_view_pos(params.ubo_view_pos),
+		_ubo_screen_resolution(params.ubo_screen_resolution)
 {
 	try
 	{
-
 		this->_allocate_memory(params.win_w, params.win_h);
 	}
 	catch (std::exception &e)
@@ -118,6 +123,10 @@ ShadowRenderer &ShadowRenderer::operator=(ShadowRenderer &&rhs)
 		//Proj Matricies
 		this->_perspec_mult_view             = rhs.getPerspecMultView();
 		this->_omni_proj_matrix              = rhs.getOmniProjMatrix();
+		//UBO
+		this->_ubo_screen_resolution         = rhs.getUboScreenResolution();
+		this->_ubo_view_pos                  = rhs.getUboViewPos();
+		this->_ubo_perspec_mult_view         = rhs.getUboPerspecMultView();
 		//Other
 		this->_shadow_rb_list                = rhs.getShadowRbList();
 		this->_dir_near_far                  = rhs.getDirNearFar();
@@ -312,6 +321,21 @@ glm::vec3 const *ShadowRenderer::getViewPos(void) const
 	return (this->_viewPos);
 }
 
+GLuint ShadowRenderer::getUboPerspecMultView() const
+{
+	return (this->_ubo_perspec_mult_view);
+}
+
+GLuint ShadowRenderer::getUboViewPos() const
+{
+	return (this->_ubo_view_pos);
+}
+
+GLuint ShadowRenderer::getUboScreenResolution() const
+{
+	return (this->_ubo_screen_resolution);
+}
+
 /*
  * Computation
  */
@@ -429,8 +453,8 @@ void ShadowRenderer::computeSpotDirDepthMaps(void)
 		this->_spot_dir_depth_maps[i]->setViewport();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
-		this->_spot_dir_depth_map_shader
-			->setMat4("uniform_lightSpaceMatrix", (this->_vec_spot_dir_lightSpaceMatrix)[i]);
+		this->_spot_dir_depth_map_shader->setMat4("uniform_lightSpaceMatrix",
+												  (this->_vec_spot_dir_lightSpaceMatrix)[i]);
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
 			this->_shadow_rb_list[j]->drawNoShader();
 	}
@@ -459,7 +483,8 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 
 	//Directional Light
 	this->_dir_shadow_map_shader->use();
-	this->_dir_shadow_map_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
+	this->_dir_shadow_map_shader->setUbo("uniform_mat_perspec_mult_view", 0, this->_ubo_perspec_mult_view,
+										 sizeof(glm::mat4));
 	for (size_t i = 0; i < this->_lc->getCurrentDirLightNumber(); ++i)
 	{
 		if (!blend_flag)
@@ -488,9 +513,10 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 
 	//Omnidirectional ShadowMap
 	this->_omni_shadow_map_shader->use();
-	this->_omni_shadow_map_shader->setVec3("uniform_viewPos", *(this->_viewPos));
 	this->_omni_shadow_map_shader->setFloat("uniform_farPlane", this->_omni_near_far.y);
-	this->_omni_shadow_map_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
+	this->_omni_shadow_map_shader->setUbo("uniform_mat_perspec_mult_view", 0, this->_ubo_perspec_mult_view,
+										  sizeof(glm::mat4));
+	this->_omni_shadow_map_shader->setUbo("uniform_view_pos", 1, this->_ubo_view_pos, sizeof(glm::vec3));
 	for (size_t i = 0; i < this->_lc->getCurrentPointLightNumber(); ++i)
 	{
 		if (!blend_flag)
@@ -518,7 +544,8 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 
 	//SpotLight Shadow
 	this->_spot_dir_shadow_map_shader->use();
-	this->_spot_dir_shadow_map_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
+	this->_spot_dir_shadow_map_shader->setUbo("uniform_mat_perspec_mult_view", 0,
+											  this->_ubo_perspec_mult_view, sizeof(glm::mat4));
 	for (size_t i = 0; i < this->_lc->getCurrentSpotLightNumber(); ++i)
 	{
 		if (!blend_flag)
@@ -555,6 +582,10 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 	glCullFace(GL_BACK);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
+
+/*
+ * Protected functions
+ */
 
 void ShadowRenderer::_allocate_memory(int w, int h)
 {

@@ -11,8 +11,12 @@ in VS_OUT
 
 uniform samplerCube depthMap;
 uniform vec3 uniform_lightPos;
-uniform vec3 uniform_viewPos;
 uniform float uniform_farPlane;
+
+layout (std140) uniform uniform_view_pos
+{
+	vec3	viewPos;
+};
 
 vec3 gridSamplingDisk[20] = vec3[]
 (
@@ -37,7 +41,7 @@ float ShadowCalculation(vec3 fragPos)
     float bias = tan(acos(dot(normal, lightDir))) * 0.005;
     bias *= uniform_farPlane;
 
-    float viewDistance = length(uniform_viewPos - fragPos);
+    float viewDistance = length(viewPos - fragPos);
     float diskRadius = (1.0 + (viewDistance / uniform_farPlane)) / 25.0;
 
     float shadow = 0.0;
