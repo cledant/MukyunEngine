@@ -497,18 +497,19 @@ void ShadowRenderer::computeOmniDepthMaps(void)
 	glCullFace(GL_FRONT);
 	this->_omni_depth_map_shader->use();
 	this->_omni_depth_map_shader->setFloat("uniform_farPlane", this->_omni_near_far.y);
+	this->_omni_depth_map_shader->setUbo("uniform_lightPos", 0, this->_lc->getUboPointLight(),
+										 this->_lc->getMaxPointLightNumber() *
+										 sizeof(LightContainer::PointLightDataGL));
+	this->_omni_depth_map_shader->setUbo("uniform_shadowMatrices", 1, this->_ubo_omnidirectional_matricies,
+										 this->_lc->getMaxPointLightNumber() *
+										 sizeof(ShadowRenderer::OmniProjMatrices));
 	for (size_t i = 0; i < this->_lc->getCurrentPointLightNumber(); ++i)
 	{
 		this->_omni_depth_maps[i]->useFramebuffer();
 		this->_omni_depth_maps[i]->setViewport();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
-		for (size_t k = 0; k < 6; ++k)
-		{
-			std::string name = "uniform_shadowMatrices[" + std::to_string(k) + "]";
-			this->_omni_depth_map_shader->setMat4(name, (this->_vec_omni_lightSpaceMatrix)[i].mat[k]);
-		}
-		this->_omni_depth_map_shader->setVec3("uniform_lightPos", glm::vec3(this->_lc->getPointLightDataGL()[i].pos));
+		this->_omni_depth_map_shader->setInt("index", i);
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
 			this->_shadow_rb_list[j]->drawNoShader();
 	}
@@ -520,14 +521,15 @@ void ShadowRenderer::computeSpotDirDepthMaps(void)
 {
 	glCullFace(GL_FRONT);
 	this->_spot_dir_depth_map_shader->use();
+	this->_spot_dir_depth_map_shader->setUbo("uniform_lightSpaceMatrix", 0, this->_ubo_directional_matricies,
+											 this->_lc->getMaxDirLightNumber() * sizeof(glm::mat4));
 	for (size_t i = 0; i < this->_lc->getCurrentSpotLightNumber(); ++i)
 	{
 		this->_spot_dir_depth_maps[i]->useFramebuffer();
 		this->_spot_dir_depth_maps[i]->setViewport();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
-		this->_spot_dir_depth_map_shader->setMat4("uniform_lightSpaceMatrix",
-												  (this->_vec_spot_dir_lightSpaceMatrix)[i]);
+		this->_spot_dir_depth_map_shader->setInt("i", i);
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
 			this->_shadow_rb_list[j]->drawNoShader();
 	}
