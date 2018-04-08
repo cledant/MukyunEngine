@@ -119,6 +119,13 @@ class ShadowRenderer
 		GLuint getUboPerspecMultView(void) const;
 		GLuint getUboViewPos(void) const;
 		GLuint getUboScreenResolution(void) const;
+		GLuint getUboDirectionalMatricies(void) const;
+		GLuint getUboOmniDirectionalMatricies(void) const;
+		GLuint getUboSpotMatricies(void) const;
+		GLuint moveUboDirectionalMatricies(void);
+		GLuint moveUboOmniDirectionalMatricies(void);
+		GLuint moveUboSpotMatricies(void);
+
 
 		/*
 		 * Computation
@@ -154,15 +161,25 @@ class ShadowRenderer
 		glm::mat4 const                            *_perspec_mult_view;
 		glm::vec3 const                            *_viewPos;
 		TextureShaderSurface                       _printer;
+		/*
+		 * UBO Not allocated by class
+		 */
 		GLuint                                     _ubo_perspec_mult_view;
 		GLuint                                     _ubo_view_pos;
 		GLuint                                     _ubo_screen_resolution;
+		/*
+		 * UBO Allocated by class
+		 */
+		GLuint                                     _ubo_directional_matricies;
+		GLuint                                     _ubo_omnidirectional_matricies;
+		GLuint                                     _ubo_spot_matricies;
 
 		/*
 		 * Protected functions
 		 */
 
 		inline void _allocate_memory(int w, int h);
+		inline void _allocate_ubo(void);
 };
 
 #endif

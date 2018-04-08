@@ -44,7 +44,8 @@ ShadowRenderer::ShadowRenderer(void) :
 		_fuse_shadow_maps_shader(nullptr), _lc(nullptr), _dir_near_far(glm::vec2(1.0f, 30.0f)),
 		_omni_near_far(glm::vec2(1.0f, 30.0f)), _perspec_mult_view(nullptr),
 		_viewPos(nullptr), _printer(nullptr, nullptr, nullptr, 0), _ubo_perspec_mult_view(0),
-		_ubo_view_pos(0), _ubo_screen_resolution(0)
+		_ubo_view_pos(0), _ubo_screen_resolution(0), _ubo_directional_matricies(0),
+		_ubo_omnidirectional_matricies(0), _ubo_spot_matricies(0)
 {
 	//1.0f as shadow WIDTH and HEIGHT are the same with defines
 	this->_omni_proj_matrix = glm::perspective(glm::radians(90.0f), 1.0f,
@@ -64,14 +65,19 @@ ShadowRenderer::ShadowRenderer(ShadowRenderer::Params const &params) :
 		_omni_near_far(params.omni_near_far), _perspec_mult_view(params.perspec_mult_view),
 		_viewPos(params.viewPos), _printer(nullptr, nullptr, nullptr, 0),
 		_ubo_perspec_mult_view(params.ubo_perspec_mult_view), _ubo_view_pos(params.ubo_view_pos),
-		_ubo_screen_resolution(params.ubo_screen_resolution)
+		_ubo_screen_resolution(params.ubo_screen_resolution), _ubo_directional_matricies(0),
+		_ubo_omnidirectional_matricies(0), _ubo_spot_matricies(0)
 {
 	try
 	{
 		this->_allocate_memory(params.win_w, params.win_h);
+		this->_allocate_ubo();
 	}
 	catch (std::exception &e)
 	{
+		glDeleteBuffers(1, &(this->_ubo_directional_matricies));
+		glDeleteBuffers(1, &(this->_ubo_omnidirectional_matricies));
+		glDeleteBuffers(1, &(this->_ubo_spot_matricies));
 		std::cout << "Directional Shadow Render : Fail !" << std::endl;
 		throw;
 	}
@@ -83,6 +89,9 @@ ShadowRenderer::ShadowRenderer(ShadowRenderer::Params const &params) :
 
 ShadowRenderer::~ShadowRenderer(void)
 {
+	glDeleteBuffers(1, &(this->_ubo_directional_matricies));
+	glDeleteBuffers(1, &(this->_ubo_omnidirectional_matricies));
+	glDeleteBuffers(1, &(this->_ubo_spot_matricies));
 }
 
 ShadowRenderer::ShadowRenderer(ShadowRenderer &&src)
@@ -127,6 +136,9 @@ ShadowRenderer &ShadowRenderer::operator=(ShadowRenderer &&rhs)
 		this->_ubo_screen_resolution         = rhs.getUboScreenResolution();
 		this->_ubo_view_pos                  = rhs.getUboViewPos();
 		this->_ubo_perspec_mult_view         = rhs.getUboPerspecMultView();
+		this->_ubo_directional_matricies     = rhs.moveUboDirectionalMatricies();
+		this->_ubo_omnidirectional_matricies = rhs.moveUboOmniDirectionalMatricies();
+		this->_ubo_spot_matricies            = rhs.moveUboSpotMatricies();
 		//Other
 		this->_shadow_rb_list                = rhs.getShadowRbList();
 		this->_dir_near_far                  = rhs.getDirNearFar();
@@ -136,6 +148,9 @@ ShadowRenderer &ShadowRenderer::operator=(ShadowRenderer &&rhs)
 	}
 	catch (std::exception &e)
 	{
+		glDeleteBuffers(1, &(this->_ubo_directional_matricies));
+		glDeleteBuffers(1, &(this->_ubo_omnidirectional_matricies));
+		glDeleteBuffers(1, &(this->_ubo_spot_matricies));
 		std::cout << "DirectionalShadowRender Move Error" << std::endl;
 		throw;
 	}
@@ -336,6 +351,45 @@ GLuint ShadowRenderer::getUboScreenResolution() const
 	return (this->_ubo_screen_resolution);
 }
 
+GLuint ShadowRenderer::getUboDirectionalMatricies() const
+{
+	return (this->_ubo_directional_matricies);
+}
+
+GLuint ShadowRenderer::getUboOmniDirectionalMatricies() const
+{
+	return (this->_ubo_omnidirectional_matricies);
+}
+
+GLuint ShadowRenderer::getUboSpotMatricies() const
+{
+	return (this->_ubo_spot_matricies);
+}
+
+GLuint ShadowRenderer::moveUboDirectionalMatricies()
+{
+	GLuint tmp = this->_ubo_directional_matricies;
+
+	this->_ubo_directional_matricies = 0;
+	return (tmp);
+}
+
+GLuint ShadowRenderer::moveUboOmniDirectionalMatricies()
+{
+	GLuint tmp = this->_ubo_omnidirectional_matricies;
+
+	this->_ubo_omnidirectional_matricies = 0;
+	return (tmp);
+}
+
+GLuint ShadowRenderer::moveUboSpotMatricies()
+{
+	GLuint tmp = this->_ubo_spot_matricies;
+
+	this->_ubo_spot_matricies = 0;
+	return (tmp);
+}
+
 /*
  * Computation
  */
@@ -399,6 +453,21 @@ void ShadowRenderer::update(void)
 												glm::vec3(0.0f, 1.0f, 0.0f));
 		this->_vec_spot_dir_lightSpaceMatrix.push_back(lightProjection * lightView);
 	}
+
+	//UBO update
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_directional_matricies);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0,
+					sizeof(glm::mat4) * this->_vec_dir_lightSpaceMatrix.size(),
+					&(this->_vec_dir_lightSpaceMatrix[0]));
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_omnidirectional_matricies);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0,
+					sizeof(ShadowRenderer::OmniProjMatrices) * this->_vec_omni_lightSpaceMatrix.size(),
+					&(this->_vec_omni_lightSpaceMatrix[0]));
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_spot_matricies);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0,
+					sizeof(glm::mat4) * this->_vec_spot_dir_lightSpaceMatrix.size(),
+					&(this->_vec_spot_dir_lightSpaceMatrix[0]));
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void ShadowRenderer::computeDirectionalDepthMaps(void)
@@ -411,7 +480,9 @@ void ShadowRenderer::computeDirectionalDepthMaps(void)
 		this->_dir_depth_maps[i]->setViewport();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
-		this->_dir_depth_map_shader->setMat4("uniform_lightSpaceMatrix", (this->_vec_dir_lightSpaceMatrix)[i]);
+		this->_dir_depth_map_shader->setUbo("uniform_lightSpaceMatrix", 0, this->_ubo_directional_matricies,
+											sizeof(glm::mat4) * i, sizeof(glm::mat4) * (i + 1));
+//		this->_dir_depth_map_shader->setMat4("uniform_lightSpaceMatrix", (this->_vec_dir_lightSpaceMatrix)[i]);
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
 			this->_shadow_rb_list[j]->drawNoShader();
 	}
@@ -606,4 +677,25 @@ void ShadowRenderer::_allocate_memory(int w, int h)
 	for (size_t i = 0; i < max_spot_light; ++i)
 		this->_spot_dir_depth_maps.emplace_back(new DirectionalDepthMap(DEPTHMAPSIZE, DEPTHMAPSIZE));
 	this->_fused_shadow_map = std::make_unique<ImageFramebuffer>(h, w);
+}
+
+void ShadowRenderer::_allocate_ubo()
+{
+	size_t max_dir_light   = this->_lc->getMaxDirLightNumber();
+	size_t max_spot_light  = this->_lc->getMaxSpotLightNumber();
+	size_t max_point_light = this->_lc->getMaxPointLightNumber();
+
+	glGenBuffers(1, &(this->_ubo_directional_matricies));
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_directional_matricies);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * max_dir_light,
+				 &(this->_vec_dir_lightSpaceMatrix[0]), GL_DYNAMIC_DRAW);
+	glGenBuffers(1, &(this->_ubo_omnidirectional_matricies));
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_omnidirectional_matricies);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(ShadowRenderer::OmniProjMatrices) * max_point_light,
+				 &(this->_vec_omni_lightSpaceMatrix[0]), GL_DYNAMIC_DRAW);
+	glGenBuffers(1, &(this->_ubo_spot_matricies));
+	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_spot_matricies);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * max_spot_light,
+				 &(this->_vec_spot_dir_lightSpaceMatrix[0]), GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }

@@ -58,6 +58,8 @@ class Shader
 		void setInt(std::string const &name, int value);
 		void setUbo(std::string const &name, unsigned int index, GLuint ubo,
 					size_t size);
+		void setUbo(std::string const &name, unsigned int index, GLuint ubo,
+					size_t begin, size_t end);
 
 		class FileOpenException : public GeneralException
 		{
