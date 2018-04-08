@@ -182,14 +182,14 @@ void Shader::setUbo(std::string const &name, unsigned int index, GLuint ubo, siz
 	glBindBufferRange(GL_UNIFORM_BUFFER, index, ubo, 0, size);
 }
 
-void Shader::setUbo(std::string const &name, unsigned int index, GLuint ubo, size_t begin, size_t end)
+void Shader::setUbo(std::string const &name, unsigned int index, GLuint ubo, size_t offset, size_t size)
 {
 	auto it = this->_ubo_uniform_id_map.find(name);
 
 	if (it == this->_ubo_uniform_id_map.end())
 		this->_ubo_uniform_id_map[name] = glGetUniformBlockIndex(this->_shader_program, name.c_str());
 	glUniformBlockBinding(this->_shader_program, this->_ubo_uniform_id_map[name], index);
-	glBindBufferRange(GL_UNIFORM_BUFFER, index, ubo, begin, end);
+	glBindBufferRange(GL_UNIFORM_BUFFER, index, ubo, offset, size);
 }
 
 GLuint Shader::_load_shader(std::string const &path, GLenum type)

@@ -132,6 +132,7 @@ class ShadowRenderer
 		 */
 
 		virtual void update(void);
+		virtual void updateGPU(void);
 		virtual void computeDirectionalDepthMaps(void);
 		virtual void computeOmniDepthMaps(void);
 		virtual void computeSpotDirDepthMaps(void);

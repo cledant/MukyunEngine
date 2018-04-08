@@ -453,8 +453,10 @@ void ShadowRenderer::update(void)
 												glm::vec3(0.0f, 1.0f, 0.0f));
 		this->_vec_spot_dir_lightSpaceMatrix.push_back(lightProjection * lightView);
 	}
+}
 
-	//UBO update
+void ShadowRenderer::updateGPU()
+{
 	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_directional_matricies);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0,
 					sizeof(glm::mat4) * this->_vec_dir_lightSpaceMatrix.size(),
@@ -481,7 +483,7 @@ void ShadowRenderer::computeDirectionalDepthMaps(void)
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
 		this->_dir_depth_map_shader->setUbo("uniform_lightSpaceMatrix", 0, this->_ubo_directional_matricies,
-											sizeof(glm::mat4) * i, sizeof(glm::mat4) * (i + 1));
+											sizeof(glm::mat4) * i, sizeof(glm::mat4));
 //		this->_dir_depth_map_shader->setMat4("uniform_lightSpaceMatrix", (this->_vec_dir_lightSpaceMatrix)[i]);
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
 			this->_shadow_rb_list[j]->drawNoShader();
@@ -573,8 +575,13 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 			glBlendFunc(GL_CONSTANT_COLOR, GL_CONSTANT_COLOR);
 			blend_flag++;
 		}
-		this->_dir_shadow_map_shader->setMat4("uniform_lightSpaceMatrix", (this->_vec_dir_lightSpaceMatrix)[i]);
-		this->_dir_shadow_map_shader->setVec3("uniform_lightPos", glm::vec3(this->_lc->getDirLightDataGL()[i].pos));
+		this->_dir_shadow_map_shader->setUbo("uniform_lightSpaceMatrix", 0, this->_ubo_directional_matricies,
+											 sizeof(glm::mat4) * i, sizeof(glm::mat4));
+		this->_dir_shadow_map_shader->setUbo("uniform_DirLight", 1, this->_lc->getUboDirLight(),
+											 sizeof(LightContainer::DirLightDataGL) * i,
+											 sizeof(LightContainer::DirLightDataGL));
+//		this->_dir_shadow_map_shader->setMat4("uniform_lightSpaceMatrix", (this->_vec_dir_lightSpaceMatrix)[i]);
+//		this->_dir_shadow_map_shader->setVec3("uniform_lightPos", glm::vec3(this->_lc->getDirLightDataGL()[i].pos));
 		glActiveTexture(GL_TEXTURE0);
 		this->_dir_shadow_map_shader->setInt("shadowMap", 0);
 		glBindTexture(GL_TEXTURE_2D, this->_dir_depth_maps[i].get()->getTextureBuffer());

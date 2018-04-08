@@ -83,7 +83,7 @@ void Engine::startGameLoop(Glfw_manager &manager)
 			}
 			manager.calculate_fps();
 			manager.update_title_fps();
-			this->_sr.update();
+			this->updateGPU();
 			//Compute depth maps
 			this->_sr.computeDirectionalDepthMaps();
 			this->_sr.computeOmniDepthMaps();
@@ -126,14 +126,21 @@ void Engine::update(void)
 	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
 		it->second.get()->flushData();
 	this->_light_container.update(this->_tick);
+	this->_sr.update();
 	for (auto it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
 	{
 		it->get()->update(this->_tick);
 		it->get()->requestDraw();
 	}
+}
+
+void Engine::updateGPU(void)
+{
+	this->updateUBO();
 	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
 		it->second.get()->updateVBO();
-	this->updateUBO();
+	this->_light_container.updateGPU();
+	this->_sr.updateGPU();
 }
 
 void Engine::render(void)

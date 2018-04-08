@@ -20,13 +20,17 @@ layout (std140) uniform uniform_mat_perspec_mult_view
 {
 	mat4	mat_perspec_mult_view;
 };
-uniform mat4 uniform_lightSpaceMatrix;
+
+layout (std140) uniform uniform_lightSpaceMatrix
+{
+	mat4 lightSpaceMatrix;
+};
 
 void main()
 {
     vs_out.FragPos = vec3(instanceMatrix * vec4(pos, 1.0));
     vs_out.Normal = mat3(instanceInverseMatrix) * norm;
     vs_out.Tex_coord = texCoord;
-    vs_out.FragPosLightSpace = uniform_lightSpaceMatrix * vec4(vs_out.FragPos, 1.0);
+    vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(vs_out.FragPos, 1.0);
     gl_Position = mat_perspec_mult_view * vec4(vs_out.FragPos, 1.0);
 }

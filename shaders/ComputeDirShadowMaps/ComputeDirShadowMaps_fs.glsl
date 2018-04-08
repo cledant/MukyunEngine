@@ -10,9 +10,21 @@ in VS_OUT
     vec4 FragPosLightSpace;
 } fs_in;
 
+struct DirLightDataGL
+{
+    vec4 pos;
+	vec4 dir;
+	vec4 ambient_color;
+	vec4 diffuse_color;
+	vec4 specular_color;
+};
+
 uniform sampler2D shadowMap;
 
-uniform vec3 uniform_lightPos;
+layout (std140) uniform uniform_DirLight
+{
+    DirLightDataGL dir_light;
+};
 
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
@@ -30,7 +42,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
     // calculate bias (based on depth map resolution and slope)
     vec3 normal = normalize(fs_in.Normal);
-    vec3 lightDir = normalize(uniform_lightPos - fs_in.FragPos);
+    vec3 lightDir = normalize(vec3(dir_light.pos) - fs_in.FragPos);
     float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
 
     // check whether current frag pos is in shadow

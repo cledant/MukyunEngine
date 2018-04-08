@@ -62,6 +62,7 @@ class Engine
 		 */
 
 		void update(void);
+		void updateGPU(void);
 		void render(void);
 
 		/*
