@@ -80,6 +80,7 @@ class LightContainer
 		 */
 
 		virtual void update(float time);
+		virtual void updateGPU(void);
 		virtual void flushData(void);
 
 		/*

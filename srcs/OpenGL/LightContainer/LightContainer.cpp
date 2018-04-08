@@ -101,6 +101,11 @@ void LightContainer::update(float time)
 				 this->_data_spot_light.size() < this->_data_spot_light.capacity())
 			this->_create_spot_light_gl_data(dynamic_cast<SpotLight const *>(it->get()));
 	}
+
+}
+
+void LightContainer::updateGPU(void)
+{
 	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_point_light);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0,
 					sizeof(PointLightDataGL) * this->_data_point_light.size(),
