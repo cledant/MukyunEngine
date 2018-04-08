@@ -85,14 +85,14 @@ target_compile_options(primary PRIVATE -Wall -Wextra -g3)
 
 #Creating executable
 set(SOURCE_FILES_MAIN
-		srcs/main.cpp includes/OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.hpp)
-add_executable(engine ${SOURCE_FILES_MAIN})
-target_compile_options(engine PRIVATE -Wall -Wextra -g3)
+		srcs/main.cpp)
+add_executable(mukyun_engine ${SOURCE_FILES_MAIN})
+target_compile_options(mukyun_engine PRIVATE -Wall -Wextra -g3)
 
 #Build Order
 add_dependencies(primary glad glfw assimp)
-add_dependencies(engine primary)
-target_link_libraries(engine glad glfw assimp primary)
+add_dependencies(mukyun_engine primary)
+target_link_libraries(mukyun_engine glad glfw assimp primary)
 
 #Copy assets
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
