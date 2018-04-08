@@ -595,6 +595,9 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 	this->_omni_shadow_map_shader->setUbo("uniform_mat_perspec_mult_view", 0, this->_ubo_perspec_mult_view,
 										  sizeof(glm::mat4));
 	this->_omni_shadow_map_shader->setUbo("uniform_view_pos", 1, this->_ubo_view_pos, sizeof(glm::vec3));
+	this->_omni_shadow_map_shader->setUbo("uniform_lightPos", 2, this->_lc->getUboPointLight(),
+										 this->_lc->getMaxPointLightNumber() *
+										 sizeof(LightContainer::PointLightDataGL));
 	for (size_t i = 0; i < this->_lc->getCurrentPointLightNumber(); ++i)
 	{
 		if (!blend_flag)
@@ -612,7 +615,7 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 			glBlendFunc(GL_CONSTANT_COLOR, GL_CONSTANT_COLOR);
 			blend_flag++;
 		}
-		this->_omni_shadow_map_shader->setVec3("uniform_lightPos", glm::vec3(this->_lc->getPointLightDataGL()[i].pos));
+		this->_dir_depth_map_shader->setInt("i", i);
 		glActiveTexture(GL_TEXTURE0);
 		this->_omni_shadow_map_shader->setInt("depthMap", 0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, this->_omni_depth_maps[i].get()->getTextureBuffer());

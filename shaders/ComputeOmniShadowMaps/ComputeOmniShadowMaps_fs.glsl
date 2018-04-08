@@ -1,5 +1,7 @@
 #version 410 core
 
+#define NB_MAX_POINT_LIGHT 20
+
 out vec4 FragColor;
 
 in VS_OUT
@@ -9,14 +11,30 @@ in VS_OUT
     vec2 Tex_coord;
 } fs_in;
 
+struct PointLightDataGL
+{
+	vec4 pos;
+	vec4 attenuation_coeff;
+	vec4 ambient_color;
+	vec4 diffuse_color;
+	vec4 specular_color;
+};
+
 uniform samplerCube depthMap;
-uniform vec3 uniform_lightPos;
+
+layout (std140) uniform uniform_lightPos
+{
+    PointLightDataGL point[NB_MAX_POINT_LIGHT];
+};
+
 uniform float uniform_farPlane;
 
 layout (std140) uniform uniform_view_pos
 {
 	vec3	viewPos;
 };
+
+uniform int i;
 
 vec3 gridSamplingDisk[20] = vec3[]
 (
@@ -30,14 +48,14 @@ vec3 gridSamplingDisk[20] = vec3[]
 float ShadowCalculation(vec3 fragPos)
 {
     // get vector between fragment position and light position
-    vec3 fragToLight = fragPos - uniform_lightPos;
+    vec3 fragToLight = fragPos - vec3(point[i].pos);
 
     // now get current linear depth as the length between the fragment and light position
     float currentDepth = length(fragToLight);
 
     // calculate bias (based on depth map resolution and slope)
     vec3 normal = normalize(fs_in.Normal);
-    vec3 lightDir = normalize(uniform_lightPos - fs_in.FragPos);
+    vec3 lightDir = normalize(vec3(point[i].pos) - fs_in.FragPos);
     float bias = tan(acos(dot(normal, lightDir))) * 0.005;
     bias *= uniform_farPlane;
 
