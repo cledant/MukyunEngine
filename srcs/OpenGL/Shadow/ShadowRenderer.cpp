@@ -476,15 +476,15 @@ void ShadowRenderer::computeDirectionalDepthMaps(void)
 {
 	glCullFace(GL_FRONT);
 	this->_dir_depth_map_shader->use();
+	this->_dir_depth_map_shader->setUbo("uniform_lightSpaceMatrix", 0, this->_ubo_directional_matricies,
+										this->_lc->getMaxDirLightNumber() * sizeof(glm::mat4));
 	for (size_t i = 0; i < this->_lc->getCurrentDirLightNumber(); ++i)
 	{
 		this->_dir_depth_maps[i]->useFramebuffer();
 		this->_dir_depth_maps[i]->setViewport();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
-		this->_dir_depth_map_shader->setUbo("uniform_lightSpaceMatrix", 0, this->_ubo_directional_matricies,
-											sizeof(glm::mat4) * i, sizeof(glm::mat4));
-//		this->_dir_depth_map_shader->setMat4("uniform_lightSpaceMatrix", (this->_vec_dir_lightSpaceMatrix)[i]);
+		this->_dir_depth_map_shader->setInt("i", i);
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
 			this->_shadow_rb_list[j]->drawNoShader();
 	}
@@ -558,6 +558,10 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 	this->_dir_shadow_map_shader->use();
 	this->_dir_shadow_map_shader->setUbo("uniform_mat_perspec_mult_view", 0, this->_ubo_perspec_mult_view,
 										 sizeof(glm::mat4));
+	this->_dir_shadow_map_shader->setUbo("uniform_lightSpaceMatrix", 1, this->_ubo_directional_matricies,
+										 this->_lc->getMaxDirLightNumber() * sizeof(glm::mat4));
+	this->_dir_shadow_map_shader->setUbo("uniform_DirLight", 2, this->_lc->getUboDirLight(),
+										 this->_lc->getMaxDirLightNumber() * sizeof(LightContainer::DirLightDataGL));
 	for (size_t i = 0; i < this->_lc->getCurrentDirLightNumber(); ++i)
 	{
 		if (!blend_flag)
@@ -575,13 +579,7 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 			glBlendFunc(GL_CONSTANT_COLOR, GL_CONSTANT_COLOR);
 			blend_flag++;
 		}
-		this->_dir_shadow_map_shader->setUbo("uniform_lightSpaceMatrix", 0, this->_ubo_directional_matricies,
-											 sizeof(glm::mat4) * i, sizeof(glm::mat4));
-		this->_dir_shadow_map_shader->setUbo("uniform_DirLight", 1, this->_lc->getUboDirLight(),
-											 sizeof(LightContainer::DirLightDataGL) * i,
-											 sizeof(LightContainer::DirLightDataGL));
-//		this->_dir_shadow_map_shader->setMat4("uniform_lightSpaceMatrix", (this->_vec_dir_lightSpaceMatrix)[i]);
-//		this->_dir_shadow_map_shader->setVec3("uniform_lightPos", glm::vec3(this->_lc->getDirLightDataGL()[i].pos));
+		this->_dir_depth_map_shader->setInt("i", i);
 		glActiveTexture(GL_TEXTURE0);
 		this->_dir_shadow_map_shader->setInt("shadowMap", 0);
 		glBindTexture(GL_TEXTURE_2D, this->_dir_depth_maps[i].get()->getTextureBuffer());

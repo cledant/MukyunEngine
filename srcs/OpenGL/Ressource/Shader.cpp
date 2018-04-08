@@ -182,6 +182,12 @@ void Shader::setUbo(std::string const &name, unsigned int index, GLuint ubo, siz
 	glBindBufferRange(GL_UNIFORM_BUFFER, index, ubo, 0, size);
 }
 
+/*
+ * When you use glBindBufferRange on uniform buffers, the `offset` parameter must be aligned to an
+ * implementation-dependent value: GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT.
+ *
+ * From : https://www.opengl.org/discussion_boards/showthread.php/175410-Uniform-Buffers-and-BindBufferRange
+ */
 void Shader::setUbo(std::string const &name, unsigned int index, GLuint ubo, size_t offset, size_t size)
 {
 	auto it = this->_ubo_uniform_id_map.find(name);
