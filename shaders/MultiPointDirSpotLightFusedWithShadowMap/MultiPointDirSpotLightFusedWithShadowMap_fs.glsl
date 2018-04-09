@@ -190,5 +190,5 @@ vec3 FindShadowValue(vec2 resolution)
     float value = texture(shadowMap, uv).r;
 //    value -= 0.5;
 //   	value = (value < 0.0) ? 0.0 : value;
-    return (vec3(value));
+    return (vec3(1.0 - value));
 }

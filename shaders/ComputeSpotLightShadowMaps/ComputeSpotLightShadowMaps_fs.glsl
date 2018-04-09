@@ -15,6 +15,8 @@ in VS_OUT
 uniform sampler2D shadowMap;
 
 uniform vec3 uniform_lightPos;
+uniform vec3 uniform_lightDir;
+uniform vec2 uniform_cutoff;
 
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
@@ -35,9 +37,6 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     vec3 lightDir = normalize(uniform_lightPos - fs_in.FragPos);
     float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
 
-	//Basic shadow
-//	float shadow = (currentDepth - bias > closestDepth) ? closestDepth - SHADOW_ACCENTUATION : currentDepth;
-
     // PCF
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
@@ -55,6 +54,13 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
     if(projCoords.z > 1.0)
         shadow = 0.0;
+
+    //SpotLight
+    float theta = dot(lightDir, normalize(-uniform_lightDir));
+    float epsilon = uniform_cutoff.y - uniform_cutoff.x;
+    float intensity = clamp((theta - uniform_cutoff.x) / epsilon, 0.0, 1.0);
+    shadow *= intensity;
+
     return (shadow);
 }
 

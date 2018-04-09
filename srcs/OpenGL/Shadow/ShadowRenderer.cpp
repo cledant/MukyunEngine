@@ -428,8 +428,8 @@ void ShadowRenderer::computeSpotDirDepthMaps(void)
 		this->_spot_dir_depth_maps[i]->setViewport();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
-		this->_spot_dir_depth_map_shader
-			->setMat4("uniform_lightSpaceMatrix", (this->_vec_spot_dir_lightSpaceMatrix)[i]);
+		this->_spot_dir_depth_map_shader->setMat4("uniform_lightSpaceMatrix",
+												  (this->_vec_spot_dir_lightSpaceMatrix)[i]);
 		for (size_t j = 0; j < this->_shadow_rb_list.size(); ++j)
 			this->_shadow_rb_list[j]->drawNoShader();
 	}
@@ -536,10 +536,10 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 												   (this->_vec_spot_dir_lightSpaceMatrix)[i]);
 		this->_spot_dir_shadow_map_shader->setVec3("uniform_lightPos",
 												   glm::vec3(this->_lc->getSpotLightDataGL()[i].pos));
-/*		this->_spot_dir_shadow_map_shader->setVec3("uniform_lightDir",
+		this->_spot_dir_shadow_map_shader->setVec3("uniform_lightDir",
 												   glm::vec3(this->_lc->getSpotLightDataGL()[i].dir));
 		this->_spot_dir_shadow_map_shader->setVec2("uniform_cutoff",
-												   glm::vec3(this->_lc->getSpotLightDataGL()[i].cutoff));*/
+												   glm::vec3(this->_lc->getSpotLightDataGL()[i].cutoff));
 		glActiveTexture(GL_TEXTURE0);
 		this->_spot_dir_shadow_map_shader->setInt("shadowMap", 0);
 		glBindTexture(GL_TEXTURE_2D, this->_spot_dir_depth_maps[i].get()->getTextureBuffer());

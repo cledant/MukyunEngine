@@ -33,7 +33,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	sr_params.omni_depth_map_shader      = &rm.getShader("ComputeOmniDepthMap");
 	sr_params.omni_shadow_map_shader     = &rm.getShader("ComputeOmniShadowMaps");
 	sr_params.spot_dir_depth_map_shader  = &rm.getShader("ComputeDirLightDepthMap");
-	sr_params.spot_dir_shadow_map_shader = &rm.getShader("ComputeDirShadowMaps");
+	sr_params.spot_dir_shadow_map_shader = &rm.getShader("ComputeSpotLightShadowMaps");
 	sr_params.fuse_shadow_maps_shader    = &rm.getShader("DisplayImage");
 	sr_params.win_w                      = manager.getWindow().cur_win_w;
 	sr_params.win_h                      = manager.getWindow().cur_win_h;
@@ -97,7 +97,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	//Creating Prop
 	Prop::Params prop_params;
 	prop_params.render_bin  = rb_box;
-	prop_params.orientation = glm::vec3(20.0f);
+	prop_params.orientation = glm::vec3(45.0f);
 	prop_params.scale       = glm::vec3(0.5f);
 	prop_params.pos         = glm::vec3(0.0f, 4.0f, 1.0f);
 	(*world)->add_Prop(prop_params);
