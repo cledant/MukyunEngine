@@ -1,5 +1,7 @@
 #version 410 core
 
+#define SHADOW_ACCENTUATION 0.2
+
 out vec4 FragColor;
 
 in VS_OUT
@@ -33,8 +35,9 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     vec3 lightDir = normalize(uniform_lightPos - fs_in.FragPos);
     float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
 
-    // check whether current frag pos is in shadow
-    // float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
+	//Basic shadow
+//	float shadow = (currentDepth - bias > closestDepth) ? closestDepth - SHADOW_ACCENTUATION : currentDepth;
+
     // PCF
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
@@ -43,7 +46,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
         for (int y = -1; y <= 1; ++y)
         {
             float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
-            shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;
+            shadow += currentDepth - bias > pcfDepth  ? closestDepth - SHADOW_ACCENTUATION : currentDepth;
         }
     }
     shadow /= 9.0;

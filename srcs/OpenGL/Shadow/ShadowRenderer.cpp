@@ -324,14 +324,15 @@ void ShadowRenderer::update(void)
 	 * Example : light at vec3(0, 10, 0) and lookat at (0, 0, 0)
 	 */
 
+	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,
+										   this->_dir_near_far.x, this->_dir_near_far.y);
 	//refresh for directional light matricies
 	this->_vec_dir_lightSpaceMatrix.clear();
 	for (size_t i = 0; i < this->_lc->getDirLightDataGL().size(); ++i)
 	{
-		glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,
-											   this->_dir_near_far.x, this->_dir_near_far.y);
-		glm::mat4 lightView       = glm::lookAt(glm::vec3(this->_lc->getDirLightDataGL()[i].pos), glm::vec3(0.0f),
-												glm::vec3(0.0f, 1.0f, 0.0f));
+
+		glm::mat4 lightView = glm::lookAt(glm::vec3(this->_lc->getDirLightDataGL()[i].pos), glm::vec3(0.0f),
+										  glm::vec3(0.0f, 1.0f, 0.0f));
 		this->_vec_dir_lightSpaceMatrix.push_back(lightProjection * lightView);
 	}
 	//refresh for omnidirectional light matricies
@@ -369,10 +370,8 @@ void ShadowRenderer::update(void)
 	this->_vec_spot_dir_lightSpaceMatrix.clear();
 	for (size_t i = 0; i < this->_lc->getSpotLightDataGL().size(); ++i)
 	{
-		glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,
-											   this->_dir_near_far.x, this->_dir_near_far.y);
-		glm::mat4 lightView       = glm::lookAt(glm::vec3(this->_lc->getSpotLightDataGL()[i].pos), glm::vec3(0.0f),
-												glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 lightView = glm::lookAt(glm::vec3(this->_lc->getSpotLightDataGL()[i].pos), glm::vec3(0.0f),
+										  glm::vec3(0.0f, 1.0f, 0.0f));
 		this->_vec_spot_dir_lightSpaceMatrix.push_back(lightProjection * lightView);
 	}
 }
@@ -453,7 +452,7 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 		this->_fused_shadow_map.get()->defaultFramebuffer();
 		return;
 	}
-	glCullFace(GL_FRONT);
+//	glCullFace(GL_FRONT);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
@@ -537,10 +536,10 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 												   (this->_vec_spot_dir_lightSpaceMatrix)[i]);
 		this->_spot_dir_shadow_map_shader->setVec3("uniform_lightPos",
 												   glm::vec3(this->_lc->getSpotLightDataGL()[i].pos));
-		this->_spot_dir_shadow_map_shader->setVec3("uniform_lightDir",
+/*		this->_spot_dir_shadow_map_shader->setVec3("uniform_lightDir",
 												   glm::vec3(this->_lc->getSpotLightDataGL()[i].dir));
 		this->_spot_dir_shadow_map_shader->setVec2("uniform_cutoff",
-												   glm::vec3(this->_lc->getSpotLightDataGL()[i].cutoff));
+												   glm::vec3(this->_lc->getSpotLightDataGL()[i].cutoff));*/
 		glActiveTexture(GL_TEXTURE0);
 		this->_spot_dir_shadow_map_shader->setInt("shadowMap", 0);
 		glBindTexture(GL_TEXTURE_2D, this->_spot_dir_depth_maps[i].get()->getTextureBuffer());
@@ -549,7 +548,7 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 	}
 	glDepthFunc(GL_LESS);
 	glDisable(GL_BLEND);
-	glCullFace(GL_BACK);
+//	glCullFace(GL_BACK);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

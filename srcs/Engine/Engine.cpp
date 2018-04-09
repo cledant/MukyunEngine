@@ -45,7 +45,7 @@ Engine::Engine(Input const &input, GLFW_Window const &win,
 	this->_tss.setTextureID(this->_final_image.getTextureBuffer());
 
 	//Debug
-//	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::SPOT_DEPTH_MAP, 0));
+//	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::DIR_DEPTH_MAP, 0));
 //	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::TOTAL_SHADOW_MAP, 0));
 }
 

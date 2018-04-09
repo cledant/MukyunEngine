@@ -187,6 +187,8 @@ vec3 CalcSpotLight(SpotLightDataGL light, vec3 normal, vec3 fragPos, vec3 viewDi
 vec3 FindShadowValue(vec2 resolution)
 {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
-    vec3 value = vec3(texture(shadowMap, uv));
-    return (1.0 - value);
+    float value = texture(shadowMap, uv).r;
+//    value -= 0.5;
+//   	value = (value < 0.0) ? 0.0 : value;
+    return (vec3(value));
 }

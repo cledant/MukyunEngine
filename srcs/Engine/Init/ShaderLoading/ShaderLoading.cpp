@@ -29,9 +29,6 @@ void ShaderLoading(RessourceManager &rm)
 				  "./shaders/ComputeDirShadowMaps/ComputeDirShadowMaps_fs.glsl");
 	rm.add_shader("ComputeOmniShadowMaps", "./shaders/ComputeOmniShadowMaps/ComputeOmniShadowMaps_vs.glsl",
 				  "./shaders/ComputeOmniShadowMaps/ComputeOmniShadowMaps_fs.glsl");
-	rm.add_shader("ComputeSpotLightShadowMaps",
-				  "./shaders/ComputeSpotLightShadowMaps/ComputeSpotLightShadowMaps_vs.glsl",
-				  "./shaders/ComputeSpotLightShadowMaps/ComputeSpotLightShadowMaps_fs.glsl");
 	rm.add_shader("DisplayDepthMap", "./shaders/DisplayDepthMap/DisplayDepthMap_vs.glsl",
 				  "./shaders/DisplayDepthMap/DisplayDepthMap_fs.glsl");
 	rm.add_shader("DisplayImage", "./shaders/DisplayImage/DisplayImage_vs.glsl",
