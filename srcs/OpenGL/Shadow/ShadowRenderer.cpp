@@ -473,8 +473,7 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 			glDepthFunc(GL_EQUAL);
 			glBlendEquation(GL_FUNC_ADD);
 			glEnable(GL_BLEND);
-			glBlendColor(0.5f, 0.5f, 0.5f, 0.5f);
-			glBlendFunc(GL_CONSTANT_COLOR, GL_CONSTANT_COLOR);
+			glBlendFunc(GL_ONE, GL_ONE);
 			blend_flag++;
 		}
 		this->_dir_shadow_map_shader->setMat4("uniform_lightSpaceMatrix", (this->_vec_dir_lightSpaceMatrix)[i]);
@@ -504,8 +503,7 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 			glDepthFunc(GL_EQUAL);
 			glBlendEquation(GL_FUNC_ADD);
 			glEnable(GL_BLEND);
-			glBlendColor(0.5f, 0.5f, 0.5f, 0.5f);
-			glBlendFunc(GL_CONSTANT_COLOR, GL_CONSTANT_COLOR);
+			glBlendFunc(GL_ONE, GL_ONE);
 			blend_flag++;
 		}
 		this->_omni_shadow_map_shader->setVec3("uniform_lightPos", glm::vec3(this->_lc->getPointLightDataGL()[i].pos));
@@ -532,8 +530,7 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 			glDepthFunc(GL_EQUAL);
 			glBlendEquation(GL_FUNC_ADD);
 			glEnable(GL_BLEND);
-			glBlendColor(0.5f, 0.5f, 0.5f, 0.5f);
-			glBlendFunc(GL_CONSTANT_COLOR, GL_CONSTANT_COLOR);
+			glBlendFunc(GL_ONE, GL_ONE);
 			blend_flag++;
 		}
 		this->_spot_dir_shadow_map_shader->setMat4("uniform_lightSpaceMatrix",

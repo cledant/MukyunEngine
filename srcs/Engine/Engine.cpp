@@ -39,7 +39,6 @@ Engine::Engine(Input const &input, GLFW_Window const &win,
 	//Can't be initialized before because of nullptr for light container params
 	ShadowRenderer::Params sr_params_cpy = sr_params;
 	sr_params_cpy.lc                = &this->_light_container;
-	sr_params_cpy.dir_near_far      = glm::vec2(1.0f, 35.0f);
 	sr_params_cpy.perspec_mult_view = &this->_perspec_mult_view;
 	sr_params_cpy.viewPos           = &this->_camera.getPos();
 	this->_sr                       = ShadowRenderer(sr_params_cpy);

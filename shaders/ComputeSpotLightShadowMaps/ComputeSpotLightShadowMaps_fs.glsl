@@ -60,7 +60,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     float intensity = clamp((theta - uniform_cutoff.x) / epsilon, 0.0, 1.0);
     shadow *= intensity;
 
-    return (1.0 - shadow);
+    return (shadow);
 }
 
 void main()

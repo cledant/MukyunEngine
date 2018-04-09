@@ -37,6 +37,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	sr_params.fuse_shadow_maps_shader    = &rm.getShader("DisplayImage");
 	sr_params.win_w                      = manager.getWindow().cur_win_w;
 	sr_params.win_h                      = manager.getWindow().cur_win_h;
+	sr_params.dir_near_far               = glm::vec2(10.0f, 50.0f);
 
 	(*world) = new Engine(manager.getInput(), manager.getWindow(),
 						  glm::vec3(0.0f, 0.0f, 10.0f),

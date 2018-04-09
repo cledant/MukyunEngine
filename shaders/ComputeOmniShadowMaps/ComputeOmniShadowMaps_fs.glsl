@@ -50,7 +50,7 @@ float ShadowCalculation(vec3 fragPos)
             shadow += 1.0;
     }
     shadow /= float(samples);
-    return (1.0 - shadow);
+    return (shadow);
 }
 
 void main()
