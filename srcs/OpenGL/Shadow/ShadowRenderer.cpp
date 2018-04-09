@@ -46,6 +46,8 @@ ShadowRenderer::ShadowRenderer(void) :
 	this->_omni_proj_matrix = glm::perspective(glm::radians(90.0f), 1.0f,
 											   this->_omni_near_far.x,
 											   this->_omni_near_far.y);
+	this->_dir_proj_matrix  = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,
+										 this->_dir_near_far.x, this->_dir_near_far.y);
 }
 
 ShadowRenderer::ShadowRenderer(ShadowRenderer::Params const &params) :
@@ -74,6 +76,8 @@ ShadowRenderer::ShadowRenderer(ShadowRenderer::Params const &params) :
 	this->_omni_proj_matrix = glm::perspective(glm::radians(90.0f), 1.0f,
 											   this->_omni_near_far.x,
 											   this->_omni_near_far.y);
+	this->_dir_proj_matrix  = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,
+										 this->_dir_near_far.x, this->_dir_near_far.y);
 }
 
 ShadowRenderer::~ShadowRenderer(void)
@@ -117,6 +121,7 @@ ShadowRenderer &ShadowRenderer::operator=(ShadowRenderer &&rhs)
 		this->_vec_spot_dir_lightSpaceMatrix = rhs.getVecSpotDirLightSpaceMatrix();
 		//Proj Matricies
 		this->_perspec_mult_view             = rhs.getPerspecMultView();
+		this->_dir_proj_matrix               = rhs.getDirProjMatrix();
 		this->_omni_proj_matrix              = rhs.getOmniProjMatrix();
 		//Other
 		this->_shadow_rb_list                = rhs.getShadowRbList();
@@ -151,16 +156,6 @@ void ShadowRenderer::setLightContainer(LightContainer const *ptr)
 void ShadowRenderer::setPerspecMultView(glm::mat4 const *ptr)
 {
 	this->_perspec_mult_view = ptr;
-}
-
-void ShadowRenderer::setDirNearFar(glm::vec2 const &vec)
-{
-	this->_dir_near_far = vec;
-}
-
-void ShadowRenderer::setOmniNearFar(glm::vec2 const &vec)
-{
-	this->_omni_near_far = vec;
 }
 
 /*
@@ -301,11 +296,15 @@ TextureShaderSurface ShadowRenderer::movePrinter()
 	return (std::move(this->_printer));
 }
 
+glm::mat4 const &ShadowRenderer::getDirProjMatrix(void) const
+{
+	return (this->_dir_proj_matrix);
+}
+
 glm::mat4 const &ShadowRenderer::getOmniProjMatrix(void) const
 {
 	return (this->_omni_proj_matrix);
 }
-
 
 glm::vec3 const *ShadowRenderer::getViewPos(void) const
 {
@@ -324,16 +323,13 @@ void ShadowRenderer::update(void)
 	 * Example : light at vec3(0, 10, 0) and lookat at (0, 0, 0)
 	 */
 
-	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,
-										   this->_dir_near_far.x, this->_dir_near_far.y);
 	//refresh for directional light matricies
 	this->_vec_dir_lightSpaceMatrix.clear();
 	for (size_t i = 0; i < this->_lc->getDirLightDataGL().size(); ++i)
 	{
-
 		glm::mat4 lightView = glm::lookAt(glm::vec3(this->_lc->getDirLightDataGL()[i].pos), glm::vec3(0.0f),
 										  glm::vec3(0.0f, 1.0f, 0.0f));
-		this->_vec_dir_lightSpaceMatrix.push_back(lightProjection * lightView);
+		this->_vec_dir_lightSpaceMatrix.push_back(this->_dir_proj_matrix * lightView);
 	}
 	//refresh for omnidirectional light matricies
 	this->_vec_omni_lightSpaceMatrix.clear();
@@ -372,7 +368,7 @@ void ShadowRenderer::update(void)
 	{
 		glm::mat4 lightView = glm::lookAt(glm::vec3(this->_lc->getSpotLightDataGL()[i].pos), glm::vec3(0.0f),
 										  glm::vec3(0.0f, 1.0f, 0.0f));
-		this->_vec_spot_dir_lightSpaceMatrix.push_back(lightProjection * lightView);
+		this->_vec_spot_dir_lightSpaceMatrix.push_back(this->_dir_proj_matrix * lightView);
 	}
 }
 
@@ -452,7 +448,6 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 		this->_fused_shadow_map.get()->defaultFramebuffer();
 		return;
 	}
-//	glCullFace(GL_FRONT);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
@@ -502,7 +497,7 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 			glDepthFunc(GL_EQUAL);
 			glBlendEquation(GL_FUNC_ADD);
 			glEnable(GL_BLEND);
-			glBlendFunc(GL_ONE, GL_ONE);
+			glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
 			blend_flag++;
 		}
 		this->_omni_shadow_map_shader->setVec3("uniform_lightPos", glm::vec3(this->_lc->getPointLightDataGL()[i].pos));
@@ -548,7 +543,6 @@ void ShadowRenderer::computeAllShadowMaps(bool activate_shadow)
 	}
 	glDepthFunc(GL_LESS);
 	glDisable(GL_BLEND);
-//	glCullFace(GL_BACK);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

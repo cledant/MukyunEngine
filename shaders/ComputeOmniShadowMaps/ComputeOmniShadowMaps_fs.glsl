@@ -1,6 +1,6 @@
 #version 410 core
 
-#define SHADOW_ACCENTUATION 0.2
+#define SHADOW_ACCENTUATION 0.3
 
 out vec4 FragColor;
 
@@ -47,11 +47,9 @@ float ShadowCalculation(vec3 fragPos)
     for(int i = 0; i < samples; ++i)
     {
         float closestDepth = texture(depthMap, fragToLight + gridSamplingDisk[i] * diskRadius).r;
-        closestDepth *= uniform_farPlane;   // undo mapping [0;1]
-        if (currentDepth - bias > closestDepth)
-            shadow += closestDepth - SHADOW_ACCENTUATION;
-        else
-        	shadow += currentDepth;
+        float unmapped_closestDepth = closestDepth * uniform_farPlane;   // undo mapping [0;1]
+        if (currentDepth - bias > unmapped_closestDepth)
+            shadow += currentDepth / uniform_farPlane + SHADOW_ACCENTUATION;
     }
     shadow /= float(samples);
     return (shadow);

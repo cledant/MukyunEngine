@@ -37,7 +37,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	sr_params.fuse_shadow_maps_shader    = &rm.getShader("DisplayImage");
 	sr_params.win_w                      = manager.getWindow().cur_win_w;
 	sr_params.win_h                      = manager.getWindow().cur_win_h;
-	sr_params.omni_near_far              = glm::vec2(1.0f, 30.0f);
+	sr_params.omni_near_far              = glm::vec2(1.0f, 100.0f);
 
 	(*world) = new Engine(manager.getInput(), manager.getWindow(),
 						  glm::vec3(0.0f, 0.0f, 10.0f),
@@ -60,7 +60,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	params_dir.ambient_color     = glm::vec3(0.05f);
 	params_dir.diffuse_color     = glm::vec3(1.0f);
 	params_dir.specular_color    = params_dir.diffuse_color;
-	params_dir.attenuation_coeff = glm::vec3(1.0f, 0.007f, 0.0002f);
+	params_dir.attenuation_coeff = glm::vec3(1.0f, 0.07f, 0.002f);
 	params_dir.draw_model        = true;
 	(*world)->add_PointLight(params_dir);
 

@@ -79,8 +79,6 @@ class ShadowRenderer
 		void addRenderBufferToList(AShadowRenderBin *ptr);
 		void setLightContainer(LightContainer const *ptr);
 		void setPerspecMultView(glm::mat4 const *ptr);
-		void setDirNearFar(glm::vec2 const &vec);
-		void setOmniNearFar(glm::vec2 const &vec);
 
 		/*
 		 * Getter
@@ -97,13 +95,10 @@ class ShadowRenderer
 		LightContainer const *getLightContainer(void) const;
 		std::vector<std::unique_ptr<AFramebuffer>> const &getDirDepthMaps(void) const;
 		std::vector<std::unique_ptr<AFramebuffer>> moveDirDepthMaps(void);
-
 		std::vector<std::unique_ptr<AFramebuffer>> const &getOmniDepthMaps(void) const;
 		std::vector<std::unique_ptr<AFramebuffer>> moveOmniDepthMaps(void);
-
 		std::vector<std::unique_ptr<AFramebuffer>> const &getSpotDirDepthMaps(void) const;
 		std::vector<std::unique_ptr<AFramebuffer>> moveSpotDirDepthMaps(void);
-
 		std::unique_ptr<AFramebuffer> const &getFusedShadowMap(void) const;
 		std::unique_ptr<AFramebuffer> moveFusedShadowMap(void);
 		std::vector<glm::mat4> const &getVecDirLightSpaceMatrix(void) const;
@@ -114,6 +109,7 @@ class ShadowRenderer
 		glm::vec2 const getOmniNearFar(void) const;
 		glm::mat4 const *getPerspecMultView(void) const;
 		TextureShaderSurface movePrinter(void);
+		glm::mat4 const &getDirProjMatrix(void) const;
 		glm::mat4 const &getOmniProjMatrix(void) const;
 		glm::vec3 const *getViewPos(void) const;
 
@@ -145,6 +141,7 @@ class ShadowRenderer
 		std::unique_ptr<AFramebuffer>              _fused_shadow_map;
 		std::vector<glm::mat4>                     _vec_dir_lightSpaceMatrix;
 		std::vector<glm::mat4>                     _vec_spot_dir_lightSpaceMatrix;
+		glm::mat4                                  _dir_proj_matrix;
 		glm::mat4                                  _omni_proj_matrix;
 		std::vector<OmniProjMatrices>              _vec_omni_lightSpaceMatrix;
 		std::vector<AShadowRenderBin const *>      _shadow_rb_list;

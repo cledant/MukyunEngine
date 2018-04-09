@@ -188,7 +188,5 @@ vec3 FindShadowValue(vec2 resolution)
 {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
     float value = texture(shadowMap, uv).r;
-//    value -= 0.5;
-//   	value = (value < 0.0) ? 0.0 : value;
     return (vec3(1.0 - value));
 }
