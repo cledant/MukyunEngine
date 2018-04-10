@@ -52,12 +52,12 @@ class AShadowRenderBin : public ARenderBin
 		virtual void flushData(void);
 
 
-
 		/*
 		 * Getter
 		 */
 
 		LightContainer const *getLightContainer(void) const;
+		ShadowRenderer const *getShadowRenderer(void) const;
 		glm::vec3 const *getViewPos(void);
 		std::vector<glm::mat4> const &getInvModelMatrices(void) const;
 		size_t getCurrentInvModelMatricesNumber(void) const;
@@ -76,6 +76,10 @@ class AShadowRenderBin : public ARenderBin
 		GLuint                 _vbo_inv_model_matrices;
 		int                    _win_w;
 		int                    _win_h;
+
+		/*
+		 * Protected Functions
+		 */
 
 		void _allocate_vbo(size_t max_size);
 		void _update_vector_inv_model(void);

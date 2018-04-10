@@ -140,7 +140,6 @@ class Engine
 		TextureShaderSurface                                        _tss;
 		ImageFramebuffer                                            _final_image;
 		glm::vec2                                                   _screen_res;
-		std::vector<std::pair<void (*const)(), AShadowRenderBin *>> _shadow_render_fct;
 };
 
 /*

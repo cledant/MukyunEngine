@@ -73,6 +73,7 @@ AShadowRenderBin &AShadowRenderBin::operator=(
 		this->_inv_model_matrices     = rhs.getInvModelMatrices();
 		this->_vbo_inv_model_matrices = rhs.moveVBOinvModelMatrices();
 		this->_lc                     = rhs.getLightContainer();
+		this->_sr                     = rhs.getShadowRenderer();
 		this->_view_pos               = rhs.getViewPos();
 		this->_win_h                  = rhs.getWinHeight();
 		this->_win_w                  = rhs.getWinWidth();
@@ -111,7 +112,6 @@ void AShadowRenderBin::flushData(void)
 }
 
 
-
 /*
  * Getter
  */
@@ -119,6 +119,11 @@ void AShadowRenderBin::flushData(void)
 LightContainer const *AShadowRenderBin::getLightContainer(void) const
 {
 	return (this->_lc);
+}
+
+ShadowRenderer const *AShadowRenderBin::getShadowRenderer() const
+{
+	return (this->_sr);
 }
 
 glm::vec3 const *AShadowRenderBin::getViewPos(void)
@@ -163,6 +168,10 @@ int AShadowRenderBin::getWinWidth() const
 {
 	return (this->_win_w);
 }
+
+/*
+ * Protected Functions
+ */
 
 void AShadowRenderBin::_allocate_vbo(size_t max_size)
 {
