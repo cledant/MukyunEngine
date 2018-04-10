@@ -14,11 +14,10 @@
 
 AShadowRenderBin::Params::Params(void) : ARenderBin::Params()
 {
-	this->lc             = nullptr;
-	this->viewPos        = nullptr;
-	this->tex_shadow_map = 0;
-	this->win_w          = 1280;
-	this->win_h          = 720;
+	this->lc      = nullptr;
+	this->viewPos = nullptr;
+	this->win_w   = 1280;
+	this->win_h   = 720;
 }
 
 AShadowRenderBin::Params::~Params(void)
@@ -75,7 +74,6 @@ AShadowRenderBin &AShadowRenderBin::operator=(
 		this->_vbo_inv_model_matrices = rhs.moveVBOinvModelMatrices();
 		this->_lc                     = rhs.getLightContainer();
 		this->_view_pos               = rhs.getViewPos();
-		this->_tex_fused_shadow_map   = rhs.getTexFusedShadowMap();
 		this->_win_h                  = rhs.getWinHeight();
 		this->_win_w                  = rhs.getWinWidth();
 	}
@@ -112,14 +110,7 @@ void AShadowRenderBin::flushData(void)
 	this->_inv_model_matrices.clear();
 }
 
-/*
- * Setter
- */
 
-void AShadowRenderBin::setTexFusedShadowMap(GLuint id)
-{
-	this->_tex_fused_shadow_map = id;
-}
 
 /*
  * Getter
@@ -161,11 +152,6 @@ GLuint AShadowRenderBin::moveVBOinvModelMatrices(void)
 
 	this->_vbo_inv_model_matrices = 0;
 	return (tmp);
-}
-
-GLuint AShadowRenderBin::getTexFusedShadowMap() const
-{
-	return (this->_tex_fused_shadow_map);
 }
 
 int AShadowRenderBin::getWinHeight() const

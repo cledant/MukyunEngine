@@ -38,10 +38,10 @@ Engine::Engine(Input const &input, GLFW_Window const &win,
 
 	//Can't be initialized before because of nullptr for light container params
 	ShadowRenderer::Params sr_params_cpy = sr_params;
-	sr_params_cpy.lc                = &this->_light_container;
-	sr_params_cpy.perspec_mult_view = &this->_perspec_mult_view;
-	sr_params_cpy.viewPos           = &this->_camera.getPos();
-	this->_sr                       = ShadowRenderer(sr_params_cpy);
+	sr_params_cpy.lc = &this->_light_container;
+//	sr_params_cpy.perspec_mult_view = &this->_perspec_mult_view;
+//	sr_params_cpy.viewPos           = &this->_camera.getPos();
+	this->_sr        = ShadowRenderer(sr_params_cpy);
 	this->_tss.setTextureID(this->_final_image.getTextureBuffer());
 
 	//Debug
@@ -74,11 +74,11 @@ void Engine::startGameLoop(Glfw_manager &manager)
 			manager.update_title_fps();
 			this->updateGPU();
 			//Compute depth maps
-			this->_sr.computeDirectionalDepthMaps();
-			this->_sr.computeOmniDepthMaps();
-			this->_sr.computeSpotDirDepthMaps();
+			this->computeDirectionalDepthMaps();
+			this->computeOmniDepthMaps();
+			this->computeSpotDirDepthMaps();
 			//Compute and fuse shadowmaps
-			this->_sr.computeAllShadowMaps(true);
+//			this->_sr.computeAllShadowMaps(true);
 			//Compute diffuse
 			this->_final_image.useFramebuffer();
 			this->_final_image.setViewport();
@@ -134,6 +134,85 @@ void Engine::render(void)
 {
 	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
 		it->second.get()->draw();
+}
+
+/*
+ * Shadow Computation
+ */
+
+void Engine::computeDirectionalDepthMaps(void)
+{
+	Shader *shader = this->_sr.getDirDepthMapShader();
+
+	glCullFace(GL_FRONT);
+	shader->use();
+	for (size_t i = 0; i < this->_light_container.getCurrentDirLightNumber(); ++i)
+	{
+		this->_sr.getDirDepthMaps()[i]->useFramebuffer();
+		this->_sr.getDirDepthMaps()[i]->setViewport();
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glDepthFunc(GL_LESS);
+		shader->setMat4("uniform_lightSpaceMatrix", (this->_sr.getVecDirLightSpaceMatrix())[i]);
+		for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
+		{
+			if (dynamic_cast<AShadowRenderBin *>(it->second.get()))
+				dynamic_cast<AShadowRenderBin *>(it->second.get())->drawNoShader();
+		}
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glCullFace(GL_BACK);
+}
+
+void Engine::computeOmniDepthMaps(void)
+{
+	Shader *shader = this->_sr.getOmniDepthMapShader();
+
+	glCullFace(GL_FRONT);
+	shader->use();
+	shader->setFloat("uniform_farPlane", this->_sr.getOmniNearFar().y);
+	for (size_t i = 0; i < this->_light_container.getCurrentPointLightNumber(); ++i)
+	{
+		this->_sr.getOmniDepthMaps()[i]->useFramebuffer();
+		this->_sr.getOmniDepthMaps()[i]->setViewport();
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glDepthFunc(GL_LESS);
+		for (size_t k = 0; k < 6; ++k)
+		{
+			std::string name = "uniform_shadowMatrices[" + std::to_string(k) + "]";
+			shader->setMat4(name, (this->_sr.getVecOmniLightSpaceMatrix())[i].mat[k]);
+		}
+		shader->setVec3("uniform_lightPos", glm::vec3(this->_light_container.getPointLightDataGL()[i].pos));
+		for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
+		{
+			if (dynamic_cast<AShadowRenderBin *>(it->second.get()))
+				dynamic_cast<AShadowRenderBin *>(it->second.get())->drawNoShader();
+		}
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glCullFace(GL_BACK);
+}
+
+void Engine::computeSpotDirDepthMaps(void)
+{
+	Shader *shader = this->_sr.getSpotDirDepthMapShader();
+
+	glCullFace(GL_FRONT);
+	shader->use();
+	for (size_t i = 0; i < this->_light_container.getCurrentSpotLightNumber(); ++i)
+	{
+		this->_sr.getSpotDirDepthMaps()[i]->useFramebuffer();
+		this->_sr.getSpotDirDepthMaps()[i]->setViewport();
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glDepthFunc(GL_LESS);
+		shader->setMat4("uniform_lightSpaceMatrix", this->_sr.getVecSpotDirLightSpaceMatrix()[i]);
+		for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
+		{
+			if (dynamic_cast<AShadowRenderBin *>(it->second.get()))
+				dynamic_cast<AShadowRenderBin *>(it->second.get())->drawNoShader();
+		}
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glCullFace(GL_BACK);
 }
 
 /*
@@ -206,7 +285,7 @@ IEntity *Engine::add_SpotLight(SpotLight::Params &params)
 {
 	return (this->_light_container.addLightInstance(params));
 }
-
+/*
 void Engine::add_RenderBin_To_ShadowRenderer(std::string const &str)
 {
 	auto it = this->_render_bin_list.find(str);
@@ -214,7 +293,7 @@ void Engine::add_RenderBin_To_ShadowRenderer(std::string const &str)
 	if (it != this->_render_bin_list.end())
 		this->_sr.addRenderBufferToList(dynamic_cast<AShadowRenderBin *>(it->second.get()));
 }
-
+*/
 /*
  * Getter
  */

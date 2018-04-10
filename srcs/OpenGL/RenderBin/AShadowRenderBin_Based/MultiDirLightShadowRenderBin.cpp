@@ -72,9 +72,9 @@ void MultiPointDirSpotLightShadowRenderBin::draw(void)
 		glActiveTexture(GL_TEXTURE1);
 		this->_shader->setInt("uniform_material.tex_specular", 1);
 		glBindTexture(GL_TEXTURE_2D, (this->_model->getMeshList())[i].getMaterial().specularMap);
-		glActiveTexture(GL_TEXTURE2);
+/*		glActiveTexture(GL_TEXTURE2);
 		this->_shader->setInt("shadowMap", 2);
-		glBindTexture(GL_TEXTURE_2D, this->_tex_fused_shadow_map);
+		glBindTexture(GL_TEXTURE_2D, this->_tex_fused_shadow_map);*/
 		this->_shader->setFloat("uniform_material.shininess",
 								(this->_model->getMeshList())[i].getMaterial().shininess);
 		this->_shader->setVec3("uniform_material.mat_ambient",

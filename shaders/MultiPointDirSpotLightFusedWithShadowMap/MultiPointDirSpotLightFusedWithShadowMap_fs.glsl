@@ -77,7 +77,7 @@ uniform material uniform_material;
 
 //Shadow
 uniform vec2 uniform_resolution;
-uniform sampler2D shadowMap;
+//uniform sampler2D shadowMap;
 
 vec3 CalcDirLight(DirLightDataGL light, vec3 normal, vec3 viewDir, vec3 shadowVal);
 vec3 CalcPointLight(PointLightDataGL light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 shadowVal);
@@ -186,7 +186,8 @@ vec3 CalcSpotLight(SpotLightDataGL light, vec3 normal, vec3 fragPos, vec3 viewDi
 
 vec3 FindShadowValue(vec2 resolution)
 {
-    vec2 uv = gl_FragCoord.xy / resolution.xy;
+/*    vec2 uv = gl_FragCoord.xy / resolution.xy;
     float value = texture(shadowMap, uv).r;
-    return (vec3(1.0 - value));
+    return (vec3(1.0 - value));*/
+    return (vec3(1.0));
 }

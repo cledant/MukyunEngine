@@ -66,6 +66,14 @@ class Engine
 		void render(void);
 
 		/*
+		 * Shadow Computation
+		 */
+
+		void computeDirectionalDepthMaps(void);
+		void computeOmniDepthMaps(void);
+		void computeSpotDirDepthMaps(void);
+
+		/*
 		 * Game Loop
 		 */
 
@@ -85,7 +93,7 @@ class Engine
 		IEntity *add_PointLight(PointLight::Params &params);
 		IEntity *add_DirectionalLight(DirectionalLight::Params &params);
 		IEntity *add_SpotLight(SpotLight::Params &params);
-		void add_RenderBin_To_ShadowRenderer(std::string const &str);
+//		void add_RenderBin_To_ShadowRenderer(std::string const &str);
 
 		/*
 		 * Getter
@@ -112,26 +120,27 @@ class Engine
 
 	private :
 
-		std::map<std::string, std::unique_ptr<ARenderBin>> _render_bin_list;
-		std::vector<std::unique_ptr<IEntity>>              _entity_list;
-		LightContainer                                     _light_container;
-		ShadowRenderer                                     _sr;
-		GLFW_Window const                                  &_window;
-		glm::mat4                                          _perspective;
-		Camera                                             _camera;
-		glm::mat4                                          _perspec_mult_view;
-		float                                              _fov;
-		float                                              _max_fps;
-		size_t                                             _max_frame_skip;
-		float                                              _tick;
-		float                                              _next_update_tick;
-		float                                              _last_update_tick;
-		float                                              _delta_tick;
-		size_t                                             _skip_loop;
-		glm::vec2                                          _near_far;
-		TextureShaderSurface                               _tss;
-		ImageFramebuffer                                   _final_image;
-		glm::vec2                                          _screen_res;
+		std::map<std::string, std::unique_ptr<ARenderBin>>          _render_bin_list;
+		std::vector<std::unique_ptr<IEntity>>                       _entity_list;
+		LightContainer                                              _light_container;
+		ShadowRenderer                                              _sr;
+		GLFW_Window const                                           &_window;
+		glm::mat4                                                   _perspective;
+		Camera                                                      _camera;
+		glm::mat4                                                   _perspec_mult_view;
+		float                                                       _fov;
+		float                                                       _max_fps;
+		size_t                                                      _max_frame_skip;
+		float                                                       _tick;
+		float                                                       _next_update_tick;
+		float                                                       _last_update_tick;
+		float                                                       _delta_tick;
+		size_t                                                      _skip_loop;
+		glm::vec2                                                   _near_far;
+		TextureShaderSurface                                        _tss;
+		ImageFramebuffer                                            _final_image;
+		glm::vec2                                                   _screen_res;
+		std::vector<std::pair<void (*const)(), AShadowRenderBin *>> _shadow_render_fct;
 };
 
 /*

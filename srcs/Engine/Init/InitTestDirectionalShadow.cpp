@@ -29,12 +29,12 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	//Setting Shadow Renderer params
 	ShadowRenderer::Params sr_params;
 	sr_params.dir_depth_map_shader       = &rm.getShader("ComputeDirLightDepthMap");
-	sr_params.dir_shadow_map_shader      = &rm.getShader("ComputeDirShadowMaps");
+//	sr_params.dir_shadow_map_shader      = &rm.getShader("ComputeDirShadowMaps");
 	sr_params.omni_depth_map_shader      = &rm.getShader("ComputeOmniDepthMap");
-	sr_params.omni_shadow_map_shader     = &rm.getShader("ComputeOmniShadowMaps");
+//	sr_params.omni_shadow_map_shader     = &rm.getShader("ComputeOmniShadowMaps");
 	sr_params.spot_dir_depth_map_shader  = &rm.getShader("ComputeDirLightDepthMap");
-	sr_params.spot_dir_shadow_map_shader = &rm.getShader("ComputeSpotLightShadowMaps");
-	sr_params.fuse_shadow_maps_shader    = &rm.getShader("DisplayImage");
+//	sr_params.spot_dir_shadow_map_shader = &rm.getShader("ComputeSpotLightShadowMaps");
+//	sr_params.fuse_shadow_maps_shader    = &rm.getShader("DisplayImage");
 	sr_params.win_w                      = manager.getWindow().cur_win_w;
 	sr_params.win_h                      = manager.getWindow().cur_win_h;
 	sr_params.dir_near_far               = glm::vec2(1.0f, 50.0f);
@@ -87,8 +87,8 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 												   ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
 
 	//Adding RenderBin to ShadowRenderer
-	(*world)->add_RenderBin_To_ShadowRenderer("LightBlueBoxRB");
-	(*world)->add_RenderBin_To_ShadowRenderer("TenshiPlaneRB");
+//	(*world)->add_RenderBin_To_ShadowRenderer("LightBlueBoxRB");
+//	(*world)->add_RenderBin_To_ShadowRenderer("TenshiPlaneRB");
 
 	//Creating Prop
 	Prop::Params prop_params;

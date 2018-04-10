@@ -16,6 +16,7 @@
 # include "OpenGL/RenderBin/ARenderBin.hpp"
 # include "OpenGL/Ressource/AFramebuffer.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
+# include "OpenGL/Shadow/ShadowRenderer.hpp"
 
 class AShadowRenderBin : public ARenderBin
 {
@@ -27,8 +28,8 @@ class AShadowRenderBin : public ARenderBin
 			virtual ~Params(void);
 
 			LightContainer const *lc;
+			ShadowRenderer const *_sr;
 			glm::vec3 const      *viewPos;
-			GLuint               tex_shadow_map;
 			int                  win_w;
 			int                  win_h;
 		};
@@ -50,11 +51,7 @@ class AShadowRenderBin : public ARenderBin
 		virtual void updateVBO(void);
 		virtual void flushData(void);
 
-		/*
-		 * Setter
-		 */
 
-		void setTexFusedShadowMap(GLuint id);
 
 		/*
 		 * Getter
@@ -67,17 +64,16 @@ class AShadowRenderBin : public ARenderBin
 		size_t getMaxInvModelMatricesNumber(void) const;
 		GLuint getVBOinvModelMatrices(void) const;
 		GLuint moveVBOinvModelMatrices(void);
-		GLuint getTexFusedShadowMap(void) const;
 		int getWinHeight(void) const;
 		int getWinWidth(void) const;
 
 	protected :
 
 		LightContainer const   *_lc;
+		ShadowRenderer const   *_sr;
 		glm::vec3 const        *_view_pos;
 		std::vector<glm::mat4> _inv_model_matrices;
 		GLuint                 _vbo_inv_model_matrices;
-		GLuint                 _tex_fused_shadow_map;
 		int                    _win_w;
 		int                    _win_h;
 
