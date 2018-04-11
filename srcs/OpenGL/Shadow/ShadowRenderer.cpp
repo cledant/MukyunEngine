@@ -20,8 +20,6 @@ ShadowRenderer::Params::Params(void)
 	this->lc                        = nullptr;
 	this->dir_near_far              = glm::vec2(1.0f, 30.0f);
 	this->omni_near_far             = glm::vec2(1.0f, 30.0f);
-	this->win_h                     = 720;
-	this->win_w                     = 1280;
 }
 
 ShadowRenderer::Params::~Params(void)
@@ -50,7 +48,7 @@ ShadowRenderer::ShadowRenderer(ShadowRenderer::Params const &params) :
 {
 	try
 	{
-		this->_allocate_memory(params.win_w, params.win_h);
+		this->_allocate_memory();
 	}
 	catch (std::exception &e)
 	{
@@ -284,7 +282,7 @@ void ShadowRenderer::update(void)
 	}
 }
 
-void ShadowRenderer::_allocate_memory(int w, int h)
+void ShadowRenderer::_allocate_memory(void)
 {
 	size_t max_dir_light   = this->_lc->getMaxDirLightNumber();
 	size_t max_spot_light  = this->_lc->getMaxSpotLightNumber();

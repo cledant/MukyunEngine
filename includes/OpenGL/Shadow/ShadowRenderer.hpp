@@ -37,8 +37,6 @@ class ShadowRenderer
 			LightContainer const *lc;
 			glm::vec2            dir_near_far;
 			glm::vec2            omni_near_far;
-			int                  win_h;
-			int                  win_w;
 		};
 
 		struct OmniProjMatrices
@@ -98,7 +96,7 @@ class ShadowRenderer
 
 	protected :
 
-		inline void _allocate_memory(int w, int h);
+		inline void _allocate_memory(void);
 
 		Shader                                     *_dir_depth_map_shader;
 		Shader                                     *_omni_depth_map_shader;

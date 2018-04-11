@@ -31,8 +31,6 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	sr_params.dir_depth_map_shader      = &rm.getShader("ComputeDirLightDepthMap");
 	sr_params.omni_depth_map_shader     = &rm.getShader("ComputeOmniDepthMap");
 	sr_params.spot_dir_depth_map_shader = &rm.getShader("ComputeDirLightDepthMap");
-	sr_params.win_w                     = manager.getWindow().cur_win_w;
-	sr_params.win_h                     = manager.getWindow().cur_win_h;
 	sr_params.omni_near_far             = glm::vec2(1.0f, 100.0f);
 
 	(*world) = new Engine(manager.getInput(), manager.getWindow(),
