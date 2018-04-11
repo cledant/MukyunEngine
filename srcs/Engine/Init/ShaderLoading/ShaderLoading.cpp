@@ -39,4 +39,7 @@ void ShaderLoading(RessourceManager &rm)
 	rm.add_shader("MultiPointDirSpotLightWithShadowMap",
 				  "./shaders/MultiPointDirSpotLightFusedWithShadowMap/MultiPointDirSpotLightFusedWithShadowMap_vs.glsl",
 				  "./shaders/MultiPointDirSpotLightFusedWithShadowMap/MultiPointDirSpotLightFusedWithShadowMap_fs.glsl");
+	rm.add_shader("MultiPointDirSpotLightWithShadowMapMultiPass",
+				  "./shaders/MultiPointDirSpotLightFusedWithShadowMapMultiPass/MultiPointDirSpotLightFusedWithShadowMapMultiPass_vs.glsl",
+				  "./shaders/MultiPointDirSpotLightFusedWithShadowMapMultiPass/MultiPointDirSpotLightFusedWithShadowMapMultiPass_fs.glsl");
 }
