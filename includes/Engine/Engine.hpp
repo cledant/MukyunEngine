@@ -93,7 +93,6 @@ class Engine
 		IEntity *add_PointLight(PointLight::Params &params);
 		IEntity *add_DirectionalLight(DirectionalLight::Params &params);
 		IEntity *add_SpotLight(SpotLight::Params &params);
-//		void add_RenderBin_To_ShadowRenderer(std::string const &str);
 
 		/*
 		 * Getter
