@@ -46,6 +46,21 @@ void MultiPointDirSpotLightShadowRenderBin::draw(void)
 	this->drawAmbient();
 }
 
+/*
+ * Type List :
+ *
+ * 		Omnidirectional = 0
+ * 		Directional = 1
+ *		Spot = 2
+ */
+
+/*
+ * Pass List :
+ *
+ * 		Ambient = 0
+ * 		Light = 1
+ */
+
 void MultiPointDirSpotLightShadowRenderBin::drawAmbient(void)
 {
 	size_t i = 0;
@@ -79,6 +94,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawAmbient(void)
 	glBindTexture(GL_TEXTURE_CUBE_MAP, this->_sr->getOmniDepthMaps()[0].get()->getTextureBuffer());
 	this->_shader->setVec3("viewPos", *(this->_view_pos));
 	this->_shader->setInt("index", 0);
+	this->_shader->setFloat("uniform_farPlane", this->_sr->getOmniNearFar().y);
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 	{
 		glActiveTexture(GL_TEXTURE0);
@@ -107,18 +123,21 @@ void MultiPointDirSpotLightShadowRenderBin::drawAmbient(void)
 
 void MultiPointDirSpotLightShadowRenderBin::drawLight(void)
 {
-	size_t i = 0;
-
 	if (this->_shader == nullptr || this->_perspec_mult_view == nullptr ||
 		this->_model == nullptr || this->_view_pos == nullptr)
 	{
-		std::cout << "Can't Render Light MultiLightPointDirSpotLight" << std::endl;
+		std::cout << "Can't Render Ambient MultiLightPointDirSpotLight" << std::endl;
 		return;
 	}
+	//Setting blending
+	glDepthFunc(GL_EQUAL);
+	glBlendEquation(GL_FUNC_ADD);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+	//Setting shader value
 	this->_shader->use();
-	this->_shader->setVec2("uniform_resolution", glm::vec2(this->_win_w, this->_win_h));
+	this->_shader->setInt("pass_type", 1);
 	this->_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
-	this->_shader->setVec3("viewPos", *(this->_view_pos));
 	this->_shader->setUbo("uniform_PointLight", 0, this->_lc->getUboPointLight(),
 						  sizeof(LightContainer::PointLightDataGL) * this->_lc->getMaxPointLightNumber());
 	this->_shader->setUbo("uniform_DirLight", 1, this->_lc->getUboDirLight(),
@@ -128,6 +147,18 @@ void MultiPointDirSpotLightShadowRenderBin::drawLight(void)
 	this->_shader->setInt("nb_point_light", this->_lc->getCurrentPointLightNumber());
 	this->_shader->setInt("nb_dir_light", this->_lc->getCurrentDirLightNumber());
 	this->_shader->setInt("nb_spot_light", this->_lc->getCurrentSpotLightNumber());
+	this->_shader->setVec3("viewPos", *(this->_view_pos));
+	this->_shader->setFloat("uniform_farPlane", this->_sr->getOmniNearFar().y);
+	this->_shader->setMat4("uniform_lightSpaceMatrix", *(this->_perspec_mult_view));
+	//useless
+	glActiveTexture(GL_TEXTURE2);
+	this->_shader->setInt("depth2D", 2);
+	glBindTexture(GL_TEXTURE_2D, this->_sr->getDirDepthMaps()[0].get()->getTextureBuffer());
+	glActiveTexture(GL_TEXTURE3);
+	this->_shader->setInt("depthCube", 3);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, this->_sr->getOmniDepthMaps()[0].get()->getTextureBuffer());
+	size_t i = 0;
+
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 	{
 		glActiveTexture(GL_TEXTURE0);
@@ -136,9 +167,6 @@ void MultiPointDirSpotLightShadowRenderBin::drawLight(void)
 		glActiveTexture(GL_TEXTURE1);
 		this->_shader->setInt("uniform_material.tex_specular", 1);
 		glBindTexture(GL_TEXTURE_2D, (this->_model->getMeshList())[i].getMaterial().specularMap);
-/*		glActiveTexture(GL_TEXTURE2);
-		this->_shader->setInt("shadowMap", 2);
-		glBindTexture(GL_TEXTURE_2D, this->_tex_fused_shadow_map);*/
 		this->_shader->setFloat("uniform_material.shininess",
 								(this->_model->getMeshList())[i].getMaterial().shininess);
 		this->_shader->setVec3("uniform_material.mat_ambient",
@@ -149,12 +177,47 @@ void MultiPointDirSpotLightShadowRenderBin::drawLight(void)
 							   (this->_model->getMeshList())[i].getMaterial().specular);
 		glBindVertexArray(this->_vao_mesh[i]);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glDrawArraysInstanced(GL_TRIANGLES, 0,
-							  (this->_model->getMeshList())[i].getNbVertices(),
-							  this->_model_matrices.size());
+		//Directional Light
+		this->_shader->setInt("light_type", 1);
+		for (size_t j = 0; j < this->_lc->getCurrentDirLightNumber(); ++j)
+		{
+			this->_shader->setInt("index", j);
+			glActiveTexture(GL_TEXTURE2);
+			this->_shader->setInt("depth2D", 2);
+			glBindTexture(GL_TEXTURE_2D, this->_sr->getDirDepthMaps()[j].get()->getTextureBuffer());
+			glDrawArraysInstanced(GL_TRIANGLES, 0,
+								  (this->_model->getMeshList())[i].getNbVertices(),
+								  this->_model_matrices.size());
+		}
+		//OmniDirectional Light
+		this->_shader->setInt("light_type", 0);
+		for (size_t j = 0; j < this->_lc->getCurrentPointLightNumber(); ++j)
+		{
+			this->_shader->setInt("index", j);
+			glActiveTexture(GL_TEXTURE3);
+			this->_shader->setInt("depthCube", 3);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, this->_sr->getOmniDepthMaps()[j].get()->getTextureBuffer());
+			glDrawArraysInstanced(GL_TRIANGLES, 0,
+								  (this->_model->getMeshList())[i].getNbVertices(),
+								  this->_model_matrices.size());
+		}
+		//Spot Light
+		this->_shader->setInt("light_type", 2);
+		for (size_t j = 0; j < this->_lc->getCurrentSpotLightNumber(); ++j)
+		{
+			this->_shader->setInt("index", j);
+			glActiveTexture(GL_TEXTURE2);
+			this->_shader->setInt("depth2D", 2);
+			glBindTexture(GL_TEXTURE_2D, this->_sr->getSpotDirDepthMaps()[j].get()->getTextureBuffer());
+			glDrawArraysInstanced(GL_TRIANGLES, 0,
+								  (this->_model->getMeshList())[i].getNbVertices(),
+								  this->_model_matrices.size());
+		}
 		glBindVertexArray(0);
 		i++;
 	}
+	glDepthFunc(GL_LESS);
+	glDisable(GL_BLEND);
 }
 
 void MultiPointDirSpotLightShadowRenderBin::drawNoShader(void) const

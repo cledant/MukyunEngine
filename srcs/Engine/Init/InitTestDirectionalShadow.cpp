@@ -28,16 +28,12 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 {
 	//Setting Shadow Renderer params
 	ShadowRenderer::Params sr_params;
-	sr_params.dir_depth_map_shader       = &rm.getShader("ComputeDirLightDepthMap");
-//	sr_params.dir_shadow_map_shader      = &rm.getShader("ComputeDirShadowMaps");
-	sr_params.omni_depth_map_shader      = &rm.getShader("ComputeOmniDepthMap");
-//	sr_params.omni_shadow_map_shader     = &rm.getShader("ComputeOmniShadowMaps");
-	sr_params.spot_dir_depth_map_shader  = &rm.getShader("ComputeDirLightDepthMap");
-//	sr_params.spot_dir_shadow_map_shader = &rm.getShader("ComputeSpotLightShadowMaps");
-//	sr_params.fuse_shadow_maps_shader    = &rm.getShader("DisplayImage");
-	sr_params.win_w                      = manager.getWindow().cur_win_w;
-	sr_params.win_h                      = manager.getWindow().cur_win_h;
-	sr_params.dir_near_far               = glm::vec2(1.0f, 50.0f);
+	sr_params.dir_depth_map_shader      = &rm.getShader("ComputeDirLightDepthMap");
+	sr_params.omni_depth_map_shader     = &rm.getShader("ComputeOmniDepthMap");
+	sr_params.spot_dir_depth_map_shader = &rm.getShader("ComputeDirLightDepthMap");
+	sr_params.win_w                     = manager.getWindow().cur_win_w;
+	sr_params.win_h                     = manager.getWindow().cur_win_h;
+	sr_params.dir_near_far              = glm::vec2(1.0f, 50.0f);
 
 	(*world) = new Engine(manager.getInput(), manager.getWindow(),
 						  glm::vec3(0.0f, 0.0f, 10.0f),
@@ -72,23 +68,19 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating RenderBin for Light that uses LightContainer
 	AShadowRenderBin::Params rb_light;
-	rb_light.shader       = &rm.getShader("MultiPointDirSpotLightWithShadowMap");
+	rb_light.shader       = &rm.getShader("MultiPointDirSpotLightWithShadowMapMultiPass");
 	rb_light.model        = &rm.getModel("BlueBox");
 	rb_light.win_h        = manager.getWindow().cur_win_h;
 	rb_light.win_w        = manager.getWindow().cur_win_w;
 	rb_light.max_instance = 100000;
-	ARenderBin *rb_box = (*world)->add_RenderBin("LightBlueBoxRB", rb_light,
-												 ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
+	ARenderBin *rb_box = (*world)->add_ShadowRenderBin("LightBlueBoxRB", rb_light,
+													   ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
 
-	rb_light.shader       = &rm.getShader("MultiPointDirSpotLightWithShadowMap");
+	rb_light.shader       = &rm.getShader("MultiPointDirSpotLightWithShadowMapMultiPass");
 	rb_light.model        = &rm.getModel("TenshiPlane");
 	rb_light.max_instance = 100000;
-	ARenderBin *rb_plane = (*world)->add_RenderBin("TenshiPlaneRB", rb_light,
-												   ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
-
-	//Adding RenderBin to ShadowRenderer
-//	(*world)->add_RenderBin_To_ShadowRenderer("LightBlueBoxRB");
-//	(*world)->add_RenderBin_To_ShadowRenderer("TenshiPlaneRB");
+	ARenderBin *rb_plane = (*world)->add_ShadowRenderBin("TenshiPlaneRB", rb_light,
+														 ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
 
 	//Creating Prop
 	Prop::Params prop_params;

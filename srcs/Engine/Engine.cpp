@@ -139,8 +139,8 @@ void Engine::render(void)
 	//Shadow Rendering
 	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
 		it->second.get()->drawAmbient();
-//	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
-//		it->second.get()->drawLight();
+	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
+		it->second.get()->drawLight();
 
 	//No Shadow Rendering
 	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
