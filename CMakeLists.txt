@@ -73,7 +73,7 @@ set(SOURCE_FILES
 		srcs/OpenGL/Ressource/AFramebuffer_Based/DirectionalDepthMap.cpp
 		srcs/OpenGL/RenderBin/ARenderBin_Based/AShadowRenderBin.cpp
 		srcs/OpenGL/Shadow/ShadowRenderer.cpp
-		srcs/OpenGL/RenderBin/AShadowRenderBin_Based/MultiDirLightShadowRenderBin.cpp
+		srcs/OpenGL/RenderBin/AShadowRenderBin_Based/MultiPointDirLightShadowRenderBin.cpp
 		srcs/UI/ShaderSurface/ShaderSurface.cpp
 		srcs/UI/ShaderSurface/TextureShaderBuffer.cpp
 		srcs/OpenGL/Ressource/AFramebuffer_Based/OmnidirectionalDepthMap.cpp

@@ -27,15 +27,11 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 {
 	//Setting Shadow Renderer params
 	ShadowRenderer::Params sr_params;
-	sr_params.dir_depth_map_shader       = &rm.getShader("ComputeDirLightDepthMap");
-//	sr_params.dir_shadow_map_shader      = &rm.getShader("ComputeDirShadowMaps");
-	sr_params.omni_depth_map_shader      = &rm.getShader("ComputeOmniDepthMap");
-//	sr_params.omni_shadow_map_shader     = &rm.getShader("ComputeOmniShadowMaps");
-	sr_params.spot_dir_depth_map_shader  = &rm.getShader("ComputeDirLightDepthMap");
-//	sr_params.spot_dir_shadow_map_shader = &rm.getShader("ComputeSpotLightShadowMaps");
-//	sr_params.fuse_shadow_maps_shader    = &rm.getShader("DisplayImage");
-	sr_params.win_w                      = manager.getWindow().cur_win_w;
-	sr_params.win_h                      = manager.getWindow().cur_win_h;
+	sr_params.dir_depth_map_shader      = &rm.getShader("ComputeDirLightDepthMap");
+	sr_params.omni_depth_map_shader     = &rm.getShader("ComputeOmniDepthMap");
+	sr_params.spot_dir_depth_map_shader = &rm.getShader("ComputeDirLightDepthMap");
+	sr_params.win_w                     = manager.getWindow().cur_win_w;
+	sr_params.win_h                     = manager.getWindow().cur_win_h;
 
 	(*world) = new Engine(manager.getInput(), manager.getWindow(),
 						  glm::vec3(0.0f, 0.0f, 10.0f),

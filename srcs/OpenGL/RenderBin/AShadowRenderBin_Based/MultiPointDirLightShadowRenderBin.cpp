@@ -84,7 +84,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawAmbient(void)
 	this->_shader->setInt("nb_point_light", this->_lc->getCurrentPointLightNumber());
 	this->_shader->setInt("nb_dir_light", this->_lc->getCurrentDirLightNumber());
 	this->_shader->setInt("nb_spot_light", this->_lc->getCurrentSpotLightNumber());
-	//useless
+	//useless but required
 	this->_shader->setMat4("uniform_lightSpaceMatrix", *(this->_perspec_mult_view));
 	glActiveTexture(GL_TEXTURE2);
 	this->_shader->setInt("depth2D", 2);
@@ -95,6 +95,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawAmbient(void)
 	this->_shader->setVec3("viewPos", *(this->_view_pos));
 	this->_shader->setInt("index", 0);
 	this->_shader->setFloat("uniform_farPlane", this->_sr->getOmniNearFar().y);
+	//Render Loop
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 	{
 		glActiveTexture(GL_TEXTURE0);
@@ -123,6 +124,8 @@ void MultiPointDirSpotLightShadowRenderBin::drawAmbient(void)
 
 void MultiPointDirSpotLightShadowRenderBin::drawLight(void)
 {
+	size_t i = 0;
+
 	if (this->_shader == nullptr || this->_perspec_mult_view == nullptr ||
 		this->_model == nullptr || this->_view_pos == nullptr)
 	{
@@ -149,16 +152,14 @@ void MultiPointDirSpotLightShadowRenderBin::drawLight(void)
 	this->_shader->setInt("nb_spot_light", this->_lc->getCurrentSpotLightNumber());
 	this->_shader->setVec3("viewPos", *(this->_view_pos));
 	this->_shader->setFloat("uniform_farPlane", this->_sr->getOmniNearFar().y);
-	this->_shader->setMat4("uniform_lightSpaceMatrix", *(this->_perspec_mult_view));
-	//useless
+	//useless but required
 	glActiveTexture(GL_TEXTURE2);
 	this->_shader->setInt("depth2D", 2);
 	glBindTexture(GL_TEXTURE_2D, this->_sr->getDirDepthMaps()[0].get()->getTextureBuffer());
 	glActiveTexture(GL_TEXTURE3);
 	this->_shader->setInt("depthCube", 3);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, this->_sr->getOmniDepthMaps()[0].get()->getTextureBuffer());
-	size_t i = 0;
-
+	//Render Loop
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
 	{
 		glActiveTexture(GL_TEXTURE0);
@@ -181,6 +182,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawLight(void)
 		this->_shader->setInt("light_type", 1);
 		for (size_t j = 0; j < this->_lc->getCurrentDirLightNumber(); ++j)
 		{
+			this->_shader->setMat4("uniform_lightSpaceMatrix", this->_sr->getVecDirLightSpaceMatrix()[j]);
 			this->_shader->setInt("index", j);
 			glActiveTexture(GL_TEXTURE2);
 			this->_shader->setInt("depth2D", 2);
@@ -205,6 +207,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawLight(void)
 		this->_shader->setInt("light_type", 2);
 		for (size_t j = 0; j < this->_lc->getCurrentSpotLightNumber(); ++j)
 		{
+			this->_shader->setMat4("uniform_lightSpaceMatrix", this->_sr->getVecSpotDirLightSpaceMatrix()[j]);
 			this->_shader->setInt("index", j);
 			glActiveTexture(GL_TEXTURE2);
 			this->_shader->setInt("depth2D", 2);

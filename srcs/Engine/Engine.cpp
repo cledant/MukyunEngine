@@ -39,14 +39,8 @@ Engine::Engine(Input const &input, GLFW_Window const &win,
 	//Can't be initialized before because of nullptr for light container params
 	ShadowRenderer::Params sr_params_cpy = sr_params;
 	sr_params_cpy.lc = &this->_light_container;
-//	sr_params_cpy.perspec_mult_view = &this->_perspec_mult_view;
-//	sr_params_cpy.viewPos           = &this->_camera.getPos();
 	this->_sr        = ShadowRenderer(sr_params_cpy);
 	this->_tss.setTextureID(this->_final_image.getTextureBuffer());
-
-	//Debug
-//	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::DIR_DEPTH_MAP, 0));
-//	this->_tss.setTextureID(this->_sr.getFramebufferTexID(ShadowRenderer::eType::TOTAL_SHADOW_MAP, 0));
 }
 
 Engine::~Engine(void)
@@ -77,9 +71,7 @@ void Engine::startGameLoop(Glfw_manager &manager)
 			this->computeDirectionalDepthMaps();
 			this->computeOmniDepthMaps();
 			this->computeSpotDirDepthMaps();
-			//Compute and fuse shadowmaps
-//			this->_sr.computeAllShadowMaps(true);
-			//Compute diffuse
+			//Compute final image
 			this->_final_image.useFramebuffer();
 			this->_final_image.setViewport();
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -288,15 +280,7 @@ IEntity *Engine::add_SpotLight(SpotLight::Params &params)
 {
 	return (this->_light_container.addLightInstance(params));
 }
-/*
-void Engine::add_RenderBin_To_ShadowRenderer(std::string const &str)
-{
-	auto it = this->_render_bin_list.find(str);
 
-	if (it != this->_render_bin_list.end())
-		this->_sr.addRenderBufferToList(dynamic_cast<AShadowRenderBin *>(it->second.get()));
-}
-*/
 /*
  * Getter
  */
