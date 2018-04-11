@@ -31,6 +31,8 @@ class MultiPointDirSpotLightShadowRenderBin : public AShadowRenderBin
 		 */
 
 		virtual void draw(void);
+		virtual void drawAmbient(void);
+		virtual void drawLight(void);
 		virtual void drawNoShader(void) const;
 };
 

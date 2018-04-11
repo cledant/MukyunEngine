@@ -114,6 +114,8 @@ void Engine::update(void)
 	this->_light_container.flushData();
 	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
 		it->second.get()->flushData();
+	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
+		it->second.get()->flushData();
 	this->_light_container.update(this->_tick);
 	this->_sr.update();
 	for (auto it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
@@ -127,11 +129,20 @@ void Engine::updateGPU(void)
 {
 	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
 		it->second.get()->updateVBO();
+	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
+		it->second.get()->updateVBO();
 	this->_light_container.updateGPU();
 }
 
 void Engine::render(void)
 {
+	//Shadow Rendering
+	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
+		it->second.get()->drawAmbient();
+//	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
+//		it->second.get()->drawLight();
+
+	//No Shadow Rendering
 	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
 		it->second.get()->draw();
 }
@@ -153,11 +164,8 @@ void Engine::computeDirectionalDepthMaps(void)
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
 		shader->setMat4("uniform_lightSpaceMatrix", (this->_sr.getVecDirLightSpaceMatrix())[i]);
-		for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
-		{
-			if (dynamic_cast<AShadowRenderBin *>(it->second.get()))
-				dynamic_cast<AShadowRenderBin *>(it->second.get())->drawNoShader();
-		}
+		for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
+			it->second.get()->drawNoShader();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glCullFace(GL_BACK);
@@ -182,11 +190,8 @@ void Engine::computeOmniDepthMaps(void)
 			shader->setMat4(name, (this->_sr.getVecOmniLightSpaceMatrix())[i].mat[k]);
 		}
 		shader->setVec3("uniform_lightPos", glm::vec3(this->_light_container.getPointLightDataGL()[i].pos));
-		for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
-		{
-			if (dynamic_cast<AShadowRenderBin *>(it->second.get()))
-				dynamic_cast<AShadowRenderBin *>(it->second.get())->drawNoShader();
-		}
+		for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
+			it->second.get()->drawNoShader();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glCullFace(GL_BACK);
@@ -205,11 +210,8 @@ void Engine::computeSpotDirDepthMaps(void)
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
 		shader->setMat4("uniform_lightSpaceMatrix", this->_sr.getVecSpotDirLightSpaceMatrix()[i]);
-		for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
-		{
-			if (dynamic_cast<AShadowRenderBin *>(it->second.get()))
-				dynamic_cast<AShadowRenderBin *>(it->second.get())->drawNoShader();
-		}
+		for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
+			it->second.get()->drawNoShader();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glCullFace(GL_BACK);
@@ -250,17 +252,18 @@ ARenderBin *Engine::add_RenderBin(std::string const &name,
 	return (nullptr);
 }
 
-ARenderBin *Engine::add_RenderBin(std::string const &name,
-								  AShadowRenderBin::Params &params,
-								  ARenderBin::eType type)
+ARenderBin *Engine::add_ShadowRenderBin(std::string const &name,
+										AShadowRenderBin::Params &params,
+										ARenderBin::eType type)
 {
 	params.perspec_mult_view = &this->_perspec_mult_view;
 	params.lc                = &this->_light_container;
+	params.sr                = &this->_sr;
 	params.viewPos           = &this->_camera.getPos();
 	if (type == ARenderBin::eType::MULTIDIRLIGHT_SHADOW)
 	{
-		this->_render_bin_list[name] = std::make_unique<MultiPointDirSpotLightShadowRenderBin>(params);
-		return (this->_render_bin_list[name].get());
+		this->_shadow_render_bin_list[name] = std::make_unique<MultiPointDirSpotLightShadowRenderBin>(params);
+		return (this->_shadow_render_bin_list[name].get());
 	}
 	return (nullptr);
 }

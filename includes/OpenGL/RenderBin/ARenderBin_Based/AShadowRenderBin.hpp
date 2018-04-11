@@ -28,7 +28,7 @@ class AShadowRenderBin : public ARenderBin
 			virtual ~Params(void);
 
 			LightContainer const *lc;
-			ShadowRenderer const *_sr;
+			ShadowRenderer const *sr;
 			glm::vec3 const      *viewPos;
 			int                  win_w;
 			int                  win_h;
@@ -47,10 +47,11 @@ class AShadowRenderBin : public ARenderBin
 		 */
 
 		virtual void draw(void) = 0;
+		virtual void drawAmbient(void) = 0;
+		virtual void drawLight(void) = 0;
 		virtual void drawNoShader(void) const = 0;
 		virtual void updateVBO(void);
 		virtual void flushData(void);
-
 
 		/*
 		 * Getter

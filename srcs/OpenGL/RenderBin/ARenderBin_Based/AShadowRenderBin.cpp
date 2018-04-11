@@ -25,13 +25,13 @@ AShadowRenderBin::Params::~Params(void)
 }
 
 AShadowRenderBin::AShadowRenderBin(void) :
-		ARenderBin(), _lc(nullptr), _view_pos(nullptr), _vbo_inv_model_matrices(0),
-		_win_w(1280), _win_h(720)
+		ARenderBin(), _lc(nullptr), _sr(nullptr), _view_pos(nullptr),
+		_vbo_inv_model_matrices(0), _win_w(1280), _win_h(720)
 {
 }
 
 AShadowRenderBin::AShadowRenderBin(AShadowRenderBin::Params const &params) :
-		ARenderBin(params), _lc(params.lc), _view_pos(params.viewPos),
+		ARenderBin(params), _lc(params.lc), _sr(params.sr), _view_pos(params.viewPos),
 		_vbo_inv_model_matrices(0), _win_w(params.win_w), _win_h(params.win_h)
 {
 	try
@@ -57,8 +57,8 @@ AShadowRenderBin::~AShadowRenderBin(void)
 }
 
 AShadowRenderBin::AShadowRenderBin(AShadowRenderBin &&src) :
-		ARenderBin(std::move(src)), _lc(nullptr), _view_pos(nullptr),
-		_vbo_inv_model_matrices(0)
+		ARenderBin(std::move(src)), _lc(nullptr), _sr(nullptr),
+		_view_pos(nullptr), _vbo_inv_model_matrices(0)
 {
 	*this = std::move(src);
 }

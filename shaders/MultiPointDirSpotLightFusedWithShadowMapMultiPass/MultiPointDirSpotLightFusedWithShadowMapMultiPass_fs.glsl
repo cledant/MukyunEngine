@@ -8,7 +8,7 @@
 //In Out
 out vec4 FragColor;
 
-in FS_IN
+in VS_OUT
 {
     vec3 FragPos;
     vec3 Normal;
