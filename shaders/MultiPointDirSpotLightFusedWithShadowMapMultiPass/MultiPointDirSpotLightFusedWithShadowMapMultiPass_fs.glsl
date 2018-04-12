@@ -1,9 +1,5 @@
 #version 410 core
 
-//Shadow defines
-#define SHADOW_ACCENTUATION 0.2
-#define OMNI_SHADOW_ACCENTUATION 0.6
-
 //Light defines
 #define NB_MAX_DIR_LIGHT 10
 #define NB_MAX_POINT_LIGHT 10
@@ -308,7 +304,7 @@ float DirectionalShadowValue(vec4 fragPosLightSpace, vec3 lightPos)
         {
             float pcfDepth = texture(depth2D, projCoords.xy + vec2(x, y) * texelSize).r;
             // check whether current frag pos is in shadow
-            shadow += currentDepth - bias > pcfDepth  ? 1.0 - (closestDepth - SHADOW_ACCENTUATION) : 0.0;
+            shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;
         }
     }
     shadow /= 9.0;
@@ -352,7 +348,7 @@ float OmniDirectionalShadowValue(vec4 fragPosLightSpace, vec3 lightPos)
         float closestDepth = texture(depthCube, fragToLight + gridSamplingDisk[i] * diskRadius).r;
         float unmapped_closestDepth = closestDepth * uniform_farPlane;   // undo mapping [0;1]
         if (currentDepth - bias > unmapped_closestDepth)
-            shadow += currentDepth / uniform_farPlane + OMNI_SHADOW_ACCENTUATION;
+            shadow += 1.0;
     }
     shadow /= float(samples);
     return (1.0 - shadow);

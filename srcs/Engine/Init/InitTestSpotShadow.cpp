@@ -57,15 +57,21 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	params_dir.dir               = glm::vec3(0.0f, -1.0f, 0.0f);
 	params_dir.cutoff            = glm::vec2(20.0f, 15.0f);
 	params_dir.attenuation_coeff = glm::vec3(1.0f, 0.007f, 0.0002f);
-	params_dir.draw_model        = false;
+	params_dir.draw_model        = true;
 	(*world)->add_SpotLight(params_dir);
 
 	params_dir.model_rb          = light_color;
 	params_dir.pos               = glm::vec3(-8.0f, 4.0f, -8.0f);
 	params_dir.dir               = glm::vec3(1.0f, -1.0f, 1.0f);
 	params_dir.cutoff            = glm::vec2(20.0f, 15.0f);
-	params_dir.attenuation_coeff = glm::vec3(1.0f, 0.007f, 0.0002f);
-	params_dir.draw_model        = false;
+	params_dir.draw_model        = true;
+	(*world)->add_SpotLight(params_dir);
+
+	params_dir.model_rb          = light_color;
+	params_dir.pos               = glm::vec3(10.0f, 4.0f, -10.0f);
+	params_dir.dir               = glm::vec3(-1.0f, -1.0f, 1.0f);
+	params_dir.cutoff            = glm::vec2(30.0f, 15.0f);
+	params_dir.draw_model        = true;
 	(*world)->add_SpotLight(params_dir);
 
 	//Creating RenderBin for Light that uses LightContainer
@@ -89,7 +95,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	prop_params.render_bin  = rb_box;
 	prop_params.orientation = glm::vec3(45.0f);
 	prop_params.scale       = glm::vec3(0.5f);
-	prop_params.pos         = glm::vec3(0.0f, 4.0f, 1.0f);
+	prop_params.pos         = glm::vec3(7.0f, 1.0f, -6.0f);
 	(*world)->add_Prop(prop_params);
 
 	prop_params.orientation = glm::vec3(0.0f);
