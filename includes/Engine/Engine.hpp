@@ -142,20 +142,4 @@ class Engine
 		glm::vec2                                                _screen_res;
 };
 
-/*
- * Engine Initializations
- */
-
-void InitRunTestInstancing(Glfw_manager &manager);
-void InitRunTestMultiLight(Glfw_manager &manager);
-void InitRunTestDirectionalShadow(Glfw_manager &manager, glm::uvec2 const &res);
-void InitRunTestOmniShadow(Glfw_manager &manager, glm::uvec2 const &res);
-void InitRunTestSpotShadow(Glfw_manager &manager, glm::uvec2 const &res);
-
-/*
- * Shader loading
- */
-
-void ShaderLoading(RessourceManager &rm);
-
 #endif

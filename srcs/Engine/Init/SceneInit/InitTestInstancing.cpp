@@ -12,6 +12,7 @@
 
 #include "OpenGL/RessourceManager.hpp"
 #include "Engine/Engine.hpp"
+#include "Engine/Init/EngineInit.hpp"
 
 static void init_ressources(RessourceManager &rm)
 {
@@ -26,9 +27,9 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 {
 	//Setting Shadow Renderer params
 	ShadowRenderer::Params sr_params;
-	sr_params.dir_depth_map_shader       = &rm.getShader("ComputeDirLightDepthMap");
-	sr_params.omni_depth_map_shader      = &rm.getShader("ComputeOmniDepthMap");
-	sr_params.spot_dir_depth_map_shader  = &rm.getShader("ComputeDirLightDepthMap");
+	sr_params.dir_depth_map_shader      = &rm.getShader("ComputeDirLightDepthMap");
+	sr_params.omni_depth_map_shader     = &rm.getShader("ComputeOmniDepthMap");
+	sr_params.spot_dir_depth_map_shader = &rm.getShader("ComputeDirLightDepthMap");
 
 	(*world) = new Engine(manager.getInput(), manager.getWindow(),
 						  glm::vec3(0.0f, 0.0f, 10.0f),
@@ -58,9 +59,10 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 }
 
-static void init_program(Engine **world, RessourceManager &rm, Glfw_manager &manager)
+static void init_program(Engine **world, RessourceManager &rm,
+						 Glfw_manager &manager, glm::uvec2 res)
 {
-	manager.create_window("TestInstancing", 4, 1, 1280, 720, true);
+	manager.create_window("TestInstancing", 4, 1, res.x, res.y, false);
 	manager.displayGpuInfo();
 	manager.init_input_callback();
 	ShaderLoading(rm);
@@ -68,7 +70,7 @@ static void init_program(Engine **world, RessourceManager &rm, Glfw_manager &man
 	load_test_level(manager, rm, world);
 }
 
-void InitRunTestInstancing(Glfw_manager &manager)
+void InitRunTestInstancing(Glfw_manager &manager, InitValue const &arg)
 {
 
 	RessourceManager rm;
@@ -76,7 +78,7 @@ void InitRunTestInstancing(Glfw_manager &manager)
 
 	try
 	{
-		init_program(&world, rm, manager);
+		init_program(&world, rm, manager, glm::uvec2(arg.res_w, arg.res_h));
 	}
 	catch (std::exception &e)
 	{

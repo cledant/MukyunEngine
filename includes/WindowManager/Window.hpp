@@ -15,9 +15,9 @@
 
 # include "glfw3.h"
 
-# define MAX_WIN_W    2560
-# define MAX_WIN_H    1440
-# define MIN_WIN_W    680
+# define MAX_WIN_W    3840
+# define MAX_WIN_H    2160
+# define MIN_WIN_W    640
 # define MIN_WIN_H    480
 
 struct GLFW_Window

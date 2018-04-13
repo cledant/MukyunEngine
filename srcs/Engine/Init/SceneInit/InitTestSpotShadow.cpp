@@ -12,6 +12,7 @@
 
 #include "OpenGL/RessourceManager.hpp"
 #include "Engine/Engine.hpp"
+#include "Engine/Init/EngineInit.hpp"
 
 static void init_ressources(RessourceManager &rm)
 {
@@ -123,14 +124,14 @@ static void init_program(Engine **world, RessourceManager &rm,
 	load_test_level(manager, rm, world);
 }
 
-void InitRunTestSpotShadow(Glfw_manager &manager, glm::uvec2 const &res)
+void InitRunTestSpotShadow(Glfw_manager &manager, InitValue const &arg)
 {
 	RessourceManager rm;
 	Engine           *world = nullptr;
 
 	try
 	{
-		init_program(&world, rm, manager, res);
+		init_program(&world, rm, manager, glm::uvec2(arg.res_w, arg.res_h));
 	}
 	catch (std::exception &e)
 	{
