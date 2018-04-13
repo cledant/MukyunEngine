@@ -67,7 +67,12 @@ void Engine::startGameLoop(Glfw_manager &manager)
 			manager.calculate_fps();
 			manager.update_title_fps();
 			this->updateGPU();
-			//Compute depth maps
+			/*
+			 * Compute depth maps :
+			 *
+			 * 		Will compute depthmap if ShadowRenderList
+			 * 		contains a renderer
+			 */
 			this->computeDirectionalDepthMaps();
 			this->computeOmniDepthMaps();
 			this->computeSpotDirDepthMaps();
