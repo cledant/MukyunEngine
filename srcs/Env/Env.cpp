@@ -132,7 +132,7 @@ bool Env::_parse_scene_type(std::string const &arg)
 bool Env::_parse_resolution(std::string const &arg)
 {
 	static bool already_parsed = false;
-	std::regex  rule           = std::regex("\\^--res=\\d+x\\d+");
+	std::regex  rule           = std::regex("^--res=\\d+x\\d+");
 	std::string width;
 	std::string height;
 	size_t      pos            = 0;
@@ -184,7 +184,7 @@ bool Env::_parse_fullscreen(std::string const &arg)
 bool Env::_parse_fullscreen_monitor(std::string const &arg)
 {
 	static bool already_parsed = false;
-	std::regex  rule           = std::regex("\\^--fullscreen_monitor=\\d+");
+	std::regex  rule           = std::regex("^--fullscreen_monitor=\\d+");
 	std::string monitor;
 
 	if (already_parsed)
