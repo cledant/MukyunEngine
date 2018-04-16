@@ -47,12 +47,26 @@ class Engine
 {
 	public :
 
-		Engine(Input const &input, GLFW_Window const &win,
-			   glm::vec3 const &cam_pos, glm::vec2 const &near_far,
-			   float max_fps, size_t max_frame_skip,
-			   LightContainer::Params const &lc_params,
-			   ShadowRenderer::Params const &sr_params,
-			   RessourceManager &rm);
+		struct EngineInitParams
+		{
+			EngineInitParams();
+			virtual ~EngineInitParams();
+
+			Input const            *input;
+			GLFW_Window const      *win;
+			glm::vec3              cam_pos;
+			glm::vec2              near_far;
+			float                  max_fps;
+			size_t                 max_frame_skip;
+			LightContainer::Params lc_params;
+			ShadowRenderer::Params sr_params;
+			Shader                 *display_shader;
+			int                    init_w;
+			int                    init_h;
+			int                    monitor;
+		};
+
+		Engine(EngineInitParams const &params);
 		virtual ~Engine(void);
 		Engine(Engine const &src) = delete;
 		Engine &operator=(Engine const &rhs) = delete;
@@ -104,6 +118,7 @@ class Engine
 		 * Other
 		 */
 
+		void toggleScreenMode(void);
 		void updatePerspective(float fov);
 		void reset_update_timer(float time);
 		bool should_be_updated(float time);
@@ -139,7 +154,9 @@ class Engine
 		glm::vec2                                                _near_far;
 		TextureShaderSurface                                     _tss;
 		ImageFramebuffer                                         _final_image;
-		glm::vec2                                                _screen_res;
+		int                                                      _init_h;
+		int                                                      _init_w;
+		int                                                      _monitor;
 };
 
 #endif

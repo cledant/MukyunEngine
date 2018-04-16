@@ -26,6 +26,8 @@ class OmnidirectionalDepthMap : public AFramebuffer
 		OmnidirectionalDepthMap(OmnidirectionalDepthMap &&src);
 		OmnidirectionalDepthMap &operator=(OmnidirectionalDepthMap &&rhs);
 
+		virtual void reallocateFBO(int h, int w);
+
 		class InitException : public GeneralException
 		{
 			public :

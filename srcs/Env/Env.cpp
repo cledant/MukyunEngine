@@ -36,7 +36,9 @@ void Env::parse_args(int argc, char **argv)
 		if (parse)
 			parse = this->_parse_fullscreen(std::string(argv[i]));
 		if (parse)
-			this->_parse_fullscreen_monitor(std::string(argv[i]));
+			parse = this->_parse_fullscreen_monitor(std::string(argv[i]));
+		if (parse)
+			this->_parse_vsync(std::string(argv[i]));
 	}
 }
 
@@ -191,7 +193,7 @@ bool Env::_parse_fullscreen_monitor(std::string const &arg)
 		return (true);
 	if (!std::regex_match(arg, rule))
 		return (true);
-	monitor = arg.substr(21, arg.size());
+	monitor                      = arg.substr(21, arg.size());
 	try
 	{
 		this->_env_value.monitor = std::stoul(monitor);
@@ -200,6 +202,22 @@ bool Env::_parse_fullscreen_monitor(std::string const &arg)
 	{
 		Env::_display_help();
 	}
+	if (this->_env_value.monitor > MAX_MONITOR)
+		this->_env_value.monitor = 0;
+	already_parsed = true;
+	return (false);
+}
+
+bool Env::_parse_vsync(std::string const &arg)
+{
+	static bool already_parsed = false;
+
+	if (already_parsed)
+		return (true);
+	if (arg.compare("--vsync") == 0)
+		this->_env_value.vsync = true;
+	else
+		return (true);
 	already_parsed = true;
 	return (false);
 }
@@ -220,8 +238,11 @@ void Env::_display_help()
 	std::cout << "			Start engine fullscreen on set screen" << std::endl;
 	std::cout << "				Will choose primary monitor if numeric value is wrong" << std::endl;
 	std::cout << "		--res=WIDTHxHEIGHT" << std::endl;
-	std::cout << "			Set Resolution to WIDTHxHEIGHT" << std::endl;
+	std::cout << "			Set Resolution to WIDTHxHEIGHT in windowed mode" << std::endl;
 	std::cout << "				Min resolution is 640x480" << std::endl;
 	std::cout << "				Max resolution is 3840x2160" << std::endl;
+	std::cout << "				Default is 1280x720" << std::endl;
+	std::cout << "		--vsync" << std::endl;
+	std::cout << "			Enable Vsync. Vsync is disable by default" << std::endl;
 	exit(-1);
 }

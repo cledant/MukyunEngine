@@ -12,32 +12,48 @@
 
 #include "Engine/Engine.hpp"
 
-Engine::Engine(Input const &input, GLFW_Window const &win,
-			   glm::vec3 const &cam_pos, glm::vec2 const &near_far,
-			   float max_fps, size_t max_frame_skip,
-			   LightContainer::Params const &lc_params,
-			   ShadowRenderer::Params const &sr_params,
-			   RessourceManager &rm) :
-		_light_container(lc_params), _sr(), _window(win),
-		_camera(&input, cam_pos, glm::vec3(0.0f, 1.0f, 0.0f),
-				glm::vec3(0.0f, 0.0f, -1.0f), -90.0f, 0.0f),
-		_fov(45.0f), _max_fps(max_fps), _max_frame_skip(max_frame_skip),
-		_next_update_tick(0.0f), _last_update_tick(0.0f), _delta_tick(0.0f),
-		_skip_loop(0), _near_far(near_far),
-		_tss(&win, &input, &rm.getShader("DisplayImage"), 0),
-		_final_image(win.cur_win_h, win.cur_win_w),
-		_screen_res(glm::vec2(win.cur_win_w, win.cur_win_h))
+Engine::EngineInitParams::EngineInitParams()
 {
-	if (max_frame_skip == 0)
+	this->input          = nullptr;
+	this->win            = nullptr;
+	this->cam_pos        = glm::vec3(0.0f);
+	this->near_far       = glm::vec2(0.1f, 100.0f);
+	this->max_fps        = 60.0f;
+	this->max_frame_skip = 10;
+	this->lc_params      = LightContainer::Params();
+	this->sr_params      = ShadowRenderer::Params();
+	this->display_shader = nullptr;
+	this->init_h         = 720;
+	this->init_w         = 1280;
+	this->monitor        = 0;
+}
+
+Engine::EngineInitParams::~EngineInitParams()
+{
+}
+
+Engine::Engine(EngineInitParams const &params) :
+		_light_container(params.lc_params), _sr(), _window(*params.win),
+		_camera(params.input, params.cam_pos, glm::vec3(0.0f, 1.0f, 0.0f),
+				glm::vec3(0.0f, 0.0f, -1.0f), -90.0f, 0.0f),
+		_fov(45.0f), _max_fps(params.max_fps),
+		_max_frame_skip(params.max_frame_skip), _next_update_tick(0.0f),
+		_last_update_tick(0.0f), _delta_tick(0.0f),
+		_skip_loop(0), _near_far(params.near_far),
+		_tss(params.win, params.input, params.display_shader, 0),
+		_final_image(params.win->cur_win_h, params.win->cur_win_w),
+		_init_h(params.init_h), _init_w(params.init_w), _monitor(params.monitor)
+{
+	if (params.max_frame_skip == 0)
 		throw Engine::EngineFailException();
-	GLfloat ratio = static_cast<GLfloat>(win.cur_win_w) /
-					static_cast<GLfloat>(win.cur_win_h);
+	GLfloat ratio = static_cast<GLfloat>(params.win->cur_win_w) /
+					static_cast<GLfloat>(params.win->cur_win_h);
 	this->_tick        = 1.0f / this->_max_fps;
-	this->_perspective = glm::perspective(glm::radians(this->_fov), ratio, near_far.x,
-										  near_far.y);
+	this->_perspective = glm::perspective(glm::radians(this->_fov), ratio, params.near_far.x,
+										  params.near_far.y);
 
 	//Can't be initialized before because of nullptr for light container params
-	ShadowRenderer::Params sr_params_cpy = sr_params;
+	ShadowRenderer::Params sr_params_cpy = params.sr_params;
 	sr_params_cpy.lc = &this->_light_container;
 	this->_sr        = ShadowRenderer(sr_params_cpy);
 	this->_tss.setTextureID(this->_final_image.getTextureBuffer());
@@ -101,10 +117,14 @@ void Engine::startGameLoop(Glfw_manager &manager)
 
 void Engine::update(void)
 {
+	if (this->_window.toggle_screen_mode)
+		this->toggleScreenMode();
 	if (this->_window.resized)
 	{
+		this->_final_image.reallocateFBO(this->_window.cur_win_h, this->_window.cur_win_w);
+		this->_tss.setTextureID(this->_final_image.getTextureBuffer());
 		this->updatePerspective(this->_fov);
-		this->_screen_res = glm::vec2(this->_window.cur_win_w, this->_window.cur_win_h);
+		const_cast<GLFW_Window &>(this->_window).resized = !this->_window.resized;
 	}
 	this->_camera.update();
 	this->_perspec_mult_view = this->_perspective * this->_camera.getViewMatrix();
@@ -298,6 +318,13 @@ glm::vec2 const &Engine::getNearFar(void) const
 /*
  * Other
  */
+
+void Engine::toggleScreenMode()
+{
+
+	Glfw_manager::toggleScreenMode(const_cast<GLFW_Window &>(this->_window), this->_monitor,
+								   this->_init_h, this->_init_w);
+}
 
 void Engine::updatePerspective(float fov)
 {

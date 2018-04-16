@@ -17,6 +17,8 @@
 # include "Engine/Init/EngineInit.hpp"
 # include <regex>
 
+# define MAX_MONITOR 16
+
 class Env
 {
 	public :
@@ -40,6 +42,7 @@ class Env
 		bool _parse_resolution(std::string const &arg);
 		bool _parse_fullscreen(std::string const &arg);
 		bool _parse_fullscreen_monitor(std::string const &arg);
+		bool _parse_vsync(std::string const &arg);
 		static void _display_help(void); //Exit program after display
 };
 

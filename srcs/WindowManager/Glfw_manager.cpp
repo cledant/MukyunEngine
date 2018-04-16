@@ -194,14 +194,20 @@ void Glfw_manager::update_events(void)
 	glfwPollEvents();
 	if (this->_input.timer > 0.5f && this->_input.p_key[GLFW_KEY_P] == PRESSED)
 		this->toogle_mouse_exclusive();
+	if (this->_input.timer > 0.5f && this->_input.p_key[GLFW_KEY_HOME] == PRESSED)
+	{
+		this->_window.toggle_screen_mode = true;
+		this->_input.timer               = 0.0f;
+	}
 	if (this->_input.timer < 1.0f)
 		this->_input.timer += delta_time;
 }
 
 void Glfw_manager::swap_buffers(void)
 {
-	this->_window.resized        = false;
-	this->_input.mouse_refreshed = false;
+	this->_window.resized            = false;
+	this->_window.toggle_screen_mode = false;
+	this->_input.mouse_refreshed     = false;
 	glfwSwapBuffers(this->_window.win);
 }
 
@@ -274,6 +280,29 @@ void Glfw_manager::displayGpuInfo(void)
 	std::cout << glGetString(GL_RENDERER) << std::endl;
 }
 
+/*
+ * Static other function
+ */
+
+void Glfw_manager::toggleScreenMode(GLFW_Window &win, int monitor, int init_h, int init_w)
+{
+	int               monitor_count  = 0;
+	GLFWmonitor       **monitor_list = glfwGetMonitors(&monitor_count);
+	GLFWvidmode const *mode          = nullptr;
+
+	if (!monitor_count)
+		throw Glfw_manager::MonitorFailException();
+	if (monitor >= monitor_count)
+		monitor_count = 0;
+	mode              = glfwGetVideoMode(monitor_list[monitor]);
+	if (!win.fullscreen)
+		glfwSetWindowMonitor(win.win, monitor_list[monitor], 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
+	else
+		glfwSetWindowMonitor(win.win, NULL, 0, 0, init_w, init_h, GLFW_DONT_CARE);
+	win.fullscreen         = !win.fullscreen;
+	win.toggle_screen_mode = false;
+}
+
 void Glfw_manager::_window_creation_callback_setup(void)
 {
 	auto close_callback = [](GLFWwindow *win)
@@ -316,6 +345,16 @@ Glfw_manager::WindowFailException::WindowFailException(void)
 
 
 Glfw_manager::WindowFailException::~WindowFailException(void) throw()
+{
+}
+
+Glfw_manager::MonitorFailException::MonitorFailException(void)
+{
+	this->_msg = "GLFW : No monitor detected !";
+}
+
+
+Glfw_manager::MonitorFailException::~MonitorFailException(void) throw()
 {
 }
 

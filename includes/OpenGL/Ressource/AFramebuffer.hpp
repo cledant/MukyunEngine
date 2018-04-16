@@ -33,6 +33,7 @@ class AFramebuffer
 		void useFramebuffer(void) const;
 		void defaultFramebuffer(void) const;
 		void setViewport(void) const;
+		virtual void reallocateFBO(int h, int w) = 0;
 
 		/*
 		 * Getter

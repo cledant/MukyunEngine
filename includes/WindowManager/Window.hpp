@@ -33,6 +33,8 @@ struct GLFW_Window
 	int        min_win_w;
 	int        min_win_h;
 	bool       resized;
+	bool       toggle_screen_mode;
+	bool       fullscreen;
 };
 
 #endif

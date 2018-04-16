@@ -26,6 +26,8 @@ class DirectionalDepthMap : public AFramebuffer
 		DirectionalDepthMap(DirectionalDepthMap &&src);
 		DirectionalDepthMap &operator=(DirectionalDepthMap &&rhs);
 
+		virtual void reallocateFBO(int h, int w);
+
 		class InitException : public GeneralException
 		{
 			public :

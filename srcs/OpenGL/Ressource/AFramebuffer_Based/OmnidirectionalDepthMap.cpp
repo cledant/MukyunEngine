@@ -43,6 +43,19 @@ OmnidirectionalDepthMap &OmnidirectionalDepthMap::operator=(OmnidirectionalDepth
 	return (*this);
 }
 
+void OmnidirectionalDepthMap::reallocateFBO(int h, int w)
+{
+	//delete old buffers
+	glDeleteFramebuffers(1, &this->_fbo);
+	glDeleteTextures(1, &this->_textureBuffer);
+	glDeleteRenderbuffers(1, &this->_rbo);
+
+	//reallocate new ones
+	this->_tex_h = h;
+	this->_tex_w = w;
+	this->_allocate_buffers();
+}
+
 OmnidirectionalDepthMap::InitException::InitException(void)
 {
 	this->_msg = "DirectionalShadowMap : Failed initialize framebuffer";

@@ -36,6 +36,7 @@ struct InitValue
 	unsigned long         res_h;
 	bool                  fullscreen;
 	unsigned long         monitor;
+	bool                  vsync;
 };
 
 /*

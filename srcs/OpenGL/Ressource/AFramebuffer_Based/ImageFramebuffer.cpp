@@ -43,6 +43,22 @@ ImageFramebuffer &ImageFramebuffer::operator=(ImageFramebuffer &&rhs)
 	return (*this);
 }
 
+void ImageFramebuffer::reallocateFBO(int h, int w)
+{
+	//delete old buffers
+	glDeleteFramebuffers(1, &this->_fbo);
+	glDeleteTextures(1, &this->_textureBuffer);
+	glDeleteRenderbuffers(1, &this->_rbo);
+	this->_fbo           = 0;
+	this->_textureBuffer = 0;
+	this->_rbo           = 0;
+
+	//reallocate new ones
+	this->_tex_h = h;
+	this->_tex_w = w;
+	this->_allocate_buffers();
+}
+
 ImageFramebuffer::InitException::InitException(void)
 {
 	this->_msg = "ImageFramebuffer : Failed initialize framebuffer";
@@ -61,9 +77,14 @@ ImageFramebuffer::IncompleteBufferException::~IncompleteBufferException(void) th
 {
 }
 
+//#include "OpenGL/oGL_utility.hpp"
+
 inline void ImageFramebuffer::_allocate_buffers(void)
 {
 	glGenFramebuffers(1, &this->_fbo);
+//	std::cout << "=========" << std::endl;
+//	oGL_display_error();
+//	std::cout << "=========" << std::endl;
 	glBindFramebuffer(GL_FRAMEBUFFER, this->_fbo);
 	glGenTextures(1, &this->_textureBuffer);
 	glBindTexture(GL_TEXTURE_2D, this->_textureBuffer);

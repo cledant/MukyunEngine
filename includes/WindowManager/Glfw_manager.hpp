@@ -69,6 +69,12 @@ class Glfw_manager
 		void enableVsync(void);
 		void displayGpuInfo(void);
 
+		/*
+		 * Static Other Function
+		 */
+
+		static void toggleScreenMode(GLFW_Window &win, int monitor, int init_h, int init_w);
+
 		class InitFailException : public GeneralException
 		{
 			public :
@@ -83,6 +89,14 @@ class Glfw_manager
 
 				explicit WindowFailException(void);
 				virtual ~WindowFailException(void) throw();
+		};
+
+		class MonitorFailException : public GeneralException
+		{
+			public :
+
+				explicit MonitorFailException(void);
+				virtual ~MonitorFailException(void) throw();
 		};
 
 		class FileOpenException : public GeneralException

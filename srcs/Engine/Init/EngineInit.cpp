@@ -19,6 +19,7 @@ InitValue::InitValue()
 	this->res_w      = 1280;
 	this->fullscreen = false;
 	this->monitor    = 0;
+	this->vsync      = false;
 }
 
 InitValue::~InitValue()

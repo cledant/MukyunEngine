@@ -25,7 +25,7 @@ static void init_ressources(RessourceManager &rm)
 }
 
 static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
-							Engine **world)
+							Engine **world, InitValue const &arg)
 {
 	//Setting Shadow Renderer params
 	ShadowRenderer::Params sr_params;
@@ -34,10 +34,20 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	sr_params.spot_dir_depth_map_shader = &rm.getShader("ComputeDirLightDepthMap");
 	sr_params.dir_near_far              = glm::vec2(1.0f, 30.0f);
 
-	(*world) = new Engine(manager.getInput(), manager.getWindow(),
-						  glm::vec3(0.0f, 0.0f, 10.0f),
-						  glm::vec2(0.1f, 1000.0f), 60.0f, 10,
-						  LightContainer::Params(), sr_params, rm);
+	//Setting Engine Params
+	Engine::EngineInitParams engine_params;
+	engine_params.input          = &manager.getInput();
+	engine_params.win            = &manager.getWindow();
+	engine_params.cam_pos        = glm::vec3(0.0f, 0.0f, 10.0f);
+	engine_params.near_far       = glm::vec2(0.1f, 1000.0f);
+	engine_params.max_fps        = 60.0f;
+	engine_params.max_frame_skip = 10;
+	engine_params.lc_params      = LightContainer::Params();
+	engine_params.sr_params      = sr_params;
+	engine_params.display_shader = &rm.getShader("DisplayImage");
+	engine_params.init_h         = arg.res_h;
+	engine_params.init_w         = arg.res_w;
+	(*world) = new Engine(engine_params);
 
 	//Creating RenderBin for LightBox Indication in scene
 	ARenderBin::Params rb_light_color;
@@ -61,18 +71,18 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	params_dir.draw_model        = true;
 	(*world)->add_SpotLight(params_dir);
 
-	params_dir.model_rb          = light_color;
-	params_dir.pos               = glm::vec3(-8.0f, 4.0f, -8.0f);
-	params_dir.dir               = glm::vec3(1.0f, -1.0f, 1.0f);
-	params_dir.cutoff            = glm::vec2(20.0f, 15.0f);
-	params_dir.draw_model        = true;
+	params_dir.model_rb   = light_color;
+	params_dir.pos        = glm::vec3(-8.0f, 4.0f, -8.0f);
+	params_dir.dir        = glm::vec3(1.0f, -1.0f, 1.0f);
+	params_dir.cutoff     = glm::vec2(20.0f, 15.0f);
+	params_dir.draw_model = true;
 	(*world)->add_SpotLight(params_dir);
 
-	params_dir.model_rb          = light_color;
-	params_dir.pos               = glm::vec3(10.0f, 4.0f, -10.0f);
-	params_dir.dir               = glm::vec3(-1.0f, -1.0f, 1.0f);
-	params_dir.cutoff            = glm::vec2(30.0f, 15.0f);
-	params_dir.draw_model        = true;
+	params_dir.model_rb   = light_color;
+	params_dir.pos        = glm::vec3(10.0f, 4.0f, -10.0f);
+	params_dir.dir        = glm::vec3(-1.0f, -1.0f, 1.0f);
+	params_dir.cutoff     = glm::vec2(30.0f, 15.0f);
+	params_dir.draw_model = true;
 	(*world)->add_SpotLight(params_dir);
 
 	//Creating RenderBin for Light that uses LightContainer
@@ -114,14 +124,19 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 }
 
 static void init_program(Engine **world, RessourceManager &rm,
-						 Glfw_manager &manager, glm::uvec2 res)
+						 Glfw_manager &manager, InitValue const &arg)
 {
-	manager.create_window("TestSpotShadow", 4, 1, res.x, res.y, false);
+	manager.create_window("TestSpotShadow", 4, 1, arg.res_w, arg.res_h, false);
+	if (arg.vsync)
+		manager.enableVsync();
+	if (arg.fullscreen)
+		Glfw_manager::toggleScreenMode(const_cast<GLFW_Window &>(manager.getWindow()), arg.monitor,
+									   arg.res_h, arg.res_w);
 	manager.displayGpuInfo();
 	manager.init_input_callback();
-	init_ressources(rm);
 	ShaderLoading(rm);
-	load_test_level(manager, rm, world);
+	init_ressources(rm);
+	load_test_level(manager, rm, world, arg);
 }
 
 void InitRunTestSpotShadow(Glfw_manager &manager, InitValue const &arg)
@@ -131,7 +146,7 @@ void InitRunTestSpotShadow(Glfw_manager &manager, InitValue const &arg)
 
 	try
 	{
-		init_program(&world, rm, manager, glm::uvec2(arg.res_w, arg.res_h));
+		init_program(&world, rm, manager, arg);
 	}
 	catch (std::exception &e)
 	{
