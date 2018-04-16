@@ -82,7 +82,6 @@ void DiffuseColored::updateVBO(void)
 					sizeof(glm::vec3) * this->_vector_light_diffuse.size(),
 					&(this->_vector_light_diffuse[0]));
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 }
 
 void DiffuseColored::flushData(void)

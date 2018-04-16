@@ -185,7 +185,6 @@ void MultiPointDirSpotLightRenderBin::_allocate_vbo(size_t max_size)
 
 void MultiPointDirSpotLightRenderBin::_update_vector_inv_model(void)
 {
-
 	for (auto it = this->_model_matrices.begin(); it != this->_model_matrices.end(); ++it)
 		this->_inv_model_matrices.push_back(glm::transpose(glm::inverse(*it)));
 }

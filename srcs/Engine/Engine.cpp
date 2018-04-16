@@ -79,10 +79,10 @@ void Engine::startGameLoop(Glfw_manager &manager)
 			{
 				manager.update_events();
 				this->update();
+				this->updateGPU();
 			}
 			manager.calculate_fps();
 			manager.update_title_fps();
-			this->updateGPU();
 			/*
 			 * Compute depth maps :
 			 *
@@ -321,7 +321,6 @@ glm::vec2 const &Engine::getNearFar(void) const
 
 void Engine::toggleScreenMode()
 {
-
 	Glfw_manager::toggleScreenMode(const_cast<GLFW_Window &>(this->_window), this->_monitor,
 								   this->_init_h, this->_init_w);
 }

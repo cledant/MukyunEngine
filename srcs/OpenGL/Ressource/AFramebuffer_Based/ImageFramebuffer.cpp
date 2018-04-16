@@ -77,14 +77,9 @@ ImageFramebuffer::IncompleteBufferException::~IncompleteBufferException(void) th
 {
 }
 
-//#include "OpenGL/oGL_utility.hpp"
-
 inline void ImageFramebuffer::_allocate_buffers(void)
 {
 	glGenFramebuffers(1, &this->_fbo);
-//	std::cout << "=========" << std::endl;
-//	oGL_display_error();
-//	std::cout << "=========" << std::endl;
 	glBindFramebuffer(GL_FRAMEBUFFER, this->_fbo);
 	glGenTextures(1, &this->_textureBuffer);
 	glBindTexture(GL_TEXTURE_2D, this->_textureBuffer);
