@@ -13,3 +13,6 @@
 [submodule "libs/stb"]
 	path = libs/stb
 	url = https://github.com/nothings/stb.git
+[submodule "libs/freetype2"]
+	path = libs/freetype2
+	url = git://git.sv.nongnu.org/freetype/freetype2.git

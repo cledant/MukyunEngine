@@ -16,6 +16,9 @@ set(BUILD_SHARED_LIBS OFF)
 set(ASSIMP_NO_EXPORT ON)
 add_subdirectory(libs/assimp ${CMAKE_BINARY_DIR}/libs/assimp/build)
 
+#Setup FreeType
+add_subdirectory(libs/freetype2 ${CMAKE_BINARY_DIR}/freetype2/build)
+
 #Setup cpp version and Release type
 set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_CXX_STANDARD 14)
@@ -30,10 +33,12 @@ include_directories(includes
 		libs/glfw/include/GLFW
 		libs/assimp/include
 		libs/assimp/build/include
+		libs/freetype2/include
 		${CMAKE_BINARY_DIR}/libs/assimp/build/include)
 link_directories(${CMAKE_BINARY_DIR}/libs/glad/build
 		${CMAKE_BINARY_DIR}/libs/glfw/build/src
-		${CMAKE_BINARY_DIR}/libs/assimp/build/code)
+		${CMAKE_BINARY_DIR}/libs/assimp/build/code
+		${CMAKE_BINARY_DIR}/freetype2/build)
 
 #Setup Main Lib with all compilations flag
 set(SOURCE_FILES
@@ -81,7 +86,7 @@ set(SOURCE_FILES
 		srcs/Engine/Init/ShaderLoading/ShaderLoading.cpp
 		srcs/Engine/Init/EngineInit.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
-target_link_libraries(primary glad glfw assimp)
+target_link_libraries(primary glad glfw assimp freetype)
 target_compile_options(primary PRIVATE -Wall -Wextra -g3)
 
 #Creating executable
@@ -92,9 +97,9 @@ add_executable(mukyun_engine ${SOURCE_FILES_MAIN})
 target_compile_options(mukyun_engine PRIVATE -Wall -Wextra -g3)
 
 #Build Order
-add_dependencies(primary glad glfw assimp)
+add_dependencies(primary glad glfw assimp freetype)
 add_dependencies(mukyun_engine primary)
-target_link_libraries(mukyun_engine glad glfw assimp primary)
+target_link_libraries(mukyun_engine glad glfw assimp freetype primary)
 
 #Copy assets
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
