@@ -84,7 +84,7 @@ set(SOURCE_FILES
 		srcs/OpenGL/Ressource/AFramebuffer_Based/OmnidirectionalDepthMap.cpp
 		srcs/Engine/Engine.cpp
 		srcs/Engine/Init/ShaderLoading/ShaderLoading.cpp
-		srcs/Engine/Init/EngineInit.cpp)
+		srcs/Engine/Init/EngineInit.cpp srcs/OpenGL/Ressource/Fontset.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
 target_link_libraries(primary glad glfw assimp freetype)
 target_compile_options(primary PRIVATE -Wall -Wextra -g3)

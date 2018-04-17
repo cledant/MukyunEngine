@@ -63,6 +63,11 @@ void RessourceManager::add_directional_depthbuffer(std::string const &name, int 
 	this->_framebuffer_list[name] = std::make_unique<DirectionalDepthMap>(w, h);
 }
 
+void RessourceManager::add_fontset(std::string const &name, Fontset::Params const &params)
+{
+	this->_fontset_list.insert(std::pair<std::string, Fontset>(name, Fontset(params)));
+}
+
 /*
  * Getter
  */
@@ -102,6 +107,19 @@ AFramebuffer const &RessourceManager::getFramebuffer(std::string const &name) co
 		throw RessourceManager::FramebufferNotFoundException(name);
 	return (*it->second.get());
 }
+
+Fontset const &RessourceManager::getFontset(std::string const &name) const
+{
+	auto it = this->_fontset_list.find(name);
+
+	if (it == this->_fontset_list.end())
+		throw RessourceManager::FontsetNotFoundException(name);
+	return (it->second);
+}
+
+/*
+ * Exceptions
+ */
 
 RessourceManager::ShaderNotFoundException::ShaderNotFoundException(void)
 {
@@ -160,5 +178,20 @@ RessourceManager::FramebufferNotFoundException::FramebufferNotFoundException(std
 }
 
 RessourceManager::FramebufferNotFoundException::~FramebufferNotFoundException(void) throw()
+{
+}
+
+RessourceManager::FontsetNotFoundException::FontsetNotFoundException(void)
+{
+	this->_msg = "OpenGL : Failed to find requested fontset";
+}
+
+RessourceManager::FontsetNotFoundException::FontsetNotFoundException(std::string const &name)
+{
+	this->_msg = "OpenGL : Failed to find fontset : ";
+	this->_msg += name.c_str();
+}
+
+RessourceManager::FontsetNotFoundException::~FontsetNotFoundException(void) throw()
 {
 }

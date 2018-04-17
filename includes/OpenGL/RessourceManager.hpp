@@ -21,6 +21,7 @@
 # include "OpenGL/Ressource/AFramebuffer_Based/ImageFramebuffer.hpp"
 # include "OpenGL/Ressource/AFramebuffer_Based/DirectionalDepthMap.hpp"
 # include "OpenGL/Ressource/AFramebuffer.hpp"
+# include "OpenGL/Ressource/Fontset.hpp"
 # include "Exceptions/GeneralException.hpp"
 # include <map>
 # include <memory>
@@ -52,6 +53,7 @@ class RessourceManager
 						 Texture::eTextureType type);
 		void add_image_framebuffer(std::string const &name, int h, int w);
 		void add_directional_depthbuffer(std::string const &name, int h, int w);
+		void add_fontset(std::string const &name, Fontset::Params const &params);
 
 		/*
 		 * Getter
@@ -61,6 +63,11 @@ class RessourceManager
 		Model const &getModel(std::string const &name) const;
 		Texture const &getTexture(std::string const &name) const;
 		AFramebuffer const &getFramebuffer(std::string const &name) const;
+		Fontset const &getFontset(std::string const &name) const;
+
+		/*
+		 * Exceptions
+		 */
 
 		class ShaderNotFoundException : public GeneralException
 		{
@@ -98,12 +105,22 @@ class RessourceManager
 				virtual ~FramebufferNotFoundException(void) throw();
 		};
 
+		class FontsetNotFoundException : public GeneralException
+		{
+			public :
+
+				explicit FontsetNotFoundException(void);
+				explicit FontsetNotFoundException(std::string const &name);
+				virtual ~FontsetNotFoundException(void) throw();
+		};
+
 	private :
 
 		std::map<std::string, Shader>                        _shader_list;
 		std::map<std::string, Model>                         _model_list;
 		std::map<std::string, Texture>                       _texture_list;
 		std::map<std::string, std::unique_ptr<AFramebuffer>> _framebuffer_list;
+		std::map<std::string, Fontset>                       _fontset_list;
 };
 
 #endif

@@ -32,4 +32,5 @@ void ShaderLoading(RessourceManager &rm)
 	rm.add_shader("MultiPointDirSpotLightWithShadowMapMultiPass",
 				  "./shaders/MultiPointDirSpotLightFusedWithShadowMapMultiPass/MultiPointDirSpotLightFusedWithShadowMapMultiPass_vs.glsl",
 				  "./shaders/MultiPointDirSpotLightFusedWithShadowMapMultiPass/MultiPointDirSpotLightFusedWithShadowMapMultiPass_fs.glsl");
+	rm.add_shader("Fontset", "./shaders/Fontset/Fontset_vs.glsl", "./shaders/Fontset/Fontset_fs.glsl");
 }
