@@ -30,7 +30,9 @@ void Env::parse_args(int argc, char **argv)
 		Env::_display_help();
 	for (int i = 1; i < argc; ++i)
 	{
-		parse     = this->_parse_scene_type(std::string(argv[i]));
+		parse     = this->_parse_help(std::string(argv[i]));
+		if (parse)
+			parse = this->_parse_scene_type(std::string(argv[i]));
 		if (parse)
 			parse = this->_parse_resolution(std::string(argv[i]));
 		if (parse)
@@ -39,6 +41,7 @@ void Env::parse_args(int argc, char **argv)
 			parse = this->_parse_fullscreen_monitor(std::string(argv[i]));
 		if (parse)
 			this->_parse_vsync(std::string(argv[i]));
+
 	}
 }
 
@@ -222,6 +225,31 @@ bool Env::_parse_vsync(std::string const &arg)
 	return (false);
 }
 
+bool Env::_parse_help(std::string const &arg)
+{
+	if (arg.compare("--help") == 0)
+	{
+		Env::_display_keys();
+		std::cout << std::endl;
+		Env::_display_help();
+	}
+	return (true);
+}
+
+/*
+ * Display info
+ */
+
+void Env::_display_keys(void)
+{
+	std::cout << "Engine keys :" << std::endl;
+	std::cout << "		W/A/S/D = Move" << std::endl;
+	std::cout << "		Mouse = Move camera" << std::endl;
+	std::cout << "		ESC = Exit" << std::endl;
+	std::cout << "		HOME = Toggle fullscreen" << std::endl;
+	std::cout << "		P = Release/Catch mouse movements from/for engine" << std::endl;
+};
+
 void Env::_display_help()
 {
 	std::cout << "Available option :" << std::endl;
@@ -243,6 +271,8 @@ void Env::_display_help()
 	std::cout << "				Max resolution is 3840x2160" << std::endl;
 	std::cout << "				Default is 1280x720" << std::endl;
 	std::cout << "		--vsync" << std::endl;
-	std::cout << "			Enable Vsync. Vsync is disable by default" << std::endl;
-	exit(-1);
+	std::cout << "			Enable Vsync. Vsync is disable by default" << std::endl << std::endl;
+	std::cout << "		--help" << std::endl;
+	std::cout << "			Display control keys + argument available then exit" << std::endl;
+	exit(0);
 }

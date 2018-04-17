@@ -43,7 +43,14 @@ class Env
 		bool _parse_fullscreen(std::string const &arg);
 		bool _parse_fullscreen_monitor(std::string const &arg);
 		bool _parse_vsync(std::string const &arg);
+		bool _parse_help(std::string const &arg);
+
+		/*
+		 * Display info
+		 */
+
 		static void _display_help(void); //Exit program after display
+		static void _display_keys(void);
 };
 
 #endif
