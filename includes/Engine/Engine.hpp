@@ -64,6 +64,7 @@ class Engine
 			int                    init_w;
 			int                    init_h;
 			int                    monitor;
+			Fontset                *system_fontset;
 		};
 
 		Engine(EngineInitParams const &params);
@@ -157,6 +158,8 @@ class Engine
 		int                                                      _init_h;
 		int                                                      _init_w;
 		int                                                      _monitor;
+		glm::mat4                                                _orthogonal_perspective;
+		Fontset                                                  *_system_fontset;
 };
 
 #endif

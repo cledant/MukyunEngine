@@ -26,6 +26,7 @@ Engine::EngineInitParams::EngineInitParams()
 	this->init_h         = 720;
 	this->init_w         = 1280;
 	this->monitor        = 0;
+	this->system_fontset = nullptr;
 }
 
 Engine::EngineInitParams::~EngineInitParams()
@@ -42,15 +43,19 @@ Engine::Engine(EngineInitParams const &params) :
 		_skip_loop(0), _near_far(params.near_far),
 		_tss(params.win, params.input, params.display_shader, 0),
 		_final_image(params.win->cur_win_h, params.win->cur_win_w),
-		_init_h(params.init_h), _init_w(params.init_w), _monitor(params.monitor)
+		_init_h(params.init_h), _init_w(params.init_w), _monitor(params.monitor),
+		_system_fontset(params.system_fontset)
 {
 	if (params.max_frame_skip == 0)
 		throw Engine::EngineFailException();
 	GLfloat ratio = static_cast<GLfloat>(params.win->cur_win_w) /
 					static_cast<GLfloat>(params.win->cur_win_h);
-	this->_tick        = 1.0f / this->_max_fps;
-	this->_perspective = glm::perspective(glm::radians(this->_fov), ratio, params.near_far.x,
-										  params.near_far.y);
+	this->_tick                   = 1.0f / this->_max_fps;
+	this->_perspective            = glm::perspective(glm::radians(this->_fov), ratio,
+													 params.near_far.x, params.near_far.y);
+	this->_orthogonal_perspective = glm::ortho(0.0f, static_cast<float>(params.win->cur_win_w),
+											   0.0f, static_cast<float>(params.win->cur_win_h));
+	this->_system_fontset->setProjectionMatrix(&this->_orthogonal_perspective);
 
 	//Can't be initialized before because of nullptr for light container params
 	ShadowRenderer::Params sr_params_cpy = params.sr_params;
@@ -82,7 +87,6 @@ void Engine::startGameLoop(Glfw_manager &manager)
 				this->updateGPU();
 			}
 			manager.calculate_fps();
-			manager.update_title_fps();
 			/*
 			 * Compute depth maps :
 			 *
@@ -103,6 +107,14 @@ void Engine::startGameLoop(Glfw_manager &manager)
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			this->_tss.draw();
+			this->_system_fontset->drawText("Fps : " + manager.getStrFps(), glm::vec3(1.0f),
+											glm::vec3(30,
+													  this->_window.cur_win_h - 60,
+													  1.0f));
+			this->_system_fontset->drawText(this->_camera.getStrPos(), glm::vec3(1.0f),
+											glm::vec3(30,
+													  this->_window.cur_win_h - 110,
+													  1.0f));
 			manager.swap_buffers();
 			if (manager.should_window_be_closed())
 				manager.destroy_window();
@@ -124,6 +136,9 @@ void Engine::update(void)
 		this->_final_image.reallocateFBO(this->_window.cur_win_h, this->_window.cur_win_w);
 		this->_tss.setTextureID(this->_final_image.getTextureBuffer());
 		this->updatePerspective(this->_fov);
+		this->_orthogonal_perspective                    = glm::ortho(0.0f, static_cast<float>(this->_window.cur_win_w),
+																	  0.0f,
+																	  static_cast<float>(this->_window.cur_win_h));
 		const_cast<GLFW_Window &>(this->_window).resized = !this->_window.resized;
 	}
 	this->_camera.update();

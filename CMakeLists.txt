@@ -17,7 +17,7 @@ set(ASSIMP_NO_EXPORT ON)
 add_subdirectory(libs/assimp ${CMAKE_BINARY_DIR}/libs/assimp/build)
 
 #Setup FreeType
-add_subdirectory(libs/freetype2 ${CMAKE_BINARY_DIR}/freetype2/build)
+add_subdirectory(libs/freetype2 ${CMAKE_BINARY_DIR}/libs/freetype2/build)
 
 #Setup cpp version and Release type
 set(CMAKE_BUILD_TYPE Release)
@@ -38,7 +38,7 @@ include_directories(includes
 link_directories(${CMAKE_BINARY_DIR}/libs/glad/build
 		${CMAKE_BINARY_DIR}/libs/glfw/build/src
 		${CMAKE_BINARY_DIR}/libs/assimp/build/code
-		${CMAKE_BINARY_DIR}/freetype2/build)
+		${CMAKE_BINARY_DIR}/libs/freetype2/build)
 
 #Setup Main Lib with all compilations flag
 set(SOURCE_FILES

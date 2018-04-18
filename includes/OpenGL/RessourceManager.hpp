@@ -63,7 +63,7 @@ class RessourceManager
 		Model const &getModel(std::string const &name) const;
 		Texture const &getTexture(std::string const &name) const;
 		AFramebuffer const &getFramebuffer(std::string const &name) const;
-		Fontset const &getFontset(std::string const &name) const;
+		Fontset &getFontset(std::string const &name);
 
 		/*
 		 * Exceptions

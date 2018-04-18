@@ -16,8 +16,15 @@
 
 static void init_ressources(RessourceManager &rm)
 {
+	//System fontset and Default Texture are mandatory
+	Fontset::Params sys_fs_params;
+	sys_fs_params.shader    = &rm.getShader("Fontset");
+	sys_fs_params.font_path = "./assets/fonts/Roboto-Light.ttf";
+	sys_fs_params.size      = 40;
+	rm.add_fontset("system_font", sys_fs_params);
 	rm.add_texture("default_texture", "./assets/textures/default_texture/default_texture.tga",
 				   Texture::eTextureType::TEX_DIFFUSE_SPECULAR);
+	//Other
 	rm.add_model("WhiteBox", "./assets/models/WhiteBox/WhiteBox.obj");
 	rm.add_model("BlueBox", "./assets/models/BlueBox/BlueBox.obj");
 	rm.add_model("RedBox", "./assets/models/RedBox/RedBox.obj");
@@ -47,6 +54,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	engine_params.display_shader = &rm.getShader("DisplayImage");
 	engine_params.init_h         = arg.res_h;
 	engine_params.init_w         = arg.res_w;
+	engine_params.system_fontset = &rm.getFontset("system_font");
 	(*world) = new Engine(engine_params);
 
 	//Creating RenderBin for LightBox Indication in scene

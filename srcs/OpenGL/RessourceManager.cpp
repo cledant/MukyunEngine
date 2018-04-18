@@ -108,7 +108,7 @@ AFramebuffer const &RessourceManager::getFramebuffer(std::string const &name) co
 	return (*it->second.get());
 }
 
-Fontset const &RessourceManager::getFontset(std::string const &name) const
+Fontset &RessourceManager::getFontset(std::string const &name)
 {
 	auto it = this->_fontset_list.find(name);
 

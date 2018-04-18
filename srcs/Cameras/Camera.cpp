@@ -34,19 +34,19 @@ Camera::Camera(const Camera &src)
 
 Camera &Camera::operator=(Camera const &rhs)
 {
-	this->_input                      = rhs.getInput();
-	this->_update_cam                 = rhs.getUpdateCamera();
-	this->_world_up                   = rhs.getWorldUp();
-	this->_pos                        = rhs.getPos();
-	this->_front                      = rhs.getFront();
-	this->_up                         = rhs.getUp();
-	this->_right                      = rhs.getRight();
-	this->_xy_front                   = rhs.getXYFront();
-	this->_view                       = rhs.getViewMatrix();
-	this->_mouse_sensitivity          = rhs.getMouseSensitivity();
-	this->_movement_speed             = rhs.getMovementSpeed();
-	this->_yaw                        = rhs.getYaw();
-	this->_pitch                      = rhs.getPitch();
+	this->_input             = rhs.getInput();
+	this->_update_cam        = rhs.getUpdateCamera();
+	this->_world_up          = rhs.getWorldUp();
+	this->_pos               = rhs.getPos();
+	this->_front             = rhs.getFront();
+	this->_up                = rhs.getUp();
+	this->_right             = rhs.getRight();
+	this->_xy_front          = rhs.getXYFront();
+	this->_view              = rhs.getViewMatrix();
+	this->_mouse_sensitivity = rhs.getMouseSensitivity();
+	this->_movement_speed    = rhs.getMovementSpeed();
+	this->_yaw               = rhs.getYaw();
+	this->_pitch             = rhs.getPitch();
 	return (*this);
 }
 
@@ -153,6 +153,16 @@ void Camera::setPitch(GLfloat pitch)
 	if (this->_pitch < -89.0f)
 		this->_pitch = -89.0f;
 	this->_update_vector_matrix();
+}
+
+std::string const &Camera::getStrPos(void)
+{
+	std::stringstream ss;
+	ss.precision(2);
+
+	ss << std::fixed << "X = " << this->_pos.x << " | Y = " << this->_pos.y << " | Z = " << this->_pos.z;
+	this->_str_pos = ss.str();
+	return (this->_str_pos);
 }
 
 void Camera::_update_vector_matrix(void)

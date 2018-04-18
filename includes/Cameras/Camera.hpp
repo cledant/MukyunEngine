@@ -18,6 +18,8 @@
 # include "glm/glm.hpp"
 # include "glm/gtc/matrix_transform.hpp"
 # include <iostream>
+# include <sstream>
+# include <iomanip>
 
 class Camera
 {
@@ -49,6 +51,7 @@ class Camera
 		float getMovementSpeed(void) const;
 		float getYaw(void) const;
 		float getPitch(void) const;
+		std::string const &getStrPos(void);
 
 		/*
 		 * Setter
@@ -81,6 +84,7 @@ class Camera
 		GLfloat     _movement_speed;
 		GLfloat     _yaw;
 		GLfloat     _pitch;
+		std::string _str_pos;
 
 		void _update_vector_matrix(void);
 
