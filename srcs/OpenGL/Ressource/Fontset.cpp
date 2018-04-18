@@ -159,6 +159,7 @@ void Fontset::drawText(std::string const &str, glm::vec3 const &color,
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		pos_x += (fchar->second.advance >> 6) * pos_scale.z;
 	}
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	glDisable(GL_BLEND);
