@@ -39,6 +39,7 @@ class ARenderBin
 		enum eType
 		{
 			PROP,
+			CULLED_PROP,
 			COLOR,
 			MULTILIGHT_POINT_DIR_SPOT,
 			DIFFUSE_COLORED,

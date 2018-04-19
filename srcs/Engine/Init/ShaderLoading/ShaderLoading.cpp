@@ -33,4 +33,7 @@ void ShaderLoading(RessourceManager &rm)
 				  "./shaders/MultiPointDirSpotLightFusedWithShadowMapMultiPass/MultiPointDirSpotLightFusedWithShadowMapMultiPass_vs.glsl",
 				  "./shaders/MultiPointDirSpotLightFusedWithShadowMapMultiPass/MultiPointDirSpotLightFusedWithShadowMapMultiPass_fs.glsl");
 	rm.add_shader("Fontset", "./shaders/Fontset/Fontset_vs.glsl", "./shaders/Fontset/Fontset_fs.glsl");
+	rm.add_shader("CulledBasicProp", "./shaders/CulledBasicProp/CulledBasicProp_vs.glsl",
+				  "./shaders/CulledBasicProp/CulledBasicProp_gs.glsl",
+				  "./shaders/CulledBasicProp/CulledBasicProp_fs.glsl");
 }

@@ -281,6 +281,12 @@ ARenderBin *Engine::add_RenderBin(std::string const &name,
 																		&this->_light_container);
 		return (this->_render_bin_list[name].get());
 	}
+	else if (type == ARenderBin::eType::CULLED_PROP)
+	{
+		this->_render_bin_list[name] = std::make_unique<CulledBasicPropRenderBin>(params,
+																				  &this->_camera.getPos());
+		return (this->_render_bin_list[name].get());
+	}
 	return (nullptr);
 }
 
