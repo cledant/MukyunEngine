@@ -72,6 +72,7 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		glm::vec3 const &getScale(void) const;
 		glm::vec3 const &getOffset(void) const;
 		glm::mat4 const &getModelMatrix(void) const;
+		bool getToUpdate(void) const;
 
 		/*
 		 * Interface IEntity
@@ -125,6 +126,8 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		CollisionBox          _cb;
 		ICollidable::eDamages _dmg;
 		bool                  _passthrough;
+
+		bool _to_update;
 };
 
 #endif

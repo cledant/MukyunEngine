@@ -34,11 +34,11 @@ Prop::Prop(Prop::Params const &params) :
 		_pitch(params.orientation.y), _roll(params.orientation.z),
 		_pos(params.pos), _scale(params.scale), _offset(params.offset),
 		_active(params.active), _cb(params.pos, params.cb_half_size),
-		_dmg(params.dmg), _passthrough(params.passthrough)
+		_dmg(params.dmg), _passthrough(params.passthrough), _to_update(true)
 {
 	if (this->_render_bin == nullptr)
 		throw Prop::InitException();
-	this->update(0.0f);
+//	this->update(0.0f);
 }
 
 Prop::~Prop(void)
@@ -65,6 +65,7 @@ Prop &Prop::operator=(Prop const &rhs)
 	this->_cb          = rhs.getCollisionBox();
 	this->_dmg         = rhs.getDamages();
 	this->_passthrough = rhs.getPassthrough();
+	this->_to_update = rhs.getToUpdate();
 	return (*this);
 }
 
@@ -146,23 +147,32 @@ glm::mat4 const &Prop::getModelMatrix(void) const
 	return (this->_model);
 }
 
+bool Prop::getToUpdate() const
+{
+	return (this->_to_update);
+}
+
 /*
  * Interface IEntity
  */
 
 void Prop::update(float time)
 {
-	static_cast<void>(time);
-	this->_model = glm::mat4(1.0f);
-	this->_model = glm::translate(this->_model, (this->_pos + this->_offset));
-	this->_model = glm::rotate(this->_model, glm::radians(this->_yaw), glm::vec3(0.0f, 1.0f, 0.0f));
-	this->_model = glm::rotate(this->_model, glm::radians(this->_pitch), glm::vec3(1.0f, 0.0f, 0.0f));
-	this->_model = glm::rotate(this->_model, glm::radians(this->_roll), glm::vec3(0.0f, 0.0f, 1.0f));
-	this->_model = glm::translate(this->_model,
-								  glm::vec3(-this->_render_bin->getModel()->getCenter().x * this->_scale.x,
-											-this->_render_bin->getModel()->getCenter().y * this->_scale.y,
-											-this->_render_bin->getModel()->getCenter().z * this->_scale.z));
-	this->_model = glm::scale(this->_model, this->_scale);
+	if (this->_to_update)
+	{
+		static_cast<void>(time);
+		this->_model = glm::mat4(1.0f);
+		this->_model = glm::translate(this->_model, (this->_pos + this->_offset));
+		this->_model = glm::rotate(this->_model, glm::radians(this->_yaw), glm::vec3(0.0f, 1.0f, 0.0f));
+		this->_model = glm::rotate(this->_model, glm::radians(this->_pitch), glm::vec3(1.0f, 0.0f, 0.0f));
+		this->_model = glm::rotate(this->_model, glm::radians(this->_roll), glm::vec3(0.0f, 0.0f, 1.0f));
+		this->_model = glm::translate(this->_model,
+									  glm::vec3(-this->_render_bin->getModel()->getCenter().x * this->_scale.x,
+												-this->_render_bin->getModel()->getCenter().y * this->_scale.y,
+												-this->_render_bin->getModel()->getCenter().z * this->_scale.z));
+		this->_model = glm::scale(this->_model, this->_scale);
+		this->_to_update = false;
+	}
 }
 
 void Prop::requestDraw(void)
@@ -187,11 +197,13 @@ bool Prop::getActive(void) const
 void Prop::translateObject(glm::vec3 const &vec)
 {
 	this->_pos += vec;
+	this->_to_update = true;
 }
 
 void Prop::scaleObject(glm::vec3 const &vec)
 {
 	this->_scale *= vec;
+	this->_to_update = true;
 }
 
 void Prop::rotateObject(glm::vec3 const &vec)
@@ -199,6 +211,7 @@ void Prop::rotateObject(glm::vec3 const &vec)
 	this->_yaw += vec.x;
 	this->_pitch += vec.y;
 	this->_roll += vec.z;
+	this->_to_update = true;
 }
 
 /*
