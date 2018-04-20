@@ -38,7 +38,6 @@ Prop::Prop(Prop::Params const &params) :
 {
 	if (this->_render_bin == nullptr)
 		throw Prop::InitException();
-//	this->update(0.0f);
 }
 
 Prop::~Prop(void)
@@ -65,7 +64,7 @@ Prop &Prop::operator=(Prop const &rhs)
 	this->_cb          = rhs.getCollisionBox();
 	this->_dmg         = rhs.getDamages();
 	this->_passthrough = rhs.getPassthrough();
-	this->_to_update = rhs.getToUpdate();
+	this->_to_update   = rhs.getToUpdate();
 	return (*this);
 }
 
@@ -161,16 +160,16 @@ void Prop::update(float time)
 	if (this->_to_update)
 	{
 		static_cast<void>(time);
-		this->_model = glm::mat4(1.0f);
-		this->_model = glm::translate(this->_model, (this->_pos + this->_offset));
-		this->_model = glm::rotate(this->_model, glm::radians(this->_yaw), glm::vec3(0.0f, 1.0f, 0.0f));
-		this->_model = glm::rotate(this->_model, glm::radians(this->_pitch), glm::vec3(1.0f, 0.0f, 0.0f));
-		this->_model = glm::rotate(this->_model, glm::radians(this->_roll), glm::vec3(0.0f, 0.0f, 1.0f));
-		this->_model = glm::translate(this->_model,
-									  glm::vec3(-this->_render_bin->getModel()->getCenter().x * this->_scale.x,
-												-this->_render_bin->getModel()->getCenter().y * this->_scale.y,
-												-this->_render_bin->getModel()->getCenter().z * this->_scale.z));
-		this->_model = glm::scale(this->_model, this->_scale);
+		this->_model     = glm::mat4(1.0f);
+		this->_model     = glm::translate(this->_model, (this->_pos + this->_offset));
+		this->_model     = glm::rotate(this->_model, glm::radians(this->_yaw), glm::vec3(0.0f, 1.0f, 0.0f));
+		this->_model     = glm::rotate(this->_model, glm::radians(this->_pitch), glm::vec3(1.0f, 0.0f, 0.0f));
+		this->_model     = glm::rotate(this->_model, glm::radians(this->_roll), glm::vec3(0.0f, 0.0f, 1.0f));
+		this->_model     = glm::translate(this->_model,
+										  glm::vec3(-this->_render_bin->getModel()->getCenter().x * this->_scale.x,
+													-this->_render_bin->getModel()->getCenter().y * this->_scale.y,
+													-this->_render_bin->getModel()->getCenter().z * this->_scale.z));
+		this->_model     = glm::scale(this->_model, this->_scale);
 		this->_to_update = false;
 	}
 }

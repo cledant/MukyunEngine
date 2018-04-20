@@ -27,7 +27,7 @@ static void init_ressources(RessourceManager &rm)
 	//Other
 	rm.add_model("Sakuya", "./assets/models/Sakuya/Sakuya_Izayoi.obj");
 	rm.add_model("Alice", "./assets/models/Alice/Alice.obj");
-	rm.add_model("RedBox", "./assets/models/RedBox/RedBox.obj");
+	rm.add_model("BlueBox", "./assets/models/BlueBox/BlueBox.obj");
 }
 
 static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
@@ -57,17 +57,17 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating Model RenderBin
 	ARenderBin::Params rb_model;
-	rb_model.shader       = &rm.getShader("BasicProp");
-	rb_model.model        = &rm.getModel("RedBox");
+	rb_model.shader       = &rm.getShader("BasicColor");
+	rb_model.model        = &rm.getModel("BlueBox");
 	rb_model.max_instance = 1000000;
-	ARenderBin *model = (*world)->add_RenderBin("Model", rb_model, ARenderBin::eType::PROP);
+	ARenderBin *model = (*world)->add_RenderBin("Model", rb_model, ARenderBin::eType::COLOR);
 
 	//Creating Prop
 	Prop::Params prop_params;
 	prop_params.render_bin  = model;
 	prop_params.orientation = glm::vec3(0.0f);
 	prop_params.scale       = glm::vec3(0.25f);
-	for (size_t k = 0; k < 64; ++k)
+	for (size_t k = 0; k < 32; ++k)
 	{
 		for (size_t i = 0; i < 64; ++i)
 		{

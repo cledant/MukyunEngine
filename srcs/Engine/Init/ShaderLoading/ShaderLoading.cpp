@@ -14,6 +14,8 @@
 
 void ShaderLoading(RessourceManager &rm)
 {
+	rm.add_shader("BasicColor", "./shaders/BasicColor/BasicColor_vs.glsl",
+				  "./shaders/BasicColor/BasicColor_fs.glsl");
 	rm.add_shader("BasicProp", "./shaders/BasicProp/BasicProp_vs.glsl",
 				  "./shaders/BasicProp/BasicProp_fs.glsl");
 	rm.add_shader("DiffuseColored", "./shaders/DiffuseColored/DiffuseColored_vs.glsl",
