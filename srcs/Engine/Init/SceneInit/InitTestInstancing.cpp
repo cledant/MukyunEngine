@@ -43,7 +43,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	Engine::EngineInitParams engine_params;
 	engine_params.input          = &manager.getInput();
 	engine_params.win            = &manager.getWindow();
-	engine_params.cam_pos        = glm::vec3(0.0f, 0.0f, 10.0f);
+	engine_params.cam_pos        = glm::vec3(-5.0f, 0.0f, 15.0f);
 	engine_params.near_far       = glm::vec2(0.1f, 1000.0f);
 	engine_params.max_fps        = 60.0f;
 	engine_params.max_frame_skip = 10;
