@@ -37,6 +37,7 @@ struct InitValue
 	bool                  fullscreen;
 	unsigned long         monitor;
 	bool                  vsync;
+	std::vector<size_t>   instance_size;
 };
 
 /*

@@ -36,6 +36,8 @@ void Env::parse_args(int argc, char **argv)
 		if (parse)
 			parse = this->_parse_resolution(std::string(argv[i]));
 		if (parse)
+			parse = this->_parse_instance_size(std::string(argv[i]));
+		if (parse)
 			parse = this->_parse_fullscreen(std::string(argv[i]));
 		if (parse)
 			parse = this->_parse_fullscreen_monitor(std::string(argv[i]));
@@ -236,6 +238,44 @@ bool Env::_parse_help(std::string const &arg)
 	return (true);
 }
 
+bool Env::_parse_instance_size(std::string const &arg)
+{
+	static bool already_parsed = false;
+	std::regex  rule           = std::regex("^--nbInstance=\\d+x\\d+x\\d+");
+	std::string sub_str;
+	std::string token;
+	size_t      pos;
+
+	if (already_parsed)
+		return (true);
+	if (!std::regex_match(arg, rule))
+		return (true);
+	this->_env_value.instance_size.clear();
+	sub_str        = arg.substr(13, arg.size());
+	try
+	{
+		while ((pos = sub_str.find("x")) != std::string::npos)
+		{
+			token = sub_str.substr(0, pos);
+			this->_env_value.instance_size.push_back(std::stoull(token));
+			if (this->_env_value.instance_size.back() > MAX_INSTANCE_SIZE)
+			{
+				std::cout << "Invalid Instance Size" << std::endl << std::endl;
+				Env::_display_help();
+			}
+			sub_str.erase(0, pos + 1);
+		}
+		this->_env_value.instance_size.push_back(std::stoull(sub_str));
+	}
+	catch (std::exception &e)
+	{
+		std::cout << "Invalid Instance Size" << std::endl << std::endl;
+		Env::_display_help();
+	}
+	already_parsed = true;
+	return (false);
+}
+
 /*
  * Display info
  */
@@ -270,6 +310,9 @@ void Env::_display_help()
 	std::cout << "				Min resolution is 640x480" << std::endl;
 	std::cout << "				Max resolution is 3840x2160" << std::endl;
 	std::cout << "				Default is 1280x720" << std::endl;
+	std::cout << "		--nbInstance=AxBxC" << std::endl;
+	std::cout << "			Set number of models for instancing test" << std::endl;
+	std::cout << "			Max per size is 65536" << std::endl;
 	std::cout << "		--vsync" << std::endl;
 	std::cout << "			Enable Vsync. Vsync is disable by default" << std::endl << std::endl;
 	std::cout << "		--help" << std::endl;

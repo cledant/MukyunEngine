@@ -18,6 +18,7 @@
 # include <regex>
 
 # define MAX_MONITOR 16
+# define MAX_INSTANCE_SIZE 65536
 
 class Env
 {
@@ -44,6 +45,7 @@ class Env
 		bool _parse_fullscreen_monitor(std::string const &arg);
 		bool _parse_vsync(std::string const &arg);
 		bool _parse_help(std::string const &arg);
+		bool _parse_instance_size(std::string const &arg);
 
 		/*
 		 * Display info

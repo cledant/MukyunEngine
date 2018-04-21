@@ -20,6 +20,9 @@ InitValue::InitValue()
 	this->fullscreen = false;
 	this->monitor    = 0;
 	this->vsync      = false;
+	this->instance_size.push_back(64);
+	this->instance_size.push_back(32);
+	this->instance_size.push_back(64);
 }
 
 InitValue::~InitValue()
