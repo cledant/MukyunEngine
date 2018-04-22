@@ -42,6 +42,9 @@
 # include <fstream>
 # include <memory>
 # include <map>
+# include <thread>
+
+# define THREAD_NB 4
 
 class Engine
 {
@@ -160,6 +163,12 @@ class Engine
 		int                                                      _monitor;
 		glm::mat4                                                _orthogonal_perspective;
 		Fontset                                                  *_system_fontset;
+
+		/*
+		 * Private Functions
+		 */
+
+		void _update_multi_thread(size_t offset);
 };
 
 #endif

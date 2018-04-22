@@ -32,10 +32,12 @@ SpotLight::SpotLight(SpotLight::Params const &params) : ALight(params),
 {
 	this->_type = ALight::eType::SPOT;
 	this->update(0.0f);
+	this->_model_rb->addInstance();
 }
 
 SpotLight::~SpotLight()
 {
+	this->_model_rb->removeInstance();
 }
 
 SpotLight::SpotLight(const SpotLight &src) : ALight()
@@ -89,5 +91,11 @@ void SpotLight::update(float time)
 void SpotLight::requestDraw()
 {
 	if (this->_active && this->_draw_model)
-		this->_model_rb->addInstance(this->_model);
+		this->_model_rb->addModelMatrix(this->_model);
+}
+
+void SpotLight::requestDraw(size_t index)
+{
+	if (this->_active && this->_draw_model)
+		this->_model_rb->addModelMatrix(this->_model, index);
 }

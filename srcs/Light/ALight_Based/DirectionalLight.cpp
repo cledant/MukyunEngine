@@ -27,10 +27,12 @@ DirectionalLight::DirectionalLight(DirectionalLight::Params const &params) : ALi
 {
 	this->_type = ALight::eType::DIRECTIONAL;
 	this->update(0.0f);
+	this->_model_rb->addInstance();
 }
 
 DirectionalLight::~DirectionalLight()
 {
+	this->_model_rb->removeInstance();
 }
 
 DirectionalLight::DirectionalLight(const DirectionalLight &src) : ALight()
@@ -73,5 +75,11 @@ void DirectionalLight::update(float time)
 void DirectionalLight::requestDraw()
 {
 	if (this->_active && this->_draw_model)
-		this->_model_rb->addInstance(this->_model);
+		this->_model_rb->addModelMatrix(this->_model);
+}
+
+void DirectionalLight::requestDraw(size_t index)
+{
+	if (this->_active && this->_draw_model)
+		this->_model_rb->addModelMatrix(this->_model, index);
 }

@@ -26,18 +26,20 @@ ARenderBin::Params::~Params(void)
 
 ARenderBin::ARenderBin(void) :
 		_type(ARenderBin::eType::NONE), _shader(nullptr), _perspec_mult_view(nullptr),
-		_model(nullptr), _vbo_model_matrices(0)
+		_model(nullptr), _vbo_model_matrices(0), _cur_object(0), _max_object(0),
+		_model_matrices(nullptr), _populate_mm(0)
 {
 }
 
 ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		_type(ARenderBin::eType::NONE), _shader(params.shader),
 		_perspec_mult_view(params.perspec_mult_view), _model(params.model),
-		_vbo_model_matrices(0)
+		_vbo_model_matrices(0), _cur_object(0), _max_object(params.max_instance),
+		_model_matrices(nullptr), _populate_mm(0)
 {
 	try
 	{
-		this->_model_matrices.reserve(params.max_instance);
+		this->_model_matrices = std::make_unique<glm::mat4[]>(params.max_instance);
 		this->_create_vbo_model_matrices(params.max_instance);
 		this->_create_vao_mesh();
 	}
@@ -69,10 +71,12 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 	this->_shader            = rhs.getShader();
 	this->_perspec_mult_view = rhs.getPerspecMultView();
 	this->_model             = rhs.getModel();
+	this->_populate_mm       = 0;
 	try
 	{
-		this->_model_matrices.reserve(rhs.getMaxInstanceNumber());
-		this->_model_matrices     = rhs.getModelMatrices();
+		this->_cur_object         = rhs.getCurrentInstanceNumber();
+		this->_max_object         = rhs.getMaxInstanceNumber();
+		this->_model_matrices     = std::make_unique<glm::mat4[]>(this->_max_object);
 		this->_vbo_model_matrices = rhs.moveVboModelMatrices();
 		this->_vao_mesh           = rhs.moveVaoMeshes();
 	}
@@ -90,24 +94,47 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 void ARenderBin::updateVBO(void)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_model_matrices);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * this->_model_matrices.size(),
-					&(this->_model_matrices[0]));
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * this->_cur_object,
+					this->_model_matrices.get());
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void ARenderBin::flushData(void)
 {
-	this->_model_matrices.clear();
+	this->_populate_mm = 0;
 }
 
-bool ARenderBin::addInstance(glm::mat4 const &model)
+bool ARenderBin::addInstance()
 {
-	if (this->_model_matrices.size() < this->_model_matrices.capacity())
+	if (this->_cur_object < this->_max_object)
 	{
-		this->_model_matrices.push_back(model);
+		this->_cur_object++;
 		return (true);
 	}
 	return (false);
+}
+
+bool ARenderBin::removeInstance()
+{
+	if (this->_cur_object)
+	{
+		this->_cur_object--;
+		return (true);
+	}
+	return (false);
+}
+
+bool ARenderBin::addModelMatrix(glm::mat4 const &model, size_t index)
+{
+	this->_model_matrices.get()[index] = model;
+	return (true);
+}
+
+bool ARenderBin::addModelMatrix(glm::mat4 const &model)
+{
+	this->_model_matrices.get()[this->_populate_mm] = model;
+	this->_populate_mm++;
+	return (true);
 }
 
 ARenderBin::eType ARenderBin::getType(void) const
@@ -130,11 +157,17 @@ Model const *ARenderBin::getModel(void) const
 	return (this->_model);
 }
 
-std::vector<glm::mat4> const &ARenderBin::getModelMatrices(void) const
+glm::mat4 const *ARenderBin::getModelMatrices(void) const
+{
+	return (this->_model_matrices.get());
+}
+
+/*
+std::unique_ptr<glm::mat4> &ARenderBin::getModelMatrices(void)
 {
 	return (this->_model_matrices);
 }
-
+*/
 GLuint ARenderBin::getVboModelMatrices(void) const
 {
 	return (this->_vbo_model_matrices);
@@ -167,20 +200,19 @@ std::vector<GLuint> ARenderBin::moveVaoMeshes(void)
 
 size_t ARenderBin::getCurrentInstanceNumber(void) const
 {
-	return (this->_model_matrices.size());
+	return (this->_cur_object);
 }
 
 size_t ARenderBin::getMaxInstanceNumber(void) const
 {
-	return (this->_model_matrices.capacity());
+	return (this->_max_object);
 }
 
 void ARenderBin::_create_vbo_model_matrices(size_t max_size)
 {
 	glGenBuffers(1, &(this->_vbo_model_matrices));
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_model_matrices);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * max_size, &(this->_model_matrices[0]),
-				 GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * max_size, NULL, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	oGL_check_error();
 }

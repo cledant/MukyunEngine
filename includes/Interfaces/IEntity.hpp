@@ -13,6 +13,8 @@
 #ifndef IENTITY_HPP
 # define IENTITY_HPP
 
+# include <string>
+
 class IEntity
 {
 	public :
@@ -24,6 +26,7 @@ class IEntity
 
 		virtual void update(float time) = 0;
 		virtual void requestDraw(void) = 0;
+		virtual void requestDraw(size_t index) = 0;
 		virtual void setActive(bool value) = 0;
 		virtual bool getActive(void) const = 0;
 };

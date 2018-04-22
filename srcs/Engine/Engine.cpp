@@ -129,6 +129,8 @@ void Engine::startGameLoop(Glfw_manager &manager)
 
 void Engine::update(void)
 {
+	std::vector<std::thread> workers;
+
 	if (this->_window.toggle_screen_mode)
 		this->toggleScreenMode();
 	if (this->_window.resized)
@@ -150,11 +152,18 @@ void Engine::update(void)
 		it->second.get()->flushData();
 	this->_light_container.update(this->_tick);
 	this->_sr.update();
-	for (auto it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
+	for (size_t i = 0; i < THREAD_NB; ++i)
+		workers.push_back(std::thread(&Engine::_update_multi_thread, this, i));
+	for (size_t i = 0; i < THREAD_NB; ++i)
+		workers[i].join();
+
+//	this->_update_multi_thread(0);
+
+/*	for (auto it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
 	{
 		it->get()->update(this->_tick);
 		it->get()->requestDraw();
-	}
+	}*/
 }
 
 void Engine::updateGPU(void)
@@ -371,6 +380,19 @@ bool Engine::should_be_updated(float time)
 		return (true);
 	}
 	return (false);
+}
+
+/*
+ * Private Functions
+ */
+
+void Engine::_update_multi_thread(size_t offset)
+{
+	for (size_t i = offset; i < this->_entity_list.size(); i += THREAD_NB)
+	{
+		this->_entity_list[i].get()->update(this->_tick);
+		this->_entity_list[i].get()->requestDraw(i);
+	}
 }
 
 Engine::EngineFailException::EngineFailException(void)

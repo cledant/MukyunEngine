@@ -185,8 +185,14 @@ void AShadowRenderBin::_allocate_vbo(size_t max_size)
 
 void AShadowRenderBin::_update_vector_inv_model(void)
 {
-	for (auto it = this->_model_matrices.begin(); it != this->_model_matrices.end(); ++it)
-		this->_inv_model_matrices.push_back(glm::transpose(glm::inverse(*it)));
+	/*
+	 * TODO
+	 *
+	 * Update for multithreading method
+	 * And Update this matrice only if necessary
+	 */
+	for (size_t it = 0; it < this->_max_object; ++it)
+		this->_inv_model_matrices.push_back(glm::transpose(glm::inverse(this->_model_matrices.get()[it])));
 }
 
 void AShadowRenderBin::_update_vao(void)

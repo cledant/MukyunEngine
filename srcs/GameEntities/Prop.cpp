@@ -38,10 +38,12 @@ Prop::Prop(Prop::Params const &params) :
 {
 	if (this->_render_bin == nullptr)
 		throw Prop::InitException();
+	this->_render_bin->addInstance();
 }
 
 Prop::~Prop(void)
 {
+	this->_render_bin->removeInstance();
 }
 
 Prop::Prop(Prop const &src) : IEntity(), ITransformable(), ICollidable(),
@@ -157,7 +159,7 @@ bool Prop::getToUpdate() const
 
 void Prop::update(float time)
 {
-	if (this->_to_update)
+	if (this->_to_update && this->_active)
 	{
 		static_cast<void>(time);
 		this->_model     = glm::mat4(1.0f);
@@ -174,9 +176,16 @@ void Prop::update(float time)
 	}
 }
 
+void Prop::requestDraw(size_t index)
+{
+	if (this->_active)
+		this->_render_bin->addModelMatrix(this->_model, index);
+}
+
 void Prop::requestDraw(void)
 {
-	this->_render_bin->addInstance(this->_model);
+	if (this->_active)
+		this->_render_bin->addModelMatrix(this->_model);
 }
 
 void Prop::setActive(bool value)

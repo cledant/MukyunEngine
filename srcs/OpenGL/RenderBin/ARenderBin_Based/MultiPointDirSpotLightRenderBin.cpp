@@ -108,7 +108,7 @@ void MultiPointDirSpotLightRenderBin::draw(void)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0,
 							  (this->_model->getMeshList())[i].getNbVertices(),
-							  this->_model_matrices.size());
+							  this->_cur_object);
 		glBindVertexArray(0);
 		i++;
 	}
@@ -185,8 +185,14 @@ void MultiPointDirSpotLightRenderBin::_allocate_vbo(size_t max_size)
 
 void MultiPointDirSpotLightRenderBin::_update_vector_inv_model(void)
 {
-	for (auto it = this->_model_matrices.begin(); it != this->_model_matrices.end(); ++it)
-		this->_inv_model_matrices.push_back(glm::transpose(glm::inverse(*it)));
+	/*
+	 * TODO
+	 *
+	 * Update for multithreading method
+	 * And Update this matrice only if necessary
+	 */
+	for (size_t it = 0; it < this->_max_object; ++it)
+		this->_inv_model_matrices.push_back(glm::transpose(glm::inverse(this->_model_matrices.get()[it])));
 }
 
 void MultiPointDirSpotLightRenderBin::_update_vao(void)

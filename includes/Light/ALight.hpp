@@ -89,6 +89,7 @@ class ALight : public IEntity, public ITransformable
 
 		virtual void update(float time);
 		virtual void requestDraw(void) = 0;
+		virtual void requestDraw(size_t index) = 0;
 		void setActive(bool value);
 		bool getActive(void) const;
 

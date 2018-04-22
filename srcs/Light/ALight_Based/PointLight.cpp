@@ -28,10 +28,12 @@ PointLight::PointLight(PointLight::Params const &params) : ALight(params),
 {
 	this->_type = ALight::eType::POINT;
 	this->update(0.0f);
+	this->_model_rb->addInstance();
 }
 
 PointLight::~PointLight()
 {
+	this->_model_rb->removeInstance();
 }
 
 PointLight::PointLight(const PointLight &src) : ALight()
@@ -74,5 +76,11 @@ void PointLight::update(float time)
 void PointLight::requestDraw()
 {
 	if (this->_active && this->_draw_model)
-		this->_model_rb->addInstance(this->_model);
+		this->_model_rb->addModelMatrix(this->_model);
+}
+
+void PointLight::requestDraw(size_t index)
+{
+	if (this->_active && this->_draw_model)
+		this->_model_rb->addModelMatrix(this->_model, index);
 }
