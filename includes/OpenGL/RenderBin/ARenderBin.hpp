@@ -20,6 +20,8 @@
 # include "OpenGL/Ressource/Shader.hpp"
 # include "OpenGL/Ressource/Model.hpp"
 # include <vector>
+# include <memory>
+# include <mutex>
 
 class ARenderBin
 {
@@ -100,7 +102,6 @@ class ARenderBin
 		size_t                       _max_object;
 		std::unique_ptr<glm::mat4[]> _model_matrices;
 		size_t                       _populate_mm;
-		std::mutex                   _populate_mutex;
 
 		void _create_vbo_model_matrices(size_t max_size);
 		void _create_vao_mesh(void);

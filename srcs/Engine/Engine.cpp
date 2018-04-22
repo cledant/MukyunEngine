@@ -44,7 +44,7 @@ Engine::Engine(EngineInitParams const &params) :
 		_tss(params.win, params.input, params.display_shader, 0),
 		_final_image(params.win->cur_win_h, params.win->cur_win_w),
 		_init_h(params.init_h), _init_w(params.init_w), _monitor(params.monitor),
-		_system_fontset(params.system_fontset)
+		_system_fontset(params.system_fontset), _workers_done(THREAD_NB)
 {
 	if (params.max_frame_skip == 0)
 		throw Engine::EngineFailException();
@@ -62,6 +62,10 @@ Engine::Engine(EngineInitParams const &params) :
 	sr_params_cpy.lc = &this->_light_container;
 	this->_sr        = ShadowRenderer(sr_params_cpy);
 	this->_tss.setTextureID(this->_final_image.getTextureBuffer());
+	for (size_t i = 0; i < THREAD_NB; ++i)
+		this->_workers.push_back(std::thread(&Engine::_update_multi_thread, this, i));
+	for (size_t i = 0; i < THREAD_NB; ++i)
+		this->_workers[i].detach();
 }
 
 Engine::~Engine(void)
@@ -129,7 +133,7 @@ void Engine::startGameLoop(Glfw_manager &manager)
 
 void Engine::update(void)
 {
-	std::vector<std::thread> workers;
+//	std::vector<std::thread> workers;
 
 	if (this->_window.toggle_screen_mode)
 		this->toggleScreenMode();
@@ -152,10 +156,13 @@ void Engine::update(void)
 		it->second.get()->flushData();
 	this->_light_container.update(this->_tick);
 	this->_sr.update();
-	for (size_t i = 0; i < THREAD_NB; ++i)
+/*	for (size_t i = 0; i < THREAD_NB; ++i)
 		workers.push_back(std::thread(&Engine::_update_multi_thread, this, i));
 	for (size_t i = 0; i < THREAD_NB; ++i)
-		workers[i].join();
+		workers[i].join();*/
+
+	this->_workers_done = 0;
+	while(this->_workers_done != THREAD_NB);
 
 //	this->_update_multi_thread(0);
 
@@ -388,10 +395,17 @@ bool Engine::should_be_updated(float time)
 
 void Engine::_update_multi_thread(size_t offset)
 {
-	for (size_t i = offset; i < this->_entity_list.size(); i += THREAD_NB)
+	while (1)
 	{
-		this->_entity_list[i].get()->update(this->_tick);
-		this->_entity_list[i].get()->requestDraw(i);
+		if (!this->_workers_done)
+		{
+			for (size_t i = offset; i < this->_entity_list.size(); i += THREAD_NB)
+			{
+				this->_entity_list[i].get()->update(this->_tick);
+				this->_entity_list[i].get()->requestDraw(i);
+			}
+			this->_workers_done++;
+		}
 	}
 }
 

@@ -43,6 +43,7 @@
 # include <memory>
 # include <map>
 # include <thread>
+# include <atomic>
 
 # define THREAD_NB 4
 
@@ -163,6 +164,8 @@ class Engine
 		int                                                      _monitor;
 		glm::mat4                                                _orthogonal_perspective;
 		Fontset                                                  *_system_fontset;
+		std::vector<std::thread>                                 _workers;
+		std::atomic<size_t>                                      _workers_done;
 
 		/*
 		 * Private Functions
