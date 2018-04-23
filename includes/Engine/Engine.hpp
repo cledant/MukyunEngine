@@ -44,8 +44,9 @@
 # include <map>
 # include <thread>
 # include <atomic>
+# include <mutex>
 
-# define THREAD_NB 4
+# define THREAD_NB 1
 
 class Engine
 {
@@ -165,6 +166,7 @@ class Engine
 		glm::mat4                                                _orthogonal_perspective;
 		Fontset                                                  *_system_fontset;
 		std::vector<std::thread>                                 _workers;
+		std::mutex                                               _workers_mutex[THREAD_NB];
 		std::atomic<size_t>                                      _workers_done;
 
 		/*

@@ -50,9 +50,9 @@ void BasicColorRenderBin::draw(void)
 		this->_shader->setVec3("uniform_light_diffuse",
 							   this->_model->getMeshList()[i].getMaterial().diffuse);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-/*		glDrawArraysInstanced(GL_TRIANGLES, 0,
+		glDrawArraysInstanced(GL_TRIANGLES, 0,
 							  (this->_model->getMeshList())[i].getNbVertices(),
-							  this->_cur_object);*/
+							  this->_cur_object);
 		glBindVertexArray(0);
 		i++;
 	}

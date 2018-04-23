@@ -66,6 +66,7 @@ Engine::Engine(EngineInitParams const &params) :
 		this->_workers.push_back(std::thread(&Engine::_update_multi_thread, this, i));
 	for (size_t i = 0; i < THREAD_NB; ++i)
 		this->_workers[i].detach();
+
 }
 
 Engine::~Engine(void)
@@ -161,8 +162,11 @@ void Engine::update(void)
 	for (size_t i = 0; i < THREAD_NB; ++i)
 		workers[i].join();*/
 
-	this->_workers_done = 0;
-	while(this->_workers_done != THREAD_NB);
+//	this->_workers_done = 0;
+//	while(this->_workers_done != THREAD_NB);
+
+	for (size_t i = 0; i < THREAD_NB; ++i)
+		this->_workers_mutex[i].unlock();
 
 //	this->_update_multi_thread(0);
 
@@ -397,14 +401,11 @@ void Engine::_update_multi_thread(size_t offset)
 {
 	while (1)
 	{
-		if (!this->_workers_done)
+		this->_workers_mutex[offset].lock();
+		for (size_t i = offset; i < this->_entity_list.size(); i += THREAD_NB)
 		{
-			for (size_t i = offset; i < this->_entity_list.size(); i += THREAD_NB)
-			{
-				this->_entity_list[i].get()->update(this->_tick);
-				this->_entity_list[i].get()->requestDraw(i);
-			}
-			this->_workers_done++;
+			this->_entity_list[i].get()->update(this->_tick);
+			this->_entity_list[i].get()->requestDraw(i);
 		}
 	}
 }
