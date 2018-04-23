@@ -111,7 +111,7 @@ void Engine::startGameLoop(Glfw_manager &manager)
 			this->_final_image.setViewport();
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//			this->render();
+			this->render();
 			//Display final image
 			this->_final_image.defaultFramebuffer();
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -408,7 +408,7 @@ void Engine::_update_multi_thread(size_t offset)
 		for (size_t i = offset; i < this->_entity_list.size(); i += THREAD_NB)
 		{
 			this->_entity_list[i].get()->update(this->_tick);
-			this->_entity_list[i].get()->requestDraw(i);
+			this->_entity_list[i].get()->requestDraw();
 		}
 		this->_workers_done++;
 	}

@@ -81,7 +81,7 @@ class ARenderBin
 		Shader *getShader(void) const;
 		glm::mat4 const *getPerspecMultView(void) const;
 		Model const *getModel(void) const;
-		glm::mat4 const *getModelMatrices(void) const;
+		glm::mat4 *getModelMatrices(void) const;
 //		std::unique_ptr<glm::mat4[]> &getModelMatrices(void);
 		GLuint getVboModelMatrices(void) const;
 		GLuint moveVboModelMatrices(void);
@@ -101,7 +101,8 @@ class ARenderBin
 		size_t                       _cur_object;
 		size_t                       _max_object;
 		std::unique_ptr<glm::mat4[]> _model_matrices;
-		size_t                       _populate_mm;
+		std::atomic<size_t>          _populate_mm;
+		std::mutex                   _mutex_mm;
 
 		void _create_vbo_model_matrices(size_t max_size);
 		void _create_vao_mesh(void);

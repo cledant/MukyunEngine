@@ -130,14 +130,20 @@ bool ARenderBin::removeInstance()
 
 bool ARenderBin::addModelMatrix(glm::mat4 const &model, size_t index)
 {
-	this->_model_matrices.get()[index] = model;
+	std::memcpy(&this->_model_matrices.get()[index], &model, sizeof(glm::mat4));
+//	this->_model_matrices.get()[index] = model;
 	return (true);
 }
 
 bool ARenderBin::addModelMatrix(glm::mat4 const &model)
 {
-	this->_model_matrices.get()[this->_populate_mm] = model;
-	this->_populate_mm++;
+	static glm::mat4 *ptr = NULL;
+
+	if (!ptr)
+		ptr = this->_model_matrices.get();
+	std::memcpy(&ptr[++this->_populate_mm - 1], &model, sizeof(glm::mat4));
+//	this->_model_matrices.get()[this->_populate_mm] = model;
+
 	return (true);
 }
 
@@ -161,7 +167,7 @@ Model const *ARenderBin::getModel(void) const
 	return (this->_model);
 }
 
-glm::mat4 const *ARenderBin::getModelMatrices(void) const
+glm::mat4 *ARenderBin::getModelMatrices(void) const
 {
 	return (this->_model_matrices.get());
 }

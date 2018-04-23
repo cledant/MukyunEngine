@@ -178,8 +178,15 @@ void Prop::update(float time)
 
 void Prop::requestDraw(size_t index)
 {
+	static glm::mat4 *ptr = NULL;
+
+	if (!ptr)
+		ptr = this->_render_bin->getModelMatrices();
 	if (this->_active)
-		this->_render_bin->addModelMatrix(this->_model, index);
+	{
+		std::memcpy(&ptr[index], &this->_model, sizeof(glm::mat4));
+//		this->_render_bin->addModelMatrix(this->_model, index);
+	}
 }
 
 void Prop::requestDraw(void)
