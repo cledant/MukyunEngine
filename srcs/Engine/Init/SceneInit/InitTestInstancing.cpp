@@ -46,7 +46,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	engine_params.cam_pos        = glm::vec3(-5.0f, 0.0f, 15.0f);
 	engine_params.near_far       = glm::vec2(0.1f, 1000.0f);
 	engine_params.max_fps        = 60.0f;
-	engine_params.max_frame_skip = 10;
+	engine_params.max_frame_skip = 1;
 	engine_params.lc_params      = LightContainer::Params();
 	engine_params.sr_params      = sr_params;
 	engine_params.display_shader = &rm.getShader("DisplayImage");
