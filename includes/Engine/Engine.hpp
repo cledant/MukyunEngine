@@ -46,7 +46,7 @@
 # include <atomic>
 # include <mutex>
 
-# define THREAD_NB 1
+# define THREAD_NB 8
 
 class Engine
 {

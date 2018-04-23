@@ -66,7 +66,6 @@ Engine::Engine(EngineInitParams const &params) :
 		this->_workers.push_back(std::thread(&Engine::_update_multi_thread, this, i));
 	for (size_t i = 0; i < THREAD_NB; ++i)
 		this->_workers[i].detach();
-
 }
 
 Engine::~Engine(void)
@@ -91,6 +90,8 @@ void Engine::startGameLoop(Glfw_manager &manager)
 				this->update();
 				this->updateGPU();
 			}
+			for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
+				it->second.get()->updateVBO();
 			manager.calculate_fps();
 			/*
 			 * Compute depth maps :
@@ -162,11 +163,10 @@ void Engine::update(void)
 	for (size_t i = 0; i < THREAD_NB; ++i)
 		workers[i].join();*/
 
-//	this->_workers_done = 0;
-//	while(this->_workers_done != THREAD_NB);
-
+	this->_workers_done = 0;
 	for (size_t i = 0; i < THREAD_NB; ++i)
 		this->_workers_mutex[i].unlock();
+	while(this->_workers_done != THREAD_NB);
 
 //	this->_update_multi_thread(0);
 
@@ -179,8 +179,7 @@ void Engine::update(void)
 
 void Engine::updateGPU(void)
 {
-	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
-		it->second.get()->updateVBO();
+
 	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
 		it->second.get()->updateVBO();
 	this->_light_container.updateGPU();
@@ -407,6 +406,7 @@ void Engine::_update_multi_thread(size_t offset)
 			this->_entity_list[i].get()->update(this->_tick);
 			this->_entity_list[i].get()->requestDraw(i);
 		}
+		this->_workers_done++;
 	}
 }
 

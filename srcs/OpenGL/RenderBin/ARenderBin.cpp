@@ -93,10 +93,14 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 
 void ARenderBin::updateVBO(void)
 {
+//	float time = glfwGetTime();
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_model_matrices);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * this->_cur_object,
 					this->_model_matrices.get());
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+/*	float next_time = glfwGetTime();
+	next_time -= time;
+	std::cout << next_time << std::endl;*/
 }
 
 void ARenderBin::flushData(void)
