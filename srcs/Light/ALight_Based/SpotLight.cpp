@@ -93,9 +93,3 @@ void SpotLight::requestDraw()
 	if (this->_active && this->_draw_model)
 		this->_model_rb->addModelMatrix(this->_model);
 }
-
-void SpotLight::requestDraw(size_t index)
-{
-	if (this->_active && this->_draw_model)
-		this->_model_rb->addModelMatrix(this->_model, index);
-}

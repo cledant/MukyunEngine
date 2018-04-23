@@ -53,6 +53,9 @@ class ARenderBin
 		virtual ~ARenderBin(void);
 		ARenderBin(ARenderBin const &src) = delete;
 		ARenderBin &operator=(ARenderBin const &rhs) = delete;
+		/*
+		 * Doesn't copy content of ModelMatrices Array
+		 */
 		ARenderBin(ARenderBin &&src);
 		ARenderBin &operator=(ARenderBin &&rhs);
 
@@ -70,7 +73,6 @@ class ARenderBin
 
 		bool addInstance(void);
 		bool removeInstance(void);
-		bool addModelMatrix(glm::mat4 const &model, size_t index);
 		bool addModelMatrix(glm::mat4 const &model);
 
 		/*
@@ -82,7 +84,6 @@ class ARenderBin
 		glm::mat4 const *getPerspecMultView(void) const;
 		Model const *getModel(void) const;
 		glm::mat4 *getModelMatrices(void) const;
-//		std::unique_ptr<glm::mat4[]> &getModelMatrices(void);
 		GLuint getVboModelMatrices(void) const;
 		GLuint moveVboModelMatrices(void);
 		std::vector<GLuint> const &getVaoMeshes(void) const;
@@ -102,7 +103,6 @@ class ARenderBin
 		size_t                       _max_object;
 		std::unique_ptr<glm::mat4[]> _model_matrices;
 		std::atomic<size_t>          _populate_mm;
-		std::mutex                   _mutex_mm;
 
 		void _create_vbo_model_matrices(size_t max_size);
 		void _create_vao_mesh(void);

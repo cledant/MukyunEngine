@@ -87,11 +87,7 @@ void Engine::startGameLoop(Glfw_manager &manager)
 			while (this->should_be_updated(Glfw_manager::getTime()))
 			{
 				manager.update_events();
-//				float time = glfwGetTime();
 				this->update();
-/*				float next_time = glfwGetTime();
-				next_time -= time;
-				std::cout << next_time << std::endl;*/
 				this->updateGPU();
 			}
 			for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
@@ -170,7 +166,7 @@ void Engine::update(void)
 	this->_workers_done = 0;
 	for (size_t i = 0; i < THREAD_NB; ++i)
 		this->_workers_mutex[i].unlock();
-	while(this->_workers_done != THREAD_NB);
+	while (this->_workers_done != THREAD_NB);
 
 //	this->_update_multi_thread(0);
 

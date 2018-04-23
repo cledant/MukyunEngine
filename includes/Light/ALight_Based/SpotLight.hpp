@@ -50,7 +50,6 @@ class SpotLight : public ALight
 
 		virtual void update(float time);
 		virtual void requestDraw(void);
-		virtual void requestDraw(size_t index);
 
 	protected :
 

@@ -59,7 +59,6 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		void setPitch(float pitch);
 		void setRoll(float roll);
 		void setOffset(glm::vec3 const &offset);
-		void requestDraw(size_t index);
 
 		/*
 		 * Getter

@@ -128,13 +128,6 @@ bool ARenderBin::removeInstance()
 	return (false);
 }
 
-bool ARenderBin::addModelMatrix(glm::mat4 const &model, size_t index)
-{
-	std::memcpy(&this->_model_matrices.get()[index], &model, sizeof(glm::mat4));
-//	this->_model_matrices.get()[index] = model;
-	return (true);
-}
-
 bool ARenderBin::addModelMatrix(glm::mat4 const &model)
 {
 	static glm::mat4 *ptr = NULL;
@@ -142,8 +135,6 @@ bool ARenderBin::addModelMatrix(glm::mat4 const &model)
 	if (!ptr)
 		ptr = this->_model_matrices.get();
 	std::memcpy(&ptr[++this->_populate_mm - 1], &model, sizeof(glm::mat4));
-//	this->_model_matrices.get()[this->_populate_mm] = model;
-
 	return (true);
 }
 
@@ -172,12 +163,6 @@ glm::mat4 *ARenderBin::getModelMatrices(void) const
 	return (this->_model_matrices.get());
 }
 
-/*
-std::unique_ptr<glm::mat4> &ARenderBin::getModelMatrices(void)
-{
-	return (this->_model_matrices);
-}
-*/
 GLuint ARenderBin::getVboModelMatrices(void) const
 {
 	return (this->_vbo_model_matrices);
