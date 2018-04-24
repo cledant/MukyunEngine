@@ -118,6 +118,7 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		glm::vec3  _scale;
 		glm::vec3  _offset;
 		glm::mat4  _model;
+		glm::mat4  _inv_model;
 
 		//Related to IEntity
 		bool _active;
@@ -128,6 +129,7 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		bool                  _passthrough;
 
 		bool _to_update;
+		bool _used_for_light;
 };
 
 #endif

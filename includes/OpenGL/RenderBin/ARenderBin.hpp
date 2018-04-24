@@ -19,9 +19,10 @@
 # include "Exceptions/GeneralException.hpp"
 # include "OpenGL/Ressource/Shader.hpp"
 # include "OpenGL/Ressource/Model.hpp"
+# include "OpenGL/LightContainer/LightContainer.hpp"
 # include <vector>
 # include <memory>
-# include <mutex>
+# include <atomic>
 
 class ARenderBin
 {
@@ -32,10 +33,13 @@ class ARenderBin
 			Params(void);
 			virtual ~Params(void);
 
-			Shader          *shader;
-			glm::mat4 const *perspec_mult_view;
-			Model const     *model;
-			size_t          max_instance;
+			Shader               *shader;
+			glm::mat4 const      *perspec_mult_view;
+			Model const          *model;
+			size_t               max_instance;
+			bool                 use_light;
+			LightContainer const *lc;
+			glm::vec3 const      *view_pos;
 		};
 
 		enum eType
@@ -55,6 +59,7 @@ class ARenderBin
 		ARenderBin &operator=(ARenderBin const &rhs) = delete;
 		/*
 		 * Doesn't copy content of ModelMatrices Array
+		 * Same for InvModelMatrices
 		 */
 		ARenderBin(ARenderBin &&src);
 		ARenderBin &operator=(ARenderBin &&rhs);
@@ -68,12 +73,13 @@ class ARenderBin
 		virtual void flushData(void);
 
 		/*
-		 * Setter
+		 * Model matrices Related functions
 		 */
 
 		bool addInstance(void);
 		bool removeInstance(void);
 		bool addModelMatrix(glm::mat4 const &model);
+		bool addModelMatrix(glm::mat4 const &model, glm::mat4 const &inv_model);
 
 		/*
 		 * Getter
@@ -91,6 +97,17 @@ class ARenderBin
 		size_t getCurrentInstanceNumber(void) const;
 		size_t getMaxInstanceNumber(void) const;
 
+		/*
+		 * Light Related Getter
+		 */
+
+		bool getUseLight() const;
+		LightContainer const *getLightContainer(void) const;
+		glm::vec3 const *getViewPos(void);
+		glm::mat4 *getInvModelMatrices(void) const;
+		GLuint getVBOInvModelMatrices(void) const;
+		GLuint moveVBOInvModelMatrices(void);
+
 	protected :
 
 		ARenderBin::eType            _type;
@@ -104,8 +121,29 @@ class ARenderBin
 		std::unique_ptr<glm::mat4[]> _model_matrices;
 		std::atomic<size_t>          _populate_mm;
 
+		/*
+		 * Light related
+		 */
+
+		bool                         _use_light;
+		LightContainer const         *_lc;
+		glm::vec3 const              *_view_pos;
+		std::unique_ptr<glm::mat4[]> _inv_model_matrices;
+		GLuint                       _vbo_inv_model_matrices;
+
+		/*
+		 * Protected functions
+		 */
+
 		void _create_vbo_model_matrices(size_t max_size);
 		void _create_vao_mesh(void);
+
+		/*
+		 * Protected function for light
+		 */
+
+		void _create_vbo_inv_model_matrices(size_t max_size);
+		virtual void _update_vao(void);
 };
 
 #endif

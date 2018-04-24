@@ -39,6 +39,7 @@ Prop::Prop(Prop::Params const &params) :
 	if (this->_render_bin == nullptr)
 		throw Prop::InitException();
 	this->_render_bin->addInstance();
+	this->_used_for_light = this->_render_bin->getUseLight();
 }
 
 Prop::~Prop(void)
@@ -54,19 +55,20 @@ Prop::Prop(Prop const &src) : IEntity(), ITransformable(), ICollidable(),
 
 Prop &Prop::operator=(Prop const &rhs)
 {
-	this->_render_bin  = rhs.getRenderBin();
-	this->_yaw         = rhs.getYaw();
-	this->_pitch       = rhs.getPitch();
-	this->_roll        = rhs.getRoll();
-	this->_pos         = rhs.getPos();
-	this->_scale       = rhs.getScale();
-	this->_offset      = rhs.getOffset();
-	this->_model       = rhs.getModelMatrix();
-	this->_active      = rhs.getActive();
-	this->_cb          = rhs.getCollisionBox();
-	this->_dmg         = rhs.getDamages();
-	this->_passthrough = rhs.getPassthrough();
-	this->_to_update   = rhs.getToUpdate();
+	this->_render_bin     = rhs.getRenderBin();
+	this->_yaw            = rhs.getYaw();
+	this->_pitch          = rhs.getPitch();
+	this->_roll           = rhs.getRoll();
+	this->_pos            = rhs.getPos();
+	this->_scale          = rhs.getScale();
+	this->_offset         = rhs.getOffset();
+	this->_model          = rhs.getModelMatrix();
+	this->_active         = rhs.getActive();
+	this->_cb             = rhs.getCollisionBox();
+	this->_dmg            = rhs.getDamages();
+	this->_passthrough    = rhs.getPassthrough();
+	this->_to_update      = rhs.getToUpdate();
+	this->_used_for_light = this->_render_bin->getUseLight();
 	return (*this);
 }
 
@@ -162,24 +164,29 @@ void Prop::update(float time)
 	if (this->_to_update && this->_active)
 	{
 		static_cast<void>(time);
-		this->_model     = glm::mat4(1.0f);
-		this->_model     = glm::translate(this->_model, (this->_pos + this->_offset));
-		this->_model     = glm::rotate(this->_model, glm::radians(this->_yaw), glm::vec3(0.0f, 1.0f, 0.0f));
-		this->_model     = glm::rotate(this->_model, glm::radians(this->_pitch), glm::vec3(1.0f, 0.0f, 0.0f));
-		this->_model     = glm::rotate(this->_model, glm::radians(this->_roll), glm::vec3(0.0f, 0.0f, 1.0f));
-		this->_model     = glm::translate(this->_model,
-										  glm::vec3(-this->_render_bin->getModel()->getCenter().x * this->_scale.x,
-													-this->_render_bin->getModel()->getCenter().y * this->_scale.y,
-													-this->_render_bin->getModel()->getCenter().z * this->_scale.z));
-		this->_model     = glm::scale(this->_model, this->_scale);
-		this->_to_update = false;
+		this->_model         = glm::mat4(1.0f);
+		this->_model         = glm::translate(this->_model, (this->_pos + this->_offset));
+		this->_model         = glm::rotate(this->_model, glm::radians(this->_yaw), glm::vec3(0.0f, 1.0f, 0.0f));
+		this->_model         = glm::rotate(this->_model, glm::radians(this->_pitch), glm::vec3(1.0f, 0.0f, 0.0f));
+		this->_model         = glm::rotate(this->_model, glm::radians(this->_roll), glm::vec3(0.0f, 0.0f, 1.0f));
+		this->_model         = glm::translate(this->_model,
+											  glm::vec3(-this->_render_bin->getModel()->getCenter().x * this->_scale.x,
+														-this->_render_bin->getModel()->getCenter().y * this->_scale.y,
+														-this->_render_bin->getModel()->getCenter().z * this->_scale
+																											.z));
+		this->_model         = glm::scale(this->_model, this->_scale);
+		if (this->_used_for_light)
+			this->_inv_model = glm::transpose(glm::inverse(this->_model));
+		this->_to_update     = false;
 	}
 }
 
 void Prop::requestDraw(void)
 {
-	if (this->_active)
+	if (this->_active && !this->_used_for_light)
 		this->_render_bin->addModelMatrix(this->_model);
+	else if (this->_active)
+		this->_render_bin->addModelMatrix(this->_model, this->_inv_model);
 }
 
 void Prop::setActive(bool value)
