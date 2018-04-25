@@ -277,27 +277,30 @@ ARenderBin *Engine::add_RenderBin(std::string const &name,
 								  ARenderBin::eType type)
 {
 	params.perspec_mult_view = &this->_perspec_mult_view;
+	params.view_pos          = &this->_camera.getPos();
+	params.lc                = &this->_light_container;
 	if (type == ARenderBin::eType::PROP)
 	{
+		params.use_light = false;
 		this->_render_bin_list[name] = std::make_unique<BasicPropRenderBin>(params);
 		return (this->_render_bin_list[name].get());
 	}
 	else if (type == ARenderBin::eType::COLOR)
 	{
+		params.use_light = false;
 		this->_render_bin_list[name] = std::make_unique<BasicColorRenderBin>(params);
 		return (this->_render_bin_list[name].get());
 	}
 	else if (type == ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT)
 	{
-		this->_render_bin_list[name] = std::make_unique<MultiPointDirSpotLightRenderBin>(params,
-																						 &this->_light_container,
-																						 &this->_camera.getPos());
+		params.use_light = true;
+		this->_render_bin_list[name] = std::make_unique<MultiPointDirSpotLightRenderBin>(params);
 		return (this->_render_bin_list[name].get());
 	}
 	else if (type == ARenderBin::eType::DIFFUSE_COLORED)
 	{
-		this->_render_bin_list[name] = std::make_unique<DiffuseColored>(params,
-																		&this->_light_container);
+		params.use_light = true;
+		this->_render_bin_list[name] = std::make_unique<DiffuseColored>(params);
 		return (this->_render_bin_list[name].get());
 	}
 	return (nullptr);
@@ -310,7 +313,9 @@ ARenderBin *Engine::add_ShadowRenderBin(std::string const &name,
 	params.perspec_mult_view = &this->_perspec_mult_view;
 	params.lc                = &this->_light_container;
 	params.sr                = &this->_sr;
-	params.viewPos           = &this->_camera.getPos();
+	params.view_pos          = &this->_camera.getPos();
+	params.use_light         = true;
+	params.lc                = &this->_light_container;
 	if (type == ARenderBin::eType::MULTIDIRLIGHT_SHADOW)
 	{
 		this->_shadow_render_bin_list[name] = std::make_unique<MultiPointDirSpotLightShadowRenderBin>(params);
@@ -325,19 +330,19 @@ IEntity *Engine::add_Prop(Prop::Params &params)
 	return (this->_entity_list.back().get());
 }
 
-IEntity *Engine::add_PointLight(PointLight::Params &params)
+void Engine::add_PointLight(PointLight::Params &params)
 {
-	return (this->_light_container.addLightInstance(params));
+	this->_light_container.addLightInstance(params);
 }
 
-IEntity *Engine::add_DirectionalLight(DirectionalLight::Params &params)
+void Engine::add_DirectionalLight(DirectionalLight::Params &params)
 {
-	return (this->_light_container.addLightInstance(params));
+	this->_light_container.addLightInstance(params);
 }
 
-IEntity *Engine::add_SpotLight(SpotLight::Params &params)
+void Engine::add_SpotLight(SpotLight::Params &params)
 {
-	return (this->_light_container.addLightInstance(params));
+	this->_light_container.addLightInstance(params);
 }
 
 /*

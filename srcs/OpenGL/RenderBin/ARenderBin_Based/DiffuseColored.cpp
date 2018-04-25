@@ -12,10 +12,8 @@
 
 #include "OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.hpp"
 
-DiffuseColored::DiffuseColored(ARenderBin::Params const &params,
-							   LightContainer const *lc) : ARenderBin(params),
-														   _lc(lc),
-														   _vbo_light_diffuse(0)
+DiffuseColored::DiffuseColored(ARenderBin::Params const &params) : ARenderBin(params),
+																   _vbo_light_diffuse(0)
 {
 	try
 	{
@@ -120,11 +118,6 @@ void DiffuseColored::draw(void)
 /*
  * Getter
  */
-
-LightContainer const *DiffuseColored::getLightContainer(void) const
-{
-	return (this->_lc);
-}
 
 std::vector<glm::vec3> const &DiffuseColored::getVectorLightDiffuse(void) const
 {

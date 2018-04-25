@@ -89,8 +89,9 @@ void LightContainer::update(float time)
 {
 	for (auto it = this->_light_list.begin(); it != this->_light_list.end(); ++it)
 	{
-		it->get()->update(time);
-		it->get()->requestDraw();
+		static_cast<void>(time);
+//		it->get()->update(time);
+//		it->get()->requestDraw();
 		if (it->get()->getLightType() == ALight::eType::POINT && it->get()->getActive() &&
 			this->_data_point_light.size() < this->_data_point_light.capacity())
 			this->_create_point_light_gl_data(dynamic_cast<PointLight const *>(it->get()));
@@ -132,22 +133,19 @@ void LightContainer::flushData(void)
  * Setter
  */
 
-IEntity *LightContainer::addLightInstance(struct SpotLight::Params const &params)
+void LightContainer::addLightInstance(struct SpotLight::Params const &params)
 {
 	this->_light_list.emplace_back(new SpotLight(params));
-	return (this->_light_list.back().get());
 }
 
-IEntity *LightContainer::addLightInstance(struct DirectionalLight::Params const &params)
+void LightContainer::addLightInstance(struct DirectionalLight::Params const &params)
 {
 	this->_light_list.emplace_back(new DirectionalLight(params));
-	return (this->_light_list.back().get());
 }
 
-IEntity *LightContainer::addLightInstance(struct PointLight::Params const &params)
+void LightContainer::addLightInstance(struct PointLight::Params const &params)
 {
 	this->_light_list.emplace_back(new PointLight(params));
-	return (this->_light_list.back().get());
 }
 
 /*
@@ -279,7 +277,7 @@ inline void LightContainer::_create_point_light_gl_data(PointLight const *ptr)
 {
 	struct LightContainer::PointLightDataGL tmp;
 
-	tmp.pos               = glm::vec4(ptr->getModelPos(), 1.0f);
+	tmp.pos               = glm::vec4(ptr->getPos(), 1.0f);
 	tmp.attenuation_coeff = glm::vec4(ptr->getAttenuationCoeff(), 1.0f);
 	tmp.diffuse_color     = glm::vec4(ptr->getLightDiffuseColor(), 1.0f);
 	tmp.ambient_color     = glm::vec4(ptr->getLightAmbientColor(), 1.0f);
@@ -303,7 +301,7 @@ inline void LightContainer::_create_spot_light_gl_data(SpotLight const *ptr)
 {
 	struct LightContainer::SpotLightDataGL tmp;
 
-	tmp.pos               = glm::vec4(ptr->getModelPos(), 1.0f);
+	tmp.pos               = glm::vec4(ptr->getPos(), 1.0f);
 	tmp.dir               = glm::vec4(ptr->getDirection(), 1.0f);
 	tmp.attenuation_coeff = glm::vec4(ptr->getAttenuationCoeff(), 1.0f);
 	tmp.diffuse_color     = glm::vec4(ptr->getLightDiffuseColor(), 1.0f);

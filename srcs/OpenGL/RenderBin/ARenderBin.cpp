@@ -183,7 +183,7 @@ bool ARenderBin::addModelMatrix(glm::mat4 const &model, glm::mat4 const &inv_mod
 		ptr_inv = this->_inv_model_matrices.get();
 	}
 	std::memcpy(&ptr[++this->_populate_mm - 1], &model, sizeof(glm::mat4));
-	std::memcpy(&ptr_inv[++this->_populate_mm - 1], &model, sizeof(glm::mat4));
+	std::memcpy(&ptr_inv[++this->_populate_mm - 1], &inv_model, sizeof(glm::mat4));
 	return (true);
 }
 

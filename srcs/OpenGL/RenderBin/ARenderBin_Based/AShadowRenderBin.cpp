@@ -39,8 +39,7 @@ AShadowRenderBin::~AShadowRenderBin(void)
 }
 
 AShadowRenderBin::AShadowRenderBin(AShadowRenderBin &&src) :
-		ARenderBin(std::move(src)), _lc(nullptr), _sr(nullptr),
-		_view_pos(nullptr), _vbo_inv_model_matrices(0)
+		ARenderBin(std::move(src)), _sr(nullptr)
 {
 	*this = std::move(src);
 }

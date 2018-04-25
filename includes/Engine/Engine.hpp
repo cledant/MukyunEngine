@@ -110,9 +110,9 @@ class Engine
 										AShadowRenderBin::Params &params,
 										ARenderBin::eType type);
 		IEntity *add_Prop(Prop::Params &params);
-		IEntity *add_PointLight(PointLight::Params &params);
-		IEntity *add_DirectionalLight(DirectionalLight::Params &params);
-		IEntity *add_SpotLight(SpotLight::Params &params);
+		void add_PointLight(PointLight::Params &params);
+		void add_DirectionalLight(DirectionalLight::Params &params);
+		void add_SpotLight(SpotLight::Params &params);
 
 		/*
 		 * Getter

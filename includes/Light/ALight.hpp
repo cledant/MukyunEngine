@@ -13,13 +13,14 @@
 #ifndef ALIGHT_HPP
 # define ALIGHT_HPP
 
-# include "Interfaces/IEntity.hpp"
-# include "Interfaces/ITransformable.hpp"
-# include "OpenGL/RenderBin/ARenderBin.hpp"
+//# include "Interfaces/IEntity.hpp"
+//# include "Interfaces/ITransformable.hpp"
+//# include "OpenGL/RenderBin/ARenderBin.hpp"
+# include "Exceptions/GeneralException.hpp"
 # include "glm/glm.hpp"
 # include "glm/gtc/matrix_transform.hpp"
 
-class ALight : public IEntity, public ITransformable
+class ALight //: public IEntity, public ITransformable
 {
 	public :
 
@@ -36,16 +37,17 @@ class ALight : public IEntity, public ITransformable
 			Params(void);
 			virtual ~Params(void);
 
-			ARenderBin *model_rb;
-			glm::vec3  ambient_color;
-			glm::vec3  diffuse_color;
-			glm::vec3  specular_color;
-			glm::vec3  model_pos;
-			glm::vec3  model_offset;
-			glm::vec3  model_scale;
-			glm::vec3  model_orientation;
-			bool       draw_model;
-			bool       active;
+//			ARenderBin *model_rb;
+			glm::vec3 ambient_color;
+			glm::vec3 diffuse_color;
+			glm::vec3 specular_color;
+//			glm::vec3  model_pos;
+//			glm::vec3  model_offset;
+//			glm::vec3  model_scale;
+//			glm::vec3  model_orientation;
+			bool      draw_model;
+			bool      active;
+			glm::vec3 pos;
 		};
 
 		ALight(void);
@@ -63,12 +65,13 @@ class ALight : public IEntity, public ITransformable
 		glm::vec3 const &getLightDiffuseColor(void) const;
 		glm::vec3 const &getLightSpecularColor(void) const;
 		bool getDrawModel(void) const;
-		glm::vec3 const &getModelPos(void) const;
-		glm::vec3 const &getModelOffset(void) const;
-		glm::vec3 const &getModelScale(void) const;
-		glm::vec3 const &getModelOrientation(void) const;
-		glm::mat4 const &getModelMatrix(void) const;
-		ARenderBin *getModelRenderBin(void) const;
+//		glm::vec3 const &getModelPos(void) const;
+//		glm::vec3 const &getModelOffset(void) const;
+//		glm::vec3 const &getModelScale(void) const;
+//		glm::vec3 const &getModelOrientation(void) const;
+//		glm::mat4 const &getModelMatrix(void) const;
+//		ARenderBin *getModelRenderBin(void) const;
+		glm::vec3 const &getPos(void) const;
 
 		/*
 		 * Setter
@@ -78,17 +81,17 @@ class ALight : public IEntity, public ITransformable
 		void setLightDiffuseColor(glm::vec3 const &vec);
 		void setLightSpecularColor(glm::vec3 const &vec);
 		void setDrawModel(bool val);
-		void setModelPos(glm::vec3 const &vec);
-		void setModelOffset(glm::vec3 const &vec);
-		void setModelScale(glm::vec3 const &vec);
-		void setModelOrientation(glm::vec3 const &vec);
+//		void setModelPos(glm::vec3 const &vec);
+//		void setModelOffset(glm::vec3 const &vec);
+//		void setModelScale(glm::vec3 const &vec);
+//		void setModelOrientation(glm::vec3 const &vec);
 
 		/*
 		 * Interface IEntity
 		 */
 
-		virtual void update(float time);
-		virtual void requestDraw(void) = 0;
+//		virtual void update(float time) = 0;
+//		virtual void requestDraw(void) = 0;
 		void setActive(bool value);
 		bool getActive(void) const;
 
@@ -96,9 +99,9 @@ class ALight : public IEntity, public ITransformable
 		 * Interface ITransformable
 		 */
 
-		void translateObject(glm::vec3 const &vec);
-		void scaleObject(glm::vec3 const &vec);
-		void rotateObject(glm::vec3 const &vec);
+		void translateLight(glm::vec3 const &vec);
+//		void scaleObject(glm::vec3 const &vec);
+//		void rotateObject(glm::vec3 const &vec);
 
 		class InitException : public GeneralException
 		{
@@ -111,20 +114,21 @@ class ALight : public IEntity, public ITransformable
 	protected :
 
 		ALight::eType _type;
-		ARenderBin    *_model_rb;
+//		ARenderBin    *_model_rb;
 		glm::vec3     _ambient_color;
 		glm::vec3     _diffuse_color;
 		glm::vec3     _specular_color;
 		bool          _draw_model;
 
-		//Related to IEntity
+//		//Related to IEntity
 		bool      _active;
-		glm::vec3 _model_pos;
-		glm::vec3 _model_scale;
-		glm::vec3 _model_offset;
+//		glm::vec3 _model_pos;
+//		glm::vec3 _model_scale;
+//		glm::vec3 _model_offset;
 		//x = yaw; y = pitch; z = roll
-		glm::vec3 _model_orientation;
-		glm::mat4 _model;
+//		glm::vec3 _model_orientation;
+//		glm::mat4 _model;
+		glm::vec3 _pos;
 };
 
 #endif

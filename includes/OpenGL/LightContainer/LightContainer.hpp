@@ -18,9 +18,13 @@
 # define DEFAULT_NB_MAX_SPOT_LIGHT 10
 # define DEFAULT_MAX_LIGHT DEFAULT_NB_MAX_SPOT_LIGHT + DEFAULT_NB_MAX_POINT_LIGHT + DEFAULT_NB_MAX_SPOT_LIGHT
 
+# include <vector>
 # include <memory>
+# include <iostream>
+# include "glad/glad.h"
+# include "OpenGL/oGL_utility.hpp"
 # include "Light/ALight.hpp"
-# include "Interfaces/IEntity.hpp"
+//# include "Interfaces/IEntity.hpp"
 # include "Light/ALight_Based/PointLight.hpp"
 # include "Light/ALight_Based/DirectionalLight.hpp"
 # include "Light/ALight_Based/SpotLight.hpp"
@@ -87,9 +91,9 @@ class LightContainer
 		 * Setter
 		 */
 
-		IEntity *addLightInstance(struct SpotLight::Params const &params);
-		IEntity *addLightInstance(struct DirectionalLight::Params const &params);
-		IEntity *addLightInstance(struct PointLight::Params const &params);
+		void addLightInstance(struct SpotLight::Params const &params);
+		void addLightInstance(struct DirectionalLight::Params const &params);
+		void addLightInstance(struct PointLight::Params const &params);
 
 		/*
 		 * Getter

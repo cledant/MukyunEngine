@@ -58,18 +58,18 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	(*world) = new Engine(engine_params);
 
 	//Creating RenderBin for LightBox Indication in scene
-	ARenderBin::Params rb_light_color;
+/*	ARenderBin::Params rb_light_color;
 	rb_light_color.shader       = &rm.getShader("DiffuseColored");
 	rb_light_color.model        = &rm.getModel("WhiteBox");
 	rb_light_color.max_instance = DEFAULT_MAX_LIGHT;
 	ARenderBin *light_color = (*world)->add_RenderBin("Light_Color", rb_light_color,
 													  ARenderBin::eType::DIFFUSE_COLORED);
-
+*/
 	//Creating Directional Lights
 	SpotLight::Params params_dir;
-	params_dir.model_rb          = light_color;
+//	params_dir.model_rb          = light_color;
 	params_dir.pos               = glm::vec3(0.0f, 10.0f, 0.1f);
-	params_dir.model_scale       = glm::vec3(0.1f);
+//	params_dir.model_scale       = glm::vec3(0.1f);
 	params_dir.ambient_color     = glm::vec3(0.05f);
 	params_dir.diffuse_color     = glm::vec3(1.0f);
 	params_dir.specular_color    = params_dir.diffuse_color;
@@ -79,14 +79,14 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	params_dir.draw_model        = true;
 	(*world)->add_SpotLight(params_dir);
 
-	params_dir.model_rb   = light_color;
+//	params_dir.model_rb   = light_color;
 	params_dir.pos        = glm::vec3(-8.0f, 4.0f, -8.0f);
 	params_dir.dir        = glm::vec3(1.0f, -1.0f, 1.0f);
 	params_dir.cutoff     = glm::vec2(20.0f, 15.0f);
 	params_dir.draw_model = true;
 	(*world)->add_SpotLight(params_dir);
 
-	params_dir.model_rb   = light_color;
+//	params_dir.model_rb   = light_color;
 	params_dir.pos        = glm::vec3(10.0f, 4.0f, -10.0f);
 	params_dir.dir        = glm::vec3(-1.0f, -1.0f, 1.0f);
 	params_dir.cutoff     = glm::vec2(30.0f, 15.0f);

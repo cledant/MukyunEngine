@@ -14,7 +14,7 @@
 
 PointLight::Params::Params() : ALight::Params()
 {
-	this->pos               = glm::vec3(0.0f);
+//	this->pos               = glm::vec3(0.0f);
 	this->attenuation_coeff = glm::vec3(1.0f);
 }
 
@@ -23,17 +23,17 @@ PointLight::Params::~Params()
 }
 
 PointLight::PointLight(PointLight::Params const &params) : ALight(params),
-														   _pos(params.pos),
+//														   _pos(params.pos),
 														   _attenuation_coeff(params.attenuation_coeff)
 {
 	this->_type = ALight::eType::POINT;
-	this->update(0.0f);
-	this->_model_rb->addInstance();
+//	this->update(0.0f);
+//	this->_model_rb->addInstance();
 }
 
 PointLight::~PointLight()
 {
-	this->_model_rb->removeInstance();
+//	this->_model_rb->removeInstance();
 }
 
 PointLight::PointLight(const PointLight &src) : ALight()
@@ -44,7 +44,7 @@ PointLight::PointLight(const PointLight &src) : ALight()
 PointLight &PointLight::operator=(PointLight const &rhs)
 {
 	ALight::operator=(rhs);
-	this->_pos               = rhs.getPos();
+//	this->_pos               = rhs.getPos();
 	this->_attenuation_coeff = rhs.getAttenuationCoeff();
 	return (*this);
 }
@@ -52,12 +52,12 @@ PointLight &PointLight::operator=(PointLight const &rhs)
 /*
  * Getter
  */
-
+/*
 glm::vec3 const &PointLight::getPos() const
 {
 	return (this->_pos);
 }
-
+*/
 glm::vec3 const &PointLight::getAttenuationCoeff() const
 {
 	return (this->_attenuation_coeff);
@@ -66,7 +66,7 @@ glm::vec3 const &PointLight::getAttenuationCoeff() const
 /*
  * Interface IEntity
  */
-
+/*
 void PointLight::update(float time)
 {
 	this->_model_pos = this->_pos;
@@ -77,4 +77,4 @@ void PointLight::requestDraw()
 {
 	if (this->_active && this->_draw_model)
 		this->_model_rb->addModelMatrix(this->_model);
-}
+}*/

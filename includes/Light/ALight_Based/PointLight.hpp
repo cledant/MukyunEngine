@@ -24,7 +24,7 @@ class PointLight : public ALight
 			Params(void);
 			~Params(void);
 
-			glm::vec3 pos;
+//			glm::vec3 pos;
 			glm::vec3 attenuation_coeff;
 		};
 
@@ -37,19 +37,19 @@ class PointLight : public ALight
 		 * Getter
 		 */
 
-		glm::vec3 const &getPos(void) const;
+//		glm::vec3 const &getPos(void) const;
 		glm::vec3 const &getAttenuationCoeff(void) const;
 
 		/*
 		 * Interface IEntity
 		 */
 
-		virtual void update(float time);
-		virtual void requestDraw(void);
+//		virtual void update(float time);
+//		virtual void requestDraw(void);
 
 	protected :
 
-		glm::vec3 _pos;
+//		glm::vec3 _pos;
 		//x = constant; y = linear; z = quadratic
 		glm::vec3 _attenuation_coeff;
 };

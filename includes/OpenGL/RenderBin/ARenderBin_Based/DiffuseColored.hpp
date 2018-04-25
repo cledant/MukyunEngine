@@ -21,7 +21,7 @@ class DiffuseColored : public ARenderBin
 {
 	public :
 
-		DiffuseColored(ARenderBin::Params const &params, LightContainer const *lc);
+		DiffuseColored(ARenderBin::Params const &params);
 		virtual ~DiffuseColored(void);
 		DiffuseColored(DiffuseColored const &src) = delete;
 		DiffuseColored &operator=(DiffuseColored const &rhs) = delete;
@@ -40,7 +40,6 @@ class DiffuseColored : public ARenderBin
 		 * Getter
 		 */
 
-		LightContainer const *getLightContainer(void) const;
 		std::vector<glm::vec3> const &getVectorLightDiffuse(void) const;
 		size_t getCurrentVectorLightDiffuseNumber(void) const;
 		size_t getMaxVectorLightDiffuseNumber(void) const;
@@ -49,7 +48,6 @@ class DiffuseColored : public ARenderBin
 
 	protected :
 
-		LightContainer const   *_lc;
 		std::vector<glm::vec3> _vector_light_diffuse;
 		GLuint                 _vbo_light_diffuse;
 

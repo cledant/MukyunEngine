@@ -24,8 +24,7 @@ MultiPointDirSpotLightRenderBin::~MultiPointDirSpotLightRenderBin(void)
 }
 
 MultiPointDirSpotLightRenderBin::MultiPointDirSpotLightRenderBin(MultiPointDirSpotLightRenderBin &&src) :
-		ARenderBin(std::move(src)), _lc(src.getLightContainer()), _view_pos(nullptr),
-		_vbo_inv_model_matrices(0)
+		ARenderBin(std::move(src))
 {
 	*this = std::move(src);
 }
