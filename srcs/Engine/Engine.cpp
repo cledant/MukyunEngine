@@ -92,6 +92,7 @@ void Engine::startGameLoop(Glfw_manager &manager)
 			}
 			for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
 				it->second.get()->updateVBO();
+			this->_light_container.updateGPU();
 			manager.calculate_fps();
 			/*
 			 * Compute depth maps :
@@ -135,8 +136,6 @@ void Engine::startGameLoop(Glfw_manager &manager)
 
 void Engine::update(void)
 {
-//	std::vector<std::thread> workers;
-
 	if (this->_window.toggle_screen_mode)
 		this->toggleScreenMode();
 	if (this->_window.resized)
@@ -158,23 +157,10 @@ void Engine::update(void)
 		it->second.get()->flushData();
 	this->_light_container.update(this->_tick);
 	this->_sr.update();
-/*	for (size_t i = 0; i < THREAD_NB; ++i)
-		workers.push_back(std::thread(&Engine::_update_multi_thread, this, i));
-	for (size_t i = 0; i < THREAD_NB; ++i)
-		workers[i].join();*/
-
 	this->_workers_done = 0;
 	for (size_t i = 0; i < THREAD_NB; ++i)
 		this->_workers_mutex[i].unlock();
 	while (this->_workers_done != THREAD_NB);
-
-//	this->_update_multi_thread(0);
-
-/*	for (auto it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
-	{
-		it->get()->update(this->_tick);
-		it->get()->requestDraw();
-	}*/
 }
 
 void Engine::updateGPU(void)
@@ -182,7 +168,7 @@ void Engine::updateGPU(void)
 
 	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
 		it->second.get()->updateVBO();
-	this->_light_container.updateGPU();
+
 }
 
 void Engine::render(void)
@@ -315,7 +301,6 @@ ARenderBin *Engine::add_ShadowRenderBin(std::string const &name,
 	params.sr                = &this->_sr;
 	params.view_pos          = &this->_camera.getPos();
 	params.use_light         = true;
-	params.lc                = &this->_light_container;
 	if (type == ARenderBin::eType::MULTIDIRLIGHT_SHADOW)
 	{
 		this->_shadow_render_bin_list[name] = std::make_unique<MultiPointDirSpotLightShadowRenderBin>(params);

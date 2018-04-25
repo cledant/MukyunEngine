@@ -143,7 +143,7 @@ class ARenderBin
 		 */
 
 		void _create_vbo_inv_model_matrices(size_t max_size);
-		virtual void _update_vao(void);
+		void _update_vao(void);
 };
 
 #endif

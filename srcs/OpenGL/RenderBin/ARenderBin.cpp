@@ -40,7 +40,8 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		_perspec_mult_view(params.perspec_mult_view), _model(params.model),
 		_vbo_model_matrices(0), _cur_object(0), _max_object(params.max_instance),
 		_model_matrices(nullptr), _populate_mm(0), _use_light(params.use_light),
-		_lc(params.lc), _view_pos(params.view_pos), _vbo_inv_model_matrices(0)
+		_lc(params.lc), _view_pos(params.view_pos), _inv_model_matrices(nullptr),
+		_vbo_inv_model_matrices(0)
 {
 	try
 	{
@@ -87,19 +88,22 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 	this->_populate_mm       = 0;
 	try
 	{
-		this->_cur_object             = rhs.getCurrentInstanceNumber();
-		this->_max_object             = rhs.getMaxInstanceNumber();
-		this->_model_matrices         = std::make_unique<glm::mat4[]>(this->_max_object);
-		this->_vbo_model_matrices     = rhs.moveVboModelMatrices();
-		this->_vao_mesh               = rhs.moveVaoMeshes();
+		this->_cur_object         = rhs.getCurrentInstanceNumber();
+		this->_max_object         = rhs.getMaxInstanceNumber();
+		this->_model_matrices     = std::make_unique<glm::mat4[]>(this->_max_object);
+		this->_vbo_model_matrices = rhs.moveVboModelMatrices();
+		this->_vao_mesh           = rhs.moveVaoMeshes();
 		/*
 		 * Light related
 		 */
-		this->_use_light              = rhs.getUseLight();
-		this->_lc                     = rhs.getLightContainer();
-		this->_view_pos               = rhs.getViewPos();
+		this->_use_light          = rhs.getUseLight();
+		this->_lc                 = rhs.getLightContainer();
+		this->_view_pos           = rhs.getViewPos();
 		if (this->_use_light)
-			this->_inv_model_matrices = std::make_unique<glm::mat4[]>(this->_max_object);
+		{
+			this->_inv_model_matrices     = std::make_unique<glm::mat4[]>(this->_max_object);
+			this->_vbo_inv_model_matrices = rhs.moveVBOInvModelMatrices();
+		}
 	}
 	catch (std::exception &e)
 	{
@@ -122,15 +126,14 @@ void ARenderBin::updateVBO(void)
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_model_matrices);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * this->_cur_object,
 					this->_model_matrices.get());
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	if (this->_use_light)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_inv_model_matrices);
 		glBufferSubData(GL_ARRAY_BUFFER, 0,
 						sizeof(glm::mat4) * this->_cur_object,
 						this->_inv_model_matrices.get());
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void ARenderBin::flushData(void)
@@ -176,14 +179,15 @@ bool ARenderBin::addModelMatrix(glm::mat4 const &model, glm::mat4 const &inv_mod
 {
 	static glm::mat4 *ptr     = NULL;
 	static glm::mat4 *ptr_inv = NULL;
+	size_t           index    = (++this->_populate_mm - 1);
 
 	if (!ptr)
 	{
 		ptr     = this->_model_matrices.get();
 		ptr_inv = this->_inv_model_matrices.get();
 	}
-	std::memcpy(&ptr[++this->_populate_mm - 1], &model, sizeof(glm::mat4));
-	std::memcpy(&ptr_inv[++this->_populate_mm - 1], &inv_model, sizeof(glm::mat4));
+	std::memcpy(&ptr[index], &model, sizeof(glm::mat4));
+	std::memcpy(&ptr_inv[index], &inv_model, sizeof(glm::mat4));
 	return (true);
 }
 
@@ -350,11 +354,11 @@ void ARenderBin::_create_vao_mesh(void)
 		glVertexAttribDivisor(6, 1);
 		glVertexAttribDivisor(7, 1);
 		glVertexAttribDivisor(8, 1);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
 		oGL_check_error();
 		this->_vao_mesh.push_back(new_vao);
 	}
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
 /*
@@ -366,7 +370,7 @@ void ARenderBin::_create_vbo_inv_model_matrices(size_t max_size)
 	glGenBuffers(1, &(this->_vbo_inv_model_matrices));
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_inv_model_matrices);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * max_size,
-				 &(this->_inv_model_matrices[0]), GL_DYNAMIC_DRAW);
+				 NULL, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	oGL_check_error();
 }
@@ -395,7 +399,8 @@ void ARenderBin::_update_vao(void)
 		glVertexAttribDivisor(10, 1);
 		glVertexAttribDivisor(11, 1);
 		glVertexAttribDivisor(12, 1);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		oGL_check_error();
 	}
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }

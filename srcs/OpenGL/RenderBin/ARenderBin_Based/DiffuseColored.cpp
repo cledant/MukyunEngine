@@ -53,7 +53,6 @@ DiffuseColored &DiffuseColored::operator=(DiffuseColored &&rhs)
 		this->_vector_light_diffuse.reserve(rhs.getMaxVectorLightDiffuseNumber());
 		this->_vector_light_diffuse = rhs.getVectorLightDiffuse();
 		this->_vbo_light_diffuse    = rhs.moveVBOLightDiffuse();
-		this->_lc                   = rhs.getLightContainer();
 	}
 	catch (std::exception &e)
 	{
