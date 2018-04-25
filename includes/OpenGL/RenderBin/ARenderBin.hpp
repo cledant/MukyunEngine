@@ -137,15 +137,15 @@ class ARenderBin
 		 * Protected functions
 		 */
 
-		void _create_vbo_model_matrices(size_t max_size);
-		void _create_vao_mesh(void);
+		inline void _create_vbo_model_matrices(size_t max_size);
+		inline void _create_vao_mesh(void);
 
 		/*
 		 * Protected function for light
 		 */
 
-		void _create_vbo_inv_model_matrices(size_t max_size);
-		void _update_vao(void);
+		inline void _create_vbo_inv_model_matrices(size_t max_size);
+		inline void _update_vao(void);
 };
 
 #endif

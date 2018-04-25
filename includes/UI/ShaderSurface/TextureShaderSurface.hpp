@@ -51,7 +51,7 @@ class TextureShaderSurface : public ShaderSurface
 
 		GLuint _tex_id;
 
-		void _allocate_tex_buffer(void);
+		inline void _allocate_tex_buffer(void);
 
 		static float  _tex_vertices[];
 		static size_t _tex_nb_faces;

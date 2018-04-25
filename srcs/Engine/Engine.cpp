@@ -64,7 +64,6 @@ Engine::Engine(EngineInitParams const &params) :
 	this->_tss.setTextureID(this->_final_image.getTextureBuffer());
 	for (size_t i = 0; i < THREAD_NB; ++i)
 		this->_workers.push_back(std::thread(&Engine::_update_multi_thread, this, i));
-
 }
 
 Engine::~Engine(void)

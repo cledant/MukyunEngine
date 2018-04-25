@@ -128,9 +128,9 @@ class Fontset
 		 * Protected functions
 		 */
 
-		void _load_char_list(std::string const &path, size_t size);
-		void _allocate_fontset(std::string const &path, size_t size);
-		GLuint _load_glyph(const void *buffer, int tex_w, int tex_h);
+		inline void _load_char_list(std::string const &path, size_t size);
+		inline void _allocate_fontset(std::string const &path, size_t size);
+		inline GLuint _load_glyph(const void *buffer, int tex_w, int tex_h);
 };
 
 #endif

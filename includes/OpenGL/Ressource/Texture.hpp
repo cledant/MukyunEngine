@@ -111,8 +111,8 @@ class Texture
 		int                   _tex_h;
 		int                   _tex_nb_chan;
 
-		GLuint _load_flat(std::string const &path, int *w, int *h, int *chan);
-		GLuint _load_buffer(const void *buffer, int tex_w, int tex_h,
+		inline GLuint _load_flat(std::string const &path, int *w, int *h, int *chan);
+		inline GLuint _load_buffer(const void *buffer, int tex_w, int tex_h,
 							GLint internalFormat, GLenum format);
 };
 

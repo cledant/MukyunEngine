@@ -51,8 +51,8 @@ class Env
 		 * Display info
 		 */
 
-		static void _display_help(void); //Exit program after display
-		static void _display_keys(void);
+		static inline void _display_help(void); //Exit program after display
+		static inline void _display_keys(void);
 };
 
 #endif

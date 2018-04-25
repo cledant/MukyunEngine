@@ -51,9 +51,9 @@ class DiffuseColored : public ARenderBin
 		std::vector<glm::vec3> _vector_light_diffuse;
 		GLuint                 _vbo_light_diffuse;
 
-		void _allocate_vbo(size_t max_size);
-		void _update_vector_light_diffuse(void);
-		void _update_vao(void);
+		inline void _allocate_vbo(size_t max_size);
+		inline void _update_vector_light_diffuse(void);
+		inline void _update_vao(void);
 };
 
 #endif

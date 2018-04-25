@@ -67,10 +67,10 @@ class Model
 		std::vector<Mesh> _mesh_list;
 		glm::vec3         _center;
 
-		void _load_model(std::string const &path, std::map<std::string, Texture> &texture_list);
-		void _load_node(aiNode *node, const aiScene *scene, std::string const &directory,
+		inline void _load_model(std::string const &path, std::map<std::string, Texture> &texture_list);
+		inline void _load_node(aiNode *node, const aiScene *scene, std::string const &directory,
 						std::map<std::string, Texture> &texture_list);
-		void _calculate_center(void);
+		inline void _calculate_center(void);
 };
 
 #endif

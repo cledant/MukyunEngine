@@ -120,7 +120,7 @@ class Glfw_manager
 
 		static size_t _nb_active_win;
 
-		void _window_creation_callback_setup(void);
+		inline void _window_creation_callback_setup(void);
 };
 
 #endif

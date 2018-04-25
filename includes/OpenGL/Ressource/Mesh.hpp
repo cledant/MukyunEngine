@@ -116,14 +116,14 @@ class Mesh
 		size_t                    _nb_vertices;
 		std::string               _directory;
 
-		void _load_mesh(aiMesh *mesh);
-		void _load_material(aiMesh *mesh, const aiScene *scene,
-							std::map<std::string, Texture> &texture_list);
-		void _load_material_info(aiMaterial *mat);
-		void _load_texture(aiMaterial *mat, aiTextureType type,
-						   Texture::eTextureType tex_type,
-						   std::map<std::string, Texture> &texture_list);
-		void _allocate_set_GL_ressources(void);
+		inline void _load_mesh(aiMesh *mesh);
+		inline void _load_material(aiMesh *mesh, const aiScene *scene,
+								   std::map<std::string, Texture> &texture_list);
+		inline void _load_material_info(aiMaterial *mat);
+		inline void _load_texture(aiMaterial *mat, aiTextureType type,
+								  Texture::eTextureType tex_type,
+								  std::map<std::string, Texture> &texture_list);
+		inline void _allocate_set_GL_ressources(void);
 };
 
 #endif

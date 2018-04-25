@@ -70,7 +70,7 @@ class ShaderSurface
 		GLuint            _vao;
 		GLuint            _vbo;
 
-		void _allocate_buffer(void);
+		inline void _allocate_buffer(void);
 
 		static float  _vertices[];
 		static size_t _nb_faces;
