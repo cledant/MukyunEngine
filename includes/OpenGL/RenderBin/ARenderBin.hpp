@@ -119,6 +119,7 @@ class ARenderBin
 		size_t                       _cur_object;
 		size_t                       _max_object;
 		std::unique_ptr<glm::mat4[]> _model_matrices;
+		glm::mat4                    *_ptr_render_model;
 		std::atomic<size_t>          _populate_mm;
 
 		/*
@@ -129,6 +130,7 @@ class ARenderBin
 		LightContainer const         *_lc;
 		glm::vec3 const              *_view_pos;
 		std::unique_ptr<glm::mat4[]> _inv_model_matrices;
+		glm::mat4                    *_ptr_render_inv_model;
 		GLuint                       _vbo_inv_model_matrices;
 
 		/*

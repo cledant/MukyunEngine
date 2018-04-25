@@ -30,8 +30,9 @@ ARenderBin::Params::~Params(void)
 ARenderBin::ARenderBin(void) :
 		_type(ARenderBin::eType::NONE), _shader(nullptr), _perspec_mult_view(nullptr),
 		_model(nullptr), _vbo_model_matrices(0), _cur_object(0), _max_object(0),
-		_model_matrices(nullptr), _populate_mm(0), _use_light(false), _lc(nullptr),
-		_view_pos(nullptr), _inv_model_matrices(nullptr), _vbo_inv_model_matrices(0)
+		_model_matrices(nullptr), _ptr_render_model(NULL), _populate_mm(0),
+		_use_light(false), _lc(nullptr), _view_pos(nullptr), _inv_model_matrices(nullptr),
+		_ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0)
 {
 }
 
@@ -39,9 +40,9 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		_type(ARenderBin::eType::NONE), _shader(params.shader),
 		_perspec_mult_view(params.perspec_mult_view), _model(params.model),
 		_vbo_model_matrices(0), _cur_object(0), _max_object(params.max_instance),
-		_model_matrices(nullptr), _populate_mm(0), _use_light(params.use_light),
-		_lc(params.lc), _view_pos(params.view_pos), _inv_model_matrices(nullptr),
-		_vbo_inv_model_matrices(0)
+		_model_matrices(nullptr), _ptr_render_model(NULL), _populate_mm(0),
+		_use_light(params.use_light), _lc(params.lc), _view_pos(params.view_pos),
+		_inv_model_matrices(nullptr), _ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0)
 {
 	try
 	{
@@ -81,11 +82,13 @@ ARenderBin::ARenderBin(ARenderBin &&src) : _vbo_model_matrices(0), _vbo_inv_mode
 
 ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 {
-	this->_type              = rhs.getType();
-	this->_shader            = rhs.getShader();
-	this->_perspec_mult_view = rhs.getPerspecMultView();
-	this->_model             = rhs.getModel();
-	this->_populate_mm       = 0;
+	this->_type                 = rhs.getType();
+	this->_shader               = rhs.getShader();
+	this->_perspec_mult_view    = rhs.getPerspecMultView();
+	this->_model                = rhs.getModel();
+	this->_populate_mm          = 0;
+	this->_ptr_render_inv_model = NULL;
+	this->_ptr_render_model     = NULL;
 	try
 	{
 		this->_cur_object         = rhs.getCurrentInstanceNumber();
@@ -167,27 +170,23 @@ bool ARenderBin::removeInstance()
 
 bool ARenderBin::addModelMatrix(glm::mat4 const &model)
 {
-	static glm::mat4 *ptr = NULL;
-
-	if (!ptr)
-		ptr = this->_model_matrices.get();
-	std::memcpy(&ptr[++this->_populate_mm - 1], &model, sizeof(glm::mat4));
+	if (!this->_ptr_render_model)
+		this->_ptr_render_model = this->_model_matrices.get();
+	std::memcpy(&this->_ptr_render_model[++this->_populate_mm - 1], &model, sizeof(glm::mat4));
 	return (true);
 }
 
 bool ARenderBin::addModelMatrix(glm::mat4 const &model, glm::mat4 const &inv_model)
 {
-	static glm::mat4 *ptr     = NULL;
-	static glm::mat4 *ptr_inv = NULL;
-	size_t           index    = (++this->_populate_mm - 1);
+	size_t index = (++this->_populate_mm - 1);
 
-	if (!ptr)
+	if (!this->_ptr_render_model)
 	{
-		ptr     = this->_model_matrices.get();
-		ptr_inv = this->_inv_model_matrices.get();
+		this->_ptr_render_model     = this->_model_matrices.get();
+		this->_ptr_render_inv_model = this->_inv_model_matrices.get();
 	}
-	std::memcpy(&ptr[index], &model, sizeof(glm::mat4));
-	std::memcpy(&ptr_inv[index], &inv_model, sizeof(glm::mat4));
+	std::memcpy(&this->_ptr_render_model[index], &model, sizeof(glm::mat4));
+	std::memcpy(&this->_ptr_render_inv_model[index], &inv_model, sizeof(glm::mat4));
 	return (true);
 }
 
