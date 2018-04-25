@@ -81,9 +81,9 @@ class Engine
 		 * Draw
 		 */
 
-		void update(void);
-		void updateGPU(void);
-		void render(void);
+		inline void update(void);
+		inline void updateGPU(void);
+		inline void render(void);
 
 		/*
 		 * Shadow Computation
@@ -168,12 +168,14 @@ class Engine
 		std::vector<std::thread>                                 _workers;
 		std::mutex                                               _workers_mutex[THREAD_NB];
 		std::atomic<size_t>                                      _workers_done;
+		bool                                                     _first_worker_run;
 
 		/*
 		 * Private Functions
 		 */
 
-		void _update_multi_thread(size_t offset);
+		inline void _update_multi_thread(size_t offset);
+		inline void _start_workers(void);
 };
 
 #endif

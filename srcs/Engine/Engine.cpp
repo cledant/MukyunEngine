@@ -44,7 +44,7 @@ Engine::Engine(EngineInitParams const &params) :
 		_tss(params.win, params.input, params.display_shader, 0),
 		_final_image(params.win->cur_win_h, params.win->cur_win_w),
 		_init_h(params.init_h), _init_w(params.init_w), _monitor(params.monitor),
-		_system_fontset(params.system_fontset), _workers_done(THREAD_NB)
+		_system_fontset(params.system_fontset), _workers_done(THREAD_NB), _first_worker_run(true)
 {
 	if (params.max_frame_skip == 0)
 		throw Engine::EngineFailException();
@@ -64,12 +64,12 @@ Engine::Engine(EngineInitParams const &params) :
 	this->_tss.setTextureID(this->_final_image.getTextureBuffer());
 	for (size_t i = 0; i < THREAD_NB; ++i)
 		this->_workers.push_back(std::thread(&Engine::_update_multi_thread, this, i));
-	for (size_t i = 0; i < THREAD_NB; ++i)
-		this->_workers[i].detach();
+
 }
 
 Engine::~Engine(void)
 {
+	this->_workers.clear();
 }
 
 /*
@@ -87,12 +87,11 @@ void Engine::startGameLoop(Glfw_manager &manager)
 			while (this->should_be_updated(Glfw_manager::getTime()))
 			{
 				manager.update_events();
+				if (this->_first_worker_run)
+					this->_start_workers();
 				this->update();
-				this->updateGPU();
 			}
-			for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
-				it->second.get()->updateVBO();
-			this->_light_container.updateGPU();
+			this->updateGPU();
 			manager.calculate_fps();
 			/*
 			 * Compute depth maps :
@@ -165,8 +164,11 @@ void Engine::update(void)
 
 void Engine::updateGPU(void)
 {
+	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
+		it->second.get()->updateVBO();
 	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
 		it->second.get()->updateVBO();
+	this->_light_container.updateGPU();
 }
 
 void Engine::render(void)
@@ -396,6 +398,13 @@ void Engine::_update_multi_thread(size_t offset)
 		}
 		this->_workers_done++;
 	}
+}
+
+void Engine::_start_workers()
+{
+	for (size_t i = 0; i < THREAD_NB; ++i)
+		this->_workers[i].detach();
+	this->_first_worker_run = false;
 }
 
 Engine::EngineFailException::EngineFailException(void)
