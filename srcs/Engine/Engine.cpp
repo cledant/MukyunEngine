@@ -165,10 +165,8 @@ void Engine::update(void)
 
 void Engine::updateGPU(void)
 {
-
 	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
 		it->second.get()->updateVBO();
-
 }
 
 void Engine::render(void)

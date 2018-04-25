@@ -73,8 +73,6 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating Point Lights
 	PointLight::Params params_point;
-//	params_point.model_rb          = light_color;
-//	params_point.model_scale       = glm::vec3(0.1f);
 	params_point.ambient_color     = glm::vec3(0.05f);
 	params_point.diffuse_color     = glm::vec3(1.0f, 0.0f, 0.0f);
 	params_point.specular_color    = params_point.diffuse_color;
@@ -94,9 +92,6 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating Directional Lights
 	DirectionalLight::Params params_dir;
-//	params_dir.model_rb       = light_color;
-//	params_dir.model_pos      = glm::vec3(-6.0f, 0.0f, -6.0f);
-//	params_dir.model_scale    = glm::vec3(0.1f);
 	params_dir.ambient_color  = glm::vec3(0.05f);
 	params_dir.diffuse_color  = glm::vec3(0.6f, 0.2f, 0.8f);
 	params_dir.specular_color = params_dir.diffuse_color;
@@ -105,9 +100,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating Spot Lights
 	SpotLight::Params params_spot;
-//	params_spot.model_rb          = light_color;
 	params_spot.pos               = glm::vec3(0.0f, 0.0f, 25.0f);
-//	params_spot.model_scale       = glm::vec3(0.1f);
 	params_spot.ambient_color     = glm::vec3(0.05f);
 	params_spot.diffuse_color     = glm::vec3(1.0f);
 	params_spot.specular_color    = params_spot.diffuse_color;

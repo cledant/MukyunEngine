@@ -90,8 +90,6 @@ void LightContainer::update(float time)
 	for (auto it = this->_light_list.begin(); it != this->_light_list.end(); ++it)
 	{
 		static_cast<void>(time);
-//		it->get()->update(time);
-//		it->get()->requestDraw();
 		if (it->get()->getLightType() == ALight::eType::POINT && it->get()->getActive() &&
 			this->_data_point_light.size() < this->_data_point_light.capacity())
 			this->_create_point_light_gl_data(dynamic_cast<PointLight const *>(it->get()));

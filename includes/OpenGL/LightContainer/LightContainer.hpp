@@ -24,7 +24,6 @@
 # include "glad/glad.h"
 # include "OpenGL/oGL_utility.hpp"
 # include "Light/ALight.hpp"
-//# include "Interfaces/IEntity.hpp"
 # include "Light/ALight_Based/PointLight.hpp"
 # include "Light/ALight_Based/DirectionalLight.hpp"
 # include "Light/ALight_Based/SpotLight.hpp"
