@@ -50,7 +50,7 @@ class ImageFramebuffer : public AFramebuffer
 
 	protected :
 
-		virtual inline void _allocate_buffers(void);
+		inline void _allocate_buffers(void);
 };
 
-# endif
+#endif

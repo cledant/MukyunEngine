@@ -48,8 +48,6 @@ class AFramebuffer
 
 	protected :
 
-		virtual inline void _allocate_buffers(void) = 0;
-
 		GLuint _fbo;
 		GLuint _textureBuffer;
 		GLuint _rbo;
@@ -57,4 +55,4 @@ class AFramebuffer
 		int    _tex_w;
 };
 
-# endif
+#endif
