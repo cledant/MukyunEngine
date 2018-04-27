@@ -442,7 +442,7 @@ void ARenderBin::_update_multithread_opengl_arrays(size_t thread_id)
 	while (1)
 	{
 		this->_workers_mutex[thread_id].lock();
-		if ((max = this->_entity_per_thread * (thread_id + 1)) < this->_entity_list.size())
+		if ((max = this->_entity_per_thread * (thread_id + 1)) > this->_entity_list.size())
 			max = this->_entity_list.size();
 		for (size_t i = this->_entity_per_thread * thread_id; i < max; ++i)
 		{

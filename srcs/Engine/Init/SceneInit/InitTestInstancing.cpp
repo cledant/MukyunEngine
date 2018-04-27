@@ -57,7 +57,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating Model RenderBin
 	ARenderBin::Params rb_model;
-	rb_model.nb_thread    = 1;
+	rb_model.nb_thread    = 4;
 	rb_model.shader       = &rm.getShader("BasicColor");
 	rb_model.model        = &rm.getModel("BlueBox");
 	rb_model.max_instance = arg.instance_size[0] * arg.instance_size[1] * arg.instance_size[2];
