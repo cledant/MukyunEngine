@@ -110,7 +110,7 @@ class Engine
 		ARenderBin *add_ShadowRenderBin(std::string const &name,
 										AShadowRenderBin::Params &params,
 										ARenderBin::eType type);
-		IEntity *add_Prop(Prop::Params &params);
+		IEntity *add_Prop(std::string const &name, Prop::Params &params);
 		void add_PointLight(PointLight::Params &params);
 		void add_DirectionalLight(DirectionalLight::Params &params);
 		void add_SpotLight(SpotLight::Params &params);
@@ -143,40 +143,29 @@ class Engine
 
 		std::map<std::string, std::unique_ptr<ARenderBin>>       _render_bin_list;
 		std::map<std::string, std::unique_ptr<AShadowRenderBin>> _shadow_render_bin_list;
-		std::vector<std::unique_ptr<IEntity>>                    _entity_list;
-		LightContainer                                           _light_container;
-		ShadowRenderer                                           _sr;
-		GLFW_Window const                                        &_window;
-		glm::mat4                                                _perspective;
-		Camera                                                   _camera;
-		glm::mat4                                                _perspec_mult_view;
-		float                                                    _fov;
-		float                                                    _max_fps;
-		size_t                                                   _max_frame_skip;
-		float                                                    _tick;
-		float                                                    _next_update_tick;
-		float                                                    _last_update_tick;
-		float                                                    _delta_tick;
-		size_t                                                   _skip_loop;
-		glm::vec2                                                _near_far;
-		TextureShaderSurface                                     _tss;
-		ImageFramebuffer                                         _final_image;
-		int                                                      _init_h;
-		int                                                      _init_w;
-		int                                                      _monitor;
-		glm::mat4                                                _orthogonal_perspective;
-		Fontset                                                  *_system_fontset;
-		std::vector<std::thread>                                 _workers;
-		std::mutex                                               _workers_mutex[THREAD_NB];
-		std::atomic<size_t>                                      _workers_done;
-		bool                                                     _first_worker_run;
 
-		/*
-		 * Private Functions
-		 */
-
-		inline void _update_multi_thread(size_t offset);
-		inline void _start_workers(void);
+		LightContainer       _light_container;
+		ShadowRenderer       _sr;
+		GLFW_Window const    &_window;
+		glm::mat4            _perspective;
+		Camera               _camera;
+		glm::mat4            _perspec_mult_view;
+		float                _fov;
+		float                _max_fps;
+		size_t               _max_frame_skip;
+		float                _tick;
+		float                _next_update_tick;
+		float                _last_update_tick;
+		float                _delta_tick;
+		size_t               _skip_loop;
+		glm::vec2            _near_far;
+		TextureShaderSurface _tss;
+		ImageFramebuffer     _final_image;
+		int                  _init_h;
+		int                  _init_w;
+		int                  _monitor;
+		glm::mat4            _orthogonal_perspective;
+		Fontset              *_system_fontset;
 };
 
 #endif

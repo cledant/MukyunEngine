@@ -23,7 +23,6 @@ class IEntity
 		IEntity &operator=(IEntity const &rhs) = delete;
 
 		virtual void update(float time) = 0;
-		virtual void requestDraw(void) = 0;
 		virtual void setActive(bool value) = 0;
 		virtual bool getActive(void) const = 0;
 };

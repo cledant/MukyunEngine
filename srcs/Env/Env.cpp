@@ -68,7 +68,7 @@ void Env::run_engine()
 			InitRunTestInstancing(this->_manager, this->_env_value);
 			break;
 
-		case InitValue::Scene_type::MULTILIGHT_1 :
+/*		case InitValue::Scene_type::MULTILIGHT_1 :
 			InitRunTestMultiLight(this->_manager, this->_env_value);
 			break;
 
@@ -82,7 +82,7 @@ void Env::run_engine()
 
 		case InitValue::Scene_type::SPOT_SHADOW_1 :
 			InitRunTestSpotShadow(this->_manager, this->_env_value);
-			break;
+			break;*/
 	}
 }
 

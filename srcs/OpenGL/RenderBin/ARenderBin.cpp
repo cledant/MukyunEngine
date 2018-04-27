@@ -29,8 +29,8 @@ ARenderBin::Params::~Params(void)
 
 ARenderBin::ARenderBin(void) :
 		_type(ARenderBin::eType::NONE), _shader(nullptr), _perspec_mult_view(nullptr),
-		_model(nullptr), _vbo_model_matrices(0), _cur_object(0), _max_object(0),
-		_model_matrices(nullptr), _ptr_render_model(NULL), _populate_mm(0),
+		_model(nullptr), _vbo_model_matrices(0), _max_object(0),
+		_model_matrices(nullptr), _ptr_render_model(NULL),
 		_use_light(false), _lc(nullptr), _view_pos(nullptr), _inv_model_matrices(nullptr),
 		_ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0)
 {
@@ -39,10 +39,11 @@ ARenderBin::ARenderBin(void) :
 ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		_type(ARenderBin::eType::NONE), _shader(params.shader),
 		_perspec_mult_view(params.perspec_mult_view), _model(params.model),
-		_vbo_model_matrices(0), _cur_object(0), _max_object(params.max_instance),
-		_model_matrices(nullptr), _ptr_render_model(NULL), _populate_mm(0),
+		_vbo_model_matrices(0), _max_object(params.max_instance),
+		_model_matrices(nullptr), _ptr_render_model(NULL),
 		_use_light(params.use_light), _lc(params.lc), _view_pos(params.view_pos),
-		_inv_model_matrices(nullptr), _ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0)
+		_inv_model_matrices(nullptr), _ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0),
+		_nb_thread(params.nb_thread)
 {
 	try
 	{
@@ -58,6 +59,7 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 	}
 	catch (std::exception &e)
 	{
+		this->_workers.clear();
 		glDeleteBuffers(1, &(this->_vbo_model_matrices));
 		glDeleteBuffers(1, &(this->_vbo_inv_model_matrices));
 		for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
@@ -65,10 +67,14 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		std::cout << "ARenderBin Initialization Error" << std::endl;
 		throw;
 	}
+	for (size_t i = 0; i < this->_nb_thread; ++i)
+		this->_workers.push_back(std::thread(&ARenderBin::_update_multithread_opengl_arrays, this, i));
+	this->_start_workers();
 }
 
 ARenderBin::~ARenderBin(void)
 {
+	this->_workers.clear();
 	glDeleteBuffers(1, &(this->_vbo_model_matrices));
 	glDeleteBuffers(1, &(this->_vbo_inv_model_matrices));
 	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
@@ -86,16 +92,17 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 	this->_shader               = rhs.getShader();
 	this->_perspec_mult_view    = rhs.getPerspecMultView();
 	this->_model                = rhs.getModel();
-	this->_populate_mm          = 0;
 	this->_ptr_render_inv_model = NULL;
 	this->_ptr_render_model     = NULL;
+	this->_nb_thread            = rhs.getNbThread();
 	try
 	{
-		this->_cur_object         = rhs.getCurrentInstanceNumber();
-		this->_max_object         = rhs.getMaxInstanceNumber();
+		this->_max_object = rhs.getMaxInstanceNumber();
+		this->_entity_list.reserve(this->_max_object);
 		this->_model_matrices     = std::make_unique<glm::mat4[]>(this->_max_object);
 		this->_vbo_model_matrices = rhs.moveVboModelMatrices();
 		this->_vao_mesh           = rhs.moveVaoMeshes();
+		this->_entity_list        = rhs.moveEntities();
 		/*
 		 * Light related
 		 */
@@ -110,6 +117,7 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 	}
 	catch (std::exception &e)
 	{
+		this->_workers.clear();
 		glDeleteBuffers(1, &(this->_vbo_model_matrices));
 		glDeleteBuffers(1, &(this->_vbo_inv_model_matrices));
 		for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
@@ -117,6 +125,9 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 		std::cout << "ARenderBin Move Error" << std::endl;
 		throw;
 	}
+	for (size_t i               = 0; i < this->_nb_thread; ++i)
+		this->_workers.push_back(std::thread(&ARenderBin::_update_multithread_opengl_arrays, this, i));
+	this->_start_workers();
 	return (*this);
 }
 
@@ -127,67 +138,36 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 void ARenderBin::updateVBO(void)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_model_matrices);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * this->_cur_object,
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * this->_entity_list.size(),
 					this->_model_matrices.get());
 	if (this->_use_light)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_inv_model_matrices);
 		glBufferSubData(GL_ARRAY_BUFFER, 0,
-						sizeof(glm::mat4) * this->_cur_object,
+						sizeof(glm::mat4) * this->_entity_list.size(),
 						this->_inv_model_matrices.get());
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void ARenderBin::update(float tick)
+{
+	this->_tick              = tick;
+	this->_entity_per_thread = this->_entity_list.size() / this->_nb_thread;
+	this->_leftover          = this->_entity_list.size() % this->_nb_thread;
+	if (this->_entity_per_thread < MIN_ELEMENTS_PER_THREAD)
+	{
+		this->_update_monothread_opengl_arrays();
+		return;
+	}
+	this->_workers_done = 0;
+	for (size_t i = 0; i < this->_nb_thread; ++i)
+		this->_workers_mutex[i].unlock();
+	while (this->_workers_done != this->_nb_thread);
+}
+
 void ARenderBin::flushData(void)
 {
-	this->_populate_mm = 0;
-}
-
-/*
- * Model matrices related functions
- */
-
-bool ARenderBin::addInstance()
-{
-	if (this->_cur_object < this->_max_object)
-	{
-		this->_cur_object++;
-		return (true);
-	}
-	return (false);
-}
-
-bool ARenderBin::removeInstance()
-{
-	if (this->_cur_object)
-	{
-		this->_cur_object--;
-		return (true);
-	}
-	return (false);
-}
-
-bool ARenderBin::addModelMatrix(glm::mat4 const &model)
-{
-	if (!this->_ptr_render_model)
-		this->_ptr_render_model = this->_model_matrices.get();
-	std::memcpy(&this->_ptr_render_model[++this->_populate_mm - 1], &model, sizeof(glm::mat4));
-	return (true);
-}
-
-bool ARenderBin::addModelMatrix(glm::mat4 const &model, glm::mat4 const &inv_model)
-{
-	size_t index = (++this->_populate_mm - 1);
-
-	if (!this->_ptr_render_model)
-	{
-		this->_ptr_render_model     = this->_model_matrices.get();
-		this->_ptr_render_inv_model = this->_inv_model_matrices.get();
-	}
-	std::memcpy(&this->_ptr_render_model[index], &model, sizeof(glm::mat4));
-	std::memcpy(&this->_ptr_render_inv_model[index], &inv_model, sizeof(glm::mat4));
-	return (true);
 }
 
 /*
@@ -251,7 +231,7 @@ std::vector<GLuint> ARenderBin::moveVaoMeshes(void)
 
 size_t ARenderBin::getCurrentInstanceNumber(void) const
 {
-	return (this->_cur_object);
+	return (this->_entity_list.size());
 }
 
 size_t ARenderBin::getMaxInstanceNumber(void) const
@@ -294,6 +274,31 @@ GLuint ARenderBin::moveVBOInvModelMatrices()
 
 	this->_vbo_inv_model_matrices = 0;
 	return (tmp);
+}
+
+/*
+ * Entity related getter
+ */
+
+IEntity *ARenderBin::add_Prop(Prop::Params &params)
+{
+	this->_entity_list.emplace_back(new Prop(params));
+	return (this->_entity_list.back().get());
+}
+
+size_t ARenderBin::getNbThread() const
+{
+	return (this->_nb_thread);
+}
+
+std::vector<std::unique_ptr<IEntity>> const &ARenderBin::getEntities(void) const
+{
+	return (this->_entity_list);
+}
+
+std::vector<std::unique_ptr<IEntity>> ARenderBin::moveEntities(void)
+{
+	return (std::move(this->_entity_list));
 }
 
 /*
@@ -402,4 +407,36 @@ void ARenderBin::_update_vao(void)
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+}
+
+/*
+ * Protected function for thread
+ */
+
+void ARenderBin::_start_workers()
+{
+	for (size_t i = 0; i < this->_nb_thread; ++i)
+		this->_workers[i].detach();
+}
+
+void ARenderBin::_update_monothread_opengl_arrays()
+{
+	IEntity *entity_ptr = nullptr;
+
+	if (!this->_ptr_render_model)
+	{
+		this->_ptr_render_model     = this->_model_matrices.get();
+		this->_ptr_render_inv_model = this->_inv_model_matrices.get();
+	}
+
+	if (!this->_entity_per_thread)
+		this->_entity_per_thread = this->_leftover;
+	for (size_t i = 0; i < this->_entity_per_thread; ++i)
+	{
+		entity_ptr = this->_entity_list[i].get();
+		entity_ptr->update(this->_tick);
+		std::memcpy(&this->_ptr_render_model[i], &entity_ptr->getModelMatrix(), sizeof(glm::mat4));
+		if (this->_use_light)
+			std::memcpy(&this->_ptr_render_inv_model[i], &entity_ptr->getInvModelMatrix(), sizeof(glm::mat4));
+	}
 }

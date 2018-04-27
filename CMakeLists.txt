@@ -67,10 +67,10 @@ set(SOURCE_FILES
 		srcs/Light/ALight_Based/SpotLight.cpp
 		srcs/OpenGL/RenderBin/ARenderBin_Based/MultiPointDirSpotLightRenderBin.cpp
 		srcs/Engine/Init/SceneInit/InitTestInstancing.cpp
-		srcs/Engine/Init/SceneInit/InitTestMultiLight.cpp
-		srcs/Engine/Init/SceneInit/InitTestDirectionalShadow.cpp
-		srcs/Engine/Init/SceneInit/InitTestOmniShadow.cpp
-		srcs/Engine/Init/SceneInit/InitTestSpotShadow.cpp
+#		srcs/Engine/Init/SceneInit/InitTestMultiLight.cpp
+#		srcs/Engine/Init/SceneInit/InitTestDirectionalShadow.cpp
+#		srcs/Engine/Init/SceneInit/InitTestOmniShadow.cpp
+#		srcs/Engine/Init/SceneInit/InitTestSpotShadow.cpp
 		srcs/OpenGL/LightContainer/LightContainer.cpp
 		srcs/OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.cpp
 		srcs/OpenGL/Ressource/AFramebuffer.cpp
@@ -84,7 +84,8 @@ set(SOURCE_FILES
 		srcs/OpenGL/Ressource/AFramebuffer_Based/OmnidirectionalDepthMap.cpp
 		srcs/Engine/Engine.cpp
 		srcs/Engine/Init/ShaderLoading/ShaderLoading.cpp
-		srcs/Engine/Init/EngineInit.cpp srcs/OpenGL/Ressource/Fontset.cpp)
+		srcs/Engine/Init/EngineInit.cpp
+		srcs/OpenGL/Ressource/Fontset.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
 target_link_libraries(primary glad glfw assimp freetype)
 target_compile_options(primary PRIVATE -Wall -Wextra -g3)

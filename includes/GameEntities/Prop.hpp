@@ -79,7 +79,6 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		 */
 
 		virtual void update(float time);
-		virtual void requestDraw(void);
 		virtual void setActive(bool value);
 		virtual bool getActive(void) const;
 

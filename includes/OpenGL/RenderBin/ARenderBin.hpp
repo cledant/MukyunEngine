@@ -20,9 +20,14 @@
 # include "OpenGL/Ressource/Shader.hpp"
 # include "OpenGL/Ressource/Model.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
+# include "GameEntities/Prop.hpp"
 # include <vector>
 # include <memory>
 # include <atomic>
+# include <thread>
+
+# define NB_THREAD_MAX 16
+# define MIN_ELEMENTS_PER_THREAD 4096
 
 class ARenderBin
 {
@@ -40,6 +45,7 @@ class ARenderBin
 			bool                 use_light;
 			LightContainer const *lc;
 			glm::vec3 const      *view_pos;
+			size_t               nb_thread;
 		};
 
 		enum eType
@@ -69,17 +75,9 @@ class ARenderBin
 		 */
 
 		virtual void draw(void) = 0;
+		virtual void update(float time);
 		virtual void updateVBO(void);
 		virtual void flushData(void);
-
-		/*
-		 * Model matrices Related functions
-		 */
-
-		bool addInstance(void);
-		bool removeInstance(void);
-		bool addModelMatrix(glm::mat4 const &model);
-		bool addModelMatrix(glm::mat4 const &model, glm::mat4 const &inv_model);
 
 		/*
 		 * Getter
@@ -108,6 +106,16 @@ class ARenderBin
 		GLuint getVBOInvModelMatrices(void) const;
 		GLuint moveVBOInvModelMatrices(void);
 
+		/*
+		 * Entity related getter
+		 */
+
+		IEntity *add_Prop(Prop::Params &params);
+		size_t getNbThread(void) const;
+		std::vector<std::unique_ptr<IEntity>> const &getEntities(void) const;
+		std::vector<std::unique_ptr<IEntity>> moveEntities(void);
+
+
 	protected :
 
 		ARenderBin::eType            _type;
@@ -116,11 +124,9 @@ class ARenderBin
 		Model const                  *_model;
 		GLuint                       _vbo_model_matrices;
 		std::vector<GLuint>          _vao_mesh;
-		size_t                       _cur_object;
 		size_t                       _max_object;
 		std::unique_ptr<glm::mat4[]> _model_matrices;
 		glm::mat4                    *_ptr_render_model;
-		std::atomic<size_t>          _populate_mm;
 
 		/*
 		 * Light related
@@ -132,6 +138,19 @@ class ARenderBin
 		std::unique_ptr<glm::mat4[]> _inv_model_matrices;
 		glm::mat4                    *_ptr_render_inv_model;
 		GLuint                       _vbo_inv_model_matrices;
+
+		/*
+		 * Entity related
+		 */
+
+		size_t                                _nb_thread;
+		std::vector<std::unique_ptr<IEntity>> _entity_list;
+		std::vector<std::thread>              _workers;
+		std::mutex                            _workers_mutex[NB_THREAD_MAX];
+		std::atomic<size_t>                   _workers_done;
+		size_t                                _entity_per_thread;
+		size_t                                _leftover;
+		float                                 _tick;
 
 		/*
 		 * Protected functions
@@ -146,6 +165,14 @@ class ARenderBin
 
 		inline void _create_vbo_inv_model_matrices(size_t max_size);
 		inline void _update_vao(void);
+
+		/*
+		 * Protected function for thread
+		 */
+
+		inline void _start_workers(void);
+		inline void _update_multithread_opengl_arrays(size_t thread_id);
+		inline void _update_monothread_opengl_arrays(void);
 };
 
 #endif

@@ -44,7 +44,7 @@ Engine::Engine(EngineInitParams const &params) :
 		_tss(params.win, params.input, params.display_shader, 0),
 		_final_image(params.win->cur_win_h, params.win->cur_win_w),
 		_init_h(params.init_h), _init_w(params.init_w), _monitor(params.monitor),
-		_system_fontset(params.system_fontset), _workers_done(THREAD_NB), _first_worker_run(true)
+		_system_fontset(params.system_fontset)
 {
 	if (params.max_frame_skip == 0)
 		throw Engine::EngineFailException();
@@ -62,13 +62,12 @@ Engine::Engine(EngineInitParams const &params) :
 	sr_params_cpy.lc = &this->_light_container;
 	this->_sr        = ShadowRenderer(sr_params_cpy);
 	this->_tss.setTextureID(this->_final_image.getTextureBuffer());
-	for (size_t i = 0; i < THREAD_NB; ++i)
-		this->_workers.push_back(std::thread(&Engine::_update_multi_thread, this, i));
+
 }
 
 Engine::~Engine(void)
 {
-	this->_workers.clear();
+
 }
 
 /*
@@ -86,8 +85,6 @@ void Engine::startGameLoop(Glfw_manager &manager)
 			while (this->should_be_updated(Glfw_manager::getTime()))
 			{
 				manager.update_events();
-				if (this->_first_worker_run)
-					this->_start_workers();
 				this->update();
 			}
 			this->updateGPU();
@@ -120,10 +117,7 @@ void Engine::startGameLoop(Glfw_manager &manager)
 											glm::vec3(30,
 													  this->_window.cur_win_h - 110,
 													  1.0f));
-			this->_system_fontset->drawText("Entity count : " + std::to_string(this->_entity_list.size()),
-											glm::vec3(1.0f), glm::vec3(30,
-																	   this->_window.cur_win_h - 160,
-																	   1.0f));
+
 			manager.swap_buffers();
 			if (manager.should_window_be_closed())
 				manager.destroy_window();
@@ -153,16 +147,14 @@ void Engine::update(void)
 	this->_camera.update();
 	this->_perspec_mult_view = this->_perspective * this->_camera.getViewMatrix();
 	this->_light_container.flushData();
+	//No need to flush render bins
 	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
-		it->second.get()->flushData();
+		it->second.get()->update(this->_tick);
 	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
-		it->second.get()->flushData();
+		it->second.get()->update(this->_tick);
 	this->_light_container.update(this->_tick);
 	this->_sr.update();
-	this->_workers_done = 0;
-	for (size_t i = 0; i < THREAD_NB; ++i)
-		this->_workers_mutex[i].unlock();
-	while (this->_workers_done != THREAD_NB);
+
 }
 
 void Engine::updateGPU(void)
@@ -312,10 +304,16 @@ ARenderBin *Engine::add_ShadowRenderBin(std::string const &name,
 	return (nullptr);
 }
 
-IEntity *Engine::add_Prop(Prop::Params &params)
+IEntity *Engine::add_Prop(std::string const &name, Prop::Params &params)
 {
-	this->_entity_list.emplace_back(new Prop(params));
-	return (this->_entity_list.back().get());
+	auto it  = this->_render_bin_list.find(name);
+	auto it2 = this->_shadow_render_bin_list.find(name);
+
+	if (it != this->_render_bin_list.end())
+		return (it->second->add_Prop(params));
+	else if (it2 != this->_shadow_render_bin_list.end())
+		return (it->second->add_Prop(params));
+	return (nullptr);
 }
 
 void Engine::add_PointLight(PointLight::Params &params)
@@ -383,31 +381,6 @@ bool Engine::should_be_updated(float time)
 		return (true);
 	}
 	return (false);
-}
-
-/*
- * Private Functions
- */
-
-void Engine::_update_multi_thread(size_t offset)
-{
-	while (1)
-	{
-		this->_workers_mutex[offset].lock();
-		for (size_t i = offset; i < this->_entity_list.size(); i += THREAD_NB)
-		{
-			this->_entity_list[i].get()->update(this->_tick);
-			this->_entity_list[i].get()->requestDraw();
-		}
-		this->_workers_done++;
-	}
-}
-
-void Engine::_start_workers()
-{
-	for (size_t i = 0; i < THREAD_NB; ++i)
-		this->_workers[i].detach();
-	this->_first_worker_run = false;
 }
 
 Engine::EngineFailException::EngineFailException(void)

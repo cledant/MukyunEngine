@@ -38,13 +38,11 @@ Prop::Prop(Prop::Params const &params) :
 {
 	if (this->_render_bin == nullptr)
 		throw Prop::InitException();
-	this->_render_bin->addInstance();
 	this->_used_for_light = this->_render_bin->getUseLight();
 }
 
 Prop::~Prop(void)
 {
-	this->_render_bin->removeInstance();
 }
 
 Prop::Prop(Prop const &src) : IEntity(), ITransformable(), ICollidable(),
@@ -179,14 +177,6 @@ void Prop::update(float time)
 			this->_inv_model = glm::transpose(glm::inverse(this->_model));
 		this->_to_update     = false;
 	}
-}
-
-void Prop::requestDraw(void)
-{
-	if (this->_active && !this->_used_for_light)
-		this->_render_bin->addModelMatrix(this->_model);
-	else if (this->_active)
-		this->_render_bin->addModelMatrix(this->_model, this->_inv_model);
 }
 
 void Prop::setActive(bool value)
