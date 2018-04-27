@@ -28,7 +28,7 @@
 
 # define DEFAULT_NB_THREAD 4
 # define NB_THREAD_MAX 16
-# define MIN_ELEMENTS_PER_THREAD 4096
+# define MIN_ELEMENTS_PER_THREAD 8192
 
 class ARenderBin
 {
@@ -149,8 +149,8 @@ class ARenderBin
 		std::vector<std::thread>              _workers;
 		std::mutex                            _workers_mutex[NB_THREAD_MAX];
 		std::atomic<size_t>                   _workers_done;
-		size_t                                _entity_per_thread;
-		size_t                                _leftover;
+		std::atomic<size_t>                   _entity_per_thread;
+		std::atomic<size_t>                   _leftover;
 		float                                 _tick;
 
 		/*

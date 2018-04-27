@@ -68,8 +68,8 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	rb_light.shader       = &rm.getShader("MultiPointDirSpotLight");
 	rb_light.model        = &rm.getModel("WhiteBox");
 	rb_light.max_instance = 100000;
-	ARenderBin *light = (*world)->add_RenderBin("Light", rb_light,
-												ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
+	(*world)->add_RenderBin("Light", rb_light,
+							ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
 
 	//Creating Point Lights
 	PointLight::Params params_point;

@@ -33,7 +33,8 @@ ARenderBin::ARenderBin(void) :
 		_model(nullptr), _vbo_model_matrices(0), _max_object(0),
 		_model_matrices(nullptr), _ptr_render_model(NULL),
 		_use_light(false), _lc(nullptr), _view_pos(nullptr), _inv_model_matrices(nullptr),
-		_ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0), _nb_thread(DEFAULT_NB_THREAD)
+		_ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0), _nb_thread(DEFAULT_NB_THREAD),
+		_entity_per_thread(0), _leftover(0)
 {
 }
 
@@ -44,7 +45,7 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		_model_matrices(nullptr), _ptr_render_model(NULL),
 		_use_light(params.use_light), _lc(params.lc), _view_pos(params.view_pos),
 		_inv_model_matrices(nullptr), _ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0),
-		_nb_thread(params.nb_thread)
+		_nb_thread(params.nb_thread), _entity_per_thread(0), _leftover(0)
 {
 	try
 	{
@@ -68,6 +69,10 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		std::cout << "ARenderBin Initialization Error" << std::endl;
 		throw;
 	}
+	if (this->_nb_thread > NB_THREAD_MAX)
+		this->_nb_thread = 16;
+	else if (!this->_nb_thread)
+		this->_nb_thread = DEFAULT_NB_THREAD;
 	for (size_t i = 0; i < this->_nb_thread; ++i)
 		this->_workers.push_back(std::thread(&ARenderBin::_update_multithread_opengl_arrays, this, i));
 	this->_start_workers();
@@ -96,6 +101,8 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 	this->_ptr_render_inv_model = NULL;
 	this->_ptr_render_model     = NULL;
 	this->_nb_thread            = rhs.getNbThread();
+	this->_entity_per_thread    = 0;
+	this->_leftover             = 0;
 	try
 	{
 		this->_max_object = rhs.getMaxInstanceNumber();
@@ -156,15 +163,15 @@ void ARenderBin::update(float tick)
 	this->_tick              = tick;
 	this->_entity_per_thread = this->_entity_list.size() / this->_nb_thread;
 	this->_leftover          = this->_entity_list.size() % this->_nb_thread;
-	if (this->_entity_per_thread < MIN_ELEMENTS_PER_THREAD)
+//	if (this->_entity_per_thread < MIN_ELEMENTS_PER_THREAD)
 	{
 		this->_update_monothread_opengl_arrays();
 		return;
 	}
-	this->_workers_done = 0;
+/*	this->_workers_done = 0;
 	for (size_t i = 0; i < this->_nb_thread; ++i)
 		this->_workers_mutex[i].unlock();
-	while (this->_workers_done != this->_nb_thread);
+	while (this->_workers_done != this->_nb_thread);*/
 }
 
 void ARenderBin::flushData(void)
@@ -424,6 +431,29 @@ void ARenderBin::_start_workers()
 
 void ARenderBin::_update_multithread_opengl_arrays(size_t thread_id)
 {
+	IEntity *entity_ptr = nullptr;
+	size_t  max         = 0;
+
+	if (!this->_ptr_render_model)
+	{
+		this->_ptr_render_model     = this->_model_matrices.get();
+		this->_ptr_render_inv_model = this->_inv_model_matrices.get();
+	}
+	while (1)
+	{
+		this->_workers_mutex[thread_id].lock();
+		if ((max = this->_entity_per_thread * (thread_id + 1)) < this->_entity_list.size())
+			max = this->_entity_list.size();
+		for (size_t i = this->_entity_per_thread * thread_id; i < max; ++i)
+		{
+			entity_ptr = this->_entity_list[i].get();
+			entity_ptr->update(this->_tick);
+			std::memcpy(&this->_ptr_render_model[i], &entity_ptr->getModelMatrix(), sizeof(glm::mat4));
+			if (this->_use_light)
+				std::memcpy(&this->_ptr_render_inv_model[i], &entity_ptr->getInvModelMatrix(), sizeof(glm::mat4));
+		}
+		this->_workers_done++;
+	}
 }
 
 void ARenderBin::_update_monothread_opengl_arrays()
