@@ -33,7 +33,7 @@ ARenderBin::ARenderBin(void) :
 		_model(nullptr), _vbo_model_matrices(0), _max_object(0),
 		_model_matrices(nullptr), _ptr_render_model(NULL),
 		_use_light(false), _lc(nullptr), _view_pos(nullptr), _inv_model_matrices(nullptr),
-		_ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0)
+		_ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0), _nb_thread(DEFAULT_NB_THREAD)
 {
 }
 

@@ -39,7 +39,7 @@ AShadowRenderBin::~AShadowRenderBin(void)
 }
 
 AShadowRenderBin::AShadowRenderBin(AShadowRenderBin &&src) :
-		ARenderBin(std::move(src)), _sr(nullptr)
+		ARenderBin(), _sr(nullptr)
 {
 	*this = std::move(src);
 }

@@ -311,7 +311,7 @@ IEntity *Engine::add_Prop(std::string const &name, Prop::Params &params)
 	if (it != this->_render_bin_list.end())
 		return (it->second->add_Prop(params));
 	else if (it2 != this->_shadow_render_bin_list.end())
-		return (it->second->add_Prop(params));
+		return (it2->second->add_Prop(params));
 	return (nullptr);
 }
 
