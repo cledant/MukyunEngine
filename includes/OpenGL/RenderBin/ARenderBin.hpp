@@ -25,6 +25,7 @@
 # include <memory>
 # include <atomic>
 # include <thread>
+# include <mutex>
 
 # define DEFAULT_NB_THREAD 1
 # define NB_THREAD_MAX 16
