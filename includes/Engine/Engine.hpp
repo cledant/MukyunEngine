@@ -47,8 +47,6 @@
 # include <mutex>
 # include <string>
 
-# define THREAD_NB 1
-
 class Engine
 {
 	public :

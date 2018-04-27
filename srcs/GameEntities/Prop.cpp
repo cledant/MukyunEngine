@@ -14,7 +14,7 @@
 
 Prop::Params::Params(void)
 {
-	this->render_bin   = nullptr;
+	this->model_center = glm::vec3(0.0f);
 	this->pos          = glm::vec3(0.0f);
 	this->orientation  = glm::vec3(0.0f);
 	this->scale        = glm::vec3(1.0f);
@@ -23,6 +23,7 @@ Prop::Params::Params(void)
 	this->cb_half_size = glm::vec3(1.0f);
 	this->dmg          = ICollidable::eDamages::NONE;
 	this->passthrough  = true;
+	this->light        = false;
 }
 
 Prop::Params::~Params(void)
@@ -30,15 +31,13 @@ Prop::Params::~Params(void)
 }
 
 Prop::Prop(Prop::Params const &params) :
-		_render_bin(params.render_bin), _yaw(params.orientation.x),
-		_pitch(params.orientation.y), _roll(params.orientation.z),
-		_pos(params.pos), _scale(params.scale), _offset(params.offset),
+		_yaw(params.orientation.x), _pitch(params.orientation.y),
+		_roll(params.orientation.z), _pos(params.pos), _scale(params.scale),
+		_offset(params.offset), _model_center(params.model_center),
+		_to_update(true), _used_for_light(params.light),
 		_active(params.active), _cb(params.pos, params.cb_half_size),
-		_dmg(params.dmg), _passthrough(params.passthrough), _to_update(true)
+		_dmg(params.dmg), _passthrough(params.passthrough)
 {
-	if (this->_render_bin == nullptr)
-		throw Prop::InitException();
-	this->_used_for_light = this->_render_bin->getUseLight();
 }
 
 Prop::~Prop(void)
@@ -53,20 +52,21 @@ Prop::Prop(Prop const &src) : IEntity(), ITransformable(), ICollidable(),
 
 Prop &Prop::operator=(Prop const &rhs)
 {
-	this->_render_bin     = rhs.getRenderBin();
 	this->_yaw            = rhs.getYaw();
 	this->_pitch          = rhs.getPitch();
 	this->_roll           = rhs.getRoll();
 	this->_pos            = rhs.getPos();
 	this->_scale          = rhs.getScale();
 	this->_offset         = rhs.getOffset();
-	this->_model          = rhs.getModelMatrix();
+	this->_model_center   = rhs.getModelCenter();
+	this->_to_update      = rhs.getToUpdate();
+	this->_used_for_light = rhs.getUsedForLight();
 	this->_active         = rhs.getActive();
+	this->_model          = rhs.getModelMatrix();
+	this->_inv_model      = rhs.getInvModelMatrix();
 	this->_cb             = rhs.getCollisionBox();
 	this->_dmg            = rhs.getDamages();
 	this->_passthrough    = rhs.getPassthrough();
-	this->_to_update      = rhs.getToUpdate();
-	this->_used_for_light = this->_render_bin->getUseLight();
 	return (*this);
 }
 
@@ -77,53 +77,60 @@ Prop &Prop::operator=(Prop const &rhs)
 void Prop::setPosition(glm::vec3 const &pos)
 {
 	this->_pos = pos;
+	this->_to_update = true;
 }
 
 void Prop::setScale(glm::vec3 const &scale)
 {
 	this->_scale = scale;
+	this->_to_update = true;
 }
 
-void Prop::setYaw(GLfloat yaw)
+void Prop::setYaw(float yaw)
 {
 	this->_yaw = yaw;
+	this->_to_update = true;
 }
 
-void Prop::setPitch(GLfloat pitch)
+void Prop::setPitch(float pitch)
 {
 	this->_pitch = pitch;
+	this->_to_update = true;
 }
 
-void Prop::setRoll(GLfloat roll)
+void Prop::setRoll(float roll)
 {
 	this->_roll = roll;
+	this->_to_update = true;
 }
 
 void Prop::setOffset(glm::vec3 const &offset)
 {
 	this->_offset = offset;
+	this->_to_update = true;
+}
+
+void Prop::setModelCenter(glm::vec3 const &center)
+{
+	this->_model_center = center;
+	this->_to_update = true;
 }
 
 /*
  * Getter
  */
 
-ARenderBin *Prop::getRenderBin(void) const
-{
-	return (this->_render_bin);
-}
-
-GLfloat Prop::getYaw(void) const
+float Prop::getYaw(void) const
 {
 	return (this->_yaw);
 }
 
-GLfloat Prop::getPitch(void) const
+float Prop::getPitch(void) const
 {
 	return (this->_pitch);
 }
 
-GLfloat Prop::getRoll(void) const
+float Prop::getRoll(void) const
 {
 	return (this->_roll);
 }
@@ -143,14 +150,19 @@ glm::vec3 const &Prop::getOffset(void) const
 	return (this->_offset);
 }
 
-glm::mat4 const &Prop::getModelMatrix(void) const
+glm::vec3 const &Prop::getModelCenter() const
 {
-	return (this->_model);
+	return (this->_model_center);
 }
 
 bool Prop::getToUpdate() const
 {
 	return (this->_to_update);
+}
+
+bool Prop::getUsedForLight() const
+{
+	return (this->_used_for_light);
 }
 
 /*
@@ -167,11 +179,7 @@ void Prop::update(float time)
 		this->_model         = glm::rotate(this->_model, glm::radians(this->_yaw), glm::vec3(0.0f, 1.0f, 0.0f));
 		this->_model         = glm::rotate(this->_model, glm::radians(this->_pitch), glm::vec3(1.0f, 0.0f, 0.0f));
 		this->_model         = glm::rotate(this->_model, glm::radians(this->_roll), glm::vec3(0.0f, 0.0f, 1.0f));
-		this->_model         = glm::translate(this->_model,
-											  glm::vec3(-this->_render_bin->getModel()->getCenter().x * this->_scale.x,
-														-this->_render_bin->getModel()->getCenter().y * this->_scale.y,
-														-this->_render_bin->getModel()->getCenter().z * this->_scale
-																											.z));
+		this->_model         = glm::translate(this->_model, this->_model_center * this->_scale);
 		this->_model         = glm::scale(this->_model, this->_scale);
 		if (this->_used_for_light)
 			this->_inv_model = glm::transpose(glm::inverse(this->_model));
@@ -187,6 +195,16 @@ void Prop::setActive(bool value)
 bool Prop::getActive(void) const
 {
 	return (this->_active);
+}
+
+glm::mat4 const &Prop::getModelMatrix(void) const
+{
+	return (this->_model);
+}
+
+glm::mat4 const &Prop::getInvModelMatrix() const
+{
+	return (this->_inv_model);
 }
 
 /*
@@ -235,13 +253,4 @@ void Prop::setPassthrough(bool value)
 bool Prop::getPassthrough(void) const
 {
 	return (this->_passthrough);
-}
-
-Prop::InitException::InitException(void)
-{
-	this->_msg = "Prop : Object initialization failed";
-}
-
-Prop::InitException::~InitException(void) throw()
-{
 }

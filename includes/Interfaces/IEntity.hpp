@@ -13,6 +13,8 @@
 #ifndef IENTITY_HPP
 # define IENTITY_HPP
 
+# include "glm/glm.hpp"
+
 class IEntity
 {
 	public :
@@ -25,6 +27,8 @@ class IEntity
 		virtual void update(float time) = 0;
 		virtual void setActive(bool value) = 0;
 		virtual bool getActive(void) const = 0;
+		virtual glm::mat4 const &getModelMatrix(void) const = 0;
+		virtual glm::mat4 const &getInvModelMatrix(void) const = 0;
 };
 
 #endif

@@ -21,6 +21,7 @@ ARenderBin::Params::Params(void)
 	this->use_light         = false;
 	this->lc                = nullptr;
 	this->view_pos          = nullptr;
+	this->nb_thread         = DEFAULT_NB_THREAD;
 }
 
 ARenderBin::Params::~Params(void)
@@ -282,6 +283,8 @@ GLuint ARenderBin::moveVBOInvModelMatrices()
 
 IEntity *ARenderBin::add_Prop(Prop::Params &params)
 {
+	params.light        = this->_use_light;
+	params.model_center = this->_model->getCenter();
 	this->_entity_list.emplace_back(new Prop(params));
 	return (this->_entity_list.back().get());
 }
@@ -419,6 +422,10 @@ void ARenderBin::_start_workers()
 		this->_workers[i].detach();
 }
 
+void ARenderBin::_update_multithread_opengl_arrays(size_t thread_id)
+{
+}
+
 void ARenderBin::_update_monothread_opengl_arrays()
 {
 	IEntity *entity_ptr = nullptr;
@@ -428,10 +435,7 @@ void ARenderBin::_update_monothread_opengl_arrays()
 		this->_ptr_render_model     = this->_model_matrices.get();
 		this->_ptr_render_inv_model = this->_inv_model_matrices.get();
 	}
-
-	if (!this->_entity_per_thread)
-		this->_entity_per_thread = this->_leftover;
-	for (size_t i = 0; i < this->_entity_per_thread; ++i)
+	for (size_t i = 0; i < this->_entity_list.size(); ++i)
 	{
 		entity_ptr = this->_entity_list[i].get();
 		entity_ptr->update(this->_tick);

@@ -111,17 +111,16 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating Prop
 	Prop::Params prop_params;
-	prop_params.render_bin  = light;
 	prop_params.orientation = glm::vec3(0.0f);
 	prop_params.scale       = glm::vec3(2.0f);
 	prop_params.pos         = glm::vec3(0.0f);
-	(*world)->add_Prop(prop_params);
+	(*world)->add_Prop("Light", prop_params);
 
 	prop_params.pos = glm::vec3(0.0f, 0.0f, 20.0f);
-	(*world)->add_Prop(prop_params);
+	(*world)->add_Prop("Light", prop_params);
 
 	prop_params.pos = glm::vec3(0.0f, 0.0f, -20.0f);
-	(*world)->add_Prop(prop_params);
+	(*world)->add_Prop("Light", prop_params);
 }
 
 static void init_program(Engine **world, RessourceManager &rm,

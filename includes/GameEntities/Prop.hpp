@@ -16,7 +16,6 @@
 # include "Interfaces/IEntity.hpp"
 # include "Interfaces/ITransformable.hpp"
 # include "Interfaces/ICollidable.hpp"
-# include "OpenGL/RenderBin/ARenderBin.hpp"
 # include "GameEntities/Utility/CollisionBox.hpp"
 # include "Exceptions/GeneralException.hpp"
 # include "glm/gtc/matrix_transform.hpp"
@@ -33,7 +32,7 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 			Params(void);
 			~Params(void);
 
-			ARenderBin            *render_bin;
+			glm::vec3             model_center;
 			glm::vec3             pos;
 			glm::vec3             orientation;
 			glm::vec3             scale;
@@ -42,6 +41,7 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 			glm::vec3             cb_half_size;
 			ICollidable::eDamages dmg;
 			bool                  passthrough;
+			bool                  light;
 		};
 
 		Prop(Prop::Params const &params);
@@ -59,20 +59,21 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		void setPitch(float pitch);
 		void setRoll(float roll);
 		void setOffset(glm::vec3 const &offset);
+		void setModelCenter(glm::vec3 const &center);
 
 		/*
 		 * Getter
 		 */
 
-		ARenderBin *getRenderBin(void) const;
 		float getYaw(void) const;
 		float getPitch(void) const;
 		float getRoll(void) const;
 		glm::vec3 const &getPos(void) const;
 		glm::vec3 const &getScale(void) const;
 		glm::vec3 const &getOffset(void) const;
-		glm::mat4 const &getModelMatrix(void) const;
+		glm::vec3 const &getModelCenter(void) const;
 		bool getToUpdate(void) const;
+		bool getUsedForLight(void) const;
 
 		/*
 		 * Interface IEntity
@@ -81,6 +82,8 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		virtual void update(float time);
 		virtual void setActive(bool value);
 		virtual bool getActive(void) const;
+		virtual glm::mat4 const &getModelMatrix(void) const;
+		virtual glm::mat4 const &getInvModelMatrix(void) const;
 
 		/*
 		 * Interface ITransformable
@@ -99,36 +102,27 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		virtual void setPassthrough(bool value);
 		virtual bool getPassthrough(void) const;
 
-		class InitException : public GeneralException
-		{
-			public :
-
-				explicit InitException(void);
-				virtual ~InitException(void) throw();
-		};
-
 	protected :
 
-		ARenderBin *_render_bin;
-		float      _yaw;
-		float      _pitch;
-		float      _roll;
-		glm::vec3  _pos;
-		glm::vec3  _scale;
-		glm::vec3  _offset;
-		glm::mat4  _model;
-		glm::mat4  _inv_model;
+		float     _yaw;
+		float     _pitch;
+		float     _roll;
+		glm::vec3 _pos;
+		glm::vec3 _scale;
+		glm::vec3 _offset;
+		glm::vec3 _model_center;
+		bool      _to_update;
+		bool      _used_for_light;
 
 		//Related to IEntity
-		bool _active;
+		bool      _active;
+		glm::mat4 _model;
+		glm::mat4 _inv_model;
 
 		//Related to ICollidable
 		CollisionBox          _cb;
 		ICollidable::eDamages _dmg;
 		bool                  _passthrough;
-
-		bool _to_update;
-		bool _used_for_light;
 };
 
 #endif

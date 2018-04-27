@@ -67,10 +67,10 @@ set(SOURCE_FILES
 		srcs/Light/ALight_Based/SpotLight.cpp
 		srcs/OpenGL/RenderBin/ARenderBin_Based/MultiPointDirSpotLightRenderBin.cpp
 		srcs/Engine/Init/SceneInit/InitTestInstancing.cpp
-#		srcs/Engine/Init/SceneInit/InitTestMultiLight.cpp
-#		srcs/Engine/Init/SceneInit/InitTestDirectionalShadow.cpp
-#		srcs/Engine/Init/SceneInit/InitTestOmniShadow.cpp
-#		srcs/Engine/Init/SceneInit/InitTestSpotShadow.cpp
+		srcs/Engine/Init/SceneInit/InitTestMultiLight.cpp
+		srcs/Engine/Init/SceneInit/InitTestDirectionalShadow.cpp
+		srcs/Engine/Init/SceneInit/InitTestOmniShadow.cpp
+		srcs/Engine/Init/SceneInit/InitTestSpotShadow.cpp
 		srcs/OpenGL/LightContainer/LightContainer.cpp
 		srcs/OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.cpp
 		srcs/OpenGL/Ressource/AFramebuffer.cpp

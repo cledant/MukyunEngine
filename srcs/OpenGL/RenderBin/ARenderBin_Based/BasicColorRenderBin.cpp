@@ -52,7 +52,7 @@ void BasicColorRenderBin::draw(void)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0,
 							  (this->_model->getMeshList())[i].getNbVertices(),
-							  this->_cur_object);
+							  this->_entity_list.size());
 		glBindVertexArray(0);
 		i++;
 	}

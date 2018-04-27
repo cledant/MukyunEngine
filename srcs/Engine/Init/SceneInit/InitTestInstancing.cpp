@@ -60,11 +60,10 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	rb_model.shader       = &rm.getShader("BasicColor");
 	rb_model.model        = &rm.getModel("BlueBox");
 	rb_model.max_instance = arg.instance_size[0] * arg.instance_size[1] * arg.instance_size[2];
-	ARenderBin *model = (*world)->add_RenderBin("Model", rb_model, ARenderBin::eType::COLOR);
+	(*world)->add_RenderBin("Model", rb_model, ARenderBin::eType::COLOR);
 
 	//Creating Prop
 	Prop::Params prop_params;
-	prop_params.render_bin  = model;
 	prop_params.orientation = glm::vec3(0.0f);
 	prop_params.scale       = glm::vec3(0.25f);
 	for (size_t k = 0; k < arg.instance_size[1]; ++k)
@@ -74,7 +73,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 			for (size_t j = 0; j < arg.instance_size[0]; ++j)
 			{
 				prop_params.pos = glm::vec3(2.0f * i, k * 2.0f, 2.0f * j);
-				(*world)->add_Prop(prop_params);
+				(*world)->add_Prop("Model", prop_params);
 			}
 		}
 	}
@@ -87,8 +86,8 @@ static void init_program(Engine **world, RessourceManager &rm,
 	if (arg.vsync)
 		manager.enableVsync();
 	if (arg.fullscreen)
-		Glfw_manager::toggleScreenMode(const_cast<GLFW_Window &>(manager.getWindow()), arg.monitor,
-									   arg.res_h, arg.res_w);
+		Glfw_manager::toggleScreenMode(const_cast<GLFW_Window &>(manager.getWindow()),
+									   arg.monitor, arg.res_h, arg.res_w);
 	manager.displayGpuInfo();
 	manager.init_input_callback();
 	ShaderLoading(rm);

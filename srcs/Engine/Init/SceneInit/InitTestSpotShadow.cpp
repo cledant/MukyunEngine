@@ -96,35 +96,33 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	rb_light.win_h        = manager.getWindow().cur_win_h;
 	rb_light.win_w        = manager.getWindow().cur_win_w;
 	rb_light.max_instance = 100000;
-	ARenderBin *rb_box = (*world)->add_ShadowRenderBin("LightBlueBoxRB", rb_light,
-													   ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
+	(*world)->add_ShadowRenderBin("LightBlueBoxRB", rb_light,
+								  ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
 
 	rb_light.shader       = &rm.getShader("MultiPointDirSpotLightWithShadowMapMultiPass");
 	rb_light.model        = &rm.getModel("TenshiPlane");
 	rb_light.max_instance = 100000;
-	ARenderBin *rb_plane = (*world)->add_ShadowRenderBin("TenshiPlaneRB", rb_light,
-														 ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
+	(*world)->add_ShadowRenderBin("TenshiPlaneRB", rb_light,
+								  ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
 
 	//Creating Prop
 	Prop::Params prop_params;
-	prop_params.render_bin  = rb_box;
 	prop_params.orientation = glm::vec3(45.0f);
 	prop_params.scale       = glm::vec3(0.5f);
 	prop_params.pos         = glm::vec3(7.0f, 1.0f, -6.0f);
-	(*world)->add_Prop(prop_params);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params);
 
 	prop_params.orientation = glm::vec3(0.0f);
 	prop_params.pos         = glm::vec3(0.0f, 0.0f, 0.0f);
-	(*world)->add_Prop(prop_params);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params);
 
 	prop_params.pos = glm::vec3(4.0f, 0.0f, 4.0f);
-	(*world)->add_Prop(prop_params);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params);
 
-	prop_params.render_bin  = rb_plane;
 	prop_params.orientation = glm::vec3(0.0f);
 	prop_params.scale       = glm::vec3(1.0f);
 	prop_params.pos         = glm::vec3(0.0f, -1.0f, 0.0f);
-	(*world)->add_Prop(prop_params);
+	(*world)->add_Prop("TenshiPlaneRB", prop_params);
 }
 
 static void init_program(Engine **world, RessourceManager &rm,

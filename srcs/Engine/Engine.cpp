@@ -62,7 +62,6 @@ Engine::Engine(EngineInitParams const &params) :
 	sr_params_cpy.lc = &this->_light_container;
 	this->_sr        = ShadowRenderer(sr_params_cpy);
 	this->_tss.setTextureID(this->_final_image.getTextureBuffer());
-
 }
 
 Engine::~Engine(void)

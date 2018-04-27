@@ -52,7 +52,7 @@ void BasicPropRenderBin::draw(void)
 		glBindVertexArray(this->_vao_mesh[i]);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0, (this->_model->getMeshList())[i].getNbVertices(),
-							  this->_cur_object);
+							  this->_entity_list.size());
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindVertexArray(0);
 		i++;
