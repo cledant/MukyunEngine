@@ -163,15 +163,15 @@ void ARenderBin::update(float tick)
 	this->_tick              = tick;
 	this->_entity_per_thread = this->_entity_list.size() / this->_nb_thread;
 	this->_leftover          = this->_entity_list.size() % this->_nb_thread;
-//	if (this->_entity_per_thread < MIN_ELEMENTS_PER_THREAD)
+	if (this->_entity_per_thread < MIN_ELEMENTS_PER_THREAD)
 	{
 		this->_update_monothread_opengl_arrays();
 		return;
 	}
-/*	this->_workers_done = 0;
+	this->_workers_done = 0;
 	for (size_t i = 0; i < this->_nb_thread; ++i)
 		this->_workers_mutex[i].unlock();
-	while (this->_workers_done != this->_nb_thread);*/
+	while (this->_workers_done != this->_nb_thread);
 }
 
 void ARenderBin::flushData(void)

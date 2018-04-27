@@ -26,7 +26,7 @@
 # include <atomic>
 # include <thread>
 
-# define DEFAULT_NB_THREAD 4
+# define DEFAULT_NB_THREAD 1
 # define NB_THREAD_MAX 16
 # define MIN_ELEMENTS_PER_THREAD 8192
 
