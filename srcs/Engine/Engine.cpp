@@ -102,7 +102,7 @@ void Engine::startGameLoop(Glfw_manager &manager)
 			this->_final_image.setViewport();
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//			this->render();
+			this->render();
 			//Display final image
 			this->_final_image.defaultFramebuffer();
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
