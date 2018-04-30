@@ -153,6 +153,7 @@ class ARenderBin
 		std::atomic<size_t>                   _entity_per_thread;
 		std::atomic<size_t>                   _leftover;
 		float                                 _tick;
+		std::atomic<bool>                     _update_vbo;
 
 		/*
 		 * Protected functions

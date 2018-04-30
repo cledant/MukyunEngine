@@ -19,7 +19,7 @@ class IEntity
 {
 	public :
 
-		virtual void update(float time) = 0;
+		virtual bool update(float time) = 0;
 		virtual void setActive(bool value) = 0;
 		virtual bool getActive(void) const = 0;
 		virtual glm::mat4 const &getModelMatrix(void) const = 0;

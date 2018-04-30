@@ -79,7 +79,7 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		 * Interface IEntity
 		 */
 
-		virtual void update(float time);
+		virtual bool update(float time);
 		virtual void setActive(bool value);
 		virtual bool getActive(void) const;
 		virtual glm::mat4 const &getModelMatrix(void) const;

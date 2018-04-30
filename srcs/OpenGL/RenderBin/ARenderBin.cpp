@@ -34,7 +34,7 @@ ARenderBin::ARenderBin(void) :
 		_model_matrices(nullptr), _ptr_render_model(NULL),
 		_use_light(false), _lc(nullptr), _view_pos(nullptr), _inv_model_matrices(nullptr),
 		_ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0), _nb_thread(DEFAULT_NB_THREAD),
-		_entity_per_thread(0), _leftover(0)
+		_entity_per_thread(0), _leftover(0), _update_vbo(true)
 {
 }
 
@@ -45,7 +45,7 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		_model_matrices(nullptr), _ptr_render_model(NULL),
 		_use_light(params.use_light), _lc(params.lc), _view_pos(params.view_pos),
 		_inv_model_matrices(nullptr), _ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0),
-		_nb_thread(params.nb_thread), _entity_per_thread(0), _leftover(0)
+		_nb_thread(params.nb_thread), _entity_per_thread(0), _leftover(0), _update_vbo(true)
 {
 	try
 	{
@@ -104,6 +104,7 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 	this->_nb_thread            = rhs.getNbThread();
 	this->_entity_per_thread    = 0;
 	this->_leftover             = 0;
+	this->_update_vbo           = false;
 	try
 	{
 		this->_max_object = rhs.getMaxInstanceNumber();
@@ -146,17 +147,20 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 
 void ARenderBin::updateVBO(void)
 {
-	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_model_matrices);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * this->_entity_list.size(),
-					this->_model_matrices.get());
-	if (this->_use_light)
+	if (this->_update_vbo)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_inv_model_matrices);
-		glBufferSubData(GL_ARRAY_BUFFER, 0,
-						sizeof(glm::mat4) * this->_entity_list.size(),
-						this->_inv_model_matrices.get());
+		glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_model_matrices);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * this->_entity_list.size(),
+						this->_model_matrices.get());
+		if (this->_use_light)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_inv_model_matrices);
+			glBufferSubData(GL_ARRAY_BUFFER, 0,
+							sizeof(glm::mat4) * this->_entity_list.size(),
+							this->_inv_model_matrices.get());
+		}
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void ARenderBin::update(float tick)
@@ -170,6 +174,7 @@ void ARenderBin::update(float tick)
 		return;
 	}
 	this->_workers_done = 0;
+	this->_update_vbo   = false;
 	for (size_t i = 0; i < this->_nb_thread; ++i)
 		this->_workers_mutex[i].unlock();
 	while (this->_workers_done != this->_nb_thread);
@@ -450,10 +455,13 @@ void ARenderBin::_update_multithread_opengl_arrays(size_t thread_id)
 		for (size_t i = this->_entity_per_thread * thread_id; i < max; ++i)
 		{
 			entity_ptr = this->_entity_list[i].get();
-			entity_ptr->update(this->_tick);
-			std::memcpy(&this->_ptr_render_model[i], &entity_ptr->getModelMatrix(), sizeof(glm::mat4));
-			if (this->_use_light)
-				std::memcpy(&this->_ptr_render_inv_model[i], &entity_ptr->getInvModelMatrix(), sizeof(glm::mat4));
+			if (entity_ptr->update(this->_tick))
+			{
+				this->_update_vbo = true;
+				std::memcpy(&this->_ptr_render_model[i], &entity_ptr->getModelMatrix(), sizeof(glm::mat4));
+				if (this->_use_light)
+					std::memcpy(&this->_ptr_render_inv_model[i], &entity_ptr->getInvModelMatrix(), sizeof(glm::mat4));
+			}
 		}
 		this->_workers_done++;
 	}
@@ -471,9 +479,12 @@ void ARenderBin::_update_monothread_opengl_arrays()
 	for (size_t i = 0; i < this->_entity_list.size(); ++i)
 	{
 		entity_ptr = this->_entity_list[i].get();
-		entity_ptr->update(this->_tick);
-		std::memcpy(&this->_ptr_render_model[i], &entity_ptr->getModelMatrix(), sizeof(glm::mat4));
-		if (this->_use_light)
-			std::memcpy(&this->_ptr_render_inv_model[i], &entity_ptr->getInvModelMatrix(), sizeof(glm::mat4));
+		if (entity_ptr->update(this->_tick))
+		{
+			this->_update_vbo = true;
+			std::memcpy(&this->_ptr_render_model[i], &entity_ptr->getModelMatrix(), sizeof(glm::mat4));
+			if (this->_use_light)
+				std::memcpy(&this->_ptr_render_inv_model[i], &entity_ptr->getInvModelMatrix(), sizeof(glm::mat4));
+		}
 	}
 }

@@ -168,7 +168,7 @@ bool Prop::getUsedForLight() const
  * Interface IEntity
  */
 
-void Prop::update(float time)
+bool Prop::update(float time)
 {
 	if (this->_to_update && this->_active)
 	{
@@ -183,7 +183,9 @@ void Prop::update(float time)
 		if (this->_used_for_light)
 			this->_inv_model = glm::transpose(glm::inverse(this->_model));
 		this->_to_update     = false;
+		return (true);
 	}
+	return (false);
 }
 
 void Prop::setActive(bool value)
