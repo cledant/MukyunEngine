@@ -49,6 +49,7 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 {
 	try
 	{
+		this->_entity_list.reserve(this->_max_object);
 		this->_model_matrices = std::make_unique<glm::mat4[]>(params.max_instance);
 		this->_create_vbo_model_matrices(params.max_instance);
 		this->_create_vao_mesh();
@@ -292,6 +293,8 @@ IEntity *ARenderBin::add_Prop(Prop::Params &params)
 {
 	params.light        = this->_use_light;
 	params.model_center = this->_model->getCenter();
+	if (this->_entity_list.size() >= this->_entity_list.capacity())
+		return (nullptr);
 	this->_entity_list.emplace_back(new Prop(params));
 	return (this->_entity_list.back().get());
 }

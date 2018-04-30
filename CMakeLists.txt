@@ -55,9 +55,6 @@ set(SOURCE_FILES
 		srcs/OpenGL/RenderBin/ARenderBin.cpp
 		srcs/OpenGL/RenderBin/ARenderBin_Based/BasicPropRenderBin.cpp
 		srcs/OpenGL/RenderBin/ARenderBin_Based/BasicColorRenderBin.cpp
-		srcs/Interfaces/ICollidable.cpp
-		srcs/Interfaces/IEntity.cpp
-		srcs/Interfaces/ITransformable.cpp
 		srcs/GameEntities/Utility/CollisionBox.cpp
 		srcs/Cameras/Camera.cpp
 		srcs/GameEntities/Prop.cpp

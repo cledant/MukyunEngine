@@ -19,11 +19,6 @@ class IEntity
 {
 	public :
 
-		IEntity(void);
-		virtual ~IEntity(void);
-		IEntity(IEntity const &src) = delete;
-		IEntity &operator=(IEntity const &rhs) = delete;
-
 		virtual void update(float time) = 0;
 		virtual void setActive(bool value) = 0;
 		virtual bool getActive(void) const = 0;

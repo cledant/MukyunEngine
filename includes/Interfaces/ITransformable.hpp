@@ -19,11 +19,6 @@ class ITransformable
 {
 	public :
 
-		ITransformable(void);
-		virtual ~ITransformable(void);
-		ITransformable(ITransformable const &src) = delete;
-		ITransformable &operator=(ITransformable const &rhs) = delete;
-
 		virtual void translateObject(glm::vec3 const &vec) = 0;
 		virtual void scaleObject(glm::vec3 const &vec) = 0;
 		virtual void rotateObject(glm::vec3 const &vec) = 0;

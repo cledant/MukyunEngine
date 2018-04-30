@@ -44,8 +44,7 @@ Prop::~Prop(void)
 {
 }
 
-Prop::Prop(Prop const &src) : IEntity(), ITransformable(), ICollidable(),
-							  _cb(glm::vec3(0.0f), glm::vec3(0.0f))
+Prop::Prop(Prop const &src) : _cb(glm::vec3(0.0f), glm::vec3(0.0f))
 {
 	*this = src;
 }
@@ -76,44 +75,44 @@ Prop &Prop::operator=(Prop const &rhs)
 
 void Prop::setPosition(glm::vec3 const &pos)
 {
-	this->_pos = pos;
+	this->_pos       = pos;
 	this->_to_update = true;
 }
 
 void Prop::setScale(glm::vec3 const &scale)
 {
-	this->_scale = scale;
+	this->_scale     = scale;
 	this->_to_update = true;
 }
 
 void Prop::setYaw(float yaw)
 {
-	this->_yaw = yaw;
+	this->_yaw       = yaw;
 	this->_to_update = true;
 }
 
 void Prop::setPitch(float pitch)
 {
-	this->_pitch = pitch;
+	this->_pitch     = pitch;
 	this->_to_update = true;
 }
 
 void Prop::setRoll(float roll)
 {
-	this->_roll = roll;
+	this->_roll      = roll;
 	this->_to_update = true;
 }
 
 void Prop::setOffset(glm::vec3 const &offset)
 {
-	this->_offset = offset;
+	this->_offset    = offset;
 	this->_to_update = true;
 }
 
 void Prop::setModelCenter(glm::vec3 const &center)
 {
 	this->_model_center = center;
-	this->_to_update = true;
+	this->_to_update    = true;
 }
 
 /*

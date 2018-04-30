@@ -116,7 +116,6 @@ void Engine::startGameLoop(Glfw_manager &manager)
 											glm::vec3(30,
 													  this->_window.cur_win_h - 110,
 													  1.0f));
-
 			manager.swap_buffers();
 			if (manager.should_window_be_closed())
 				manager.destroy_window();

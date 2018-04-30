@@ -28,11 +28,6 @@ class ICollidable
 			INSTANT_DEATH = 10000,
 		};
 
-		ICollidable(void);
-		virtual ~ICollidable(void);
-		ICollidable(ICollidable const &src) = delete;
-		ICollidable &operator=(ICollidable const &rhs) = delete;
-
 		virtual CollisionBox const &getCollisionBox(void) const = 0;
 		virtual ICollidable::eDamages getDamages(void) const = 0;
 		virtual void setPassthrough(bool value) = 0;
