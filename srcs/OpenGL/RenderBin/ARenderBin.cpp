@@ -34,7 +34,7 @@ ARenderBin::ARenderBin(void) :
 		_model_matrices(nullptr), _ptr_render_model(NULL),
 		_use_light(false), _lc(nullptr), _view_pos(nullptr), _inv_model_matrices(nullptr),
 		_ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0), _nb_thread(DEFAULT_NB_THREAD),
-		_entity_per_thread(0), _leftover(0), _update_vbo(true)
+		_entity_per_thread(0), _leftover(0), _update_vbo(true), _update_it(true)
 {
 }
 
@@ -45,11 +45,13 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		_model_matrices(nullptr), _ptr_render_model(NULL),
 		_use_light(params.use_light), _lc(params.lc), _view_pos(params.view_pos),
 		_inv_model_matrices(nullptr), _ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0),
-		_nb_thread(params.nb_thread), _entity_per_thread(0), _leftover(0), _update_vbo(true)
+		_nb_thread(params.nb_thread), _entity_per_thread(0), _leftover(0), _update_vbo(true),
+		_update_it(true)
 {
 	try
 	{
 		this->_entity_list.reserve(this->_max_object);
+		this->_inactive_entity_list.reserve(this->_max_object);
 		this->_model_matrices = std::make_unique<glm::mat4[]>(params.max_instance);
 		this->_create_vbo_model_matrices(params.max_instance);
 		this->_create_vao_mesh();
@@ -74,6 +76,9 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		this->_nb_thread = 16;
 	else if (!this->_nb_thread)
 		this->_nb_thread = DEFAULT_NB_THREAD;
+	for (size_t i = 0; i < this->_nb_thread; ++i)
+		this->_vec_it.push_back(this->_entity_list.begin());
+	this->_vec_it.push_back(this->_entity_list.begin());
 	for (size_t i = 0; i < this->_nb_thread; ++i)
 		this->_workers.push_back(std::thread(&ARenderBin::_update_multithread_opengl_arrays, this, i));
 	this->_start_workers();
@@ -105,20 +110,23 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 	this->_entity_per_thread    = 0;
 	this->_leftover             = 0;
 	this->_update_vbo           = false;
+	this->_update_it            = true;
 	try
 	{
 		this->_max_object = rhs.getMaxInstanceNumber();
+		this->_inactive_entity_list.reserve(this->_max_object);
 		this->_entity_list.reserve(this->_max_object);
-		this->_model_matrices     = std::make_unique<glm::mat4[]>(this->_max_object);
-		this->_vbo_model_matrices = rhs.moveVboModelMatrices();
-		this->_vao_mesh           = rhs.moveVaoMeshes();
-		this->_entity_list        = rhs.moveEntities();
+		this->_model_matrices       = std::make_unique<glm::mat4[]>(this->_max_object);
+		this->_vbo_model_matrices   = rhs.moveVboModelMatrices();
+		this->_vao_mesh             = rhs.moveVaoMeshes();
+		this->_entity_list          = rhs.moveEntities();
+		this->_inactive_entity_list = rhs.moveInactiveEntities();
 		/*
 		 * Light related
 		 */
-		this->_use_light          = rhs.getUseLight();
-		this->_lc                 = rhs.getLightContainer();
-		this->_view_pos           = rhs.getViewPos();
+		this->_use_light            = rhs.getUseLight();
+		this->_lc                   = rhs.getLightContainer();
+		this->_view_pos             = rhs.getViewPos();
 		if (this->_use_light)
 		{
 			this->_inv_model_matrices     = std::make_unique<glm::mat4[]>(this->_max_object);
@@ -136,6 +144,9 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 		throw;
 	}
 	for (size_t i               = 0; i < this->_nb_thread; ++i)
+		this->_vec_it.push_back(this->_entity_list.begin());
+	this->_vec_it.push_back(this->_entity_list.begin());
+	for (size_t i = 0; i < this->_nb_thread; ++i)
 		this->_workers.push_back(std::thread(&ARenderBin::_update_multithread_opengl_arrays, this, i));
 	this->_start_workers();
 	return (*this);
@@ -165,6 +176,7 @@ void ARenderBin::updateVBO(void)
 
 void ARenderBin::update(float tick)
 {
+	this->_update_vbo        = false;
 	this->_tick              = tick;
 	this->_entity_per_thread = this->_entity_list.size() / this->_nb_thread;
 	this->_leftover          = this->_entity_list.size() % this->_nb_thread;
@@ -173,8 +185,9 @@ void ARenderBin::update(float tick)
 		this->_update_monothread_opengl_arrays();
 		return;
 	}
+	if (this->_update_it)
+		this->_update_iterators();
 	this->_workers_done = 0;
-	this->_update_vbo   = false;
 	for (size_t i = 0; i < this->_nb_thread; ++i)
 		this->_workers_mutex[i].unlock();
 	while (this->_workers_done != this->_nb_thread);
@@ -294,29 +307,89 @@ GLuint ARenderBin::moveVBOInvModelMatrices()
  * Entity related getter
  */
 
-IEntity *ARenderBin::add_Prop(Prop::Params &params)
-{
-	params.light        = this->_use_light;
-	params.model_center = this->_model->getCenter();
-	if (this->_entity_list.size() >= this->_entity_list.capacity())
-		return (nullptr);
-	this->_entity_list.emplace_back(new Prop(params));
-	return (this->_entity_list.back().get());
-}
 
 size_t ARenderBin::getNbThread() const
 {
 	return (this->_nb_thread);
 }
 
-std::vector<std::unique_ptr<IEntity>> const &ARenderBin::getEntities(void) const
+std::unordered_map<IEntity *, std::unique_ptr<IEntity>> const &ARenderBin::getEntities(void) const
 {
 	return (this->_entity_list);
 }
 
-std::vector<std::unique_ptr<IEntity>> ARenderBin::moveEntities(void)
+std::unordered_map<IEntity *, std::unique_ptr<IEntity>> ARenderBin::moveEntities(void)
 {
 	return (std::move(this->_entity_list));
+}
+
+std::unordered_map<IEntity *, std::unique_ptr<IEntity>> const &ARenderBin::getInactiveEntities(void) const
+{
+	return (this->_inactive_entity_list);
+}
+
+std::unordered_map<IEntity *, std::unique_ptr<IEntity>> ARenderBin::moveInactiveEntities(void)
+{
+	return (std::move(this->_inactive_entity_list));
+}
+
+/*
+ * Entity related setter
+ */
+
+IEntity *ARenderBin::add_Prop(Prop::Params &params)
+{
+	params.light        = this->_use_light;
+	params.model_center = this->_model->getCenter();
+
+	if (this->_entity_list.size() >= this->_max_object)
+		return (nullptr);
+	std::unique_ptr<IEntity> elmt      = std::make_unique<Prop>(params);
+	IEntity                  *ptr_elmt = elmt.get();
+	this->_entity_list[ptr_elmt] = std::move(elmt);
+	this->_update_it = true;
+	return (ptr_elmt);
+}
+
+bool ARenderBin::delete_Prop(IEntity const *ptr)
+{
+	if (this->_entity_list.erase(const_cast<IEntity *>(ptr)))
+	{
+		this->_update_it = true;
+		return (true);
+	}
+	if (this->_inactive_entity_list.erase(const_cast<IEntity *>(ptr)))
+	{
+		this->_update_it = true;
+		return (true);
+	}
+	return (false);
+}
+
+bool ARenderBin::activate_Prop(IEntity const *ptr)
+{
+	auto it = this->_inactive_entity_list.find(const_cast<IEntity *>(ptr));
+
+	if (it == this->_inactive_entity_list.end())
+		return (false);
+	it->first->setActive(true);
+	this->_entity_list[const_cast<IEntity *>(ptr)] = std::move(it->second);
+	this->_inactive_entity_list.erase(const_cast<IEntity *>(ptr));
+	this->_update_it = true;
+	return (true);
+}
+
+bool ARenderBin::deactivate_Prop(IEntity const *ptr)
+{
+	auto it = this->_entity_list.find(const_cast<IEntity *>(ptr));
+
+	if (it == this->_entity_list.end())
+		return (false);
+	it->first->setActive(false);
+	this->_inactive_entity_list[const_cast<IEntity *>(ptr)] = std::move(it->second);
+	this->_entity_list.erase(const_cast<IEntity *>(ptr));
+	this->_update_it = true;
+	return (true);
 }
 
 /*
@@ -437,10 +510,27 @@ void ARenderBin::_start_workers()
 		this->_workers[i].detach();
 }
 
+void ARenderBin::_update_iterators()
+{
+	size_t i = 0;
+
+	this->_vec_it.clear();
+	for (auto it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
+	{
+		if (!(i % this->_entity_per_thread))
+			this->_vec_it.push_back(it);
+		i++;
+	}
+	auto      it = this->_entity_list.end();
+	this->_vec_it.push_back(it);
+	this->_update_it  = false;
+	this->_update_vbo = true;
+}
+
 void ARenderBin::_update_multithread_opengl_arrays(size_t thread_id)
 {
 	IEntity *entity_ptr = nullptr;
-	size_t  max         = 0;
+	size_t  i           = 0;
 
 	if (!this->_ptr_render_model)
 	{
@@ -450,18 +540,18 @@ void ARenderBin::_update_multithread_opengl_arrays(size_t thread_id)
 	while (1)
 	{
 		this->_workers_mutex[thread_id].lock();
-		if ((max = this->_entity_per_thread * (thread_id + 1)) > this->_entity_list.size())
-			max = this->_entity_list.size();
-		for (size_t i = this->_entity_per_thread * thread_id; i < max; ++i)
+		i = this->_entity_per_thread * thread_id;
+		for (auto it = this->_vec_it[thread_id]; it != this->_vec_it[thread_id + 1]; ++it)
 		{
-			entity_ptr = this->_entity_list[i].get();
-			if (entity_ptr->update(this->_tick))
+			entity_ptr = it->first;
+			if (entity_ptr->update(this->_tick) || this->_update_vbo)
 			{
 				this->_update_vbo = true;
 				std::memcpy(&this->_ptr_render_model[i], &entity_ptr->getModelMatrix(), sizeof(glm::mat4));
 				if (this->_use_light)
 					std::memcpy(&this->_ptr_render_inv_model[i], &entity_ptr->getInvModelMatrix(), sizeof(glm::mat4));
 			}
+			i++;
 		}
 		this->_workers_done++;
 	}
@@ -470,21 +560,23 @@ void ARenderBin::_update_multithread_opengl_arrays(size_t thread_id)
 void ARenderBin::_update_monothread_opengl_arrays()
 {
 	IEntity *entity_ptr = nullptr;
+	size_t  i           = 0;
 
 	if (!this->_ptr_render_model)
 	{
 		this->_ptr_render_model     = this->_model_matrices.get();
 		this->_ptr_render_inv_model = this->_inv_model_matrices.get();
 	}
-	for (size_t i = 0; i < this->_entity_list.size(); ++i)
+	for (auto it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
 	{
-		entity_ptr = this->_entity_list[i].get();
-		if (entity_ptr->update(this->_tick))
+		entity_ptr = it->first;
+		if (entity_ptr->update(this->_tick) || this->_update_vbo)
 		{
 			this->_update_vbo = true;
 			std::memcpy(&this->_ptr_render_model[i], &entity_ptr->getModelMatrix(), sizeof(glm::mat4));
 			if (this->_use_light)
 				std::memcpy(&this->_ptr_render_inv_model[i], &entity_ptr->getInvModelMatrix(), sizeof(glm::mat4));
 		}
+		i++;
 	}
 }

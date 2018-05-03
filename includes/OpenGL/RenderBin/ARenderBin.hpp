@@ -22,6 +22,7 @@
 # include "OpenGL/LightContainer/LightContainer.hpp"
 # include "GameEntities/Prop.hpp"
 # include <vector>
+# include <unordered_map>
 # include <memory>
 # include <atomic>
 # include <thread>
@@ -112,11 +113,20 @@ class ARenderBin
 		 * Entity related getter
 		 */
 
-		IEntity *add_Prop(Prop::Params &params);
 		size_t getNbThread(void) const;
-		std::vector<std::unique_ptr<IEntity>> const &getEntities(void) const;
-		std::vector<std::unique_ptr<IEntity>> moveEntities(void);
+		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> const &getEntities(void) const;
+		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> moveEntities(void);
+		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> const &getInactiveEntities(void) const;
+		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> moveInactiveEntities(void);
 
+		/*
+		 * Entity related setter
+		 */
+
+		IEntity *add_Prop(Prop::Params &params);
+		bool delete_Prop(IEntity const *ptr);
+		bool activate_Prop(IEntity const *ptr);
+		bool deactivate_Prop(IEntity const *ptr);
 
 	protected :
 
@@ -145,15 +155,18 @@ class ARenderBin
 		 * Entity related
 		 */
 
-		size_t                                _nb_thread;
-		std::vector<std::unique_ptr<IEntity>> _entity_list;
-		std::vector<std::thread>              _workers;
-		std::mutex                            _workers_mutex[NB_THREAD_MAX];
-		std::atomic<size_t>                   _workers_done;
-		std::atomic<size_t>                   _entity_per_thread;
-		std::atomic<size_t>                   _leftover;
-		float                                 _tick;
-		std::atomic<bool>                     _update_vbo;
+		size_t                                                                         _nb_thread;
+		std::unordered_map<IEntity *, std::unique_ptr<IEntity>>                        _entity_list;
+		std::unordered_map<IEntity *, std::unique_ptr<IEntity>>                        _inactive_entity_list;
+		std::vector<std::thread>                                                       _workers;
+		std::mutex                                                                     _workers_mutex[NB_THREAD_MAX];
+		std::atomic<size_t>                                                            _workers_done;
+		std::atomic<size_t>                                                            _entity_per_thread;
+		std::atomic<size_t>                                                            _leftover;
+		float                                                                          _tick;
+		std::atomic<bool>                                                              _update_vbo;
+		bool                                                                           _update_it;
+		std::vector<std::unordered_map<IEntity *, std::unique_ptr<IEntity>>::iterator> _vec_it;
 
 		/*
 		 * Protected functions
@@ -174,6 +187,7 @@ class ARenderBin
 		 */
 
 		inline void _start_workers(void);
+		inline void _update_iterators(void);
 		inline void _update_multithread_opengl_arrays(size_t thread_id);
 		inline void _update_monothread_opengl_arrays(void);
 };

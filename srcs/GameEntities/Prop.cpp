@@ -190,7 +190,9 @@ bool Prop::update(float time)
 
 void Prop::setActive(bool value)
 {
-	this->_active = value;
+	this->_active        = value;
+	if (value)
+		this->_to_update = true;
 }
 
 bool Prop::getActive(void) const
