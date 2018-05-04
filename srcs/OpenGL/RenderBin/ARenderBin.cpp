@@ -109,7 +109,7 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 	this->_nb_thread            = rhs.getNbThread();
 	this->_entity_per_thread    = 0;
 	this->_leftover             = 0;
-	this->_update_vbo           = false;
+	this->_update_vbo           = true;
 	this->_update_it            = true;
 	try
 	{
@@ -176,17 +176,18 @@ void ARenderBin::updateVBO(void)
 
 void ARenderBin::update(float tick)
 {
-	this->_update_vbo        = false;
-	this->_tick              = tick;
-	this->_entity_per_thread = this->_entity_list.size() / this->_nb_thread;
-	this->_leftover          = this->_entity_list.size() % this->_nb_thread;
+	this->_update_vbo              = false;
+	this->_tick                    = tick;
+	if (!(this->_entity_per_thread = this->_entity_list.size() / this->_nb_thread))
+		this->_entity_per_thread = 1;
+	this->_leftover              = this->_entity_list.size() % this->_nb_thread;
+	if (this->_update_it)
+		this->_update_iterators();
 	if (this->_entity_per_thread < MIN_ELEMENTS_PER_THREAD)
 	{
 		this->_update_monothread_opengl_arrays();
 		return;
 	}
-	if (this->_update_it)
-		this->_update_iterators();
 	this->_workers_done = 0;
 	for (size_t i = 0; i < this->_nb_thread; ++i)
 		this->_workers_mutex[i].unlock();

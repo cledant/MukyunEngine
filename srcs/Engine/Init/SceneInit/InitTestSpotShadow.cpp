@@ -57,14 +57,6 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	engine_params.system_fontset = &rm.getFontset("system_font");
 	(*world) = new Engine(engine_params);
 
-	//Creating RenderBin for LightBox Indication in scene
-/*	ARenderBin::Params rb_light_color;
-	rb_light_color.shader       = &rm.getShader("DiffuseColored");
-	rb_light_color.model        = &rm.getModel("WhiteBox");
-	rb_light_color.max_instance = DEFAULT_MAX_LIGHT;
-	ARenderBin *light_color = (*world)->add_RenderBin("Light_Color", rb_light_color,
-													  ARenderBin::eType::DIFFUSE_COLORED);
-*/
 	//Creating Directional Lights
 	SpotLight::Params params_dir;
 	params_dir.pos               = glm::vec3(0.0f, 10.0f, 0.1f);
@@ -93,6 +85,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	AShadowRenderBin::Params rb_light;
 	rb_light.shader       = &rm.getShader("MultiPointDirSpotLightWithShadowMapMultiPass");
 	rb_light.model        = &rm.getModel("BlueBox");
+	rb_light.nb_thread    = 8;
 	rb_light.win_h        = manager.getWindow().cur_win_h;
 	rb_light.win_w        = manager.getWindow().cur_win_w;
 	rb_light.max_instance = 100000;

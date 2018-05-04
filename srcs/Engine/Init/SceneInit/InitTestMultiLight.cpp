@@ -55,18 +55,11 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	engine_params.system_fontset = &rm.getFontset("system_font");
 	(*world) = new Engine(engine_params);
 
-	//Creating RenderBin for LightBox Indication in scene
-/*	ARenderBin::Params rb_light_color;
-	rb_light_color.shader       = &rm.getShader("DiffuseColored");
-	rb_light_color.model        = &rm.getModel("WhiteBox");
-	rb_light_color.max_instance = DEFAULT_MAX_LIGHT;
-	ARenderBin *light_color = (*world)->add_RenderBin("Light_Color", rb_light_color,
-													  ARenderBin::eType::DIFFUSE_COLORED);
-*/
 	//Creating RenderBin for Light that uses LightContainer
 	ARenderBin::Params rb_light;
 	rb_light.shader       = &rm.getShader("MultiPointDirSpotLight");
 	rb_light.model        = &rm.getModel("WhiteBox");
+	rb_light.nb_thread    = 8;
 	rb_light.max_instance = 100000;
 	(*world)->add_RenderBin("Light", rb_light,
 							ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);

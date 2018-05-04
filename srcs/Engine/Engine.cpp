@@ -85,8 +85,8 @@ void Engine::startGameLoop(Glfw_manager &manager)
 			{
 				manager.update_events();
 				this->update();
+				this->updateGPU();
 			}
-			this->updateGPU();
 			manager.calculate_fps();
 			/*
 			 * Compute depth maps :
@@ -152,7 +152,6 @@ void Engine::update(void)
 		it->second.get()->update(this->_tick);
 	this->_light_container.update(this->_tick);
 	this->_sr.update();
-
 }
 
 void Engine::updateGPU(void)
