@@ -521,8 +521,9 @@ void ARenderBin::_update_iterators()
 			this->_vec_it.push_back(it);
 		i++;
 	}
-	auto      it = this->_entity_list.end();
-	this->_vec_it.push_back(it);
+	if (this->_leftover)
+		this->_vec_it.pop_back();
+	this->_vec_it.push_back(this->_entity_list.end());
 	this->_update_it  = false;
 	this->_update_vbo = true;
 }
