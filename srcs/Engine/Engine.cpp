@@ -277,7 +277,7 @@ ARenderBin *Engine::add_RenderBin(std::string const &name,
 	}
 	else if (type == ARenderBin::eType::DIFFUSE_COLORED)
 	{
-		params.use_light = true;
+		params.use_light = false;
 		this->_render_bin_list[name] = std::make_unique<DiffuseColored>(params);
 		return (this->_render_bin_list[name].get());
 	}

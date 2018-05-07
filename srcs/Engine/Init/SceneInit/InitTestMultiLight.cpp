@@ -64,6 +64,14 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	(*world)->add_RenderBin("Light", rb_light,
 							ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
 
+	//Creating RenderBin to draw Light position as debug
+	ARenderBin::Params rb_light_pos;
+	rb_light_pos.shader   = &rm.getShader("DiffuseColored");
+	rb_light_pos.model    = &rm.getModel("WhiteBox");
+	rb_light_pos.max_instance = DEFAULT_MAX_LIGHT;
+	(*world)->add_RenderBin("LightPos", rb_light_pos,
+							ARenderBin::eType::DIFFUSE_COLORED);
+
 	//Creating Point Lights
 	PointLight::Params params_point;
 	params_point.ambient_color     = glm::vec3(0.05f);

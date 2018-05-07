@@ -17,6 +17,8 @@
 # include "OpenGL/RenderBin/ARenderBin.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
 
+# define LIGHT_SCALE 0.1f
+
 class DiffuseColored : public ARenderBin
 {
 	public :
@@ -33,6 +35,7 @@ class DiffuseColored : public ARenderBin
 		 */
 
 		virtual void draw(void);
+		virtual void update(float tick);
 		virtual void updateVBO(void);
 		virtual void flushData(void);
 
@@ -51,9 +54,14 @@ class DiffuseColored : public ARenderBin
 		std::vector<glm::vec3> _vector_light_diffuse;
 		GLuint                 _vbo_light_diffuse;
 
+		/*
+		 * Protected functions
+		 */
+
 		inline void _allocate_vbo(size_t max_size);
 		inline void _update_vector_light_diffuse(void);
-		inline void _update_vao(void);
+		inline void _update_vao_light_diffuse(void);
+		inline void _update_light_model_matrix(void);
 };
 
 #endif
