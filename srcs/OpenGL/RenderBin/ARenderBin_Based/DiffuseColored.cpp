@@ -74,7 +74,9 @@ void DiffuseColored::update(float tick)
 
 void DiffuseColored::updateVBO(void)
 {
-	ARenderBin::updateVBO();
+	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_model_matrices);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * this->_vector_light_diffuse.size(),
+					this->_model_matrices.get());
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_light_diffuse);
 	glBufferSubData(GL_ARRAY_BUFFER, 0,
 					sizeof(glm::vec3) * this->_vector_light_diffuse.size(),

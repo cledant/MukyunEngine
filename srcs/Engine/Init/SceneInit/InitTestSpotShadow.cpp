@@ -26,6 +26,7 @@ static void init_ressources(RessourceManager &rm)
 				   Texture::eTextureType::TEX_DIFFUSE_SPECULAR);
 	//Other
 	rm.add_model("WhiteBox", "./assets/models/WhiteBox/WhiteBox.obj");
+	rm.add_model("WhiteBox2", "./assets/models/WhiteBox/WhiteBox.obj");
 	rm.add_model("BlueBox", "./assets/models/BlueBox/BlueBox.obj");
 	rm.add_model("RedBox", "./assets/models/RedBox/RedBox.obj");
 	rm.add_model("TenshiPlane", "./assets/models/TenshiPlane/TenshiPlane.obj");
@@ -56,6 +57,14 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	engine_params.init_w         = arg.res_w;
 	engine_params.system_fontset = &rm.getFontset("system_font");
 	(*world) = new Engine(engine_params);
+
+	//Creating RenderBin to draw Light position as debug
+	ARenderBin::Params rb_light_pos;
+	rb_light_pos.shader   = &rm.getShader("DiffuseColored");
+	rb_light_pos.model    = &rm.getModel("WhiteBox2");
+	rb_light_pos.max_instance = DEFAULT_MAX_LIGHT;
+	(*world)->add_RenderBin("LightPos", rb_light_pos,
+							ARenderBin::eType::DIFFUSE_COLORED);
 
 	//Creating Directional Lights
 	SpotLight::Params params_dir;
