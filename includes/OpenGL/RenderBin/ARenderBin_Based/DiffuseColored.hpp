@@ -19,6 +19,10 @@
 
 # define LIGHT_SCALE 0.1f
 
+/*
+ * Used for debug to display lights
+ */
+
 class DiffuseColored : public ARenderBin
 {
 	public :
