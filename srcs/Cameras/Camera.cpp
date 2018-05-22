@@ -12,11 +12,13 @@
 
 #include "Cameras/Camera.hpp"
 
-Camera::Camera(Input const *input, glm::vec3 const &pos, glm::vec3 const &world_up,
-			   glm::vec3 const &front, GLfloat yaw, GLfloat pitch) :
+Camera::Camera(Input const *input, glm::vec3 const &pos,
+			   glm::vec3 const &world_up, glm::vec3 const &front,
+			   float yaw, float pitch) :
 		_input(input), _update_cam(true), _world_up(world_up), _pos(pos),
-		_front(front), _xy_front(glm::vec3(0.0f)), _mouse_sensitivity(0.05f),
-		_movement_speed(0.075f), _yaw(yaw), _pitch(pitch)
+		_front(front), _mouse_sensitivity(Camera::_init_mouse_sensitivity),
+		_movement_speed(Camera::_init_movement_speed), _yaw(yaw),
+		_pitch(pitch)
 {
 	if (this->_input == nullptr)
 		throw Camera::CameraFailException();
@@ -41,7 +43,6 @@ Camera &Camera::operator=(Camera const &rhs)
 	this->_front             = rhs.getFront();
 	this->_up                = rhs.getUp();
 	this->_right             = rhs.getRight();
-	this->_xy_front          = rhs.getXYFront();
 	this->_view              = rhs.getViewMatrix();
 	this->_mouse_sensitivity = rhs.getMouseSensitivity();
 	this->_movement_speed    = rhs.getMovementSpeed();
@@ -100,11 +101,6 @@ glm::vec3 const &Camera::getRight(void) const
 	return (this->_right);
 }
 
-glm::vec3 const &Camera::getXYFront(void) const
-{
-	return (this->_xy_front);
-}
-
 glm::mat4 const &Camera::getViewMatrix(void) const
 {
 	return (this->_view);
@@ -139,13 +135,13 @@ void Camera::setCameraUpdate(bool value)
 	this->_update_cam = value;
 }
 
-void Camera::setYaw(GLfloat yaw)
+void Camera::setYaw(float yaw)
 {
 	this->_yaw = yaw;
 	this->_update_vector_matrix();
 }
 
-void Camera::setPitch(GLfloat pitch)
+void Camera::setPitch(float pitch)
 {
 	this->_pitch     = pitch;
 	if (this->_pitch > 89.0f)
@@ -173,30 +169,24 @@ void Camera::_update_vector_matrix(void)
 	this->_front.z = sin(glm::radians(this->_yaw)) *
 					 cos(glm::radians(this->_pitch));
 	glm::normalize(this->_front);
-	this->_right      = glm::normalize(glm::cross(this->_front, this->_world_up));
-	this->_up         = glm::normalize(glm::cross(this->_right, this->_front));
-	this->_xy_front.x = this->_front.x;
-	this->_xy_front.z = this->_front.z;
-	this->_xy_front   = glm::normalize(this->_xy_front);
+	this->_right = glm::normalize(glm::cross(this->_front, this->_world_up));
+	this->_up    = glm::normalize(glm::cross(this->_right, this->_front));
 }
 
 void Camera::_update_from_keyboard_input(void)
 {
-	float velocity;
-
-	velocity = this->_movement_speed;
-	if (this->_input->p_key[GLFW_KEY_W] == PRESSED)
-		this->_pos += velocity * this->_front;
-	if (this->_input->p_key[GLFW_KEY_S] == PRESSED)
-		this->_pos -= velocity * this->_front;
-	if (this->_input->p_key[GLFW_KEY_D] == PRESSED)
-		this->_pos += velocity * this->_right;
-	if (this->_input->p_key[GLFW_KEY_A] == PRESSED)
-		this->_pos -= velocity * this->_right;
-	if (this->_input->p_key[GLFW_KEY_E] == PRESSED)
-		this->_pos += velocity * this->_up;
-	if (this->_input->p_key[GLFW_KEY_Q] == PRESSED)
-		this->_pos -= velocity * this->_up;
+	if (this->_input->p_key[GLFW_KEY_W])
+		this->_pos += this->_movement_speed * this->_front;
+	if (this->_input->p_key[GLFW_KEY_S])
+		this->_pos -= this->_movement_speed * this->_front;
+	if (this->_input->p_key[GLFW_KEY_D])
+		this->_pos += this->_movement_speed * this->_right;
+	if (this->_input->p_key[GLFW_KEY_A])
+		this->_pos -= this->_movement_speed * this->_right;
+	if (this->_input->p_key[GLFW_KEY_E])
+		this->_pos += this->_movement_speed * this->_up;
+	if (this->_input->p_key[GLFW_KEY_Q])
+		this->_pos -= this->_movement_speed * this->_up;
 }
 
 void Camera::_update_from_mouse_input(void)

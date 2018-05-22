@@ -26,8 +26,8 @@ class Camera
 	public :
 
 		Camera(Input const *input, glm::vec3 const &pos,
-			   glm::vec3 const &world_up, glm::vec3 const &front, GLfloat yaw,
-			   GLfloat pitch);
+			   glm::vec3 const &world_up, glm::vec3 const &front,
+			   float yaw, float pitch);
 		virtual ~Camera(void);
 		Camera(const Camera &src);
 		Camera &operator=(Camera const &rhs);
@@ -45,7 +45,6 @@ class Camera
 		glm::vec3 const &getFront(void) const;
 		glm::vec3 const &getUp(void) const;
 		glm::vec3 const &getRight(void) const;
-		glm::vec3 const &getXYFront(void) const;
 		glm::mat4 const &getViewMatrix(void) const;
 		float getMouseSensitivity(void) const;
 		float getMovementSpeed(void) const;
@@ -58,8 +57,8 @@ class Camera
 		 */
 
 		void setCameraUpdate(bool value);
-		void setYaw(GLfloat yaw);
-		void setPitch(GLfloat pitch);
+		void setYaw(float yaw);
+		void setPitch(float pitch);
 
 		class CameraFailException : public GeneralException
 		{
@@ -78,17 +77,19 @@ class Camera
 		glm::vec3   _front;
 		glm::vec3   _up;
 		glm::vec3   _right;
-		glm::vec3   _xy_front;
 		glm::mat4   _view;
-		GLfloat     _mouse_sensitivity;
-		GLfloat     _movement_speed;
-		GLfloat     _yaw;
-		GLfloat     _pitch;
+		float       _mouse_sensitivity;
+		float       _movement_speed;
+		float       _yaw;
+		float       _pitch;
 		std::string _str_pos;
 
 		void _update_vector_matrix(void);
 
 	private :
+
+		static float constexpr _init_movement_speed    = 0.075f;
+		static float constexpr _init_mouse_sensitivity = 0.05f;
 
 		virtual void _update_from_keyboard_input(void);
 		virtual void _update_from_mouse_input(void);
