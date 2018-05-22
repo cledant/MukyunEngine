@@ -159,12 +159,12 @@ bool Env::_parse_resolution(std::string const &arg)
 	{
 		Env::_display_help();
 	}
-	if (this->_env_value.res_w < MIN_WIN_W || this->_env_value.res_w > MAX_WIN_W)
+	if (this->_env_value.res_w < GLFW_Window::min_win_w || this->_env_value.res_w > GLFW_Window::max_win_w)
 	{
 		std::cout << "Invalid Resolution" << std::endl << std::endl;
 		Env::_display_help();
 	}
-	if (this->_env_value.res_h < MIN_WIN_H || this->_env_value.res_h > MAX_WIN_H)
+	if (this->_env_value.res_h < GLFW_Window::min_win_h || this->_env_value.res_h > GLFW_Window::max_win_h)
 	{
 		std::cout << "Invalid Resolution" << std::endl << std::endl;
 		Env::_display_help();

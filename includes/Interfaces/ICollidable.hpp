@@ -20,7 +20,7 @@ class ICollidable
 {
 	public :
 
-		enum eDamages
+		enum class eDamages
 		{
 			NONE          = 0,
 			HALF          = 1,

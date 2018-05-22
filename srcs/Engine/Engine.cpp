@@ -48,8 +48,8 @@ Engine::Engine(EngineInitParams const &params) :
 {
 	if (params.max_frame_skip == 0)
 		throw Engine::EngineFailException();
-	GLfloat ratio = static_cast<GLfloat>(params.win->cur_win_w) /
-					static_cast<GLfloat>(params.win->cur_win_h);
+	float ratio = static_cast<float>(params.win->cur_win_w) /
+				  static_cast<float>(params.win->cur_win_h);
 	this->_tick                   = 1.0f / this->_max_fps;
 	this->_perspective            = glm::perspective(glm::radians(this->_fov), ratio,
 													 params.near_far.x, params.near_far.y);
@@ -349,8 +349,8 @@ void Engine::toggleScreenMode()
 
 void Engine::updatePerspective(float fov)
 {
-	GLfloat ratio = static_cast<GLfloat>(this->_window.cur_win_w) /
-					static_cast<GLfloat>(this->_window.cur_win_h);
+	float ratio = static_cast<float>(this->_window.cur_win_w) /
+				  static_cast<float>(this->_window.cur_win_h);
 	this->_perspective = glm::perspective(glm::radians(fov), ratio, this->_near_far.x,
 										  this->_near_far.y);
 }

@@ -21,7 +21,7 @@ class ALight
 {
 	public :
 
-		enum eType
+		enum class eType
 		{
 			POINT,
 			DIRECTIONAL,

@@ -15,26 +15,21 @@
 
 # include "glfw3.h"
 
-# define MAX_WIN_W    3840
-# define MAX_WIN_H    2160
-# define MIN_WIN_W    640
-# define MIN_WIN_H    480
-
 struct GLFW_Window
 {
 	GLFW_Window(void);
 	~GLFW_Window(void);
 
-	GLFWwindow *win;
-	int        cur_win_w;
-	int        cur_win_h;
-	int        max_win_w;
-	int        max_win_h;
-	int        min_win_w;
-	int        min_win_h;
-	bool       resized;
-	bool       toggle_screen_mode;
-	bool       fullscreen;
+	GLFWwindow           *win;
+	int                  cur_win_w;
+	int                  cur_win_h;
+	static constexpr int max_win_w = 3840;
+	static constexpr int max_win_h = 2160;
+	static constexpr int min_win_w = 640;
+	static constexpr int min_win_h = 480;
+	bool                 resized;
+	bool                 toggle_screen_mode;
+	bool                 fullscreen;
 };
 
 #endif

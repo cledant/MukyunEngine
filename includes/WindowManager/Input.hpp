@@ -26,10 +26,10 @@ struct Input
 
 	std::vector<bool> p_key;
 	std::vector<bool> p_mouse;
-	GLfloat           last_pos_x;
-	GLfloat           last_pos_y;
-	GLfloat           x_offset;
-	GLfloat           y_offset;
+	float             last_pos_x;
+	float             last_pos_y;
+	float             x_offset;
+	float             y_offset;
 	float             timer;
 	bool              first_time;
 	bool              mouse_refreshed;

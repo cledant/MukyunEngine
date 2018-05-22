@@ -151,16 +151,16 @@ void Glfw_manager::init_input_callback(void)
 		static_cast<void>(win);
 		if (THIS_GLFW->_input.first_time)
 		{
-			THIS_GLFW->_input.last_pos_x = static_cast<GLfloat>(xpos);
-			THIS_GLFW->_input.last_pos_y = static_cast<GLfloat>(ypos);
+			THIS_GLFW->_input.last_pos_x = static_cast<float>(xpos);
+			THIS_GLFW->_input.last_pos_y = static_cast<float>(ypos);
 			THIS_GLFW->_input.first_time = false;
 		}
-		THIS_GLFW->_input.x_offset        = static_cast<GLfloat>(xpos) -
+		THIS_GLFW->_input.x_offset        = static_cast<float>(xpos) -
 											THIS_GLFW->_input.last_pos_x;
-		THIS_GLFW->_input.y_offset        = static_cast<GLfloat>(ypos) -
+		THIS_GLFW->_input.y_offset        = static_cast<float>(ypos) -
 											THIS_GLFW->_input.last_pos_y;
-		THIS_GLFW->_input.last_pos_x      = static_cast<GLfloat>(xpos);
-		THIS_GLFW->_input.last_pos_y      = static_cast<GLfloat>(ypos);
+		THIS_GLFW->_input.last_pos_x      = static_cast<float>(xpos);
+		THIS_GLFW->_input.last_pos_y      = static_cast<float>(ypos);
 		THIS_GLFW->_input.mouse_refreshed = true;
 	};
 
@@ -185,11 +185,8 @@ void Glfw_manager::init_input_callback(void)
 
 void Glfw_manager::update_events(void)
 {
-	float time;
-	float delta_time;
-
-	time       = glfwGetTime();
-	delta_time = time - this->_last_time;
+	float time       = glfwGetTime();
+	float delta_time = time - this->_last_time;
 	this->_last_time = time;
 	glfwPollEvents();
 	if (this->_input.timer > 0.5f && this->_input.p_key[GLFW_KEY_P] == PRESSED)
@@ -252,10 +249,8 @@ void Glfw_manager::reset_fps_counter(void)
 void Glfw_manager::toogle_mouse_exclusive(void)
 {
 	this->_input.mouse_exclusive = !this->_input.mouse_exclusive;
-	(this->_input.mouse_exclusive) ? glfwSetInputMode(this->_window.win, GLFW_CURSOR,
-													  GLFW_CURSOR_DISABLED) : glfwSetInputMode(
-			this->_window.win,
-			GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	(this->_input.mouse_exclusive) ? glfwSetInputMode(this->_window.win, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
+								   : glfwSetInputMode(this->_window.win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	this->_input.timer = 0.0f;
 }
 

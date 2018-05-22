@@ -44,7 +44,7 @@ class ShadowRenderer
 			glm::mat4 mat[6];
 		};
 
-		enum eType
+		enum class eType
 		{
 			DIR_DEPTH_MAP,
 			OMNI_DEPTH_MAP,

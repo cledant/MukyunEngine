@@ -259,11 +259,6 @@ bool CollisionBox::IsBoxOnBox(CollisionBox const &box) const
 	return (true);
 }
 
-inline float CollisionBox::_sign(float nb)
-{
-	return ((nb < 0.0f) ? -1.0f : 1.0f);
-}
-
 inline void CollisionBox::_resolution_pt_x(Resolution *res, glm::vec3 const &pt,
 										   glm::vec3 const &d, glm::vec3 const &p) const
 {
@@ -330,12 +325,17 @@ inline void CollisionBox::_resolution_box_z(Resolution *res, CollisionBox const 
 	res->pos.y    = box.getPos().y;
 }
 
-inline float CollisionBox::_max_vec3(glm::vec3 const &vec)
+constexpr inline float CollisionBox::_sign(float nb)
+{
+	return ((nb < 0.0f) ? -1.0f : 1.0f);
+}
+
+constexpr inline float CollisionBox::_max_vec3(glm::vec3 const &vec)
 {
 	return (std::max(std::max(vec.x, vec.y), vec.z));
 }
 
-inline float CollisionBox::_min_vec3(glm::vec3 const &vec)
+constexpr inline float CollisionBox::_min_vec3(glm::vec3 const &vec)
 {
 	return (std::min(std::min(vec.x, vec.y), vec.z));
 }

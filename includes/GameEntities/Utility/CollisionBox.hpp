@@ -105,9 +105,9 @@ class CollisionBox : public ITransformable
 		inline void _resolution_box_z(Resolution *res, CollisionBox const &box,
 									  glm::vec3 const &d, glm::vec3 const &p) const;
 
-		static inline float _sign(float nb);
-		static inline float _max_vec3(glm::vec3 const &vec);
-		static inline float _min_vec3(glm::vec3 const &vec);
+		static constexpr inline float _sign(float nb);
+		static constexpr inline float _max_vec3(glm::vec3 const &vec);
+		static constexpr inline float _min_vec3(glm::vec3 const &vec);
 };
 
 #endif
