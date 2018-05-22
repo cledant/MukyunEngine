@@ -21,7 +21,7 @@ struct InitValue
 	InitValue();
 	~InitValue();
 
-	enum Scene_type
+	enum class Scene_type
 	{
 		NONE,
 		INSTANCING_1,

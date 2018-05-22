@@ -17,9 +17,6 @@
 # include "Engine/Init/EngineInit.hpp"
 # include <regex>
 
-# define MAX_MONITOR 16
-# define MAX_INSTANCE_SIZE 65536
-
 class Env
 {
 	public :
@@ -50,6 +47,9 @@ class Env
 		/*
 		 * Display info
 		 */
+
+		static constexpr unsigned long _max_monitor       = 16;
+		static constexpr unsigned long _max_instance_size = 65536;
 
 		static inline void _display_help(void); //Exit program after display
 		static inline void _display_keys(void);

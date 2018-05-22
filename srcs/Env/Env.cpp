@@ -43,7 +43,6 @@ void Env::parse_args(int argc, char **argv)
 			parse = this->_parse_fullscreen_monitor(std::string(argv[i]));
 		if (parse)
 			this->_parse_vsync(std::string(argv[i]));
-
 	}
 }
 
@@ -207,7 +206,7 @@ bool Env::_parse_fullscreen_monitor(std::string const &arg)
 	{
 		Env::_display_help();
 	}
-	if (this->_env_value.monitor > MAX_MONITOR)
+	if (this->_env_value.monitor > Env::_max_monitor)
 		this->_env_value.monitor = 0;
 	already_parsed = true;
 	return (false);
@@ -258,7 +257,7 @@ bool Env::_parse_instance_size(std::string const &arg)
 		{
 			token = sub_str.substr(0, pos);
 			this->_env_value.instance_size.push_back(std::stoull(token));
-			if (this->_env_value.instance_size.back() > MAX_INSTANCE_SIZE)
+			if (this->_env_value.instance_size.back() > Env::_max_instance_size)
 			{
 				std::cout << "Invalid Instance Size" << std::endl << std::endl;
 				Env::_display_help();
