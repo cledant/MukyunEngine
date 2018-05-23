@@ -72,8 +72,13 @@ class ShaderSurface
 
 		inline void _allocate_buffer(void);
 
-		static float  _vertices[];
-		static size_t _nb_faces;
+		static constexpr float  _vertices[] = {-1.0f, 1.0f, 0.5f,
+											   1.0f, 1.0f, 0.5f,
+											   -1.0f, -1.0f, 0.5f,
+											   -1.0f, -1.0f, 0.5f,
+											   1.0f, 1.0f, 0.5f,
+											   1.0f, -1.0f, 0.5f};
+		static constexpr size_t _nb_faces   = 6;
 };
 
 #endif

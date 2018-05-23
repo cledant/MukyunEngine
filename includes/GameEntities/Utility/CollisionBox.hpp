@@ -49,9 +49,9 @@ class CollisionBox : public ITransformable
 		 * Interface ITransformable
 		 */
 
-		void translateObject(glm::vec3 const &vec);
-		void scaleObject(glm::vec3 const &vec);
-		void rotateObject(glm::vec3 const &vec);
+		virtual void translateObject(glm::vec3 const &vec) override;
+		virtual void scaleObject(glm::vec3 const &vec) override;
+		virtual void rotateObject(glm::vec3 const &vec) override;
 
 		/*
 		 * Setter

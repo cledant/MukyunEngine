@@ -294,9 +294,13 @@ void ShadowRenderer::_allocate_memory(void)
 	this->_omni_depth_maps.reserve(max_point_light);
 	this->_spot_dir_depth_maps.reserve(max_spot_light);
 	for (size_t i = 0; i < max_dir_light; ++i)
-		this->_dir_depth_maps.emplace_back(new DirectionalDepthMap(DEPTHMAPSIZE, DEPTHMAPSIZE));
+		this->_dir_depth_maps.emplace_back(new DirectionalDepthMap(ShadowRenderer::_default_depthmap_size,
+																   ShadowRenderer::_default_depthmap_size));
 	for (size_t i = 0; i < max_point_light; ++i)
-		this->_omni_depth_maps.emplace_back(new OmnidirectionalDepthMap(DEPTHMAPSIZE, DEPTHMAPSIZE));
+		this->_omni_depth_maps
+			.emplace_back(new OmnidirectionalDepthMap(ShadowRenderer::_default_depthmap_size,
+													  ShadowRenderer::_default_depthmap_size));
 	for (size_t i = 0; i < max_spot_light; ++i)
-		this->_spot_dir_depth_maps.emplace_back(new DirectionalDepthMap(DEPTHMAPSIZE, DEPTHMAPSIZE));
+		this->_spot_dir_depth_maps.emplace_back(new DirectionalDepthMap(ShadowRenderer::_default_depthmap_size,
+																		ShadowRenderer::_default_depthmap_size));
 }

@@ -116,7 +116,7 @@ void TextureShaderSurface::_allocate_tex_buffer(void)
 	//Allocating VBO
 	glGenBuffers(1, &(this->_vbo));
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 5 * 6, &(this->_tex_vertices[0]),
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 5 * 6, &(TextureShaderSurface::_tex_vertices[0]),
 				 GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -133,11 +133,4 @@ void TextureShaderSurface::_allocate_tex_buffer(void)
 	glBindVertexArray(0);
 }
 
-float TextureShaderSurface::_tex_vertices[] = {-1.0f, 1.0f, 0.5f, 0.0f, 1.0f,
-											   1.0f, 1.0f, 0.5f, 1.0f, 1.0f,
-											   -1.0f, -1.0f, 0.5f, 0.0f, 0.0f,
-											   -1.0f, -1.0f, 0.5f, 0.0f, 0.0f,
-											   1.0f, 1.0f, 0.5f, 1.0f, 1.0f,
-											   1.0f, -1.0f, 0.5f, 1.0f, 0.0f};
-
-size_t TextureShaderSurface::_tex_nb_faces = 6;
+constexpr float TextureShaderSurface::_tex_vertices[];

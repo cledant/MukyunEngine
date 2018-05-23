@@ -20,8 +20,6 @@
 # include <memory>
 # include <string>
 
-# define DEPTHMAPSIZE 1024
-
 class ShadowRenderer
 {
 	public :
@@ -46,9 +44,9 @@ class ShadowRenderer
 
 		enum class eType
 		{
-			DIR_DEPTH_MAP,
-			OMNI_DEPTH_MAP,
-			SPOT_DEPTH_MAP,
+				DIR_DEPTH_MAP,
+				OMNI_DEPTH_MAP,
+				SPOT_DEPTH_MAP,
 		};
 
 		ShadowRenderer(void);
@@ -112,6 +110,8 @@ class ShadowRenderer
 		std::vector<OmniProjMatrices>              _vec_omni_lightSpaceMatrix;
 		glm::vec2                                  _dir_near_far;
 		glm::vec2                                  _omni_near_far;
+
+		static constexpr int _default_depthmap_size = 1024;
 };
 
 #endif

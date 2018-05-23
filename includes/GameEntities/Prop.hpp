@@ -79,28 +79,28 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		 * Interface IEntity
 		 */
 
-		virtual bool update(float time);
-		virtual void setActive(bool value);
-		virtual bool getActive(void) const;
-		virtual glm::mat4 const &getModelMatrix(void) const;
-		virtual glm::mat4 const &getInvModelMatrix(void) const;
+		virtual bool update(float time) override;
+		virtual void setActive(bool value) override;
+		virtual bool getActive(void) const override;
+		virtual glm::mat4 const &getModelMatrix(void) const override;
+		virtual glm::mat4 const &getInvModelMatrix(void) const override;
 
 		/*
 		 * Interface ITransformable
 		 */
 
-		virtual void translateObject(glm::vec3 const &vec);
-		virtual void scaleObject(glm::vec3 const &vec);
-		virtual void rotateObject(glm::vec3 const &vec);
+		virtual void translateObject(glm::vec3 const &vec) override;
+		virtual void scaleObject(glm::vec3 const &vec) override;
+		virtual void rotateObject(glm::vec3 const &vec) override;
 
 		/*
 		 * Interface ICollidable
 		 */
 
-		virtual CollisionBox const &getCollisionBox(void) const;
-		virtual ICollidable::eDamages getDamages(void) const;
-		virtual void setPassthrough(bool value);
-		virtual bool getPassthrough(void) const;
+		virtual CollisionBox const &getCollisionBox(void) const override;
+		virtual ICollidable::eDamages getDamages(void) const override;
+		virtual void setPassthrough(bool value) override;
+		virtual bool getPassthrough(void) const override;
 
 	protected :
 

@@ -135,7 +135,7 @@ void ShaderSurface::_allocate_buffer(void)
 	//Allocating VBO
 	glGenBuffers(1, &(this->_vbo));
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * 6, &(this->_vertices[0]),
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * 6, &(ShaderSurface::_vertices[0]),
 				 GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -149,11 +149,4 @@ void ShaderSurface::_allocate_buffer(void)
 	glBindVertexArray(0);
 }
 
-float ShaderSurface::_vertices[] = {-1.0f, 1.0f, 0.5f,
-									1.0f, 1.0f, 0.5f,
-									-1.0f, -1.0f, 0.5f,
-									-1.0f, -1.0f, 0.5f,
-									1.0f, 1.0f, 0.5f,
-									1.0f, -1.0f, 0.5f};
-
-size_t ShaderSurface::_nb_faces = 6;
+constexpr float ShaderSurface::_vertices[];

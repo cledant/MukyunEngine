@@ -44,7 +44,7 @@ class TextureShaderSurface : public ShaderSurface
 		 * Draw
 		 */
 
-		virtual void draw(void);
+		virtual void draw(void) override;
 		virtual void drawInFrameBuffer(void);
 
 	protected :
@@ -53,8 +53,13 @@ class TextureShaderSurface : public ShaderSurface
 
 		inline void _allocate_tex_buffer(void);
 
-		static float  _tex_vertices[];
-		static size_t _tex_nb_faces;
+		static constexpr float  _tex_vertices[] = {-1.0f, 1.0f, 0.5f, 0.0f, 1.0f,
+												   1.0f, 1.0f, 0.5f, 1.0f, 1.0f,
+												   -1.0f, -1.0f, 0.5f, 0.0f, 0.0f,
+												   -1.0f, -1.0f, 0.5f, 0.0f, 0.0f,
+												   1.0f, 1.0f, 0.5f, 1.0f, 1.0f,
+												   1.0f, -1.0f, 0.5f, 1.0f, 0.0f};
+		static constexpr size_t _tex_nb_faces   = 6;
 };
 
 #endif
