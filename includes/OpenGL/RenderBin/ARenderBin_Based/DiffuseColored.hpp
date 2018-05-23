@@ -17,8 +17,6 @@
 # include "OpenGL/RenderBin/ARenderBin.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
 
-# define LIGHT_SCALE 0.1f
-
 /*
  * Used for debug to display lights
  */
@@ -38,10 +36,10 @@ class DiffuseColored : public ARenderBin
 		 * Draw
 		 */
 
-		virtual void draw(void);
-		virtual void update(float tick);
-		virtual void updateVBO(void);
-		virtual void flushData(void);
+		virtual void draw(void) override;
+		virtual void update(float tick) override;
+		virtual void updateVBO(void) override;
+		virtual void flushData(void) override;
 
 		/*
 		 * Getter
@@ -55,6 +53,7 @@ class DiffuseColored : public ARenderBin
 
 	protected :
 
+		static constexpr float _light_scale = 0.1f;
 		std::vector<glm::vec3> _vector_light_diffuse;
 		GLuint                 _vbo_light_diffuse;
 

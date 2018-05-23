@@ -28,10 +28,6 @@
 # include <thread>
 # include <mutex>
 
-# define DEFAULT_NB_THREAD 1
-# define NB_THREAD_MAX 16
-# define MIN_ELEMENTS_PER_THREAD 8192
-
 class ARenderBin
 {
 	public :
@@ -51,14 +47,14 @@ class ARenderBin
 			size_t               nb_thread;
 		};
 
-		enum eType
+		enum class eType
 		{
-			PROP,
-			COLOR,
-			MULTILIGHT_POINT_DIR_SPOT,
-			DIFFUSE_COLORED,
-			MULTIDIRLIGHT_SHADOW,
-			NONE
+				PROP,
+				COLOR,
+				MULTILIGHT_POINT_DIR_SPOT,
+				DIFFUSE_COLORED,
+				MULTIDIRLIGHT_SHADOW,
+				NONE
 		};
 
 		ARenderBin(void);
@@ -155,11 +151,14 @@ class ARenderBin
 		 * Entity related
 		 */
 
+		static constexpr size_t                                                        _default_nb_thread       = 1;
+		static constexpr size_t                                                        _max_thread              = 16;
+		static constexpr size_t                                                        _min_elements_per_thread = 8192;
 		size_t                                                                         _nb_thread;
 		std::unordered_map<IEntity *, std::unique_ptr<IEntity>>                        _entity_list;
 		std::unordered_map<IEntity *, std::unique_ptr<IEntity>>                        _inactive_entity_list;
 		std::vector<std::thread>                                                       _workers;
-		std::mutex                                                                     _workers_mutex[NB_THREAD_MAX];
+		std::mutex                                                                     _workers_mutex[ARenderBin::_max_thread];
 		std::atomic<size_t>                                                            _workers_done;
 		std::atomic<size_t>                                                            _entity_per_thread;
 		std::atomic<size_t>                                                            _leftover;

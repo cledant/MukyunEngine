@@ -175,8 +175,8 @@ void Mesh::_load_material(aiMesh *mesh, const aiScene *scene,
 	this->_material.diffuseMap  = texture_list.find("default_texture")->second.getTextureID();
 	this->_material.specularMap = this->_material.diffuseMap;
 	this->_load_material_info(mat);
-	this->_load_texture(mat, aiTextureType_DIFFUSE, Texture::TEX_DIFFUSE, texture_list);
-	this->_load_texture(mat, aiTextureType_SPECULAR, Texture::TEX_SPECULAR, texture_list);
+	this->_load_texture(mat, aiTextureType_DIFFUSE, Texture::eTextureType::TEX_DIFFUSE, texture_list);
+	this->_load_texture(mat, aiTextureType_SPECULAR, Texture::eTextureType::TEX_SPECULAR, texture_list);
 }
 
 void Mesh::_load_material_info(aiMaterial *mat)

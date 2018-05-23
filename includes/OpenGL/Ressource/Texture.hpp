@@ -25,7 +25,7 @@ class Texture
 {
 	public :
 
-		enum eTextureType
+		enum class eTextureType
 		{
 			TEX_DIFFUSE,
 			TEX_SPECULAR,

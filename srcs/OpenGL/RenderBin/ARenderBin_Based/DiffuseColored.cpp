@@ -215,8 +215,8 @@ void DiffuseColored::_update_light_model_matrix()
 		{
 			mat_model = glm::mat4(1.0f);
 			mat_model = glm::translate(mat_model, ptr_light->getPos());
-			mat_model = glm::translate(mat_model, this->_model->getCenter() * LIGHT_SCALE);
-			mat_model = glm::scale(mat_model, glm::vec3(LIGHT_SCALE));
+			mat_model = glm::translate(mat_model, this->_model->getCenter() * DiffuseColored::_light_scale);
+			mat_model = glm::scale(mat_model, glm::vec3(DiffuseColored::_light_scale));
 			std::memcpy(&this->_ptr_render_model[i], &mat_model, sizeof(glm::mat4));
 			i++;
 		}

@@ -21,7 +21,7 @@ ARenderBin::Params::Params(void)
 	this->use_light         = false;
 	this->lc                = nullptr;
 	this->view_pos          = nullptr;
-	this->nb_thread         = DEFAULT_NB_THREAD;
+	this->nb_thread         = ARenderBin::_default_nb_thread;
 }
 
 ARenderBin::Params::~Params(void)
@@ -33,7 +33,7 @@ ARenderBin::ARenderBin(void) :
 		_model(nullptr), _vbo_model_matrices(0), _max_object(0),
 		_model_matrices(nullptr), _ptr_render_model(NULL),
 		_use_light(false), _lc(nullptr), _view_pos(nullptr), _inv_model_matrices(nullptr),
-		_ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0), _nb_thread(DEFAULT_NB_THREAD),
+		_ptr_render_inv_model(NULL), _vbo_inv_model_matrices(0), _nb_thread(ARenderBin::_default_nb_thread),
 		_entity_per_thread(0), _leftover(0), _update_vbo(true), _update_it(true)
 {
 }
@@ -72,10 +72,10 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		std::cout << "ARenderBin Initialization Error" << std::endl;
 		throw;
 	}
-	if (this->_nb_thread > NB_THREAD_MAX)
+	if (this->_nb_thread > ARenderBin::_max_thread)
 		this->_nb_thread = 16;
 	else if (!this->_nb_thread)
-		this->_nb_thread = DEFAULT_NB_THREAD;
+		this->_nb_thread = ARenderBin::_default_nb_thread;
 	for (size_t i = 0; i < this->_nb_thread; ++i)
 		this->_vec_it.push_back(this->_entity_list.begin());
 	this->_vec_it.push_back(this->_entity_list.begin());
@@ -183,7 +183,7 @@ void ARenderBin::update(float tick)
 	this->_leftover              = this->_entity_list.size() % this->_nb_thread;
 	if (this->_update_it)
 		this->_update_iterators();
-	if (this->_entity_per_thread < MIN_ELEMENTS_PER_THREAD)
+	if (this->_entity_per_thread < ARenderBin::_min_elements_per_thread)
 	{
 		this->_update_monothread_opengl_arrays();
 		return;

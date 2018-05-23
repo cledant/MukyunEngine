@@ -30,7 +30,7 @@ class ImageFramebuffer : public AFramebuffer
 		ImageFramebuffer(ImageFramebuffer &&src);
 		ImageFramebuffer &operator=(ImageFramebuffer &&rhs);
 
-		virtual void reallocateFBO(int h, int w);
+		virtual void reallocateFBO(int h, int w) override;
 
 		class InitException : public GeneralException
 		{

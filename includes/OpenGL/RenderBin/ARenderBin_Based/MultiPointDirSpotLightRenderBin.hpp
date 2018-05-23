@@ -32,7 +32,7 @@ class MultiPointDirSpotLightRenderBin : public ARenderBin
 		 * Draw
 		 */
 
-		virtual void draw(void);
+		virtual void draw(void) override;
 };
 
 #endif
