@@ -21,16 +21,18 @@ class Env
 {
 	public :
 
-		Env(void);
-		virtual ~Env(void);
+		Env();
+		virtual ~Env();
 
 		void parse_args(int argc, char **argv);
-		void run_engine(void);
+		void run_engine();
 
 	protected :
 
-		Glfw_manager _manager;
-		InitValue    _env_value;
+		Glfw_manager                   _manager;
+		InitValue                      _env_value;
+		static constexpr unsigned long _max_monitor       = 16;
+		static constexpr unsigned long _max_instance_size = 65536;
 
 		/*
 		 * Protected Functions
@@ -48,11 +50,8 @@ class Env
 		 * Display info
 		 */
 
-		static constexpr unsigned long _max_monitor       = 16;
-		static constexpr unsigned long _max_instance_size = 65536;
-
-		static inline void _display_help(void); //Exit program after display
-		static inline void _display_keys(void);
+		static inline void _display_help(); //Exit program after display
+		static inline void _display_keys();
 };
 
 #endif

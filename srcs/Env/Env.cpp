@@ -102,7 +102,7 @@ bool Env::_parse_scene_type(std::string const &arg)
 		return (true);
 	for (size_t i = 0; i < to_check.size(); ++i)
 	{
-		if (arg.compare(to_check[i]) == 0)
+		if (arg == to_check[i])
 		{
 			switch (i)
 			{
@@ -179,7 +179,7 @@ bool Env::_parse_fullscreen(std::string const &arg)
 
 	if (already_parsed)
 		return (true);
-	if (arg.compare("--fullscreen") == 0)
+	if (arg == "--fullscreen")
 		this->_env_value.fullscreen = true;
 	else
 		return (true);
@@ -218,7 +218,7 @@ bool Env::_parse_vsync(std::string const &arg)
 
 	if (already_parsed)
 		return (true);
-	if (arg.compare("--vsync") == 0)
+	if (arg == "--vsync")
 		this->_env_value.vsync = true;
 	else
 		return (true);
@@ -228,7 +228,7 @@ bool Env::_parse_vsync(std::string const &arg)
 
 bool Env::_parse_help(std::string const &arg)
 {
-	if (arg.compare("--help") == 0)
+	if (arg == "--help")
 	{
 		Env::_display_keys();
 		std::cout << std::endl;
@@ -240,7 +240,7 @@ bool Env::_parse_help(std::string const &arg)
 bool Env::_parse_instance_size(std::string const &arg)
 {
 	static bool already_parsed = false;
-	std::regex  rule           = std::regex("^--nbInstance=\\d+x\\d+x\\d+");
+	std::regex  rule           = std::regex(R"(^--nbInstance=\d+x\d+x\d+)");
 	std::string sub_str;
 	std::string token;
 	size_t      pos;
@@ -279,7 +279,7 @@ bool Env::_parse_instance_size(std::string const &arg)
  * Display info
  */
 
-void Env::_display_keys(void)
+void Env::_display_keys()
 {
 	std::cout << "Engine keys :" << std::endl;
 	std::cout << "		W/A/S/D = Move" << std::endl;
