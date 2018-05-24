@@ -19,11 +19,11 @@ class GeneralException : public std::exception
 {
 	public :
 
-		explicit GeneralException(void);
-		virtual ~GeneralException(void) throw();
-		GeneralException(GeneralException const &src);
-		GeneralException &operator=(GeneralException const &rhs);
-		virtual const char *what(void) const throw();
+		explicit GeneralException() noexcept;
+		~GeneralException() override = default;
+		GeneralException(GeneralException const &src) noexcept;
+		GeneralException &operator=(GeneralException const &rhs) noexcept;
+		const char *what() const noexcept override;
 
 	protected :
 

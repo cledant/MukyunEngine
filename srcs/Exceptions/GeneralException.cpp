@@ -12,27 +12,23 @@
 
 #include "Exceptions/GeneralException.hpp"
 
-GeneralException::GeneralException(void)
+GeneralException::GeneralException() noexcept
 {
 	this->_msg = "General Exception : An Error happend !";
 }
 
-GeneralException::~GeneralException(void) throw()
+GeneralException::GeneralException(GeneralException const &src) noexcept
 {
+	this->_msg = src._msg;
 }
 
-GeneralException::GeneralException(GeneralException const &src)
+GeneralException &GeneralException::operator=(GeneralException const &rhs) noexcept
 {
-	this->_msg = src._msg.c_str();
-}
-
-GeneralException &GeneralException::operator=(GeneralException const &rhs)
-{
-	this->_msg = rhs._msg.c_str();
+	this->_msg = rhs._msg;
 	return (*this);
 }
 
-const char *GeneralException::what(void) const throw()
+const char *GeneralException::what() const noexcept
 {
 	return (this->_msg.c_str());
 }

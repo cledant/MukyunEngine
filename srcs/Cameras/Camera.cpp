@@ -25,10 +25,6 @@ Camera::Camera(Input const *input, glm::vec3 const &pos,
 	this->update();
 }
 
-Camera::~Camera(void)
-{
-}
-
 Camera::Camera(const Camera &src)
 {
 	*this = src;
@@ -51,7 +47,7 @@ Camera &Camera::operator=(Camera const &rhs)
 	return (*this);
 }
 
-void Camera::update(void)
+void Camera::update()
 {
 	if (this->_update_cam && this->_input->mouse_exclusive)
 	{
@@ -66,62 +62,62 @@ void Camera::update(void)
  * Getter
  */
 
-Input const *Camera::getInput(void) const
+Input const *Camera::getInput() const
 {
 	return (this->_input);
 }
 
-bool Camera::getUpdateCamera(void) const
+bool Camera::getUpdateCamera() const
 {
 	return (this->_update_cam);
 }
 
-glm::vec3 const &Camera::getWorldUp(void) const
+glm::vec3 const &Camera::getWorldUp() const
 {
 	return (this->_world_up);
 }
 
-glm::vec3 const &Camera::getPos(void) const
+glm::vec3 const &Camera::getPos() const
 {
 	return (this->_pos);
 }
 
-glm::vec3 const &Camera::getFront(void) const
+glm::vec3 const &Camera::getFront() const
 {
 	return (this->_front);
 }
 
-glm::vec3 const &Camera::getUp(void) const
+glm::vec3 const &Camera::getUp() const
 {
 	return (this->_up);
 }
 
-glm::vec3 const &Camera::getRight(void) const
+glm::vec3 const &Camera::getRight() const
 {
 	return (this->_right);
 }
 
-glm::mat4 const &Camera::getViewMatrix(void) const
+glm::mat4 const &Camera::getViewMatrix() const
 {
 	return (this->_view);
 }
 
-float Camera::getMouseSensitivity(void) const
+float Camera::getMouseSensitivity() const
 {
 	return (this->_mouse_sensitivity);
 }
 
-float Camera::getMovementSpeed(void) const
+float Camera::getMovementSpeed() const
 {
 	return (this->_movement_speed);
 }
 
-float Camera::getYaw(void) const
+float Camera::getYaw() const
 {
 	return (this->_yaw);
 }
 
-float Camera::getPitch(void) const
+float Camera::getPitch() const
 {
 	return (this->_pitch);
 }
@@ -151,7 +147,7 @@ void Camera::setPitch(float pitch)
 	this->_update_vector_matrix();
 }
 
-std::string const &Camera::getStrPos(void)
+std::string const &Camera::getStrPos()
 {
 	std::stringstream ss;
 	ss.precision(2);
@@ -161,7 +157,7 @@ std::string const &Camera::getStrPos(void)
 	return (this->_str_pos);
 }
 
-void Camera::_update_vector_matrix(void)
+void Camera::_update_vector_matrix()
 {
 	this->_front.x = cos(glm::radians(this->_yaw)) *
 					 cos(glm::radians(this->_pitch));
@@ -173,7 +169,7 @@ void Camera::_update_vector_matrix(void)
 	this->_up    = glm::normalize(glm::cross(this->_right, this->_front));
 }
 
-void Camera::_update_from_keyboard_input(void)
+void Camera::_update_from_keyboard_input()
 {
 	if (this->_input->p_key[GLFW_KEY_W])
 		this->_pos += this->_movement_speed * this->_front;
@@ -189,7 +185,7 @@ void Camera::_update_from_keyboard_input(void)
 		this->_pos -= this->_movement_speed * this->_up;
 }
 
-void Camera::_update_from_mouse_input(void)
+void Camera::_update_from_mouse_input()
 {
 	this->_yaw += (this->_input->x_offset * this->_mouse_sensitivity);
 	this->_pitch += (this->_input->y_offset * this->_mouse_sensitivity);
@@ -200,11 +196,7 @@ void Camera::_update_from_mouse_input(void)
 	this->_update_vector_matrix();
 }
 
-Camera::CameraFailException::CameraFailException(void)
+Camera::CameraFailException::CameraFailException() noexcept
 {
 	this->_msg = "Camera : Initialization failed";
-}
-
-Camera::CameraFailException::~CameraFailException(void) throw()
-{
 }

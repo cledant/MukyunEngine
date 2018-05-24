@@ -28,29 +28,29 @@ class Camera
 		Camera(Input const *input, glm::vec3 const &pos,
 			   glm::vec3 const &world_up, glm::vec3 const &front,
 			   float yaw, float pitch);
-		virtual ~Camera(void);
+		virtual ~Camera() = default;
 		Camera(const Camera &src);
 		Camera &operator=(Camera const &rhs);
 
-		virtual void update(void);
+		virtual void update();
 
 		/*
 		 * Getter
 		 */
 
-		Input const *getInput(void) const;
-		bool getUpdateCamera(void) const;
-		glm::vec3 const &getWorldUp(void) const;
-		glm::vec3 const &getPos(void) const;
-		glm::vec3 const &getFront(void) const;
-		glm::vec3 const &getUp(void) const;
-		glm::vec3 const &getRight(void) const;
-		glm::mat4 const &getViewMatrix(void) const;
-		float getMouseSensitivity(void) const;
-		float getMovementSpeed(void) const;
-		float getYaw(void) const;
-		float getPitch(void) const;
-		std::string const &getStrPos(void);
+		Input const *getInput() const;
+		bool getUpdateCamera() const;
+		glm::vec3 const &getWorldUp() const;
+		glm::vec3 const &getPos() const;
+		glm::vec3 const &getFront() const;
+		glm::vec3 const &getUp() const;
+		glm::vec3 const &getRight() const;
+		glm::mat4 const &getViewMatrix() const;
+		float getMouseSensitivity() const;
+		float getMovementSpeed() const;
+		float getYaw() const;
+		float getPitch() const;
+		std::string const &getStrPos();
 
 		/*
 		 * Setter
@@ -64,8 +64,8 @@ class Camera
 		{
 			public :
 
-				explicit CameraFailException(void);
-				virtual ~CameraFailException(void) throw();
+				explicit CameraFailException() noexcept;
+				~CameraFailException() override = default;
 		};
 
 	protected :
@@ -84,15 +84,15 @@ class Camera
 		float       _pitch;
 		std::string _str_pos;
 
-		void _update_vector_matrix(void);
+		void _update_vector_matrix();
 
 	private :
 
 		static float constexpr _init_movement_speed    = 0.075f;
 		static float constexpr _init_mouse_sensitivity = 0.05f;
 
-		virtual void _update_from_keyboard_input(void);
-		virtual void _update_from_mouse_input(void);
+		virtual void _update_from_keyboard_input();
+		virtual void _update_from_mouse_input();
 };
 
 #endif
