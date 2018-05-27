@@ -19,7 +19,7 @@
 struct InitValue
 {
 	InitValue();
-	~InitValue();
+	virtual ~InitValue() = default;
 
 	enum class Scene_type
 	{

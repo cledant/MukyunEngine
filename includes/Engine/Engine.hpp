@@ -54,7 +54,7 @@ class Engine
 		struct EngineInitParams
 		{
 			EngineInitParams();
-			virtual ~EngineInitParams();
+			virtual ~EngineInitParams() = default;
 
 			Input const            *input;
 			GLFW_Window const      *win;
@@ -71,8 +71,8 @@ class Engine
 			Fontset                *system_fontset;
 		};
 
-		Engine(EngineInitParams const &params);
-		virtual ~Engine(void);
+		explicit Engine(EngineInitParams const &params);
+		virtual ~Engine() = default;
 		Engine(Engine const &src) = delete;
 		Engine &operator=(Engine const &rhs) = delete;
 
@@ -80,17 +80,17 @@ class Engine
 		 * Draw
 		 */
 
-		inline void update(void);
-		inline void updateGPU(void);
-		inline void render(void);
+		inline void update();
+		inline void updateGPU();
+		inline void render();
 
 		/*
 		 * Shadow Computation
 		 */
 
-		void computeDirectionalDepthMaps(void);
-		void computeOmniDepthMaps(void);
-		void computeSpotDirDepthMaps(void);
+		void computeDirectionalDepthMaps();
+		void computeOmniDepthMaps();
+		void computeSpotDirDepthMaps();
 
 		/*
 		 * Game Loop
@@ -117,30 +117,30 @@ class Engine
 		 * Getter
 		 */
 
-		glm::vec2 const &getNearFar(void) const;
+		glm::vec2 const &getNearFar() const;
 
 		/*
 		 * Other
 		 */
 
-		void toggleScreenMode(void);
+		void toggleScreenMode();
 		void updatePerspective(float fov);
 		void reset_update_timer(float time);
 		bool should_be_updated(float time);
-		void reset_skip_loop(void);
+		void reset_skip_loop();
 
 		class EngineFailException : public GeneralException
 		{
 			public :
 
-				explicit EngineFailException(void);
-				virtual ~EngineFailException(void) throw();
+				explicit EngineFailException() noexcept;
+				~EngineFailException() override = default;
 		};
 
 	private :
 
-		std::map<std::string, std::unique_ptr<ARenderBin>>       _render_bin_list;
-		std::map<std::string, std::unique_ptr<AShadowRenderBin>> _shadow_render_bin_list;
+		std::unordered_map<std::string, std::unique_ptr<ARenderBin>>       _render_bin_list;
+		std::unordered_map<std::string, std::unique_ptr<AShadowRenderBin>> _shadow_render_bin_list;
 
 		LightContainer       _light_container;
 		ShadowRenderer       _sr;

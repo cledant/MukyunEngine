@@ -21,9 +21,9 @@ class IEntity
 
 		virtual bool update(float time) = 0;
 		virtual void setActive(bool value) = 0;
-		virtual bool getActive(void) const = 0;
-		virtual glm::mat4 const &getModelMatrix(void) const = 0;
-		virtual glm::mat4 const &getInvModelMatrix(void) const = 0;
+		virtual bool getActive() const = 0;
+		virtual glm::mat4 const &getModelMatrix() const = 0;
+		virtual glm::mat4 const &getInvModelMatrix() const = 0;
 };
 
 #endif

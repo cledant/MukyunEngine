@@ -24,7 +24,3 @@ InitValue::InitValue()
 	this->instance_size.push_back(32);
 	this->instance_size.push_back(64);
 }
-
-InitValue::~InitValue()
-{
-}

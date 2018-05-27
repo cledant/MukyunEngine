@@ -31,8 +31,8 @@ class ALight
 
 		struct Params
 		{
-			Params(void);
-			virtual ~Params(void);
+			Params();
+			virtual ~Params() = default;
 
 			glm::vec3 ambient_color;
 			glm::vec3 diffuse_color;
@@ -42,9 +42,9 @@ class ALight
 			glm::vec3 pos;
 		};
 
-		ALight(void);
-		ALight(ALight::Params const &Params);
-		virtual ~ALight(void);
+		ALight();
+		explicit ALight(ALight::Params const &Params);
+		virtual ~ALight() = default;
 		ALight(ALight const &src);
 		ALight &operator=(ALight const &rhs);
 
@@ -52,13 +52,13 @@ class ALight
 		 * Getter
 		 */
 
-		ALight::eType getLightType(void) const;
-		glm::vec3 const &getLightAmbientColor(void) const;
-		glm::vec3 const &getLightDiffuseColor(void) const;
-		glm::vec3 const &getLightSpecularColor(void) const;
-		bool getDrawModel(void) const;
-		glm::vec3 const &getPos(void) const;
-		bool getActive(void) const;
+		ALight::eType getLightType() const;
+		glm::vec3 const &getLightAmbientColor() const;
+		glm::vec3 const &getLightDiffuseColor() const;
+		glm::vec3 const &getLightSpecularColor() const;
+		bool getDrawModel() const;
+		glm::vec3 const &getPos() const;
+		bool getActive() const;
 
 		/*
 		 * Setter
@@ -75,8 +75,8 @@ class ALight
 		{
 			public :
 
-				explicit InitException(void);
-				virtual ~InitException(void) throw();
+				explicit InitException() noexcept;
+				~InitException() override = default;
 		};
 
 	protected :

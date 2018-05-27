@@ -28,10 +28,10 @@ class ICollidable
 			INSTANT_DEATH = 10000,
 		};
 
-		virtual CollisionBox const &getCollisionBox(void) const = 0;
-		virtual ICollidable::eDamages getDamages(void) const = 0;
+		virtual CollisionBox const &getCollisionBox() const = 0;
+		virtual ICollidable::eDamages getDamages() const = 0;
 		virtual void setPassthrough(bool value) = 0;
-		virtual bool getPassthrough(void) const = 0;
+		virtual bool getPassthrough() const = 0;
 };
 
 #endif

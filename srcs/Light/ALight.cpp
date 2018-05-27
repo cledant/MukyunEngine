@@ -22,10 +22,6 @@ ALight::Params::Params()
 	this->pos            = glm::vec3(0.0f);
 }
 
-ALight::Params::~Params()
-{
-}
-
 ALight::ALight() : _type(ALight::eType::NONE),
 				   _ambient_color(glm::vec3(0.0f)),
 				   _diffuse_color(glm::vec3(0.0f)),
@@ -43,10 +39,6 @@ ALight::ALight(ALight::Params const &params) : _type(ALight::eType::NONE),
 											   _draw_model(params.draw_model),
 											   _active(params.active),
 											   _pos(params.pos)
-{
-}
-
-ALight::~ALight()
 {
 }
 
@@ -140,11 +132,7 @@ void ALight::translateLight(glm::vec3 const &vec)
 	this->_pos += vec;
 }
 
-ALight::InitException::InitException()
+ALight::InitException::InitException() noexcept
 {
 	this->_msg = "ALight : Object initialization failed";
-}
-
-ALight::InitException::~InitException() throw()
-{
 }

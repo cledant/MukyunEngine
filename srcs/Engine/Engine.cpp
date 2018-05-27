@@ -29,10 +29,6 @@ Engine::EngineInitParams::EngineInitParams()
 	this->system_fontset = nullptr;
 }
 
-Engine::EngineInitParams::~EngineInitParams()
-{
-}
-
 Engine::Engine(EngineInitParams const &params) :
 		_light_container(params.lc_params), _sr(), _window(*params.win),
 		_camera(params.input, params.cam_pos, glm::vec3(0.0f, 1.0f, 0.0f),
@@ -62,11 +58,6 @@ Engine::Engine(EngineInitParams const &params) :
 	sr_params_cpy.lc = &this->_light_container;
 	this->_sr        = ShadowRenderer(sr_params_cpy);
 	this->_tss.setTextureID(this->_final_image.getTextureBuffer());
-}
-
-Engine::~Engine(void)
-{
-
 }
 
 /*
@@ -128,7 +119,7 @@ void Engine::startGameLoop(Glfw_manager &manager)
  * Draw
  */
 
-void Engine::update(void)
+void Engine::update()
 {
 	if (this->_window.toggle_screen_mode)
 		this->toggleScreenMode();
@@ -146,41 +137,41 @@ void Engine::update(void)
 	this->_perspec_mult_view = this->_perspective * this->_camera.getViewMatrix();
 	this->_light_container.flushData();
 	//No need to flush render bins
-	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
-		it->second.get()->update(this->_tick);
-	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
-		it->second.get()->update(this->_tick);
+	for (auto &val : this->_render_bin_list)
+		val.second.get()->update(this->_tick);
+	for (auto &val : this->_shadow_render_bin_list)
+		val.second.get()->update(this->_tick);
 	this->_light_container.update(this->_tick);
 	this->_sr.update();
 }
 
-void Engine::updateGPU(void)
+void Engine::updateGPU()
 {
-	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
-		it->second.get()->updateVBO();
-	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
-		it->second.get()->updateVBO();
+	for (auto &val : this->_render_bin_list)
+		val.second.get()->updateVBO();
+	for (auto &val : this->_shadow_render_bin_list)
+		val.second.get()->updateVBO();
 	this->_light_container.updateGPU();
 }
 
-void Engine::render(void)
+void Engine::render()
 {
 	//Shadow Rendering
-	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
-		it->second.get()->drawAmbient();
-	for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
-		it->second.get()->drawLight();
+	for (auto &val : this->_shadow_render_bin_list)
+		val.second.get()->drawAmbient();
+	for (auto &val : this->_shadow_render_bin_list)
+		val.second.get()->drawLight();
 
 	//No Shadow Rendering
-	for (auto it = this->_render_bin_list.begin(); it != this->_render_bin_list.end(); ++it)
-		it->second.get()->draw();
+	for (auto &val : this->_render_bin_list)
+		val.second.get()->draw();
 }
 
 /*
  * Shadow Computation
  */
 
-void Engine::computeDirectionalDepthMaps(void)
+void Engine::computeDirectionalDepthMaps()
 {
 	Shader *shader = this->_sr.getDirDepthMapShader();
 
@@ -193,14 +184,14 @@ void Engine::computeDirectionalDepthMaps(void)
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
 		shader->setMat4("uniform_lightSpaceMatrix", (this->_sr.getVecDirLightSpaceMatrix())[i]);
-		for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
-			it->second.get()->drawNoShader();
+		for (auto &val : this->_shadow_render_bin_list)
+			val.second.get()->drawNoShader();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glCullFace(GL_BACK);
 }
 
-void Engine::computeOmniDepthMaps(void)
+void Engine::computeOmniDepthMaps()
 {
 	Shader *shader = this->_sr.getOmniDepthMapShader();
 
@@ -219,14 +210,14 @@ void Engine::computeOmniDepthMaps(void)
 			shader->setMat4(name, (this->_sr.getVecOmniLightSpaceMatrix())[i].mat[k]);
 		}
 		shader->setVec3("uniform_lightPos", glm::vec3(this->_light_container.getPointLightDataGL()[i].pos));
-		for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
-			it->second.get()->drawNoShader();
+		for (auto &val : this->_shadow_render_bin_list)
+			val.second.get()->drawNoShader();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glCullFace(GL_BACK);
 }
 
-void Engine::computeSpotDirDepthMaps(void)
+void Engine::computeSpotDirDepthMaps()
 {
 	Shader *shader = this->_sr.getSpotDirDepthMapShader();
 
@@ -239,8 +230,8 @@ void Engine::computeSpotDirDepthMaps(void)
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
 		shader->setMat4("uniform_lightSpaceMatrix", this->_sr.getVecSpotDirLightSpaceMatrix()[i]);
-		for (auto it = this->_shadow_render_bin_list.begin(); it != this->_shadow_render_bin_list.end(); ++it)
-			it->second.get()->drawNoShader();
+		for (auto &val : this->_shadow_render_bin_list)
+			val.second.get()->drawNoShader();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glCullFace(GL_BACK);
@@ -332,7 +323,7 @@ void Engine::add_SpotLight(SpotLight::Params &params)
  * Getter
  */
 
-glm::vec2 const &Engine::getNearFar(void) const
+glm::vec2 const &Engine::getNearFar() const
 {
 	return (this->_near_far);
 }
@@ -361,7 +352,7 @@ void Engine::reset_update_timer(float time)
 	this->_last_update_tick = time;
 }
 
-void Engine::reset_skip_loop(void)
+void Engine::reset_skip_loop()
 {
 	this->_skip_loop = 0;
 }
@@ -380,11 +371,7 @@ bool Engine::should_be_updated(float time)
 	return (false);
 }
 
-Engine::EngineFailException::EngineFailException(void)
+Engine::EngineFailException::EngineFailException() noexcept
 {
 	this->_msg = "Engine : Something failed";
-}
-
-Engine::EngineFailException::~EngineFailException(void) throw()
-{
 }
