@@ -17,10 +17,6 @@ CollisionBox::CollisionBox(glm::vec3 const &pos, glm::vec3 const &half_size) :
 {
 }
 
-CollisionBox::~CollisionBox(void)
-{
-}
-
 CollisionBox::CollisionBox(CollisionBox const &src) : ITransformable()
 {
 	this->_pos       = src.getPos();
@@ -71,12 +67,12 @@ void CollisionBox::setHalfSize(glm::vec3 const &half_size)
  * Getter
  */
 
-glm::vec3 const &CollisionBox::getPos(void) const
+glm::vec3 const &CollisionBox::getPos() const
 {
 	return (this->_pos);
 }
 
-glm::vec3 const &CollisionBox::getHalfSize(void) const
+glm::vec3 const &CollisionBox::getHalfSize() const
 {
 	return (this->_half_size);
 }
@@ -86,7 +82,7 @@ glm::vec3 const &CollisionBox::getHalfSize(void) const
  */
 
 /*
- * If IsPointInBox is given nullptr or NULL as param for res, it will
+ * If IsPointInBox is given nullptr as param for res, it will
  * only check collision and wont return a new allocated Resolution struct.
  *
  * If IsPointInBox returns false, it won't change res pointer.
@@ -100,7 +96,7 @@ bool CollisionBox::IsPointInBox(glm::vec3 const &pt, Resolution *res) const
 	d     = pt - this->_pos;
 	p     = this->_half_size - glm::abs(d);
 	is_in = (p.x <= 0.0f || p.y <= 0.0f || p.z <= 0.0f) ? false : true;
-	if (res == nullptr || res == NULL || !is_in)
+	if (res == nullptr || !is_in)
 		return (is_in);
 	std::memset(res, 0, sizeof(Resolution));
 	if (p.x < p.y)
@@ -121,7 +117,7 @@ bool CollisionBox::IsPointInBox(glm::vec3 const &pt, Resolution *res) const
 }
 
 /*
- * If IsBoxInBox is given nullptr or NULL as param for res, it will
+ * If IsBoxInBox is given nullptr as param for res, it will
  * only check collision and wont return a new allocated Resolution struct.
  *
  * If IsBoxInBox returns false, it won't change res pointer.
@@ -135,7 +131,7 @@ bool CollisionBox::IsBoxInBox(CollisionBox const &box, Resolution *res) const
 	d     = box.getPos() - this->_pos;
 	p     = (this->_half_size + box.getHalfSize()) - glm::abs(d);
 	is_in = (p.x <= 0.0f || p.y <= 0.0f || p.z <= 0.0f) ? false : true;
-	if (res == nullptr || res == NULL || !is_in)
+	if (res == nullptr || !is_in)
 		return (is_in);
 	std::memset(res, 0, sizeof(Resolution));
 	if (p.x < p.y)
@@ -156,7 +152,7 @@ bool CollisionBox::IsBoxInBox(CollisionBox const &box, Resolution *res) const
 }
 
 /*
- * If IsSegmentInBox is given nullptr or NULL as param for res, it will
+ * If IsSegmentInBox is given nullptr as param for res, it will
  * only check collision and wont return a new allocated Resolution struct.
  *
  * If IsSegmentInBox returns false, it won't change res pointer.
@@ -187,7 +183,7 @@ bool CollisionBox::IsSegmentInBox(glm::vec3 const &pt, glm::vec3 const &delta,
 	min_ft     = CollisionBox::_min_vec3(farTime);
 	if (max_nt >= 1.0f || min_ft <= 0.0f)
 		return (false);
-	if (res == nullptr || res == NULL)
+	if (res == nullptr)
 		return (true);
 	std::memset(res, 0, sizeof(Resolution));
 	if (nearTime.x > nearTime.y)
@@ -340,11 +336,7 @@ constexpr inline float CollisionBox::_min_vec3(glm::vec3 const &vec)
 	return (std::min(std::min(vec.x, vec.y), vec.z));
 }
 
-CollisionBox::InitException::InitException(void)
+CollisionBox::InitException::InitException() noexcept
 {
 	this->_msg = "CollisionBox : Object initialization failed";
-}
-
-CollisionBox::InitException::~InitException(void) throw()
-{
 }

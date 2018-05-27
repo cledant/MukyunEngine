@@ -21,16 +21,16 @@ class SpotLight : public ALight
 
 		struct Params : ALight::Params
 		{
-			Params(void);
-			~Params(void);
+			Params();
+			~Params() override = default;
 
 			glm::vec3 dir;
 			glm::vec3 attenuation_coeff;
 			glm::vec2 cutoff;
 		};
 
-		SpotLight(SpotLight::Params const &params);
-		virtual ~SpotLight(void);
+		explicit SpotLight(SpotLight::Params const &params);
+		~SpotLight() override = default;
 		SpotLight(const SpotLight &src);
 		SpotLight &operator=(SpotLight const &rhs);
 
@@ -38,9 +38,9 @@ class SpotLight : public ALight
 		 * Getter
 		 */
 
-		glm::vec3 const &getDirection(void) const;
-		glm::vec3 const &getAttenuationCoeff(void) const;
-		glm::vec2 const &getCutoff(void) const;
+		glm::vec3 const &getDirection() const;
+		glm::vec3 const &getAttenuationCoeff() const;
+		glm::vec2 const &getCutoff() const;
 
 	protected :
 

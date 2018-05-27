@@ -12,8 +12,8 @@
 
 #include "UI/ShaderSurface/ShaderSurface.hpp"
 
-ShaderSurface::ShaderSurface(void) : _win(nullptr), _input(nullptr), _shader(nullptr),
-									 _vao(0), _vbo(0)
+ShaderSurface::ShaderSurface() : _win(nullptr), _input(nullptr), _shader(nullptr),
+								 _vao(0), _vbo(0)
 {
 }
 
@@ -39,12 +39,12 @@ ShaderSurface::~ShaderSurface()
 	glDeleteBuffers(1, &this->_vbo);
 }
 
-ShaderSurface::ShaderSurface(ShaderSurface &&src)
+ShaderSurface::ShaderSurface(ShaderSurface &&src) noexcept
 {
 	*this = std::move(src);
 }
 
-ShaderSurface &ShaderSurface::operator=(ShaderSurface &&rhs)
+ShaderSurface &ShaderSurface::operator=(ShaderSurface &&rhs) noexcept
 {
 	this->_win    = rhs.getWindow();
 	this->_input  = rhs.getInput();
@@ -58,22 +58,22 @@ ShaderSurface &ShaderSurface::operator=(ShaderSurface &&rhs)
  * Getter
  */
 
-Shader *ShaderSurface::getShader(void) const
+Shader *ShaderSurface::getShader() const
 {
 	return (this->_shader);
 }
 
-Input const *ShaderSurface::getInput(void) const
+Input const *ShaderSurface::getInput() const
 {
 	return (this->_input);
 }
 
-GLFW_Window const *ShaderSurface::getWindow(void) const
+GLFW_Window const *ShaderSurface::getWindow() const
 {
 	return (this->_win);
 }
 
-GLuint ShaderSurface::moveVAO(void)
+GLuint ShaderSurface::moveVAO()
 {
 	GLuint tmp = this->_vao;
 
@@ -81,7 +81,7 @@ GLuint ShaderSurface::moveVAO(void)
 	return (tmp);
 }
 
-GLuint ShaderSurface::moveVBO(void)
+GLuint ShaderSurface::moveVBO()
 {
 	GLuint tmp = this->_vbo;
 
@@ -102,7 +102,7 @@ void ShaderSurface::setShader(Shader *shader)
  * Draw
  */
 
-void ShaderSurface::draw(void)
+void ShaderSurface::draw()
 {
 	if (this->_shader == nullptr || this->_win == nullptr || this->_input == nullptr)
 	{
@@ -121,16 +121,12 @@ void ShaderSurface::draw(void)
 	glBindVertexArray(0);
 }
 
-ShaderSurface::InitException::InitException(void)
+ShaderSurface::InitException::InitException() noexcept
 {
 	this->_msg = "Simple_Box : Object initialization failed";
 }
 
-ShaderSurface::InitException::~InitException(void) throw()
-{
-}
-
-void ShaderSurface::_allocate_buffer(void)
+void ShaderSurface::_allocate_buffer()
 {
 	//Allocating VBO
 	glGenBuffers(1, &(this->_vbo));

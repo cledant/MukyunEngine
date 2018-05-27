@@ -21,14 +21,14 @@ class PointLight : public ALight
 
 		struct Params : ALight::Params
 		{
-			Params(void);
-			~Params(void);
+			Params();
+			~Params() override = default;
 
 			glm::vec3 attenuation_coeff;
 		};
 
-		PointLight(PointLight::Params const &params);
-		virtual ~PointLight(void);
+		explicit PointLight(PointLight::Params const &params);
+		~PointLight() override = default;
 		PointLight(const PointLight &src);
 		PointLight &operator=(PointLight const &rhs);
 
@@ -36,7 +36,7 @@ class PointLight : public ALight
 		 * Getter
 		 */
 
-		glm::vec3 const &getAttenuationCoeff(void) const;
+		glm::vec3 const &getAttenuationCoeff() const;
 
 	protected :
 

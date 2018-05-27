@@ -43,15 +43,15 @@ class CollisionBox : public ITransformable
 		CollisionBox(glm::vec3 const &pos, glm::vec3 const &half_size);
 		CollisionBox(CollisionBox const &src);
 		CollisionBox &operator=(CollisionBox const &rhs);
-		virtual ~CollisionBox(void);
+		virtual ~CollisionBox() = default;
 
 		/*
 		 * Interface ITransformable
 		 */
 
-		virtual void translateObject(glm::vec3 const &vec) override;
-		virtual void scaleObject(glm::vec3 const &vec) override;
-		virtual void rotateObject(glm::vec3 const &vec) override;
+		void translateObject(glm::vec3 const &vec) override;
+		void scaleObject(glm::vec3 const &vec) override;
+		void rotateObject(glm::vec3 const &vec) override;
 
 		/*
 		 * Setter
@@ -64,8 +64,8 @@ class CollisionBox : public ITransformable
 		 * Getter
 		 */
 
-		glm::vec3 const &getPos(void) const;
-		glm::vec3 const &getHalfSize(void) const;
+		glm::vec3 const &getPos() const;
+		glm::vec3 const &getHalfSize() const;
 
 		/*
 		 * Collision Functions
@@ -83,8 +83,8 @@ class CollisionBox : public ITransformable
 		{
 			public :
 
-				explicit InitException(void);
-				virtual        ~InitException(void) throw();
+				explicit InitException() noexcept;
+				~InitException() noexcept override = default;
 		};
 
 	private :

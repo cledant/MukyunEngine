@@ -17,18 +17,10 @@ PointLight::Params::Params() : ALight::Params()
 	this->attenuation_coeff = glm::vec3(1.0f);
 }
 
-PointLight::Params::~Params()
-{
-}
-
 PointLight::PointLight(PointLight::Params const &params) : ALight(params),
 														   _attenuation_coeff(params.attenuation_coeff)
 {
 	this->_type = ALight::eType::POINT;
-}
-
-PointLight::~PointLight()
-{
 }
 
 PointLight::PointLight(const PointLight &src) : ALight()

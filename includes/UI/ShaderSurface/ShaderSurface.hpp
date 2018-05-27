@@ -23,23 +23,23 @@ class ShaderSurface
 {
 	public :
 
-		ShaderSurface(void);
+		ShaderSurface();
 		ShaderSurface(GLFW_Window const *win, Input const *input, Shader *shader);
-		virtual ~ShaderSurface(void);
+		virtual ~ShaderSurface();
 		ShaderSurface(ShaderSurface const &src) = delete;
 		ShaderSurface &operator=(ShaderSurface const &rhs) = delete;
-		ShaderSurface(ShaderSurface &&src);
-		ShaderSurface &operator=(ShaderSurface &&rhs);
+		ShaderSurface(ShaderSurface &&src) noexcept;
+		ShaderSurface &operator=(ShaderSurface &&rhs) noexcept;
 
 		/*
 		 * Getter
 		 */
 
-		Shader *getShader(void) const;
-		Input const *getInput(void) const;
-		GLFW_Window const *getWindow(void) const;
-		GLuint moveVAO(void);
-		GLuint moveVBO(void);
+		Shader *getShader() const;
+		Input const *getInput() const;
+		GLFW_Window const *getWindow() const;
+		GLuint moveVAO();
+		GLuint moveVBO();
 
 		/*
 		 * Setter
@@ -52,14 +52,14 @@ class ShaderSurface
 		 * Draw
 		 */
 
-		virtual void draw(void);
+		virtual void draw();
 
 		class InitException : public GeneralException
 		{
 			public :
 
-				explicit InitException(void);
-				virtual        ~InitException(void) throw();
+				explicit InitException() noexcept;
+				~InitException() noexcept override = default;
 		};
 
 	protected :
@@ -70,7 +70,7 @@ class ShaderSurface
 		GLuint            _vao;
 		GLuint            _vbo;
 
-		inline void _allocate_buffer(void);
+		inline void _allocate_buffer();
 
 		static constexpr float  _vertices[] = {-1.0f, 1.0f, 0.5f,
 											   1.0f, 1.0f, 0.5f,

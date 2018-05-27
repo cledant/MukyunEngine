@@ -21,14 +21,14 @@ class DirectionalLight : public ALight
 
 		struct Params : ALight::Params
 		{
-			Params(void);
-			~Params(void);
+			Params();
+			~Params() override = default;
 
 			glm::vec3 dir;
 		};
 
-		DirectionalLight(DirectionalLight::Params const &params);
-		virtual ~DirectionalLight(void);
+		explicit DirectionalLight(DirectionalLight::Params const &params);
+		~DirectionalLight() override = default;
 		DirectionalLight(const DirectionalLight &src);
 		DirectionalLight &operator=(DirectionalLight const &rhs);
 
@@ -36,7 +36,7 @@ class DirectionalLight : public ALight
 		 * Getter
 		 */
 
-		glm::vec3 const &getDirection(void) const;
+		glm::vec3 const &getDirection() const;
 
 	protected :
 

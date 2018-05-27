@@ -29,8 +29,8 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 
 		struct Params
 		{
-			Params(void);
-			~Params(void);
+			Params();
+			virtual ~Params() = default;
 
 			glm::vec3             model_center;
 			glm::vec3             pos;
@@ -44,8 +44,8 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 			bool                  light;
 		};
 
-		Prop(Prop::Params const &params);
-		virtual ~Prop(void);
+		explicit Prop(Prop::Params const &params);
+		virtual ~Prop() = default;
 		Prop(Prop const &src);
 		Prop &operator=(Prop const &rhs);
 
@@ -65,42 +65,42 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		 * Getter
 		 */
 
-		float getYaw(void) const;
-		float getPitch(void) const;
-		float getRoll(void) const;
-		glm::vec3 const &getPos(void) const;
-		glm::vec3 const &getScale(void) const;
-		glm::vec3 const &getOffset(void) const;
-		glm::vec3 const &getModelCenter(void) const;
-		bool getToUpdate(void) const;
-		bool getUsedForLight(void) const;
+		float getYaw() const;
+		float getPitch() const;
+		float getRoll() const;
+		glm::vec3 const &getPos() const;
+		glm::vec3 const &getScale() const;
+		glm::vec3 const &getOffset() const;
+		glm::vec3 const &getModelCenter() const;
+		bool getToUpdate() const;
+		bool getUsedForLight() const;
 
 		/*
 		 * Interface IEntity
 		 */
 
-		virtual bool update(float time) override;
-		virtual void setActive(bool value) override;
-		virtual bool getActive(void) const override;
-		virtual glm::mat4 const &getModelMatrix(void) const override;
-		virtual glm::mat4 const &getInvModelMatrix(void) const override;
+		bool update(float time) override;
+		void setActive(bool value) override;
+		bool getActive() const override;
+		glm::mat4 const &getModelMatrix() const override;
+		glm::mat4 const &getInvModelMatrix() const override;
 
 		/*
 		 * Interface ITransformable
 		 */
 
-		virtual void translateObject(glm::vec3 const &vec) override;
-		virtual void scaleObject(glm::vec3 const &vec) override;
-		virtual void rotateObject(glm::vec3 const &vec) override;
+		void translateObject(glm::vec3 const &vec) override;
+		void scaleObject(glm::vec3 const &vec) override;
+		void rotateObject(glm::vec3 const &vec) override;
 
 		/*
 		 * Interface ICollidable
 		 */
 
-		virtual CollisionBox const &getCollisionBox(void) const override;
-		virtual ICollidable::eDamages getDamages(void) const override;
-		virtual void setPassthrough(bool value) override;
-		virtual bool getPassthrough(void) const override;
+		CollisionBox const &getCollisionBox() const override;
+		ICollidable::eDamages getDamages() const override;
+		void setPassthrough(bool value) override;
+		bool getPassthrough() const override;
 
 	protected :
 

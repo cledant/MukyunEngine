@@ -12,7 +12,7 @@
 
 #include "GameEntities/Prop.hpp"
 
-Prop::Params::Params(void)
+Prop::Params::Params()
 {
 	this->model_center = glm::vec3(0.0f);
 	this->pos          = glm::vec3(0.0f);
@@ -26,10 +26,6 @@ Prop::Params::Params(void)
 	this->light        = false;
 }
 
-Prop::Params::~Params(void)
-{
-}
-
 Prop::Prop(Prop::Params const &params) :
 		_yaw(params.orientation.x), _pitch(params.orientation.y),
 		_roll(params.orientation.z), _pos(params.pos), _scale(params.scale),
@@ -37,10 +33,6 @@ Prop::Prop(Prop::Params const &params) :
 		_to_update(true), _used_for_light(params.light),
 		_active(params.active), _cb(params.pos, params.cb_half_size),
 		_dmg(params.dmg), _passthrough(params.passthrough)
-{
-}
-
-Prop::~Prop(void)
 {
 }
 
@@ -119,32 +111,32 @@ void Prop::setModelCenter(glm::vec3 const &center)
  * Getter
  */
 
-float Prop::getYaw(void) const
+float Prop::getYaw() const
 {
 	return (this->_yaw);
 }
 
-float Prop::getPitch(void) const
+float Prop::getPitch() const
 {
 	return (this->_pitch);
 }
 
-float Prop::getRoll(void) const
+float Prop::getRoll() const
 {
 	return (this->_roll);
 }
 
-glm::vec3 const &Prop::getPos(void) const
+glm::vec3 const &Prop::getPos() const
 {
 	return (this->_pos);
 }
 
-glm::vec3 const &Prop::getScale(void) const
+glm::vec3 const &Prop::getScale() const
 {
 	return (this->_scale);
 }
 
-glm::vec3 const &Prop::getOffset(void) const
+glm::vec3 const &Prop::getOffset() const
 {
 	return (this->_offset);
 }
@@ -195,12 +187,12 @@ void Prop::setActive(bool value)
 		this->_to_update = true;
 }
 
-bool Prop::getActive(void) const
+bool Prop::getActive() const
 {
 	return (this->_active);
 }
 
-glm::mat4 const &Prop::getModelMatrix(void) const
+glm::mat4 const &Prop::getModelMatrix() const
 {
 	return (this->_model);
 }
@@ -238,12 +230,12 @@ void Prop::rotateObject(glm::vec3 const &vec)
  * Interface ICollidable
  */
 
-CollisionBox const &Prop::getCollisionBox(void) const
+CollisionBox const &Prop::getCollisionBox() const
 {
 	return (this->_cb);
 }
 
-ICollidable::eDamages Prop::getDamages(void) const
+ICollidable::eDamages Prop::getDamages() const
 {
 	return (this->_dmg);
 }
@@ -253,7 +245,7 @@ void Prop::setPassthrough(bool value)
 	this->_passthrough = value;
 }
 
-bool Prop::getPassthrough(void) const
+bool Prop::getPassthrough() const
 {
 	return (this->_passthrough);
 }

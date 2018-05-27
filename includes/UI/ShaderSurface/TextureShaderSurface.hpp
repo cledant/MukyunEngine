@@ -19,20 +19,20 @@ class TextureShaderSurface : public ShaderSurface
 {
 	public :
 
-		TextureShaderSurface(void);
+		TextureShaderSurface();
 		TextureShaderSurface(GLFW_Window const *win, Input const *input, Shader *shader,
 							 GLuint tex_id);
-		virtual ~TextureShaderSurface(void);
+		~TextureShaderSurface() override = default;
 		TextureShaderSurface(TextureShaderSurface const &src) = delete;
 		TextureShaderSurface &operator=(TextureShaderSurface const &rhs) = delete;
-		TextureShaderSurface(TextureShaderSurface &&src);
-		TextureShaderSurface &operator=(TextureShaderSurface &&rhs);
+		TextureShaderSurface(TextureShaderSurface &&src) noexcept;
+		TextureShaderSurface &operator=(TextureShaderSurface &&rhs) noexcept;
 
 		/*
 		 * Getter
 		 */
 
-		GLuint getTextureID(void) const;
+		GLuint getTextureID() const;
 
 		/*
 		 * Setter
@@ -44,14 +44,14 @@ class TextureShaderSurface : public ShaderSurface
 		 * Draw
 		 */
 
-		virtual void draw(void) override;
-		virtual void drawInFrameBuffer(void);
+		void draw() override;
+		virtual void drawInFrameBuffer();
 
 	protected :
 
 		GLuint _tex_id;
 
-		inline void _allocate_tex_buffer(void);
+		inline void _allocate_tex_buffer();
 
 		static constexpr float  _tex_vertices[] = {-1.0f, 1.0f, 0.5f, 0.0f, 1.0f,
 												   1.0f, 1.0f, 0.5f, 1.0f, 1.0f,

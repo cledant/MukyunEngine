@@ -19,20 +19,12 @@ SpotLight::Params::Params() : ALight::Params()
 	this->cutoff            = glm::vec2(0.0f);
 }
 
-SpotLight::Params::~Params()
-{
-}
-
 SpotLight::SpotLight(SpotLight::Params const &params) : ALight(params),
 														_dir(params.dir),
 														_attenuation_coeff(params.attenuation_coeff),
 														_cutoff(params.cutoff)
 {
 	this->_type = ALight::eType::SPOT;
-}
-
-SpotLight::~SpotLight()
-{
 }
 
 SpotLight::SpotLight(const SpotLight &src) : ALight()

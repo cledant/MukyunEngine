@@ -17,18 +17,10 @@ DirectionalLight::Params::Params() : ALight::Params()
 	this->dir = glm::vec3(0.0f);
 }
 
-DirectionalLight::Params::~Params()
-{
-}
-
 DirectionalLight::DirectionalLight(DirectionalLight::Params const &params) : ALight(params),
 																			 _dir(params.dir)
 {
 	this->_type = ALight::eType::DIRECTIONAL;
-}
-
-DirectionalLight::~DirectionalLight()
-{
 }
 
 DirectionalLight::DirectionalLight(const DirectionalLight &src) : ALight()

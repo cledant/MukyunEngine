@@ -12,7 +12,7 @@
 
 #include "UI/ShaderSurface/TextureShaderSurface.hpp"
 
-TextureShaderSurface::TextureShaderSurface(void) :
+TextureShaderSurface::TextureShaderSurface() :
 		ShaderSurface(), _tex_id(0)
 {
 }
@@ -36,19 +36,15 @@ TextureShaderSurface::TextureShaderSurface(GLFW_Window const *win, Input const *
 	}
 }
 
-TextureShaderSurface::~TextureShaderSurface(void)
-{
-}
-
-TextureShaderSurface::TextureShaderSurface(TextureShaderSurface &&src)
+TextureShaderSurface::TextureShaderSurface(TextureShaderSurface &&src) noexcept
 {
 	*this = std::move(src);
 }
 
-TextureShaderSurface &TextureShaderSurface::operator=(TextureShaderSurface &&rhs)
+TextureShaderSurface &TextureShaderSurface::operator=(TextureShaderSurface &&rhs) noexcept
 {
-	ShaderSurface::operator=(std::move(rhs));
 	this->_tex_id = rhs.getTextureID();
+	ShaderSurface::operator=(std::move(rhs));
 	return (*this);
 }
 
@@ -56,7 +52,7 @@ TextureShaderSurface &TextureShaderSurface::operator=(TextureShaderSurface &&rhs
  * Getter
  */
 
-GLuint TextureShaderSurface::getTextureID(void) const
+GLuint TextureShaderSurface::getTextureID() const
 {
 	return (this->_tex_id);
 }
@@ -74,7 +70,7 @@ void TextureShaderSurface::setTextureID(GLuint id)
  * Draw
  */
 
-void TextureShaderSurface::draw(void)
+void TextureShaderSurface::draw()
 {
 	if (this->_shader == nullptr || this->_win == nullptr || this->_input == nullptr)
 	{
@@ -96,7 +92,7 @@ void TextureShaderSurface::draw(void)
 	glBindVertexArray(0);
 }
 
-void TextureShaderSurface::drawInFrameBuffer(void)
+void TextureShaderSurface::drawInFrameBuffer()
 {
 	GLuint shader_id      = this->_shader->getShaderProgram();
 	GLint  id_uniform_tex = glGetUniformLocation(shader_id, "uniform_tex");
@@ -111,7 +107,7 @@ void TextureShaderSurface::drawInFrameBuffer(void)
 	glBindVertexArray(0);
 }
 
-void TextureShaderSurface::_allocate_tex_buffer(void)
+void TextureShaderSurface::_allocate_tex_buffer()
 {
 	//Allocating VBO
 	glGenBuffers(1, &(this->_vbo));
