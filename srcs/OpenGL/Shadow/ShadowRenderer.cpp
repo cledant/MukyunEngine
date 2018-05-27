@@ -22,10 +22,6 @@ ShadowRenderer::Params::Params(void)
 	this->omni_near_far             = glm::vec2(1.0f, 30.0f);
 }
 
-ShadowRenderer::Params::~Params(void)
-{
-}
-
 ShadowRenderer::ShadowRenderer(void) :
 		_dir_depth_map_shader(nullptr), _omni_depth_map_shader(nullptr),
 		_spot_dir_depth_map_shader(nullptr), _lc(nullptr),
@@ -61,10 +57,6 @@ ShadowRenderer::ShadowRenderer(ShadowRenderer::Params const &params) :
 											   this->_omni_near_far.y);
 	this->_dir_proj_matrix  = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,
 										 this->_dir_near_far.x, this->_dir_near_far.y);
-}
-
-ShadowRenderer::~ShadowRenderer(void)
-{
 }
 
 ShadowRenderer::ShadowRenderer(ShadowRenderer &&src)
@@ -186,37 +178,37 @@ std::vector<std::unique_ptr<AFramebuffer>> ShadowRenderer::moveSpotDirDepthMaps(
 	return (std::move(this->_spot_dir_depth_maps));
 }
 
-std::vector<glm::mat4> const &ShadowRenderer::getVecDirLightSpaceMatrix(void) const
+std::vector<glm::mat4> const &ShadowRenderer::getVecDirLightSpaceMatrix() const
 {
 	return (this->_vec_dir_lightSpaceMatrix);
 }
 
-std::vector<ShadowRenderer::OmniProjMatrices> const &ShadowRenderer::getVecOmniLightSpaceMatrix(void) const
+std::vector<ShadowRenderer::OmniProjMatrices> const &ShadowRenderer::getVecOmniLightSpaceMatrix() const
 {
 	return (this->_vec_omni_lightSpaceMatrix);
 }
 
-std::vector<glm::mat4> const &ShadowRenderer::getVecSpotDirLightSpaceMatrix(void) const
+std::vector<glm::mat4> const &ShadowRenderer::getVecSpotDirLightSpaceMatrix() const
 {
 	return (this->_vec_spot_dir_lightSpaceMatrix);
 }
 
-glm::vec2 const ShadowRenderer::getDirNearFar(void) const
+glm::vec2 const ShadowRenderer::getDirNearFar() const
 {
 	return (this->_dir_near_far);
 }
 
-glm::vec2 const ShadowRenderer::getOmniNearFar(void) const
+glm::vec2 const ShadowRenderer::getOmniNearFar() const
 {
 	return (this->_omni_near_far);
 }
 
-glm::mat4 const &ShadowRenderer::getDirProjMatrix(void) const
+glm::mat4 const &ShadowRenderer::getDirProjMatrix() const
 {
 	return (this->_dir_proj_matrix);
 }
 
-glm::mat4 const &ShadowRenderer::getOmniProjMatrix(void) const
+glm::mat4 const &ShadowRenderer::getOmniProjMatrix() const
 {
 	return (this->_omni_proj_matrix);
 }
@@ -225,7 +217,7 @@ glm::mat4 const &ShadowRenderer::getOmniProjMatrix(void) const
  * Computation
  */
 
-void ShadowRenderer::update(void)
+void ShadowRenderer::update()
 {
 	/*
 	 * Careful about the lookat point as in some cases
@@ -282,7 +274,7 @@ void ShadowRenderer::update(void)
 	}
 }
 
-void ShadowRenderer::_allocate_memory(void)
+void ShadowRenderer::_allocate_memory()
 {
 	size_t max_dir_light   = this->_lc->getMaxDirLightNumber();
 	size_t max_spot_light  = this->_lc->getMaxSpotLightNumber();

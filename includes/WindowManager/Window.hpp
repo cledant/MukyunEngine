@@ -17,8 +17,8 @@
 
 struct GLFW_Window
 {
-	GLFW_Window(void);
-	~GLFW_Window(void);
+	GLFW_Window();
+	virtual ~GLFW_Window() = default;
 
 	GLFWwindow           *win;
 	int                  cur_win_w;

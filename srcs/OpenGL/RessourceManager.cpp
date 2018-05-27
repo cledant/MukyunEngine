@@ -12,14 +12,6 @@
 
 #include "OpenGL/RessourceManager.hpp"
 
-RessourceManager::RessourceManager(void)
-{
-}
-
-RessourceManager::~RessourceManager(void)
-{
-}
-
 /*
  * Ressource Creation
  */
@@ -121,77 +113,57 @@ Fontset &RessourceManager::getFontset(std::string const &name)
  * Exceptions
  */
 
-RessourceManager::ShaderNotFoundException::ShaderNotFoundException(void)
+RessourceManager::ShaderNotFoundException::ShaderNotFoundException() noexcept
 {
 	this->_msg = "OpenGL : Failed to find requested shader";
 }
 
-RessourceManager::ShaderNotFoundException::ShaderNotFoundException(std::string const &name)
+RessourceManager::ShaderNotFoundException::ShaderNotFoundException(std::string const &name) noexcept
 {
 	this->_msg = "OpenGL : Failed to find shader : ";
-	this->_msg += name.c_str();
+	this->_msg += name;
 }
 
-RessourceManager::ShaderNotFoundException::~ShaderNotFoundException(void) throw()
-{
-}
-
-RessourceManager::ModelNotFoundException::ModelNotFoundException(void)
+RessourceManager::ModelNotFoundException::ModelNotFoundException() noexcept
 {
 	this->_msg = "OpenGL : Failed to find requested model";
 }
 
-RessourceManager::ModelNotFoundException::ModelNotFoundException(std::string const &name)
+RessourceManager::ModelNotFoundException::ModelNotFoundException(std::string const &name) noexcept
 {
 	this->_msg = "OpenGL : Failed to find model : ";
-	this->_msg += name.c_str();
+	this->_msg += name;
 }
 
-RessourceManager::ModelNotFoundException::~ModelNotFoundException(void) throw()
-{
-}
-
-RessourceManager::TextureNotFoundException::TextureNotFoundException(void)
+RessourceManager::TextureNotFoundException::TextureNotFoundException() noexcept
 {
 	this->_msg = "OpenGL : Failed to find requested texture";
 }
 
-RessourceManager::TextureNotFoundException::TextureNotFoundException(std::string const &name)
+RessourceManager::TextureNotFoundException::TextureNotFoundException(std::string const &name) noexcept
 {
 	this->_msg = "OpenGL : Failed to find texture : ";
-	this->_msg += name.c_str();
+	this->_msg += name;
 }
 
-RessourceManager::TextureNotFoundException::~TextureNotFoundException(void) throw()
-{
-}
-
-RessourceManager::FramebufferNotFoundException::FramebufferNotFoundException(void)
+RessourceManager::FramebufferNotFoundException::FramebufferNotFoundException() noexcept
 {
 	this->_msg = "OpenGL : Failed to find requested framebuffer";
 }
 
-RessourceManager::FramebufferNotFoundException::FramebufferNotFoundException(std::string const &name)
+RessourceManager::FramebufferNotFoundException::FramebufferNotFoundException(std::string const &name) noexcept
 {
 	this->_msg = "OpenGL : Failed to find buffer : ";
-	this->_msg += name.c_str();
+	this->_msg += name;
 }
 
-RessourceManager::FramebufferNotFoundException::~FramebufferNotFoundException(void) throw()
-{
-}
-
-RessourceManager::FontsetNotFoundException::FontsetNotFoundException(void)
+RessourceManager::FontsetNotFoundException::FontsetNotFoundException() noexcept
 {
 	this->_msg = "OpenGL : Failed to find requested fontset";
 }
 
-RessourceManager::FontsetNotFoundException::FontsetNotFoundException(std::string const &name)
+RessourceManager::FontsetNotFoundException::FontsetNotFoundException(std::string const &name) noexcept
 {
 	this->_msg = "OpenGL : Failed to find fontset : ";
-	this->_msg += name.c_str();
-}
-
-RessourceManager::FontsetNotFoundException::~FontsetNotFoundException(void) throw()
-{
+	this->_msg += name;
 }

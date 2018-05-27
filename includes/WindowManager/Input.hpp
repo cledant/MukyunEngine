@@ -21,8 +21,8 @@
 
 struct Input
 {
-	Input(void);
-	~Input(void);
+	Input();
+	virtual ~Input() = default;
 
 	std::vector<bool> p_key;
 	std::vector<bool> p_mouse;

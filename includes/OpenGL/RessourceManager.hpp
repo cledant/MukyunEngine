@@ -30,8 +30,8 @@ class RessourceManager
 {
 	public :
 
-		RessourceManager(void);
-		virtual ~RessourceManager(void);
+		RessourceManager() = default;
+		virtual ~RessourceManager() = default;
 		RessourceManager(RessourceManager const &src) = delete;
 		RessourceManager &operator=(RessourceManager const &rhs) = delete;
 
@@ -73,45 +73,45 @@ class RessourceManager
 		{
 			public :
 
-				explicit ShaderNotFoundException(void);
-				explicit ShaderNotFoundException(std::string const &name);
-				virtual ~ShaderNotFoundException(void) throw();
+				explicit ShaderNotFoundException() noexcept;
+				explicit ShaderNotFoundException(std::string const &name) noexcept;
+				~ShaderNotFoundException() noexcept override = default;
 		};
 
 		class ModelNotFoundException : public GeneralException
 		{
 			public :
 
-				explicit ModelNotFoundException(void);
-				explicit ModelNotFoundException(std::string const &name);
-				virtual ~ModelNotFoundException(void) throw();
+				explicit ModelNotFoundException() noexcept;
+				explicit ModelNotFoundException(std::string const &name) noexcept;
+				~ModelNotFoundException() noexcept override = default;
 		};
 
 		class TextureNotFoundException : public GeneralException
 		{
 			public :
 
-				explicit TextureNotFoundException(void);
-				explicit TextureNotFoundException(std::string const &name);
-				virtual ~TextureNotFoundException(void) throw();
+				explicit TextureNotFoundException() noexcept;
+				explicit TextureNotFoundException(std::string const &name) noexcept;
+				~TextureNotFoundException() noexcept override = default;
 		};
 
 		class FramebufferNotFoundException : public GeneralException
 		{
 			public :
 
-				explicit FramebufferNotFoundException(void);
-				explicit FramebufferNotFoundException(std::string const &name);
-				virtual ~FramebufferNotFoundException(void) throw();
+				explicit FramebufferNotFoundException() noexcept;
+				explicit FramebufferNotFoundException(std::string const &name) noexcept;
+				~FramebufferNotFoundException() noexcept override = default;
 		};
 
 		class FontsetNotFoundException : public GeneralException
 		{
 			public :
 
-				explicit FontsetNotFoundException(void);
-				explicit FontsetNotFoundException(std::string const &name);
-				virtual ~FontsetNotFoundException(void) throw();
+				explicit FontsetNotFoundException() noexcept;
+				explicit FontsetNotFoundException(std::string const &name) noexcept;
+				~FontsetNotFoundException() noexcept override = default;
 		};
 
 	private :

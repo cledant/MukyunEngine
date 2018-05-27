@@ -26,8 +26,8 @@ class ShadowRenderer
 
 		struct Params
 		{
-			Params(void);
-			virtual ~Params(void);
+			Params();
+			virtual ~Params() = default;
 
 			Shader               *dir_depth_map_shader;
 			Shader               *omni_depth_map_shader;
@@ -49,9 +49,9 @@ class ShadowRenderer
 				SPOT_DEPTH_MAP,
 		};
 
-		ShadowRenderer(void);
+		ShadowRenderer();
 		ShadowRenderer(ShadowRenderer::Params const &params);
-		virtual ~ShadowRenderer(void);
+		virtual ~ShadowRenderer() = default;
 		ShadowRenderer(ShadowRenderer const &src) = delete;
 		ShadowRenderer &operator=(ShadowRenderer const &rhs) = delete;
 		ShadowRenderer(ShadowRenderer &&src);
@@ -68,33 +68,33 @@ class ShadowRenderer
 		 */
 
 		GLuint getFramebufferTexID(ShadowRenderer::eType type, size_t index) const;
-		Shader *getDirDepthMapShader(void) const;
-		Shader *getOmniDepthMapShader(void) const;
-		Shader *getSpotDirDepthMapShader(void) const;
-		LightContainer const *getLightContainer(void) const;
-		std::vector<std::unique_ptr<AFramebuffer>> const &getDirDepthMaps(void) const;
-		std::vector<std::unique_ptr<AFramebuffer>> moveDirDepthMaps(void);
-		std::vector<std::unique_ptr<AFramebuffer>> const &getOmniDepthMaps(void) const;
-		std::vector<std::unique_ptr<AFramebuffer>> moveOmniDepthMaps(void);
-		std::vector<std::unique_ptr<AFramebuffer>> const &getSpotDirDepthMaps(void) const;
-		std::vector<std::unique_ptr<AFramebuffer>> moveSpotDirDepthMaps(void);
-		std::vector<glm::mat4> const &getVecDirLightSpaceMatrix(void) const;
-		std::vector<ShadowRenderer::OmniProjMatrices> const &getVecOmniLightSpaceMatrix(void) const;
-		std::vector<glm::mat4> const &getVecSpotDirLightSpaceMatrix(void) const;
-		glm::vec2 const getDirNearFar(void) const;
-		glm::vec2 const getOmniNearFar(void) const;
-		glm::mat4 const &getDirProjMatrix(void) const;
-		glm::mat4 const &getOmniProjMatrix(void) const;
+		Shader *getDirDepthMapShader() const;
+		Shader *getOmniDepthMapShader() const;
+		Shader *getSpotDirDepthMapShader() const;
+		LightContainer const *getLightContainer() const;
+		std::vector<std::unique_ptr<AFramebuffer>> const &getDirDepthMaps() const;
+		std::vector<std::unique_ptr<AFramebuffer>> moveDirDepthMaps();
+		std::vector<std::unique_ptr<AFramebuffer>> const &getOmniDepthMaps() const;
+		std::vector<std::unique_ptr<AFramebuffer>> moveOmniDepthMaps();
+		std::vector<std::unique_ptr<AFramebuffer>> const &getSpotDirDepthMaps() const;
+		std::vector<std::unique_ptr<AFramebuffer>> moveSpotDirDepthMaps();
+		std::vector<glm::mat4> const &getVecDirLightSpaceMatrix() const;
+		std::vector<ShadowRenderer::OmniProjMatrices> const &getVecOmniLightSpaceMatrix() const;
+		std::vector<glm::mat4> const &getVecSpotDirLightSpaceMatrix() const;
+		glm::vec2 const getDirNearFar() const;
+		glm::vec2 const getOmniNearFar() const;
+		glm::mat4 const &getDirProjMatrix() const;
+		glm::mat4 const &getOmniProjMatrix() const;
 
 		/*
 		 * Computation
 		 */
 
-		virtual void update(void);
+		virtual void update();
 
 	protected :
 
-		inline void _allocate_memory(void);
+		inline void _allocate_memory();
 
 		Shader                                     *_dir_depth_map_shader;
 		Shader                                     *_omni_depth_map_shader;

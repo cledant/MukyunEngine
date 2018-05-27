@@ -22,8 +22,8 @@
  * OpenGL related function
  */
 
-void oGL_check_error(void);
-void oGL_display_error(void);
+void oGL_check_error();
+void oGL_display_error();
 
 /*
  * Exception
@@ -33,8 +33,8 @@ class oGLFailException : public GeneralException
 {
 	public :
 
-		explicit oGLFailException(void);
-		virtual ~oGLFailException(void) throw();
+		explicit oGLFailException() noexcept;
+		~oGLFailException() noexcept override = default;
 };
 
 #endif

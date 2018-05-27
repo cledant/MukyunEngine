@@ -12,17 +12,15 @@
 
 #include "OpenGL/oGL_utility.hpp"
 
-void oGL_check_error(void)
+void oGL_check_error()
 {
 	if (glGetError() != GL_NO_ERROR)
 		throw oGLFailException();
 }
 
-void oGL_display_error(void)
+void oGL_display_error()
 {
-	GLuint error;
-
-	error = glGetError();
+	GLuint error = glGetError();
 	switch (error)
 	{
 		case GL_NO_ERROR :
@@ -43,11 +41,7 @@ void oGL_display_error(void)
 	}
 }
 
-oGLFailException::oGLFailException(void)
+oGLFailException::oGLFailException() noexcept
 {
 	this->_msg = "OpenGL : Something failed !";
-}
-
-oGLFailException::~oGLFailException(void) throw()
-{
 }
