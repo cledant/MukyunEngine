@@ -24,7 +24,7 @@ class ShaderSurface
 	public :
 
 		ShaderSurface();
-		ShaderSurface(GLFW_Window const *win, Input const *input, Shader *shader);
+		explicit ShaderSurface(GLFW_Window const *win, Input const *input, Shader *shader);
 		virtual ~ShaderSurface();
 		ShaderSurface(ShaderSurface const &src) = delete;
 		ShaderSurface &operator=(ShaderSurface const &rhs) = delete;

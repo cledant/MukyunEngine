@@ -16,7 +16,7 @@
  * Nested Struct
  */
 
-Mesh::Vertex::Vertex(void)
+Mesh::Vertex::Vertex()
 {
 	this->Position  = glm::vec3(0.0f);
 	this->Normal    = glm::vec3(0.0f);
@@ -25,11 +25,7 @@ Mesh::Vertex::Vertex(void)
 	this->Bitangent = glm::vec3(0.0f);
 }
 
-Mesh::Vertex::~Vertex(void)
-{
-}
-
-Mesh::Material::Material(void)
+Mesh::Material::Material()
 {
 	this->ambient     = glm::vec3(0.0f);
 	this->diffuse     = glm::vec3(0.0f);
@@ -39,15 +35,11 @@ Mesh::Material::Material(void)
 	this->specularMap = 0;
 }
 
-Mesh::Material::~Material(void)
-{
-}
-
 /*
  * Actual class
  */
 
-Mesh::Mesh(void) : _vbo(0), _nb_vertices(0), _directory(".")
+Mesh::Mesh() : _vbo(0), _nb_vertices(0), _directory(".")
 {
 }
 
@@ -55,7 +47,7 @@ Mesh::Mesh(aiMesh *mesh, const aiScene *scene, std::string const &directory,
 		   std::map<std::string, Texture> &texture_list) :
 		_vbo(0), _directory(directory)
 {
-	if (mesh == NULL)
+	if (!mesh)
 		throw Mesh::InvalidMeshException();
 	try
 	{
@@ -71,23 +63,23 @@ Mesh::Mesh(aiMesh *mesh, const aiScene *scene, std::string const &directory,
 	}
 }
 
-Mesh::~Mesh(void)
+Mesh::~Mesh()
 {
 	glDeleteBuffers(1, &(this->_vbo));
 }
 
-Mesh::Mesh(Mesh &&src)
+Mesh::Mesh(Mesh &&src) noexcept
 {
 	*this = std::move(src);
 }
 
-Mesh &Mesh::operator=(Mesh &&rhs)
+Mesh &Mesh::operator=(Mesh &&rhs) noexcept
 {
 	this->_material    = rhs.getMaterial();
-	this->_vertex_list = rhs.getVertexList();
+	this->_vertex_list = rhs.moveVertexList();
 	this->_vbo         = rhs.moveVBO();
 	this->_nb_vertices = rhs.getNbVertices();
-	this->_directory   = rhs.getDirectory();
+	this->_directory   = rhs.moveDirectory();
 	return (*this);
 }
 
@@ -95,27 +87,37 @@ Mesh &Mesh::operator=(Mesh &&rhs)
  * Getter
  */
 
-std::vector<Mesh::Vertex> const &Mesh::getVertexList(void) const
+std::vector<Mesh::Vertex> const &Mesh::getVertexList() const
 {
 	return (this->_vertex_list);
 }
 
-std::string const &Mesh::getDirectory(void) const
+std::vector<Mesh::Vertex> Mesh::moveVertexList()
+{
+	return (std::move(this->_vertex_list));
+}
+
+std::string const &Mesh::getDirectory() const
 {
 	return (this->_directory);
 }
 
-Mesh::Material const &Mesh::getMaterial(void) const
+std::string Mesh::moveDirectory()
+{
+	return (std::move(this->_directory));
+}
+
+Mesh::Material const &Mesh::getMaterial() const
 {
 	return (this->_material);
 }
 
-GLuint Mesh::getVBO(void) const
+GLuint Mesh::getVBO() const
 {
 	return (this->_vbo);
 }
 
-GLuint Mesh::moveVBO(void)
+GLuint Mesh::moveVBO()
 {
 	GLuint tmp = this->_vbo;
 
@@ -123,7 +125,7 @@ GLuint Mesh::moveVBO(void)
 	return (tmp);
 }
 
-size_t Mesh::getNbVertices(void) const
+size_t Mesh::getNbVertices() const
 {
 	return (this->_nb_vertices);
 }
@@ -138,25 +140,25 @@ void Mesh::_load_mesh(aiMesh *mesh)
 		tmp.Position.x = mesh->mVertices[i].x;
 		tmp.Position.y = mesh->mVertices[i].y;
 		tmp.Position.z = mesh->mVertices[i].z;
-		if (mesh->mNormals != NULL)
+		if (mesh->mNormals)
 		{
 			tmp.Normal.x = mesh->mNormals[i].x;
 			tmp.Normal.y = mesh->mNormals[i].y;
 			tmp.Normal.z = mesh->mNormals[i].z;
 		}
-		if (mesh->mTangents != NULL)
+		if (mesh->mTangents)
 		{
 			tmp.Tangent.x = mesh->mTangents[i].x;
 			tmp.Tangent.y = mesh->mTangents[i].y;
 			tmp.Tangent.z = mesh->mTangents[i].z;
 		}
-		if (mesh->mBitangents != NULL)
+		if (mesh->mBitangents)
 		{
 			tmp.Bitangent.x = mesh->mBitangents[i].x;
 			tmp.Bitangent.y = mesh->mBitangents[i].y;
 			tmp.Bitangent.z = mesh->mBitangents[i].z;
 		}
-		if (mesh->mTextureCoords[0] != NULL)
+		if (mesh->mTextureCoords[0])
 		{
 			tmp.TexCoords.x = mesh->mTextureCoords[0][i].x;
 			tmp.TexCoords.y = mesh->mTextureCoords[0][i].y;
@@ -170,7 +172,7 @@ void Mesh::_load_material(aiMesh *mesh, const aiScene *scene,
 {
 	aiMaterial *mat = NULL;
 
-	if ((mat = scene->mMaterials[mesh->mMaterialIndex]) == NULL)
+	if (!(mat = scene->mMaterials[mesh->mMaterialIndex]))
 		throw Mesh::InvalidMaterialException();
 	this->_material.diffuseMap  = texture_list.find("default_texture")->second.getTextureID();
 	this->_material.specularMap = this->_material.diffuseMap;
@@ -216,7 +218,7 @@ void Mesh::_load_texture(aiMaterial *mat, aiTextureType type,
 	}
 }
 
-void Mesh::_allocate_set_GL_ressources(void)
+void Mesh::_allocate_set_GL_ressources()
 {
 	glGenBuffers(1, &(this->_vbo));
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo);
@@ -226,29 +228,17 @@ void Mesh::_allocate_set_GL_ressources(void)
 	oGL_check_error();
 }
 
-Mesh::GLInitException::GLInitException(void)
+Mesh::GLInitException::GLInitException() noexcept
 {
 	this->_msg = "Mesh : GL ressources initialization failed";
 }
 
-Mesh::GLInitException::~GLInitException(void) throw()
-{
-}
-
-Mesh::InvalidMeshException::InvalidMeshException(void)
+Mesh::InvalidMeshException::InvalidMeshException() noexcept
 {
 	this->_msg = "Model : Invalid Assimp Mesh";
 }
 
-Mesh::InvalidMeshException::~InvalidMeshException(void) throw()
-{
-}
-
-Mesh::InvalidMaterialException::InvalidMaterialException(void)
+Mesh::InvalidMaterialException::InvalidMaterialException() noexcept
 {
 	this->_msg = "Mesh : Invalid Material";
-}
-
-Mesh::InvalidMaterialException::~InvalidMaterialException(void) throw()
-{
 }

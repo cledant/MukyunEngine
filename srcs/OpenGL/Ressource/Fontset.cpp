@@ -19,10 +19,6 @@ Fontset::Params::Params()
 	this->size     = 1;
 }
 
-Fontset::Params::~Params()
-{
-}
-
 Fontset::Fontset(Fontset::Params const &params) :
 		_shader(params.shader), _proj_matrix(params.proj_mat), _vao(0), _vbo(0)
 {
@@ -34,23 +30,23 @@ Fontset::Fontset(Fontset::Params const &params) :
 	catch (std::exception &e)
 	{
 		std::cout << e.what() << std::endl;
-		for (auto it = this->_char_list.begin(); it != this->_char_list.end(); ++it)
-			glDeleteTextures(1, &it->second.tex);
+		for (auto &it : this->_char_list)
+			glDeleteTextures(1, &it.second.tex);
 		glDeleteVertexArrays(1, &this->_vao);
 		glDeleteBuffers(1, &this->_vbo);
 		throw Fontset::FontsetInitException();
 	}
 }
 
-Fontset::~Fontset(void)
+Fontset::~Fontset()
 {
-	for (auto it = this->_char_list.begin(); it != this->_char_list.end(); ++it)
-		glDeleteTextures(1, &it->second.tex);
+	for (auto &it : this->_char_list)
+		glDeleteTextures(1, &it.second.tex);
 	glDeleteVertexArrays(1, &this->_vao);
 	glDeleteBuffers(1, &this->_vbo);
 }
 
-Fontset::Fontset(Fontset &&src)
+Fontset::Fontset(Fontset &&src) noexcept
 {
 	this->_shader      = src.getShader();
 	this->_char_list   = src.moveCharList();
@@ -59,7 +55,7 @@ Fontset::Fontset(Fontset &&src)
 	this->_vbo         = src.moveVBO();
 }
 
-Fontset &Fontset::operator=(Fontset &&rhs)
+Fontset &Fontset::operator=(Fontset &&rhs) noexcept
 {
 	this->_shader      = rhs.getShader();
 	this->_char_list   = rhs.moveCharList();
@@ -73,22 +69,22 @@ Fontset &Fontset::operator=(Fontset &&rhs)
  * Getter
  */
 
-Shader *Fontset::getShader(void) const
+Shader *Fontset::getShader() const
 {
 	return (this->_shader);
 }
 
-glm::mat4 const *Fontset::getProjectionMatrix(void) const
+glm::mat4 const *Fontset::getProjectionMatrix() const
 {
 	return (this->_proj_matrix);
 }
 
-std::map<GLchar, Fontset::FontChar> Fontset::moveCharList(void)
+std::map<GLchar, Fontset::FontChar> Fontset::moveCharList()
 {
 	return (std::move(this->_char_list));
 }
 
-GLuint Fontset::moveVAO(void)
+GLuint Fontset::moveVAO()
 {
 	GLuint tmp = this->_vao;
 
@@ -96,7 +92,7 @@ GLuint Fontset::moveVAO(void)
 	return (tmp);
 }
 
-GLuint Fontset::moveVBO(void)
+GLuint Fontset::moveVBO()
 {
 	GLuint tmp = this->_vbo;
 
@@ -131,9 +127,9 @@ void Fontset::drawText(std::string const &str, glm::vec3 const &color,
 	this->_shader->use();
 	this->_shader->setMat4("uniform_mat_proj", *(this->_proj_matrix));
 	this->_shader->setVec3("uniform_color", color);
-	for (auto it = str.begin(); it != str.end(); ++it)
+	for (auto const &it : str)
 	{
-		if ((fchar = this->_char_list.find(*it)) == this->_char_list.end())
+		if ((fchar = this->_char_list.find(it)) == this->_char_list.end())
 			fchar = this->_char_list.find('?');
 
 		GLfloat xpos           = pos_x + fchar->second.bearing.x * pos_scale.z;
@@ -249,38 +245,23 @@ GLuint Fontset::_load_glyph(const void *buffer, int tex_w, int tex_h)
  * Exceptions
  */
 
-Fontset::FontsetInitException::FontsetInitException(void)
+Fontset::FontsetInitException::FontsetInitException() noexcept
 {
 	this->_msg = "Fontset : Initialization failed";
 }
 
-Fontset::FontsetInitException::~FontsetInitException(void) throw()
-{
-}
-
-Fontset::FreeTypeInitException::FreeTypeInitException(void)
+Fontset::FreeTypeInitException::FreeTypeInitException() noexcept
 {
 	this->_msg = "Fontset : FreeType initialization failed";
 }
 
-Fontset::FreeTypeInitException::~FreeTypeInitException(void) throw()
-{
-}
-
-Fontset::FontLoadingException::FontLoadingException(void)
+Fontset::FontLoadingException::FontLoadingException() noexcept
 {
 	this->_msg = "Fontset : Font loading failed";
 }
 
-Fontset::FontLoadingException::~FontLoadingException(void) throw()
-{
-}
-
-Fontset::GlyphLoadingException::GlyphLoadingException(void)
+Fontset::GlyphLoadingException::GlyphLoadingException() noexcept
 {
 	this->_msg = "Fontset : Glyph loading failed";
 }
 
-Fontset::GlyphLoadingException::~GlyphLoadingException(void) throw()
-{
-}

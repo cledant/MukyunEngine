@@ -41,8 +41,8 @@ class Fontset
 
 		struct Params
 		{
-			Params(void);
-			~Params(void);
+			Params();
+			~Params() = default;
 
 			Shader          *shader;
 			glm::mat4 const *proj_mat;
@@ -50,22 +50,22 @@ class Fontset
 			size_t          size;
 		};
 
-		Fontset(Params const &params);
-		virtual ~Fontset(void);
+		explicit Fontset(Params const &params);
+		virtual ~Fontset();
 		Fontset(Fontset const &src) = delete;
 		Fontset &operator=(Fontset const &rhs) = delete;
-		Fontset(Fontset &&src);
-		Fontset &operator=(Fontset &&rhs);
+		Fontset(Fontset &&src) noexcept;
+		Fontset &operator=(Fontset &&rhs) noexcept;
 
 		/*
 		 * Getter
 		 */
 
-		Shader *getShader(void) const;
-		glm::mat4 const *getProjectionMatrix(void) const;
-		std::map<GLchar, FontChar> moveCharList(void);
-		GLuint moveVAO(void);
-		GLuint moveVBO(void);
+		Shader *getShader() const;
+		glm::mat4 const *getProjectionMatrix() const;
+		std::map<GLchar, FontChar> moveCharList();
+		GLuint moveVAO();
+		GLuint moveVBO();
 
 		/*
 		 * Setter
@@ -88,32 +88,32 @@ class Fontset
 		{
 			public :
 
-				explicit FontsetInitException(void);
-				virtual ~FontsetInitException(void) throw();
+				explicit FontsetInitException() noexcept;
+				~FontsetInitException() noexcept override = default;
 		};
 
 		class FreeTypeInitException : public GeneralException
 		{
 			public :
 
-				explicit FreeTypeInitException(void);
-				virtual ~FreeTypeInitException(void) throw();
+				explicit FreeTypeInitException() noexcept;
+				~FreeTypeInitException() noexcept override = default;
 		};
 
 		class FontLoadingException : public GeneralException
 		{
 			public :
 
-				explicit FontLoadingException(void);
-				virtual ~FontLoadingException(void) throw();
+				explicit FontLoadingException() noexcept;
+				~FontLoadingException() noexcept override = default;
 		};
 
 		class GlyphLoadingException : public GeneralException
 		{
 			public :
 
-				explicit GlyphLoadingException(void);
-				virtual ~GlyphLoadingException(void) throw();
+				explicit GlyphLoadingException() noexcept;
+				~GlyphLoadingException() noexcept override = default;
 		};
 
 	protected :

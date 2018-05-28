@@ -20,8 +20,7 @@ class TextureShaderSurface : public ShaderSurface
 	public :
 
 		TextureShaderSurface();
-		TextureShaderSurface(GLFW_Window const *win, Input const *input, Shader *shader,
-							 GLuint tex_id);
+		explicit TextureShaderSurface(GLFW_Window const *win, Input const *input, Shader *shader, GLuint tex_id);
 		~TextureShaderSurface() override = default;
 		TextureShaderSurface(TextureShaderSurface const &src) = delete;
 		TextureShaderSurface &operator=(TextureShaderSurface const &rhs) = delete;

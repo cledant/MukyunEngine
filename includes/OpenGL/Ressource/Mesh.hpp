@@ -37,8 +37,8 @@ class Mesh
 
 		struct Vertex
 		{
-			Vertex(void);
-			~Vertex(void);
+			Vertex();
+			~Vertex() = default;
 
 			glm::vec3 Position;
 			glm::vec3 Normal;
@@ -49,8 +49,8 @@ class Mesh
 
 		struct Material
 		{
-			Material(void);
-			~Material(void);
+			Material();
+			~Material() = default;
 
 			glm::vec3 ambient;
 			glm::vec3 diffuse;
@@ -64,48 +64,50 @@ class Mesh
 		 * Actual class
 		 */
 
-		Mesh(void);
+		Mesh();
 		Mesh(aiMesh *mesh, const aiScene *scene, std::string const &directory,
 			 std::map<std::string, Texture> &texture_list);
 		Mesh(Mesh const &src) = delete;
 		Mesh &operator=(Mesh const &rhs) = delete;
-		Mesh(Mesh &&src);
-		Mesh &operator=(Mesh &&rhs);
-		virtual ~Mesh(void);
+		Mesh(Mesh &&src) noexcept;
+		Mesh &operator=(Mesh &&rhs) noexcept;
+		virtual ~Mesh();
 
 		/*
 		 * Getter
 		 */
 
-		std::vector<Mesh::Vertex> const &getVertexList(void) const;
-		std::string const &getDirectory(void) const;
-		Mesh::Material const &getMaterial(void) const;
-		GLuint getVBO(void) const;
-		GLuint moveVBO(void);
-		size_t getNbVertices(void) const;
+		std::vector<Mesh::Vertex> const &getVertexList() const;
+		std::vector<Mesh::Vertex> moveVertexList();
+		std::string const &getDirectory() const;
+		std::string moveDirectory();
+		Mesh::Material const &getMaterial() const;
+		GLuint getVBO() const;
+		GLuint moveVBO();
+		size_t getNbVertices() const;
 
 		class GLInitException : public GeneralException
 		{
 			public :
 
-				explicit GLInitException(void);
-				virtual        ~GLInitException(void) throw();
+				explicit GLInitException() noexcept;
+				~GLInitException() noexcept override = default;
 		};
 
 		class InvalidMeshException : public GeneralException
 		{
 			public :
 
-				explicit InvalidMeshException(void);
-				virtual ~InvalidMeshException(void) throw();
+				explicit InvalidMeshException() noexcept;
+				~InvalidMeshException() noexcept override = default;
 		};
 
 		class InvalidMaterialException : public GeneralException
 		{
 			public :
 
-				explicit InvalidMaterialException(void);
-				virtual ~InvalidMaterialException(void) throw();
+				explicit InvalidMaterialException() noexcept;
+				~InvalidMaterialException() noexcept override = default;
 		};
 
 	private :
@@ -123,7 +125,7 @@ class Mesh
 		inline void _load_texture(aiMaterial *mat, aiTextureType type,
 								  Texture::eTextureType tex_type,
 								  std::map<std::string, Texture> &texture_list);
-		inline void _allocate_set_GL_ressources(void);
+		inline void _allocate_set_GL_ressources();
 };
 
 #endif
