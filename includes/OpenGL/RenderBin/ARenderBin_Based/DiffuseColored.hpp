@@ -25,10 +25,11 @@ class DiffuseColored : public ARenderBin
 {
 	public :
 
-		DiffuseColored(ARenderBin::Params const &params);
-		virtual ~DiffuseColored(void);
+		explicit DiffuseColored(ARenderBin::Params const &params);
+		~DiffuseColored() override;
 		DiffuseColored(DiffuseColored const &src) = delete;
 		DiffuseColored &operator=(DiffuseColored const &rhs) = delete;
+		//Move constructor can throw because of ARenderBin Inheritance
 		DiffuseColored(DiffuseColored &&src);
 		DiffuseColored &operator=(DiffuseColored &&rhs);
 
@@ -36,20 +37,21 @@ class DiffuseColored : public ARenderBin
 		 * Draw
 		 */
 
-		virtual void draw(void) override;
-		virtual void update(float tick) override;
-		virtual void updateVBO(void) override;
-		virtual void flushData(void) override;
+		void draw() override;
+		void update(float tick) override;
+		void updateVBO() override;
+		void flushData() override;
 
 		/*
 		 * Getter
 		 */
 
-		std::vector<glm::vec3> const &getVectorLightDiffuse(void) const;
-		size_t getCurrentVectorLightDiffuseNumber(void) const;
-		size_t getMaxVectorLightDiffuseNumber(void) const;
-		GLuint getVBOLightDiffuse(void) const;
-		GLuint moveVBOLightDiffuse(void);
+		std::vector<glm::vec3> const &getVectorLightDiffuse() const;
+		std::vector<glm::vec3> moveVectorLightDiffuse();
+		size_t getCurrentVectorLightDiffuseNumber() const;
+		size_t getMaxVectorLightDiffuseNumber() const;
+		GLuint getVBOLightDiffuse() const;
+		GLuint moveVBOLightDiffuse();
 
 	protected :
 
@@ -62,9 +64,9 @@ class DiffuseColored : public ARenderBin
 		 */
 
 		inline void _allocate_vbo(size_t max_size);
-		inline void _update_vector_light_diffuse(void);
-		inline void _update_vao_light_diffuse(void);
-		inline void _update_light_model_matrix(void);
+		inline void _update_vector_light_diffuse();
+		inline void _update_vao_light_diffuse();
+		inline void _update_light_model_matrix();
 };
 
 #endif

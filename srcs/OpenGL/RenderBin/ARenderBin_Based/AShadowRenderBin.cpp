@@ -12,18 +12,14 @@
 
 #include "OpenGL/RenderBin/ARenderBin_Based/AShadowRenderBin.hpp"
 
-AShadowRenderBin::Params::Params(void) : ARenderBin::Params()
+AShadowRenderBin::Params::Params() : ARenderBin::Params()
 {
 	this->lc    = nullptr;
 	this->win_w = 1280;
 	this->win_h = 720;
 }
 
-AShadowRenderBin::Params::~Params(void)
-{
-}
-
-AShadowRenderBin::AShadowRenderBin(void) :
+AShadowRenderBin::AShadowRenderBin() :
 		ARenderBin(), _sr(nullptr), _win_w(1280), _win_h(720)
 {
 }
@@ -31,10 +27,6 @@ AShadowRenderBin::AShadowRenderBin(void) :
 AShadowRenderBin::AShadowRenderBin(AShadowRenderBin::Params const &params) :
 		ARenderBin(params), _sr(params.sr), _win_w(params.win_w),
 		_win_h(params.win_h)
-{
-}
-
-AShadowRenderBin::~AShadowRenderBin(void)
 {
 }
 
@@ -46,10 +38,10 @@ AShadowRenderBin::AShadowRenderBin(AShadowRenderBin &&src) :
 
 AShadowRenderBin &AShadowRenderBin::operator=(AShadowRenderBin &&rhs)
 {
-	ARenderBin::operator=(std::move(rhs));
 	this->_sr    = rhs.getShadowRenderer();
 	this->_win_h = rhs.getWinHeight();
 	this->_win_w = rhs.getWinWidth();
+	ARenderBin::operator=(std::move(rhs));
 	return (*this);
 }
 

@@ -18,10 +18,6 @@ BasicPropRenderBin::BasicPropRenderBin(ARenderBin::Params const &params) : ARend
 	std::cout << "Creating BasicProp RenderBin" << std::endl;
 }
 
-BasicPropRenderBin::~BasicPropRenderBin(void)
-{
-}
-
 BasicPropRenderBin::BasicPropRenderBin(BasicPropRenderBin &&src) : ARenderBin(std::move(src))
 {
 }
@@ -32,7 +28,7 @@ BasicPropRenderBin &BasicPropRenderBin::operator=(BasicPropRenderBin &&rhs)
 	return (*this);
 }
 
-void BasicPropRenderBin::draw(void)
+void BasicPropRenderBin::draw()
 {
 	size_t i = 0;
 
@@ -44,12 +40,12 @@ void BasicPropRenderBin::draw(void)
 	}
 	this->_shader->use();
 	this->_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
-	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
+	for (auto const &it : this->_vao_mesh)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		this->_shader->setInt("uniform_tex_diffuse", 0);
 		glBindTexture(GL_TEXTURE_2D, (this->_model->getMeshList())[i].getMaterial().diffuseMap);
-		glBindVertexArray(this->_vao_mesh[i]);
+		glBindVertexArray(it);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0, (this->_model->getMeshList())[i].getNbVertices(),
 							  this->_entity_list.size());

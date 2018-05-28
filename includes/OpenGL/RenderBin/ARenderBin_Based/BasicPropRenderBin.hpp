@@ -19,10 +19,11 @@ class BasicPropRenderBin : public ARenderBin
 {
 	public :
 
-		BasicPropRenderBin(ARenderBin::Params const &params);
-		virtual ~BasicPropRenderBin(void);
+		explicit BasicPropRenderBin(ARenderBin::Params const &params);
+		~BasicPropRenderBin() override = default;
 		BasicPropRenderBin(BasicPropRenderBin const &src) = delete;
 		BasicPropRenderBin &operator=(BasicPropRenderBin const &rhs) = delete;
+		//Move constructor can throw because of ARenderBin Inheritance
 		BasicPropRenderBin(BasicPropRenderBin &&src);
 		BasicPropRenderBin &operator=(BasicPropRenderBin &&rhs);
 
@@ -30,7 +31,7 @@ class BasicPropRenderBin : public ARenderBin
 		 * Draw
 		 */
 
-		virtual void draw(void) override;
+		void draw() override;
 };
 
 #endif

@@ -31,7 +31,7 @@ DiffuseColored::DiffuseColored(ARenderBin::Params const &params) : ARenderBin(pa
 	std::cout << "Creating DiffusedColored RenderBin" << std::endl;
 }
 
-DiffuseColored::~DiffuseColored(void)
+DiffuseColored::~DiffuseColored()
 {
 	glDeleteBuffers(1, &(this->_vbo_light_diffuse));
 }
@@ -44,19 +44,9 @@ DiffuseColored::DiffuseColored(DiffuseColored &&src) : ARenderBin(),
 
 DiffuseColored &DiffuseColored::operator=(DiffuseColored &&rhs)
 {
+	this->_vector_light_diffuse = rhs.moveVectorLightDiffuse();
+	this->_vbo_light_diffuse    = rhs.moveVBOLightDiffuse();
 	ARenderBin::operator=(std::move(rhs));
-	try
-	{
-		this->_vector_light_diffuse.reserve(rhs.getMaxVectorLightDiffuseNumber());
-		this->_vector_light_diffuse = rhs.getVectorLightDiffuse();
-		this->_vbo_light_diffuse    = rhs.moveVBOLightDiffuse();
-	}
-	catch (std::exception &e)
-	{
-		glDeleteBuffers(1, &(this->_vbo_light_diffuse));
-		std::cout << "DiffuseColored Move Error" << std::endl;
-		throw;
-	}
 	return (*this);
 }
 
@@ -72,7 +62,7 @@ void DiffuseColored::update(float tick)
 	this->_update_vector_light_diffuse();
 }
 
-void DiffuseColored::updateVBO(void)
+void DiffuseColored::updateVBO()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_model_matrices);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * this->_vector_light_diffuse.size(),
@@ -84,11 +74,11 @@ void DiffuseColored::updateVBO(void)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void DiffuseColored::flushData(void)
+void DiffuseColored::flushData()
 {
 }
 
-void DiffuseColored::draw(void)
+void DiffuseColored::draw()
 {
 	size_t i = 0;
 
@@ -100,12 +90,12 @@ void DiffuseColored::draw(void)
 	}
 	this->_shader->use();
 	this->_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
-	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
+	for (auto const &it : this->_vao_mesh)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		this->_shader->setInt("uniform_tex_diffuse", 0);
 		glBindTexture(GL_TEXTURE_2D, (this->_model->getMeshList())[i].getMaterial().diffuseMap);
-		glBindVertexArray(this->_vao_mesh[i]);
+		glBindVertexArray(it);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0, (this->_model->getMeshList())[i].getNbVertices(),
 							  this->_vector_light_diffuse.size());
@@ -119,9 +109,14 @@ void DiffuseColored::draw(void)
  * Getter
  */
 
-std::vector<glm::vec3> const &DiffuseColored::getVectorLightDiffuse(void) const
+std::vector<glm::vec3> const &DiffuseColored::getVectorLightDiffuse() const
 {
 	return (this->_vector_light_diffuse);
+}
+
+std::vector<glm::vec3> DiffuseColored::moveVectorLightDiffuse()
+{
+	return (std::move(this->_vector_light_diffuse));
 }
 
 size_t DiffuseColored::getCurrentVectorLightDiffuseNumber() const
@@ -129,17 +124,17 @@ size_t DiffuseColored::getCurrentVectorLightDiffuseNumber() const
 	return (this->_vector_light_diffuse.size());
 }
 
-size_t DiffuseColored::getMaxVectorLightDiffuseNumber(void) const
+size_t DiffuseColored::getMaxVectorLightDiffuseNumber() const
 {
 	return (this->_vector_light_diffuse.capacity());
 }
 
-GLuint DiffuseColored::getVBOLightDiffuse(void) const
+GLuint DiffuseColored::getVBOLightDiffuse() const
 {
 	return (this->_vbo_light_diffuse);
 }
 
-GLuint DiffuseColored::moveVBOLightDiffuse(void)
+GLuint DiffuseColored::moveVBOLightDiffuse()
 {
 	GLuint tmp = this->_vbo_light_diffuse;
 
@@ -161,24 +156,24 @@ void DiffuseColored::_allocate_vbo(size_t max_size)
 	oGL_check_error();
 }
 
-void DiffuseColored::_update_vector_light_diffuse(void)
+void DiffuseColored::_update_vector_light_diffuse()
 {
 	ALight *ptr_light = nullptr;
 
 	this->_vector_light_diffuse.clear();
-	for (auto it = this->_lc->getLightStorage().begin(); it != this->_lc->getLightStorage().end(); ++it)
+	for (auto const &it : this->_lc->getLightStorage())
 	{
-		ptr_light = it->get();
+		ptr_light = it.get();
 		if (ptr_light->getActive() && ptr_light->getDrawModel())
-			this->_vector_light_diffuse.push_back(ptr_light->getLightDiffuseColor());
+			this->_vector_light_diffuse.emplace_back(ptr_light->getLightDiffuseColor());
 	}
 }
 
-void DiffuseColored::_update_vao_light_diffuse(void)
+void DiffuseColored::_update_vao_light_diffuse()
 {
-	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
+	for (auto const &it : this->_vao_mesh)
 	{
-		glBindVertexArray(*it);
+		glBindVertexArray(it);
 		//Disable Inv Matrix Vbo
 		glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_inv_model_matrices);
 		glDisableVertexAttribArray(9);
@@ -208,9 +203,9 @@ void DiffuseColored::_update_light_model_matrix()
 		this->_ptr_render_model     = this->_model_matrices.get();
 		this->_ptr_render_inv_model = this->_inv_model_matrices.get();
 	}
-	for (auto it = this->_lc->getLightStorage().begin(); it != this->_lc->getLightStorage().end(); ++it)
+	for (auto const &it : this->_lc->getLightStorage())
 	{
-		ptr_light = it->get();
+		ptr_light = it.get();
 		if (ptr_light->getActive() && ptr_light->getDrawModel())
 		{
 			mat_model = glm::mat4(1.0f);

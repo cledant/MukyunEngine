@@ -19,10 +19,6 @@ MultiPointDirSpotLightRenderBin::MultiPointDirSpotLightRenderBin(ARenderBin::Par
 	std::cout << "Creating MultiLightPointDirSpotLight RenderBin" << std::endl;
 }
 
-MultiPointDirSpotLightRenderBin::~MultiPointDirSpotLightRenderBin(void)
-{
-}
-
 MultiPointDirSpotLightRenderBin::MultiPointDirSpotLightRenderBin(MultiPointDirSpotLightRenderBin &&src) :
 		ARenderBin(std::move(src))
 {
@@ -40,7 +36,7 @@ MultiPointDirSpotLightRenderBin &MultiPointDirSpotLightRenderBin::operator=(
  * Draw
  */
 
-void MultiPointDirSpotLightRenderBin::draw(void)
+void MultiPointDirSpotLightRenderBin::draw()
 {
 	size_t i = 0;
 
@@ -62,7 +58,7 @@ void MultiPointDirSpotLightRenderBin::draw(void)
 						  sizeof(LightContainer::DirLightDataGL) * this->_lc->getMaxDirLightNumber());
 	this->_shader->setUbo("uniform_SpotLight", 2, this->_lc->getUboSpotLight(),
 						  sizeof(LightContainer::SpotLightDataGL) * this->_lc->getMaxSpotLightNumber());
-	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
+	for (auto const &it : this->_vao_mesh)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		this->_shader->setInt("uniform_material.tex_diffuse", 0);
@@ -75,7 +71,7 @@ void MultiPointDirSpotLightRenderBin::draw(void)
 		this->_shader->setVec3("uniform_material.mat_diffuse", (this->_model->getMeshList())[i].getMaterial().diffuse);
 		this->_shader
 			->setVec3("uniform_material.mat_specular", (this->_model->getMeshList())[i].getMaterial().specular);
-		glBindVertexArray(this->_vao_mesh[i]);
+		glBindVertexArray(it);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0,
 							  (this->_model->getMeshList())[i].getNbVertices(),

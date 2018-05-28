@@ -19,10 +19,11 @@ class BasicColorRenderBin : public ARenderBin
 {
 	public :
 
-		BasicColorRenderBin(ARenderBin::Params const &params);
-		virtual ~BasicColorRenderBin(void);
+		explicit BasicColorRenderBin(ARenderBin::Params const &params);
+		~BasicColorRenderBin() override = default;
 		BasicColorRenderBin(BasicColorRenderBin const &src) = delete;
 		BasicColorRenderBin &operator=(BasicColorRenderBin const &rhs) = delete;
+		//Move constructor can throw because of ARenderBin Inheritance
 		BasicColorRenderBin(BasicColorRenderBin &&src);
 		BasicColorRenderBin &operator=(BasicColorRenderBin &&rhs);
 
@@ -30,7 +31,7 @@ class BasicColorRenderBin : public ARenderBin
 		 * Draw
 		 */
 
-		virtual void draw(void) override;
+		void draw() override;
 };
 
 #endif

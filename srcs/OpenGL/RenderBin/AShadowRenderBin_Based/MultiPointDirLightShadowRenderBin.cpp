@@ -19,10 +19,6 @@ MultiPointDirSpotLightShadowRenderBin::MultiPointDirSpotLightShadowRenderBin(ASh
 	std::cout << "Creating MultiDirLightShadow RenderBin" << std::endl;
 }
 
-MultiPointDirSpotLightShadowRenderBin::~MultiPointDirSpotLightShadowRenderBin(void)
-{
-}
-
 MultiPointDirSpotLightShadowRenderBin::MultiPointDirSpotLightShadowRenderBin(
 		MultiPointDirSpotLightShadowRenderBin &&src) :
 		AShadowRenderBin(std::move(src))
@@ -41,7 +37,7 @@ MultiPointDirSpotLightShadowRenderBin &MultiPointDirSpotLightShadowRenderBin::op
  * Draw
  */
 
-void MultiPointDirSpotLightShadowRenderBin::draw(void)
+void MultiPointDirSpotLightShadowRenderBin::draw()
 {
 	this->drawAmbient();
 }
@@ -61,7 +57,7 @@ void MultiPointDirSpotLightShadowRenderBin::draw(void)
  * 		Light = 1
  */
 
-void MultiPointDirSpotLightShadowRenderBin::drawAmbient(void)
+void MultiPointDirSpotLightShadowRenderBin::drawAmbient()
 {
 	size_t i = 0;
 
@@ -96,7 +92,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawAmbient(void)
 	this->_shader->setInt("index", 0);
 	this->_shader->setFloat("uniform_farPlane", this->_sr->getOmniNearFar().y);
 	//Render Loop
-	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
+	for (auto const &it : this->_vao_mesh)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		this->_shader->setInt("uniform_material.tex_diffuse", 0);
@@ -112,7 +108,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawAmbient(void)
 							   (this->_model->getMeshList())[i].getMaterial().diffuse);
 		this->_shader->setVec3("uniform_material.mat_specular",
 							   (this->_model->getMeshList())[i].getMaterial().specular);
-		glBindVertexArray(this->_vao_mesh[i]);
+		glBindVertexArray(it);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0,
 							  (this->_model->getMeshList())[i].getNbVertices(),
@@ -122,7 +118,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawAmbient(void)
 	}
 }
 
-void MultiPointDirSpotLightShadowRenderBin::drawLight(void)
+void MultiPointDirSpotLightShadowRenderBin::drawLight()
 {
 	size_t i = 0;
 
@@ -160,7 +156,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawLight(void)
 	this->_shader->setInt("depthCube", 3);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, this->_sr->getOmniDepthMaps()[0].get()->getTextureBuffer());
 	//Render Loop
-	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
+	for (auto const &it : this->_vao_mesh)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		this->_shader->setInt("uniform_material.tex_diffuse", 0);
@@ -176,7 +172,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawLight(void)
 							   (this->_model->getMeshList())[i].getMaterial().diffuse);
 		this->_shader->setVec3("uniform_material.mat_specular",
 							   (this->_model->getMeshList())[i].getMaterial().specular);
-		glBindVertexArray(this->_vao_mesh[i]);
+		glBindVertexArray(it);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		//Directional Light
 		this->_shader->setInt("light_type", 1);
@@ -223,13 +219,13 @@ void MultiPointDirSpotLightShadowRenderBin::drawLight(void)
 	glDisable(GL_BLEND);
 }
 
-void MultiPointDirSpotLightShadowRenderBin::drawNoShader(void) const
+void MultiPointDirSpotLightShadowRenderBin::drawNoShader() const
 {
 	size_t i = 0;
 
-	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
+	for (auto const &it : this->_vao_mesh)
 	{
-		glBindVertexArray(this->_vao_mesh[i]);
+		glBindVertexArray(it);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0,
 							  (this->_model->getMeshList())[i].getNbVertices(),

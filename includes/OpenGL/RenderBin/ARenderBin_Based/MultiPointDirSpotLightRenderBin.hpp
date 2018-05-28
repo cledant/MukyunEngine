@@ -21,10 +21,11 @@ class MultiPointDirSpotLightRenderBin : public ARenderBin
 {
 	public :
 
-		MultiPointDirSpotLightRenderBin(ARenderBin::Params const &params);
-		virtual ~MultiPointDirSpotLightRenderBin(void);
+		explicit MultiPointDirSpotLightRenderBin(ARenderBin::Params const &params);
+		~MultiPointDirSpotLightRenderBin() override = default;
 		MultiPointDirSpotLightRenderBin(MultiPointDirSpotLightRenderBin const &src) = delete;
 		MultiPointDirSpotLightRenderBin &operator=(MultiPointDirSpotLightRenderBin const &rhs) = delete;
+		//Move constructor can throw because of ARenderBin Inheritance
 		MultiPointDirSpotLightRenderBin(MultiPointDirSpotLightRenderBin &&src);
 		MultiPointDirSpotLightRenderBin &operator=(MultiPointDirSpotLightRenderBin &&rhs);
 
@@ -32,7 +33,7 @@ class MultiPointDirSpotLightRenderBin : public ARenderBin
 		 * Draw
 		 */
 
-		virtual void draw(void) override;
+		void draw() override;
 };
 
 #endif

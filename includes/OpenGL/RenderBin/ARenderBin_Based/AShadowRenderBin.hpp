@@ -24,19 +24,20 @@ class AShadowRenderBin : public ARenderBin
 
 		struct Params : public ARenderBin::Params
 		{
-			Params(void);
-			virtual ~Params(void);
+			Params();
+			~Params() override = default;
 
 			ShadowRenderer const *sr;
 			int                  win_w;
 			int                  win_h;
 		};
 
-		AShadowRenderBin(void);
-		AShadowRenderBin(AShadowRenderBin::Params const &params);
-		virtual ~AShadowRenderBin(void);
+		AShadowRenderBin();
+		explicit AShadowRenderBin(AShadowRenderBin::Params const &params);
+		~AShadowRenderBin() override = default;
 		AShadowRenderBin(AShadowRenderBin const &src) = delete;
 		AShadowRenderBin &operator=(AShadowRenderBin const &rhs) = delete;
+		//Move constructor can throw because of ARenderBin Inheritance
 		AShadowRenderBin(AShadowRenderBin &&src);
 		AShadowRenderBin &operator=(AShadowRenderBin &&rhs);
 
@@ -44,18 +45,18 @@ class AShadowRenderBin : public ARenderBin
 		 * Draw
 		 */
 
-		virtual void draw(void) = 0;
-		virtual void drawAmbient(void) = 0;
-		virtual void drawLight(void) = 0;
-		virtual void drawNoShader(void) const = 0;
+		void draw() override = 0;
+		virtual void drawAmbient() = 0;
+		virtual void drawLight() = 0;
+		virtual void drawNoShader() const = 0;
 
 		/*
 		 * Getter
 		 */
 
-		ShadowRenderer const *getShadowRenderer(void) const;
-		int getWinHeight(void) const;
-		int getWinWidth(void) const;
+		ShadowRenderer const *getShadowRenderer() const;
+		int getWinHeight() const;
+		int getWinWidth() const;
 
 	protected :
 

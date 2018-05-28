@@ -18,10 +18,6 @@ BasicColorRenderBin::BasicColorRenderBin(ARenderBin::Params const &params) : ARe
 	std::cout << "Creating BasicColor RenderBin" << std::endl;
 }
 
-BasicColorRenderBin::~BasicColorRenderBin(void)
-{
-}
-
 BasicColorRenderBin::BasicColorRenderBin(BasicColorRenderBin &&src) : ARenderBin(std::move(src))
 {
 }
@@ -32,7 +28,7 @@ BasicColorRenderBin &BasicColorRenderBin::operator=(BasicColorRenderBin &&rhs)
 	return (*this);
 }
 
-void BasicColorRenderBin::draw(void)
+void BasicColorRenderBin::draw()
 {
 	size_t i = 0;
 
@@ -44,9 +40,9 @@ void BasicColorRenderBin::draw(void)
 	}
 	this->_shader->use();
 	this->_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
-	for (auto it = this->_vao_mesh.begin(); it != this->_vao_mesh.end(); ++it)
+	for (auto const &it : this->_vao_mesh)
 	{
-		glBindVertexArray(this->_vao_mesh[i]);
+		glBindVertexArray(it);
 		this->_shader->setVec3("uniform_light_diffuse",
 							   this->_model->getMeshList()[i].getMaterial().diffuse);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

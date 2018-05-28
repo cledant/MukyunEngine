@@ -140,8 +140,8 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 		throw;
 	}
 	for (size_t i               = 0; i < this->_nb_thread; ++i)
-		this->_vec_it.push_back(this->_entity_list.begin());
-	this->_vec_it.push_back(this->_entity_list.begin());
+		this->_vec_it.emplace_back(this->_entity_list.begin());
+	this->_vec_it.emplace_back(this->_entity_list.begin());
 	for (size_t i = 0; i < this->_nb_thread; ++i)
 		this->_workers.emplace_back(std::thread(&ARenderBin::_update_multithread_opengl_arrays, this, i));
 	this->_start_workers();

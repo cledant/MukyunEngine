@@ -19,10 +19,11 @@ class MultiPointDirSpotLightShadowRenderBin : public AShadowRenderBin
 {
 	public :
 
-		MultiPointDirSpotLightShadowRenderBin(AShadowRenderBin::Params const &params);
-		virtual ~MultiPointDirSpotLightShadowRenderBin(void);
+		explicit MultiPointDirSpotLightShadowRenderBin(AShadowRenderBin::Params const &params);
+		~MultiPointDirSpotLightShadowRenderBin() override = default;
 		MultiPointDirSpotLightShadowRenderBin(MultiPointDirSpotLightShadowRenderBin const &src) = delete;
 		MultiPointDirSpotLightShadowRenderBin &operator=(MultiPointDirSpotLightShadowRenderBin const &rhs) = delete;
+		//Move constructor can throw because of ARenderBin Inheritance
 		MultiPointDirSpotLightShadowRenderBin(MultiPointDirSpotLightShadowRenderBin &&src);
 		MultiPointDirSpotLightShadowRenderBin &operator=(MultiPointDirSpotLightShadowRenderBin &&rhs);
 
@@ -30,10 +31,10 @@ class MultiPointDirSpotLightShadowRenderBin : public AShadowRenderBin
 		 * Draw
 		 */
 
-		virtual void draw(void) override;
-		virtual void drawAmbient(void) override;
-		virtual void drawLight(void) override;
-		virtual void drawNoShader(void) const override;
+		void draw() override;
+		void drawAmbient() override;
+		void drawLight() override;
+		void drawNoShader() const override;
 };
 
 #endif
