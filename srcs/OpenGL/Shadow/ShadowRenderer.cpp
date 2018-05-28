@@ -12,7 +12,7 @@
 
 #include "OpenGL/Shadow/ShadowRenderer.hpp"
 
-ShadowRenderer::Params::Params(void)
+ShadowRenderer::Params::Params()
 {
 	this->dir_depth_map_shader      = nullptr;
 	this->omni_depth_map_shader     = nullptr;
@@ -22,7 +22,7 @@ ShadowRenderer::Params::Params(void)
 	this->omni_near_far             = glm::vec2(1.0f, 30.0f);
 }
 
-ShadowRenderer::ShadowRenderer(void) :
+ShadowRenderer::ShadowRenderer() :
 		_dir_depth_map_shader(nullptr), _omni_depth_map_shader(nullptr),
 		_spot_dir_depth_map_shader(nullptr), _lc(nullptr),
 		_dir_near_far(glm::vec2(1.0f, 30.0f)), _omni_near_far(glm::vec2(1.0f, 30.0f))
@@ -59,47 +59,33 @@ ShadowRenderer::ShadowRenderer(ShadowRenderer::Params const &params) :
 										 this->_dir_near_far.x, this->_dir_near_far.y);
 }
 
-ShadowRenderer::ShadowRenderer(ShadowRenderer &&src)
+ShadowRenderer::ShadowRenderer(ShadowRenderer &&src) noexcept
 {
 	*this = std::move(src);
 }
 
-ShadowRenderer &ShadowRenderer::operator=(ShadowRenderer &&rhs)
+ShadowRenderer &ShadowRenderer::operator=(ShadowRenderer &&rhs) noexcept
 {
-	try
-	{
-		//Light Container et memory Allocation
-		this->_lc = rhs.getLightContainer();
-		this->_dir_depth_maps.reserve(this->_lc->getMaxDirLightNumber());
-		this->_omni_depth_maps.reserve(this->_lc->getMaxPointLightNumber());
-		this->_spot_dir_depth_maps.reserve(this->_lc->getMaxSpotLightNumber());
-		this->_vec_dir_lightSpaceMatrix.reserve(this->_lc->getMaxDirLightNumber());
-		this->_vec_omni_lightSpaceMatrix.reserve(this->_lc->getMaxPointLightNumber());
-		this->_vec_spot_dir_lightSpaceMatrix.reserve(this->_lc->getMaxSpotLightNumber());
-		//Shaders
-		this->_dir_depth_map_shader          = rhs.getDirDepthMapShader();
-		this->_omni_depth_map_shader         = rhs.getOmniDepthMapShader();
-		this->_spot_dir_depth_map_shader     = rhs.getSpotDirDepthMapShader();
-		//Maps
-		this->_dir_depth_maps                = rhs.moveDirDepthMaps();
-		this->_omni_depth_maps               = rhs.moveOmniDepthMaps();
-		this->_spot_dir_depth_maps           = rhs.moveSpotDirDepthMaps();
-		//Matricies Vec
-		this->_vec_dir_lightSpaceMatrix      = rhs.getVecDirLightSpaceMatrix();
-		this->_vec_omni_lightSpaceMatrix     = rhs.getVecOmniLightSpaceMatrix();
-		this->_vec_spot_dir_lightSpaceMatrix = rhs.getVecSpotDirLightSpaceMatrix();
-		//Proj Matricies
-		this->_dir_proj_matrix               = rhs.getDirProjMatrix();
-		this->_omni_proj_matrix              = rhs.getOmniProjMatrix();
-		//Other
-		this->_dir_near_far                  = rhs.getDirNearFar();
-		this->_omni_near_far                 = rhs.getOmniNearFar();
-	}
-	catch (std::exception &e)
-	{
-		std::cout << "DirectionalShadowRender Move Error" << std::endl;
-		throw;
-	}
+	//Light Container
+	this->_lc                            = rhs.getLightContainer();
+	//Shaders
+	this->_dir_depth_map_shader          = rhs.getDirDepthMapShader();
+	this->_omni_depth_map_shader         = rhs.getOmniDepthMapShader();
+	this->_spot_dir_depth_map_shader     = rhs.getSpotDirDepthMapShader();
+	//Maps
+	this->_dir_depth_maps                = rhs.moveDirDepthMaps();
+	this->_omni_depth_maps               = rhs.moveOmniDepthMaps();
+	this->_spot_dir_depth_maps           = rhs.moveSpotDirDepthMaps();
+	//Matricies Vec
+	this->_vec_dir_lightSpaceMatrix      = rhs.moveVecDirLightSpaceMatrix();
+	this->_vec_omni_lightSpaceMatrix     = rhs.moveVecOmniLightSpaceMatrix();
+	this->_vec_spot_dir_lightSpaceMatrix = rhs.moveVecSpotDirLightSpaceMatrix();
+	//Proj Matricies
+	this->_dir_proj_matrix               = rhs.getDirProjMatrix();
+	this->_omni_proj_matrix              = rhs.getOmniProjMatrix();
+	//Other
+	this->_dir_near_far                  = rhs.getDirNearFar();
+	this->_omni_near_far                 = rhs.getOmniNearFar();
 	return (*this);
 }
 
@@ -183,14 +169,29 @@ std::vector<glm::mat4> const &ShadowRenderer::getVecDirLightSpaceMatrix() const
 	return (this->_vec_dir_lightSpaceMatrix);
 }
 
+std::vector<glm::mat4> ShadowRenderer::moveVecDirLightSpaceMatrix()
+{
+	return (std::move(this->_vec_dir_lightSpaceMatrix));
+}
+
 std::vector<ShadowRenderer::OmniProjMatrices> const &ShadowRenderer::getVecOmniLightSpaceMatrix() const
 {
 	return (this->_vec_omni_lightSpaceMatrix);
 }
 
+std::vector<ShadowRenderer::OmniProjMatrices> ShadowRenderer::moveVecOmniLightSpaceMatrix()
+{
+	return (std::move(this->_vec_omni_lightSpaceMatrix));
+}
+
 std::vector<glm::mat4> const &ShadowRenderer::getVecSpotDirLightSpaceMatrix() const
 {
 	return (this->_vec_spot_dir_lightSpaceMatrix);
+}
+
+std::vector<glm::mat4> ShadowRenderer::moveVecSpotDirLightSpaceMatrix()
+{
+	return (std::move(this->_vec_spot_dir_lightSpaceMatrix));
 }
 
 glm::vec2 const ShadowRenderer::getDirNearFar() const
@@ -227,50 +228,47 @@ void ShadowRenderer::update()
 
 	//refresh for directional light matricies
 	this->_vec_dir_lightSpaceMatrix.clear();
-	for (size_t i = 0; i < this->_lc->getDirLightDataGL().size(); ++i)
+	for (auto const &val : this->_lc->getDirLightDataGL())
 	{
-		glm::mat4 lightView = glm::lookAt(glm::vec3(this->_lc->getDirLightDataGL()[i].pos), glm::vec3(0.0f),
-										  glm::vec3(0.0f, 1.0f, 0.0f));
-		this->_vec_dir_lightSpaceMatrix.push_back(this->_dir_proj_matrix * lightView);
+		glm::mat4 lightView = glm::lookAt(glm::vec3(val.pos), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		this->_vec_dir_lightSpaceMatrix.emplace_back(this->_dir_proj_matrix * lightView);
 	}
 	//refresh for omnidirectional light matricies
 	this->_vec_omni_lightSpaceMatrix.clear();
-	for (size_t i = 0; i < this->_lc->getPointLightDataGL().size(); ++i)
+	for (auto const &val : this->_lc->getPointLightDataGL())
 	{
 		OmniProjMatrices tmp;
-		tmp.mat[0] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getPointLightDataGL()[i].pos),
-															glm::vec3(this->_lc->getPointLightDataGL()[i].pos) +
-															glm::vec3(1.0f, 0.0f, 0.0f),
+		tmp.mat[0] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(val.pos),
+															glm::vec3(val.pos) + glm::vec3(1.0f, 0.0f, 0.0f),
 															glm::vec3(0.0f, -1.0f, 0.0f)));
-		tmp.mat[1] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getPointLightDataGL()[i].pos),
-															glm::vec3(this->_lc->getPointLightDataGL()[i].pos) +
+		tmp.mat[1] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(val.pos),
+															glm::vec3(val.pos) +
 															glm::vec3(-1.0f, 0.0f, 0.0f),
 															glm::vec3(0.0f, -1.0f, 0.0f)));
-		tmp.mat[2] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getPointLightDataGL()[i].pos),
-															glm::vec3(this->_lc->getPointLightDataGL()[i].pos) +
+		tmp.mat[2] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(val.pos),
+															glm::vec3(val.pos) +
 															glm::vec3(0.0f, 1.0f, 0.0f),
 															glm::vec3(0.0f, 0.0f, 1.0f)));
-		tmp.mat[3] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getPointLightDataGL()[i].pos),
-															glm::vec3(this->_lc->getPointLightDataGL()[i].pos) +
+		tmp.mat[3] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(val.pos),
+															glm::vec3(val.pos) +
 															glm::vec3(0.0f, -1.0f, 0.0f),
 															glm::vec3(0.0f, 0.0f, -1.0f)));
-		tmp.mat[4] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getPointLightDataGL()[i].pos),
-															glm::vec3(this->_lc->getPointLightDataGL()[i].pos) +
+		tmp.mat[4] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(val.pos),
+															glm::vec3(val.pos) +
 															glm::vec3(0.0f, 0.0f, 1.0f),
 															glm::vec3(0.0f, -1.0f, 0.0f)));
-		tmp.mat[5] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(this->_lc->getPointLightDataGL()[i].pos),
-															glm::vec3(this->_lc->getPointLightDataGL()[i].pos) +
+		tmp.mat[5] = (this->_omni_proj_matrix * glm::lookAt(glm::vec3(val.pos),
+															glm::vec3(val.pos) +
 															glm::vec3(0.0f, 0.0f, -1.0f),
 															glm::vec3(0.0f, -1.0f, 0.0f)));
-		this->_vec_omni_lightSpaceMatrix.push_back(tmp);
+		this->_vec_omni_lightSpaceMatrix.emplace_back(tmp);
 	}
 	//refresh for spot light matricies
 	this->_vec_spot_dir_lightSpaceMatrix.clear();
-	for (size_t i = 0; i < this->_lc->getSpotLightDataGL().size(); ++i)
+	for (auto const &val : this->_lc->getSpotLightDataGL())
 	{
-		glm::mat4 lightView = glm::lookAt(glm::vec3(this->_lc->getSpotLightDataGL()[i].pos), glm::vec3(0.0f),
-										  glm::vec3(0.0f, 1.0f, 0.0f));
-		this->_vec_spot_dir_lightSpaceMatrix.push_back(this->_dir_proj_matrix * lightView);
+		glm::mat4 lightView = glm::lookAt(glm::vec3(val.pos), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		this->_vec_spot_dir_lightSpaceMatrix.emplace_back(this->_dir_proj_matrix * lightView);
 	}
 }
 
@@ -281,17 +279,17 @@ void ShadowRenderer::_allocate_memory()
 	size_t max_point_light = this->_lc->getMaxPointLightNumber();
 
 	this->_dir_depth_maps.reserve(max_dir_light);
-	this->_vec_dir_lightSpaceMatrix.reserve(max_dir_light);
-	this->_vec_omni_lightSpaceMatrix.reserve(max_point_light);
 	this->_omni_depth_maps.reserve(max_point_light);
 	this->_spot_dir_depth_maps.reserve(max_spot_light);
+	this->_vec_dir_lightSpaceMatrix.reserve(max_dir_light);
+	this->_vec_omni_lightSpaceMatrix.reserve(max_point_light);
+	this->_vec_spot_dir_lightSpaceMatrix.reserve(max_spot_light);
 	for (size_t i = 0; i < max_dir_light; ++i)
 		this->_dir_depth_maps.emplace_back(new DirectionalDepthMap(ShadowRenderer::_default_depthmap_size,
 																   ShadowRenderer::_default_depthmap_size));
 	for (size_t i = 0; i < max_point_light; ++i)
-		this->_omni_depth_maps
-			.emplace_back(new OmnidirectionalDepthMap(ShadowRenderer::_default_depthmap_size,
-													  ShadowRenderer::_default_depthmap_size));
+		this->_omni_depth_maps.emplace_back(new OmnidirectionalDepthMap(ShadowRenderer::_default_depthmap_size,
+																		ShadowRenderer::_default_depthmap_size));
 	for (size_t i = 0; i < max_spot_light; ++i)
 		this->_spot_dir_depth_maps.emplace_back(new DirectionalDepthMap(ShadowRenderer::_default_depthmap_size,
 																		ShadowRenderer::_default_depthmap_size));

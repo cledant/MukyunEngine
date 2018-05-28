@@ -13,11 +13,6 @@
 #ifndef LIGHTCONTAINER_HPP
 # define LIGHTCONTAINER_HPP
 
-# define DEFAULT_NB_MAX_DIR_LIGHT 10
-# define DEFAULT_NB_MAX_POINT_LIGHT 10
-# define DEFAULT_NB_MAX_SPOT_LIGHT 10
-# define DEFAULT_MAX_LIGHT DEFAULT_NB_MAX_SPOT_LIGHT + DEFAULT_NB_MAX_POINT_LIGHT + DEFAULT_NB_MAX_SPOT_LIGHT
-
 # include <vector>
 # include <memory>
 # include <iostream>
@@ -34,12 +29,17 @@ class LightContainer
 
 		struct Params
 		{
-			Params(void);
-			virtual ~Params(void);
+			Params();
+			virtual ~Params() = default;
 
-			size_t max_point_light;
-			size_t max_dir_light;
-			size_t max_spot_light;
+			size_t                  max_point_light;
+			size_t                  max_dir_light;
+			size_t                  max_spot_light;
+			static constexpr size_t default_max_dir_light  = 10;
+			static constexpr size_t default_max_omni_light = 10;
+			static constexpr size_t default_max_spot_light = 10;
+			static constexpr size_t default_max_light      = default_max_dir_light + default_max_omni_light +
+															 default_max_spot_light;
 		};
 
 		struct PointLightDataGL
@@ -71,20 +71,20 @@ class LightContainer
 			glm::vec4 cutoff;
 		};
 
-		LightContainer(LightContainer::Params const &params);
-		virtual ~LightContainer(void);
+		explicit LightContainer(LightContainer::Params const &params);
+		virtual ~LightContainer();
 		LightContainer(LightContainer const &src) = delete;
 		LightContainer &operator=(LightContainer const &rhs) = delete;
-		LightContainer(LightContainer &&src);
-		LightContainer &operator=(LightContainer &&rhs);
+		LightContainer(LightContainer &&src) noexcept;
+		LightContainer &operator=(LightContainer &&rhs) noexcept;
 
 		/*
 		 * Draw
 		 */
 
 		virtual void update(float time);
-		virtual void updateGPU(void);
-		virtual void flushData(void);
+		virtual void updateGPU();
+		virtual void flushData();
 
 		/*
 		 * Setter
@@ -98,31 +98,35 @@ class LightContainer
 		 * Getter
 		 */
 
-		std::vector<std::unique_ptr<ALight>> const *getLightStorage(void) const;
-		std::vector<std::unique_ptr<ALight>> moveLightStorage(void);
+		std::vector<std::unique_ptr<ALight>> const &getLightStorage() const;
+		std::vector<std::unique_ptr<ALight>> moveLightStorage();
 
 		//PointLight functions
-		std::vector<struct LightContainer::PointLightDataGL> const &getPointLightDataGL(void) const;
-		GLuint moveUboPointLight(void);
-		GLuint getUboPointLight(void) const;
-		size_t getCurrentPointLightNumber(void) const;
-		size_t getMaxPointLightNumber(void) const;
+		std::vector<struct LightContainer::PointLightDataGL> const &getPointLightDataGL() const;
+		std::vector<struct LightContainer::PointLightDataGL> movePointLightDataGL();
+		GLuint moveUboPointLight();
+		GLuint getUboPointLight() const;
+		size_t getCurrentPointLightNumber() const;
+		size_t getMaxPointLightNumber() const;
 
 		//DirLight functions
-		std::vector<struct LightContainer::DirLightDataGL> const &getDirLightDataGL(void) const;
-		GLuint moveUboDirLight(void);
-		GLuint getUboDirLight(void) const;
-		size_t getCurrentDirLightNumber(void) const;
-		size_t getMaxDirLightNumber(void) const;
+		std::vector<struct LightContainer::DirLightDataGL> const &getDirLightDataGL() const;
+		std::vector<struct LightContainer::DirLightDataGL> moveDirLightDataGL();
+		GLuint moveUboDirLight();
+		GLuint getUboDirLight() const;
+		size_t getCurrentDirLightNumber() const;
+		size_t getMaxDirLightNumber() const;
 
 		//SpotLight functions
-		std::vector<struct LightContainer::SpotLightDataGL> const &getSpotLightDataGL(void) const;
-		GLuint moveUboSpotLight(void);
-		GLuint getUboSpotLight(void) const;
-		size_t getCurrentSpotLightNumber(void) const;
-		size_t getMaxSpotLightNumber(void) const;
+		std::vector<struct LightContainer::SpotLightDataGL> const &getSpotLightDataGL() const;
+		std::vector<struct LightContainer::SpotLightDataGL> moveSpotLightDataGL();
+		GLuint moveUboSpotLight();
+		GLuint getUboSpotLight() const;
+		size_t getCurrentSpotLightNumber() const;
+		size_t getMaxSpotLightNumber() const;
 
 	protected :
+
 
 		std::vector<std::unique_ptr<ALight>> _light_list;
 		std::vector<struct PointLightDataGL> _data_point_light;

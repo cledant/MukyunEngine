@@ -50,12 +50,12 @@ class ShadowRenderer
 		};
 
 		ShadowRenderer();
-		ShadowRenderer(ShadowRenderer::Params const &params);
+		explicit ShadowRenderer(ShadowRenderer::Params const &params);
 		virtual ~ShadowRenderer() = default;
 		ShadowRenderer(ShadowRenderer const &src) = delete;
 		ShadowRenderer &operator=(ShadowRenderer const &rhs) = delete;
-		ShadowRenderer(ShadowRenderer &&src);
-		ShadowRenderer &operator=(ShadowRenderer &&rhs);
+		ShadowRenderer(ShadowRenderer &&src) noexcept;
+		ShadowRenderer &operator=(ShadowRenderer &&rhs) noexcept;
 
 		/*
 		 * Setter
@@ -79,8 +79,11 @@ class ShadowRenderer
 		std::vector<std::unique_ptr<AFramebuffer>> const &getSpotDirDepthMaps() const;
 		std::vector<std::unique_ptr<AFramebuffer>> moveSpotDirDepthMaps();
 		std::vector<glm::mat4> const &getVecDirLightSpaceMatrix() const;
+		std::vector<glm::mat4> moveVecDirLightSpaceMatrix();
 		std::vector<ShadowRenderer::OmniProjMatrices> const &getVecOmniLightSpaceMatrix() const;
+		std::vector<ShadowRenderer::OmniProjMatrices> moveVecOmniLightSpaceMatrix();
 		std::vector<glm::mat4> const &getVecSpotDirLightSpaceMatrix() const;
+		std::vector<glm::mat4> moveVecSpotDirLightSpaceMatrix();
 		glm::vec2 const getDirNearFar() const;
 		glm::vec2 const getOmniNearFar() const;
 		glm::mat4 const &getDirProjMatrix() const;

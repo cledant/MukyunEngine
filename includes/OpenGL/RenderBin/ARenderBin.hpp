@@ -34,8 +34,8 @@ class ARenderBin
 
 		struct Params
 		{
-			Params(void);
-			virtual ~Params(void);
+			Params();
+			virtual ~Params() = default;
 
 			Shader               *shader;
 			glm::mat4 const      *perspec_mult_view;
@@ -57,14 +57,15 @@ class ARenderBin
 				NONE
 		};
 
-		ARenderBin(void);
-		ARenderBin(ARenderBin::Params const &params);
-		virtual ~ARenderBin(void);
+		ARenderBin();
+		explicit ARenderBin(ARenderBin::Params const &params);
+		virtual ~ARenderBin();
 		ARenderBin(ARenderBin const &src) = delete;
 		ARenderBin &operator=(ARenderBin const &rhs) = delete;
 		/*
 		 * Doesn't copy content of ModelMatrices Array
 		 * Same for InvModelMatrices
+		 * Move constructor can throw
 		 */
 		ARenderBin(ARenderBin &&src);
 		ARenderBin &operator=(ARenderBin &&rhs);
@@ -73,47 +74,47 @@ class ARenderBin
 		 * Draw
 		 */
 
-		virtual void draw(void) = 0;
+		virtual void draw() = 0;
 		virtual void update(float time);
-		virtual void updateVBO(void);
-		virtual void flushData(void);
+		virtual void updateVBO();
+		virtual void flushData();
 
 		/*
 		 * Getter
 		 */
 
-		ARenderBin::eType getType(void) const;
-		Shader *getShader(void) const;
-		glm::mat4 const *getPerspecMultView(void) const;
-		Model const *getModel(void) const;
-		glm::mat4 *getModelMatrices(void) const;
-		GLuint getVboModelMatrices(void) const;
-		GLuint moveVboModelMatrices(void);
-		std::vector<GLuint> const &getVaoMeshes(void) const;
-		std::vector<GLuint> moveVaoMeshes(void);
-		size_t getCurrentInstanceNumber(void) const;
-		size_t getMaxInstanceNumber(void) const;
+		ARenderBin::eType getType() const;
+		Shader *getShader() const;
+		glm::mat4 const *getPerspecMultView() const;
+		Model const *getModel() const;
+		glm::mat4 *getModelMatrices() const;
+		GLuint getVboModelMatrices() const;
+		GLuint moveVboModelMatrices();
+		std::vector<GLuint> const &getVaoMeshes() const;
+		std::vector<GLuint> moveVaoMeshes();
+		size_t getCurrentInstanceNumber() const;
+		size_t getMaxInstanceNumber() const;
 
 		/*
 		 * Light Related Getter
 		 */
 
 		bool getUseLight() const;
-		LightContainer const *getLightContainer(void) const;
-		glm::vec3 const *getViewPos(void);
-		glm::mat4 *getInvModelMatrices(void) const;
-		GLuint getVBOInvModelMatrices(void) const;
-		GLuint moveVBOInvModelMatrices(void);
+		LightContainer const *getLightContainer() const;
+		glm::vec3 const *getViewPos();
+		glm::mat4 *getInvModelMatrices() const;
+		GLuint getVBOInvModelMatrices() const;
+		GLuint moveVBOInvModelMatrices();
 
 		/*
 		 * Entity related getter
 		 */
 
-		size_t getNbThread(void) const;
-		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> const &getEntities(void) const;
-		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> moveEntities(void);
-		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> const &getInactiveEntities(void) const;
-		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> moveInactiveEntities(void);
+		size_t getNbThread() const;
+		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> const &getEntities() const;
+		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> moveEntities();
+		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> const &getInactiveEntities() const;
+		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> moveInactiveEntities();
 
 		/*
 		 * Entity related setter
@@ -172,23 +173,23 @@ class ARenderBin
 		 */
 
 		inline void _create_vbo_model_matrices(size_t max_size);
-		inline void _create_vao_mesh(void);
+		inline void _create_vao_mesh();
 
 		/*
 		 * Protected function for light
 		 */
 
 		inline void _create_vbo_inv_model_matrices(size_t max_size);
-		inline void _update_vao(void);
+		inline void _update_vao();
 
 		/*
 		 * Protected function for thread
 		 */
 
-		inline void _start_workers(void);
-		inline void _update_iterators(void);
+		inline void _start_workers();
+		inline void _update_iterators();
 		inline void _update_multithread_opengl_arrays(size_t thread_id);
-		inline void _update_monothread_opengl_arrays(void);
+		inline void _update_monothread_opengl_arrays();
 };
 
 #endif

@@ -12,15 +12,11 @@
 
 #include "OpenGL/LightContainer/LightContainer.hpp"
 
-LightContainer::Params::Params(void)
+LightContainer::Params::Params()
 {
-	this->max_point_light = DEFAULT_NB_MAX_POINT_LIGHT;
-	this->max_dir_light   = DEFAULT_NB_MAX_DIR_LIGHT;
-	this->max_spot_light  = DEFAULT_NB_MAX_SPOT_LIGHT;
-}
-
-LightContainer::Params::~Params(void)
-{
+	this->max_point_light = LightContainer::Params::default_max_omni_light;
+	this->max_dir_light   = LightContainer::Params::default_max_dir_light;
+	this->max_spot_light  = LightContainer::Params::default_max_spot_light;
 }
 
 LightContainer::LightContainer(LightContainer::Params const &params) : _ubo_point_light(0),
@@ -41,43 +37,29 @@ LightContainer::LightContainer(LightContainer::Params const &params) : _ubo_poin
 	}
 }
 
-LightContainer::~LightContainer(void)
+LightContainer::~LightContainer()
 {
 	glDeleteBuffers(1, &(this->_ubo_point_light));
 	glDeleteBuffers(1, &(this->_ubo_dir_light));
 	glDeleteBuffers(1, &(this->_ubo_spot_light));
 }
 
-LightContainer::LightContainer(LightContainer &&src) : _ubo_point_light(0),
-													   _ubo_dir_light(0),
-													   _ubo_spot_light(0)
+LightContainer::LightContainer(LightContainer &&src) noexcept : _ubo_point_light(0),
+																_ubo_dir_light(0),
+																_ubo_spot_light(0)
 {
 	*this = std::move(src);
 }
 
-LightContainer &LightContainer::operator=(LightContainer &&rhs)
+LightContainer &LightContainer::operator=(LightContainer &&rhs) noexcept
 {
-	try
-	{
-		this->_light_list = rhs.moveLightStorage();
-		this->_data_point_light.reserve(rhs.getMaxPointLightNumber());
-		this->_data_dir_light.reserve(rhs.getMaxDirLightNumber());
-		this->_data_spot_light.reserve(rhs.getMaxSpotLightNumber());
-		this->_data_point_light = rhs.getPointLightDataGL();
-		this->_ubo_point_light  = rhs.moveUboPointLight();
-		this->_data_dir_light   = rhs.getDirLightDataGL();
-		this->_ubo_dir_light    = rhs.moveUboDirLight();
-		this->_data_spot_light  = rhs.getSpotLightDataGL();
-		this->_ubo_spot_light   = rhs.moveUboSpotLight();
-	}
-	catch (std::exception &e)
-	{
-		glDeleteBuffers(1, &(this->_ubo_point_light));
-		glDeleteBuffers(1, &(this->_ubo_dir_light));
-		glDeleteBuffers(1, &(this->_ubo_spot_light));
-		std::cout << "LightContainer Move Error" << std::endl;
-		throw;
-	}
+	this->_light_list       = rhs.moveLightStorage();
+	this->_data_dir_light   = rhs.moveDirLightDataGL();
+	this->_data_spot_light  = rhs.moveSpotLightDataGL();
+	this->_data_point_light = rhs.movePointLightDataGL();
+	this->_ubo_point_light  = rhs.moveUboPointLight();
+	this->_ubo_dir_light    = rhs.moveUboDirLight();
+	this->_ubo_spot_light   = rhs.moveUboSpotLight();
 	return (*this);
 }
 
@@ -87,23 +69,24 @@ LightContainer &LightContainer::operator=(LightContainer &&rhs)
 
 void LightContainer::update(float time)
 {
-	for (auto it = this->_light_list.begin(); it != this->_light_list.end(); ++it)
+	for (auto const &it : this->_light_list)
 	{
 		static_cast<void>(time);
-		if (it->get()->getLightType() == ALight::eType::POINT && it->get()->getActive() &&
+		auto ptr = it.get();
+		if (ptr->getLightType() == ALight::eType::POINT && ptr->getActive() &&
 			this->_data_point_light.size() < this->_data_point_light.capacity())
-			this->_create_point_light_gl_data(dynamic_cast<PointLight const *>(it->get()));
-		else if (it->get()->getLightType() == ALight::eType::DIRECTIONAL && it->get()->getActive() &&
+			this->_create_point_light_gl_data(dynamic_cast<PointLight const *>(ptr));
+		else if (ptr->getLightType() == ALight::eType::DIRECTIONAL && ptr->getActive() &&
 				 this->_data_dir_light.size() < this->_data_dir_light.capacity())
-			this->_create_dir_light_gl_data(dynamic_cast<DirectionalLight const *>(it->get()));
-		else if (it->get()->getLightType() == ALight::eType::SPOT && it->get()->getActive() &&
+			this->_create_dir_light_gl_data(dynamic_cast<DirectionalLight const *>(ptr));
+		else if (ptr->getLightType() == ALight::eType::SPOT && ptr->getActive() &&
 				 this->_data_spot_light.size() < this->_data_spot_light.capacity())
-			this->_create_spot_light_gl_data(dynamic_cast<SpotLight const *>(it->get()));
+			this->_create_spot_light_gl_data(dynamic_cast<SpotLight const *>(ptr));
 	}
 
 }
 
-void LightContainer::updateGPU(void)
+void LightContainer::updateGPU()
 {
 	glBindBuffer(GL_UNIFORM_BUFFER, this->_ubo_point_light);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0,
@@ -120,7 +103,7 @@ void LightContainer::updateGPU(void)
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void LightContainer::flushData(void)
+void LightContainer::flushData()
 {
 	this->_data_point_light.clear();
 	this->_data_dir_light.clear();
@@ -150,12 +133,12 @@ void LightContainer::addLightInstance(struct PointLight::Params const &params)
  * Getter
  */
 
-std::vector<std::unique_ptr<ALight>> const *LightContainer::getLightStorage() const
+std::vector<std::unique_ptr<ALight>> const &LightContainer::getLightStorage() const
 {
-	return (&this->_light_list);
+	return (this->_light_list);
 }
 
-std::vector<std::unique_ptr<ALight>> LightContainer::moveLightStorage(void)
+std::vector<std::unique_ptr<ALight>> LightContainer::moveLightStorage()
 {
 	return (std::move(this->_light_list));
 }
@@ -167,6 +150,11 @@ std::vector<struct LightContainer::PointLightDataGL> const &LightContainer::getP
 	return (this->_data_point_light);
 }
 
+std::vector<struct LightContainer::PointLightDataGL> LightContainer::movePointLightDataGL()
+{
+	return (std::move(this->_data_point_light));
+}
+
 GLuint LightContainer::moveUboPointLight()
 {
 	GLuint tmp = this->_ubo_point_light;
@@ -175,12 +163,12 @@ GLuint LightContainer::moveUboPointLight()
 	return (tmp);
 }
 
-GLuint LightContainer::getUboPointLight(void) const
+GLuint LightContainer::getUboPointLight() const
 {
 	return (this->_ubo_point_light);
 }
 
-size_t LightContainer::getCurrentPointLightNumber(void) const
+size_t LightContainer::getCurrentPointLightNumber() const
 {
 	return (this->_data_point_light.size());
 }
@@ -197,6 +185,11 @@ std::vector<struct LightContainer::DirLightDataGL> const &LightContainer::getDir
 	return (this->_data_dir_light);
 }
 
+std::vector<struct LightContainer::DirLightDataGL> LightContainer::moveDirLightDataGL()
+{
+	return (std::move(this->_data_dir_light));
+}
+
 GLuint LightContainer::moveUboDirLight()
 {
 	GLuint tmp = this->_ubo_dir_light;
@@ -205,12 +198,12 @@ GLuint LightContainer::moveUboDirLight()
 	return (tmp);
 }
 
-GLuint LightContainer::getUboDirLight(void) const
+GLuint LightContainer::getUboDirLight() const
 {
 	return (this->_ubo_dir_light);
 }
 
-size_t LightContainer::getCurrentDirLightNumber(void) const
+size_t LightContainer::getCurrentDirLightNumber() const
 {
 	return (this->_data_dir_light.size());
 }
@@ -227,6 +220,11 @@ std::vector<struct LightContainer::SpotLightDataGL> const &LightContainer::getSp
 	return (this->_data_spot_light);
 }
 
+std::vector<struct LightContainer::SpotLightDataGL> LightContainer::moveSpotLightDataGL()
+{
+	return (std::move(this->_data_spot_light));
+}
+
 GLuint LightContainer::moveUboSpotLight()
 {
 	GLuint tmp = this->_ubo_spot_light;
@@ -235,12 +233,12 @@ GLuint LightContainer::moveUboSpotLight()
 	return (tmp);
 }
 
-GLuint LightContainer::getUboSpotLight(void) const
+GLuint LightContainer::getUboSpotLight() const
 {
 	return (this->_ubo_spot_light);
 }
 
-size_t LightContainer::getCurrentSpotLightNumber(void) const
+size_t LightContainer::getCurrentSpotLightNumber() const
 {
 	return (this->_data_spot_light.size());
 }

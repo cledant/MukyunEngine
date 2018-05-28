@@ -62,7 +62,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	ARenderBin::Params rb_light_pos;
 	rb_light_pos.shader   = &rm.getShader("DiffuseColored");
 	rb_light_pos.model    = &rm.getModel("WhiteBox2");
-	rb_light_pos.max_instance = DEFAULT_MAX_LIGHT;
+	rb_light_pos.max_instance = LightContainer::Params::default_max_light;
 	(*world)->add_RenderBin("LightPos", rb_light_pos,
 							ARenderBin::eType::DIFFUSE_COLORED);
 

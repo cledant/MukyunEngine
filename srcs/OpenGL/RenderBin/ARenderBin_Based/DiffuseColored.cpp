@@ -166,7 +166,7 @@ void DiffuseColored::_update_vector_light_diffuse(void)
 	ALight *ptr_light = nullptr;
 
 	this->_vector_light_diffuse.clear();
-	for (auto it = this->_lc->getLightStorage()->begin(); it != this->_lc->getLightStorage()->end(); ++it)
+	for (auto it = this->_lc->getLightStorage().begin(); it != this->_lc->getLightStorage().end(); ++it)
 	{
 		ptr_light = it->get();
 		if (ptr_light->getActive() && ptr_light->getDrawModel())
@@ -208,7 +208,7 @@ void DiffuseColored::_update_light_model_matrix()
 		this->_ptr_render_model     = this->_model_matrices.get();
 		this->_ptr_render_inv_model = this->_inv_model_matrices.get();
 	}
-	for (auto it = this->_lc->getLightStorage()->begin(); it != this->_lc->getLightStorage()->end(); ++it)
+	for (auto it = this->_lc->getLightStorage().begin(); it != this->_lc->getLightStorage().end(); ++it)
 	{
 		ptr_light = it->get();
 		if (ptr_light->getActive() && ptr_light->getDrawModel())
