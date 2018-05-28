@@ -12,7 +12,7 @@
 
 #include "OpenGL/Ressource/Shader.hpp"
 
-Shader::Shader(void) : _shader_program(0)
+Shader::Shader() : _shader_program(0)
 {
 }
 
@@ -63,25 +63,25 @@ Shader::Shader(std::string const &vs_path, std::string const &gs_path,
 	glDeleteShader(gs);
 }
 
-Shader::~Shader(void)
+Shader::~Shader()
 {
 	glDeleteShader(this->_shader_program);
 }
 
-Shader::Shader(Shader &&src)
+Shader::Shader(Shader &&src) noexcept
 {
 	*this = std::move(src);
 }
 
-Shader &Shader::operator=(Shader &&rhs)
+Shader &Shader::operator=(Shader &&rhs) noexcept
 {
 	this->_shader_program     = rhs.moveShaderProgram();
-	this->_uniform_id_map     = rhs.getUniformIdMap();
-	this->_ubo_uniform_id_map = rhs.getUboUniformIdMap();
+	this->_uniform_id_map     = rhs.moveUniformIdMap();
+	this->_ubo_uniform_id_map = rhs.moveUboUniformIdMap();
 	return (*this);
 }
 
-void Shader::use(void) const
+void Shader::use() const
 {
 	glUseProgram(this->_shader_program);
 }
@@ -90,12 +90,12 @@ void Shader::use(void) const
  * Getter
  */
 
-GLuint Shader::getShaderProgram(void) const
+GLuint Shader::getShaderProgram() const
 {
 	return (this->_shader_program);
 }
 
-GLuint Shader::moveShaderProgram(void)
+GLuint Shader::moveShaderProgram()
 {
 	GLuint tmp = this->_shader_program;
 
@@ -103,14 +103,24 @@ GLuint Shader::moveShaderProgram(void)
 	return (tmp);
 }
 
-std::map<std::string, GLint> const &Shader::getUniformIdMap(void) const
+std::map<std::string, GLint> const &Shader::getUniformIdMap() const
 {
 	return (this->_uniform_id_map);
 }
 
-std::map<std::string, GLuint> const &Shader::getUboUniformIdMap(void) const
+std::map<std::string, GLint> Shader::moveUniformIdMap()
+{
+	return (std::move(this->_uniform_id_map));
+}
+
+std::map<std::string, GLuint> const &Shader::getUboUniformIdMap() const
 {
 	return (this->_ubo_uniform_id_map);
+}
+
+std::map<std::string, GLuint> Shader::moveUboUniformIdMap()
+{
+	return (std::move(this->_ubo_uniform_id_map));
 }
 
 /*
@@ -274,44 +284,28 @@ void Shader::_read_file(std::string const &path, std::string &content)
 	}
 }
 
-Shader::FileOpenException::FileOpenException(std::string const &path)
+Shader::FileOpenException::FileOpenException(std::string const &path) noexcept
 {
 	this->_msg = "Shader : Failed to find to open file : ";
-	this->_msg += path.c_str();
+	this->_msg += path;
 }
 
-Shader::FileOpenException::FileOpenException(void)
+Shader::FileOpenException::FileOpenException() noexcept
 {
 	this->_msg = "Shader : Failed to find to open file";
 }
 
-Shader::FileOpenException::~FileOpenException(void) throw()
-{
-}
-
-Shader::AllocationException::AllocationException(void)
+Shader::AllocationException::AllocationException() noexcept
 {
 	this->_msg = "Shader : Failed to allocate memory";
 }
 
-Shader::AllocationException::~AllocationException(void) throw()
-{
-}
-
-Shader::CompileException::CompileException(void)
+Shader::CompileException::CompileException() noexcept
 {
 	this->_msg = "Shader : Failed to compile shader";
 }
 
-Shader::CompileException::~CompileException(void) throw()
-{
-}
-
-Shader::LinkException::LinkException(void)
+Shader::LinkException::LinkException() noexcept
 {
 	this->_msg = "Shader : Failed to link shader to program";
-}
-
-Shader::LinkException::~LinkException(void) throw()
-{
 }

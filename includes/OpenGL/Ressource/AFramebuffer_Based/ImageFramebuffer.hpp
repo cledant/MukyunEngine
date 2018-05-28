@@ -24,33 +24,33 @@ class ImageFramebuffer : public AFramebuffer
 	public :
 
 		ImageFramebuffer(int w, int h);
-		virtual ~ImageFramebuffer(void);
+		~ImageFramebuffer() override = default;
 		ImageFramebuffer(ImageFramebuffer const &src) = delete;
 		ImageFramebuffer &operator=(ImageFramebuffer const &rhs) = delete;
-		ImageFramebuffer(ImageFramebuffer &&src);
-		ImageFramebuffer &operator=(ImageFramebuffer &&rhs);
+		ImageFramebuffer(ImageFramebuffer &&src) noexcept;
+		ImageFramebuffer &operator=(ImageFramebuffer &&rhs) noexcept;
 
-		virtual void reallocateFBO(int h, int w) override;
+		void reallocateFBO(int h, int w) override;
 
 		class InitException : public GeneralException
 		{
 			public :
 
-				explicit InitException(void);
-				virtual ~InitException(void) throw();
+				explicit InitException() noexcept;
+				~InitException() noexcept override = default;
 		};
 
 		class IncompleteBufferException : public GeneralException
 		{
 			public :
 
-				explicit IncompleteBufferException(void);
-				virtual ~IncompleteBufferException(void) throw();
+				explicit IncompleteBufferException() noexcept;
+				~IncompleteBufferException() noexcept override = default;
 		};
 
 	protected :
 
-		inline void _allocate_buffers(void);
+		inline void _allocate_buffers();
 };
 
 #endif

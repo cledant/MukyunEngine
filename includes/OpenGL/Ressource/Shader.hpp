@@ -25,26 +25,28 @@ class Shader
 {
 	public :
 
-		Shader(void);
+		Shader();
 		Shader(std::string const &vs_path, std::string const &fs_path);
 		Shader(std::string const &vs_path, std::string const &gs_path,
 			   std::string const &fs_path);
 		Shader(Shader const &src) = delete;
 		Shader &operator=(Shader const &rhs) = delete;
-		Shader(Shader &&src);
-		Shader &operator=(Shader &&rhs);
-		virtual ~Shader(void);
+		Shader(Shader &&src) noexcept;
+		Shader &operator=(Shader &&rhs) noexcept;
+		virtual ~Shader();
 
-		void use(void) const;
+		void use() const;
 
 		/*
 		 * Getter
 		 */
 
-		GLuint getShaderProgram(void) const;
-		GLuint moveShaderProgram(void);
-		std::map<std::string, GLint> const &getUniformIdMap(void) const;
-		std::map<std::string, GLuint> const &getUboUniformIdMap(void) const;
+		GLuint getShaderProgram() const;
+		GLuint moveShaderProgram();
+		std::map<std::string, GLint> const &getUniformIdMap() const;
+		std::map<std::string, GLint> moveUniformIdMap();
+		std::map<std::string, GLuint> const &getUboUniformIdMap() const;
+		std::map<std::string, GLuint> moveUboUniformIdMap();
 
 		/*
 		 * Setter
@@ -63,33 +65,33 @@ class Shader
 		{
 			public :
 
-				explicit FileOpenException(void);
-				explicit FileOpenException(std::string const &path);
-				virtual ~FileOpenException(void) throw();
+				explicit FileOpenException() noexcept;
+				explicit FileOpenException(std::string const &path) noexcept;
+				~FileOpenException() noexcept override = default;
 		};
 
 		class AllocationException : public GeneralException
 		{
 			public :
 
-				explicit AllocationException(void);
-				virtual ~AllocationException(void) throw();
+				explicit AllocationException() noexcept;
+				~AllocationException() noexcept override = default;
 		};
 
 		class CompileException : public GeneralException
 		{
 			public :
 
-				explicit CompileException(void);
-				virtual ~CompileException(void) throw();
+				explicit CompileException() noexcept;
+				~CompileException() noexcept override = default;
 		};
 
 		class LinkException : public GeneralException
 		{
 			public :
 
-				explicit LinkException(void);
-				virtual ~LinkException(void) throw();
+				explicit LinkException() noexcept;
+				~LinkException() noexcept override = default;
 		};
 
 	private :

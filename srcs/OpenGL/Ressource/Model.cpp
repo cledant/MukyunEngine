@@ -12,7 +12,7 @@
 
 #include "OpenGL/Ressource/Model.hpp"
 
-Model::Model(void) : _center({0.0f, 0.0f, 0.0f})
+Model::Model() : _center({0.0f, 0.0f, 0.0f})
 {
 }
 
@@ -24,32 +24,28 @@ Model::Model(std::string const &path,
 	this->_calculate_center();
 }
 
-Model::Model(Model &&src)
+Model::Model(Model &&src) noexcept
 {
 	*this = std::move(src);
 }
 
-Model &Model::operator=(Model &&rhs)
+Model &Model::operator=(Model &&rhs) noexcept
 {
 	this->_mesh_list = rhs.moveMeshList();
 	this->_center    = rhs.getCenter();
 	return (*this);
 }
 
-Model::~Model(void)
-{
-}
-
 /*
  * Getter
  */
 
-std::vector<Mesh> const &Model::getMeshList(void) const
+std::vector<Mesh> const &Model::getMeshList() const
 {
 	return (this->_mesh_list);
 }
 
-glm::vec3 const &Model::getCenter(void) const
+glm::vec3 const &Model::getCenter() const
 {
 	return (this->_center);
 }
@@ -66,8 +62,7 @@ void Model::_load_model(std::string const &path, std::map<std::string, Texture> 
 	std::string      directory;
 	size_t           pos;
 
-	scene = importer.ReadFile(path,
-							  aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+	scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		throw Model::FileOpenException(path);
 	if ((pos = path.find_last_of('/')) == std::string::npos)
@@ -80,26 +75,26 @@ void Model::_load_model(std::string const &path, std::map<std::string, Texture> 
 void Model::_load_node(aiNode *node, const aiScene *scene, std::string const &directory,
 					   std::map<std::string, Texture> &texture_list)
 {
-	if (node == NULL)
+	if (!node)
 		throw Model::InvalidNodeException();
 	for (size_t i = 0; i < node->mNumMeshes; ++i)
-		this->_mesh_list.push_back(Mesh(scene->mMeshes[node->mMeshes[i]], scene, directory,
-										texture_list));
+		this->_mesh_list.emplace_back(Mesh(scene->mMeshes[node->mMeshes[i]], scene, directory,
+										   texture_list));
 	for (size_t j = 0; j < node->mNumChildren; ++j)
 		this->_load_node(node->mChildren[j], scene, directory, texture_list);
 }
 
-void Model::_calculate_center(void)
+void Model::_calculate_center()
 {
 	size_t nb_vertex = 0;
 
-	for (size_t i = 0; i < this->_mesh_list.size(); i++)
+	for (auto const &val_mesh : this->_mesh_list)
 	{
-		for (size_t j = 0; j < this->_mesh_list[i].getVertexList().size(); j++)
+		for (auto const &val_vertex : val_mesh.getVertexList())
 		{
-			this->_center.x += this->_mesh_list[i].getVertexList()[j].Position.x;
-			this->_center.y += this->_mesh_list[i].getVertexList()[j].Position.y;
-			this->_center.z += this->_mesh_list[i].getVertexList()[j].Position.z;
+			this->_center.x += val_vertex.Position.x;
+			this->_center.y += val_vertex.Position.y;
+			this->_center.z += val_vertex.Position.z;
 			nb_vertex++;
 		}
 	}
@@ -108,26 +103,18 @@ void Model::_calculate_center(void)
 	this->_center.z /= nb_vertex;
 }
 
-Model::FileOpenException::FileOpenException(std::string const &path)
+Model::FileOpenException::FileOpenException(std::string const &path) noexcept
 {
 	this->_msg = "Model : Failed to find to open file : ";
-	this->_msg += path.c_str();
+	this->_msg += path;
 }
 
-Model::FileOpenException::FileOpenException(void)
+Model::FileOpenException::FileOpenException() noexcept
 {
 	this->_msg = "Model : Failed to find to open file";
 }
 
-Model::FileOpenException::~FileOpenException(void) throw()
-{
-}
-
-Model::InvalidNodeException::InvalidNodeException(void)
+Model::InvalidNodeException::InvalidNodeException() noexcept
 {
 	this->_msg = "Model : Invalid Node";
-}
-
-Model::InvalidNodeException::~InvalidNodeException(void) throw()
-{
 }

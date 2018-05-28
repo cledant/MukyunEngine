@@ -28,16 +28,12 @@ DirectionalDepthMap::DirectionalDepthMap(int h, int w) :
 	}
 }
 
-DirectionalDepthMap::~DirectionalDepthMap()
-{
-}
-
-DirectionalDepthMap::DirectionalDepthMap(DirectionalDepthMap &&src) : AFramebuffer()
+DirectionalDepthMap::DirectionalDepthMap(DirectionalDepthMap &&src) noexcept
 {
 	*this = std::move(src);
 }
 
-DirectionalDepthMap &DirectionalDepthMap::operator=(DirectionalDepthMap &&rhs)
+DirectionalDepthMap &DirectionalDepthMap::operator=(DirectionalDepthMap &&rhs) noexcept
 {
 	AFramebuffer::operator=(std::move(rhs));
 	return (*this);
@@ -56,25 +52,17 @@ void DirectionalDepthMap::reallocateFBO(int h, int w)
 	this->_allocate_buffers();
 }
 
-DirectionalDepthMap::InitException::InitException(void)
+DirectionalDepthMap::InitException::InitException() noexcept
 {
 	this->_msg = "DirectionalShadowMap : Failed initialize framebuffer";
 }
 
-DirectionalDepthMap::InitException::~InitException(void) throw()
-{
-}
-
-DirectionalDepthMap::IncompleteBufferException::IncompleteBufferException(void)
+DirectionalDepthMap::IncompleteBufferException::IncompleteBufferException() noexcept
 {
 	this->_msg = "DirectionalShadowMap : Framebuffer is incomplet";
 }
 
-DirectionalDepthMap::IncompleteBufferException::~IncompleteBufferException(void) throw()
-{
-}
-
-inline void DirectionalDepthMap::_allocate_buffers(void)
+inline void DirectionalDepthMap::_allocate_buffers()
 {
 	float borderColor[] = {1.0, 1.0, 1.0, 1.0};
 

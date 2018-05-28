@@ -17,24 +17,24 @@ AFramebuffer::AFramebuffer(int h, int w) : _fbo(0), _textureBuffer(0), _rbo(0),
 {
 }
 
-AFramebuffer::AFramebuffer(void) : _fbo(0), _textureBuffer(0), _rbo(0),
-								   _tex_h(0), _tex_w(0)
+AFramebuffer::AFramebuffer() : _fbo(0), _textureBuffer(0), _rbo(0),
+							   _tex_h(0), _tex_w(0)
 {
 }
 
-AFramebuffer::~AFramebuffer(void)
+AFramebuffer::~AFramebuffer()
 {
 	glDeleteFramebuffers(1, &this->_fbo);
 	glDeleteTextures(1, &this->_textureBuffer);
 	glDeleteRenderbuffers(1, &this->_rbo);
 }
 
-AFramebuffer::AFramebuffer(AFramebuffer &&src)
+AFramebuffer::AFramebuffer(AFramebuffer &&src) noexcept
 {
 	*this = std::move(src);
 }
 
-AFramebuffer &AFramebuffer::operator=(AFramebuffer &&rhs)
+AFramebuffer &AFramebuffer::operator=(AFramebuffer &&rhs) noexcept
 {
 	this->_fbo           = rhs.moveFramebuffer();
 	this->_textureBuffer = rhs.moveTextureBuffer();
@@ -44,17 +44,17 @@ AFramebuffer &AFramebuffer::operator=(AFramebuffer &&rhs)
 	return (*this);
 }
 
-void AFramebuffer::useFramebuffer(void) const
+void AFramebuffer::useFramebuffer() const
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, this->_fbo);
 }
 
-void AFramebuffer::defaultFramebuffer(void) const
+void AFramebuffer::defaultFramebuffer() const
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void AFramebuffer::setViewport(void) const
+void AFramebuffer::setViewport() const
 {
 	glViewport(0, 0, this->_tex_w, this->_tex_h);
 }
@@ -63,7 +63,7 @@ void AFramebuffer::setViewport(void) const
  * Getter
  */
 
-GLuint AFramebuffer::moveFramebuffer(void)
+GLuint AFramebuffer::moveFramebuffer()
 {
 	GLuint tmp = this->_fbo;
 
@@ -71,7 +71,7 @@ GLuint AFramebuffer::moveFramebuffer(void)
 	return (tmp);
 }
 
-GLuint AFramebuffer::moveTextureBuffer(void)
+GLuint AFramebuffer::moveTextureBuffer()
 {
 	GLuint tmp = this->_textureBuffer;
 
@@ -79,7 +79,7 @@ GLuint AFramebuffer::moveTextureBuffer(void)
 	return (tmp);
 }
 
-GLuint AFramebuffer::moveRBO(void)
+GLuint AFramebuffer::moveRBO()
 {
 	GLuint tmp = this->_rbo;
 
@@ -87,17 +87,17 @@ GLuint AFramebuffer::moveRBO(void)
 	return (tmp);
 }
 
-GLuint AFramebuffer::getTextureBuffer(void) const
+GLuint AFramebuffer::getTextureBuffer() const
 {
 	return (this->_textureBuffer);
 }
 
-int AFramebuffer::getTexWidth(void) const
+int AFramebuffer::getTexWidth() const
 {
 	return (this->_tex_w);
 }
 
-int AFramebuffer::getTexHeight(void) const
+int AFramebuffer::getTexHeight() const
 {
 	return (this->_tex_h);
 }

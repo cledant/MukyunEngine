@@ -28,16 +28,12 @@ OmnidirectionalDepthMap::OmnidirectionalDepthMap(int h, int w) :
 	}
 }
 
-OmnidirectionalDepthMap::~OmnidirectionalDepthMap()
-{
-}
-
-OmnidirectionalDepthMap::OmnidirectionalDepthMap(OmnidirectionalDepthMap &&src) : AFramebuffer()
+OmnidirectionalDepthMap::OmnidirectionalDepthMap(OmnidirectionalDepthMap &&src) noexcept
 {
 	*this = std::move(src);
 }
 
-OmnidirectionalDepthMap &OmnidirectionalDepthMap::operator=(OmnidirectionalDepthMap &&rhs)
+OmnidirectionalDepthMap &OmnidirectionalDepthMap::operator=(OmnidirectionalDepthMap &&rhs) noexcept
 {
 	AFramebuffer::operator=(std::move(rhs));
 	return (*this);
@@ -56,25 +52,17 @@ void OmnidirectionalDepthMap::reallocateFBO(int h, int w)
 	this->_allocate_buffers();
 }
 
-OmnidirectionalDepthMap::InitException::InitException(void)
+OmnidirectionalDepthMap::InitException::InitException() noexcept
 {
 	this->_msg = "DirectionalShadowMap : Failed initialize framebuffer";
 }
 
-OmnidirectionalDepthMap::InitException::~InitException(void) throw()
-{
-}
-
-OmnidirectionalDepthMap::IncompleteBufferException::IncompleteBufferException(void)
+OmnidirectionalDepthMap::IncompleteBufferException::IncompleteBufferException() noexcept
 {
 	this->_msg = "DirectionalShadowMap : Framebuffer is incomplet";
 }
 
-OmnidirectionalDepthMap::IncompleteBufferException::~IncompleteBufferException(void) throw()
-{
-}
-
-inline void OmnidirectionalDepthMap::_allocate_buffers(void)
+inline void OmnidirectionalDepthMap::_allocate_buffers()
 {
 	glGenFramebuffers(1, &this->_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, this->_fbo);

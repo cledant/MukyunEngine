@@ -15,9 +15,9 @@
 #include "OpenGL/Ressource/Texture.hpp"
 #include "stb_image.h"
 
-Texture::Texture(void) : _type(eTextureType::TEX_DIFFUSE),
-						 _tex_id(0), _tex_w(0), _tex_h(0),
-						 _tex_nb_chan(0)
+Texture::Texture() : _type(eTextureType::TEX_DIFFUSE),
+					 _tex_id(0), _tex_w(0), _tex_h(0),
+					 _tex_nb_chan(0)
 {
 }
 
@@ -36,17 +36,17 @@ Texture::Texture(const void *buffer, glm::ivec2 const &size,
 										  internalFormat, format);
 }
 
-Texture::~Texture(void)
+Texture::~Texture()
 {
 	glDeleteTextures(1, &(this->_tex_id));
 }
 
-Texture::Texture(Texture &&src)
+Texture::Texture(Texture &&src) noexcept
 {
 	*this = std::move(src);
 }
 
-Texture &Texture::operator=(Texture &&rhs)
+Texture &Texture::operator=(Texture &&rhs) noexcept
 {
 	this->_type        = rhs.getTextureType();
 	this->_tex_id      = rhs.moveTexture();
@@ -60,32 +60,32 @@ Texture &Texture::operator=(Texture &&rhs)
  * Getter
  */
 
-GLuint Texture::getTextureID(void) const
+GLuint Texture::getTextureID() const
 {
 	return (this->_tex_id);
 }
 
-Texture::eTextureType Texture::getTextureType(void) const
+Texture::eTextureType Texture::getTextureType() const
 {
 	return (this->_type);
 }
 
-int Texture::getTexW(void) const
+int Texture::getTexW() const
 {
 	return (this->_tex_w);
 }
 
-int Texture::getTexH(void) const
+int Texture::getTexH() const
 {
 	return (this->_tex_h);
 }
 
-int Texture::getTexChannel(void) const
+int Texture::getTexChannel() const
 {
 	return (this->_tex_nb_chan);
 }
 
-GLuint Texture::moveTexture(void)
+GLuint Texture::moveTexture()
 {
 	GLuint tmp = this->_tex_id;
 
@@ -172,62 +172,38 @@ GLuint Texture::_load_buffer(const void *buffer, int tex_w, int tex_h,
 	return (tex_id);
 }
 
-Texture::FileOpenException::FileOpenException(std::string const &path)
+Texture::FileOpenException::FileOpenException(std::string const &path) noexcept
 {
 	this->_msg = "Texture : Failed to find to open file : ";
-	this->_msg += path.c_str();
+	this->_msg += path;
 }
 
-Texture::FileOpenException::FileOpenException(void)
+Texture::FileOpenException::FileOpenException() noexcept
 {
 	this->_msg = "Texture : Failed to find to open file";
 }
 
-Texture::FileOpenException::~FileOpenException(void) throw()
-{
-}
-
-Texture::AllocationException::AllocationException(void)
+Texture::AllocationException::AllocationException() noexcept
 {
 	this->_msg = "Texture : Failed to allocate memory";
 }
 
-Texture::AllocationException::~AllocationException(void) throw()
-{
-}
-
-Texture::TypeException::TypeException(void)
+Texture::TypeException::TypeException() noexcept
 {
 	this->_msg = "Texture : Unsupported type";
 }
 
-Texture::TypeException::~TypeException(void) throw()
-{
-}
-
-Texture::ChannelNumberException::ChannelNumberException(void)
+Texture::ChannelNumberException::ChannelNumberException() noexcept
 {
 	this->_msg = "Texture : Invalid number of color channel";
 }
 
-Texture::ChannelNumberException::~ChannelNumberException(void) throw()
-{
-}
-
-Texture::BufferException::BufferException(void)
+Texture::BufferException::BufferException() noexcept
 {
 	this->_msg = "Texture : Invalid buffer";
 }
 
-Texture::BufferException::~BufferException(void) throw()
-{
-}
-
-Texture::InvalidTextureException::InvalidTextureException(void)
+Texture::InvalidTextureException::InvalidTextureException() noexcept
 {
 	this->_msg = "Texture : Invalid texture";
-}
-
-Texture::InvalidTextureException::~InvalidTextureException(void) throw()
-{
 }

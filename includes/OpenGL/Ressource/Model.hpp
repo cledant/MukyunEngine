@@ -29,37 +29,37 @@ class Model
 {
 	public :
 
-		Model(void);
+		Model();
 		Model(std::string const &path, std::map<std::string, Texture> &_texture_list);
 		Model(Model const &src) = delete;
 		Model &operator=(Model const &rhs) = delete;
-		Model(Model &&src);
-		Model &operator=(Model &&rhs);
-		virtual ~Model(void);
+		Model(Model &&src) noexcept;
+		Model &operator=(Model &&rhs) noexcept;
+		virtual ~Model() = default;
 
 		/*
 		 * Getter
 		 */
 
-		std::vector<Mesh> const &getMeshList(void) const;
-		glm::vec3 const &getCenter(void) const;
-		std::vector<Mesh> moveMeshList(void);
+		std::vector<Mesh> const &getMeshList() const;
+		glm::vec3 const &getCenter() const;
+		std::vector<Mesh> moveMeshList();
 
 		class FileOpenException : public GeneralException
 		{
 			public :
 
-				explicit FileOpenException(void);
-				explicit FileOpenException(std::string const &path);
-				virtual ~FileOpenException(void) throw();
+				explicit FileOpenException() noexcept;
+				explicit FileOpenException(std::string const &path) noexcept;
+				~FileOpenException() noexcept override = default;
 		};
 
 		class InvalidNodeException : public GeneralException
 		{
 			public :
 
-				explicit InvalidNodeException(void);
-				virtual ~InvalidNodeException(void) throw();
+				explicit InvalidNodeException() noexcept;
+				~InvalidNodeException() noexcept override = default;
 		};
 
 	private :
@@ -69,8 +69,8 @@ class Model
 
 		inline void _load_model(std::string const &path, std::map<std::string, Texture> &texture_list);
 		inline void _load_node(aiNode *node, const aiScene *scene, std::string const &directory,
-						std::map<std::string, Texture> &texture_list);
-		inline void _calculate_center(void);
+							   std::map<std::string, Texture> &texture_list);
+		inline void _calculate_center();
 };
 
 #endif

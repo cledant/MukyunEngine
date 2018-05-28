@@ -20,33 +20,33 @@ class OmnidirectionalDepthMap : public AFramebuffer
 	public :
 
 		OmnidirectionalDepthMap(int w, int h);
-		virtual ~OmnidirectionalDepthMap(void);
+		~OmnidirectionalDepthMap() override = default;
 		OmnidirectionalDepthMap(OmnidirectionalDepthMap const &src) = delete;
 		OmnidirectionalDepthMap &operator=(OmnidirectionalDepthMap const &rhs) = delete;
-		OmnidirectionalDepthMap(OmnidirectionalDepthMap &&src);
-		OmnidirectionalDepthMap &operator=(OmnidirectionalDepthMap &&rhs);
+		OmnidirectionalDepthMap(OmnidirectionalDepthMap &&src) noexcept;
+		OmnidirectionalDepthMap &operator=(OmnidirectionalDepthMap &&rhs) noexcept;
 
-		virtual void reallocateFBO(int h, int w) override;
+		void reallocateFBO(int h, int w) override;
 
 		class InitException : public GeneralException
 		{
 			public :
 
-				explicit InitException(void);
-				virtual ~InitException(void) throw();
+				explicit InitException() noexcept;
+				~InitException() noexcept override = default;
 		};
 
 		class IncompleteBufferException : public GeneralException
 		{
 			public :
 
-				explicit IncompleteBufferException(void);
-				virtual ~IncompleteBufferException(void) throw();
+				explicit IncompleteBufferException() noexcept;
+				~IncompleteBufferException() noexcept override = default;
 		};
 
 	protected :
 
-		inline void _allocate_buffers(void);
+		inline void _allocate_buffers();
 };
 
 #endif

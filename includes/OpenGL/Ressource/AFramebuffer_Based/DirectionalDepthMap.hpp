@@ -20,33 +20,33 @@ class DirectionalDepthMap : public AFramebuffer
 	public :
 
 		DirectionalDepthMap(int w, int h);
-		virtual ~DirectionalDepthMap(void);
+		~DirectionalDepthMap() override = default;
 		DirectionalDepthMap(DirectionalDepthMap const &src) = delete;
 		DirectionalDepthMap &operator=(DirectionalDepthMap const &rhs) = delete;
-		DirectionalDepthMap(DirectionalDepthMap &&src);
-		DirectionalDepthMap &operator=(DirectionalDepthMap &&rhs);
+		DirectionalDepthMap(DirectionalDepthMap &&src) noexcept;
+		DirectionalDepthMap &operator=(DirectionalDepthMap &&rhs) noexcept;
 
-		virtual void reallocateFBO(int h, int w) override;
+		void reallocateFBO(int h, int w) override;
 
 		class InitException : public GeneralException
 		{
 			public :
 
-				explicit InitException(void);
-				virtual ~InitException(void) throw();
+				explicit InitException() noexcept;
+				~InitException() noexcept override = default;
 		};
 
 		class IncompleteBufferException : public GeneralException
 		{
 			public :
 
-				explicit IncompleteBufferException(void);
-				virtual ~IncompleteBufferException(void) throw();
+				explicit IncompleteBufferException() noexcept;
+				~IncompleteBufferException() noexcept override = default;
 		};
 
 	protected :
 
-		inline void _allocate_buffers(void);
+		inline void _allocate_buffers();
 };
 
 #endif

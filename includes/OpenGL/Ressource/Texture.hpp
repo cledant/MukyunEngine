@@ -27,80 +27,80 @@ class Texture
 
 		enum class eTextureType
 		{
-			TEX_DIFFUSE,
-			TEX_SPECULAR,
-			TEX_DIFFUSE_SPECULAR,
+				TEX_DIFFUSE,
+				TEX_SPECULAR,
+				TEX_DIFFUSE_SPECULAR,
 		};
 
-		Texture(void);
+		Texture();
 		Texture(std::string const &path, Texture::eTextureType type);
 		Texture(const void *buffer, glm::ivec2 const &size,
 				GLint internalFormat, GLenum format,
 				Texture::eTextureType type);
 		Texture(Texture const &src) = delete;
 		Texture &operator=(Texture const &rhs) = delete;
-		Texture(Texture &&src);
-		Texture &operator=(Texture &&rhs);
-		virtual ~Texture(void);
+		Texture(Texture &&src) noexcept;
+		Texture &operator=(Texture &&rhs) noexcept;
+		virtual ~Texture();
 
 		/*
 		 * Getter
 		 */
 
-		GLuint getTextureID(void) const;
-		Texture::eTextureType getTextureType(void) const;
-		int getTexW(void) const;
-		int getTexH(void) const;
-		int getTexChannel(void) const;
-		GLuint moveTexture(void);
+		GLuint getTextureID() const;
+		Texture::eTextureType getTextureType() const;
+		int getTexW() const;
+		int getTexH() const;
+		int getTexChannel() const;
+		GLuint moveTexture();
 
 		class FileOpenException : public GeneralException
 		{
 			public :
 
-				explicit FileOpenException(void);
-				explicit FileOpenException(std::string const &path);
-				virtual ~FileOpenException(void) throw();
+				explicit FileOpenException() noexcept;
+				explicit FileOpenException(std::string const &path) noexcept;
+				~FileOpenException() noexcept override = default;
 		};
 
 		class AllocationException : public GeneralException
 		{
 			public :
 
-				explicit AllocationException(void);
-				virtual ~AllocationException(void) throw();
+				explicit AllocationException() noexcept;
+				~AllocationException() noexcept override = default;
 		};
 
 		class TypeException : public GeneralException
 		{
 			public :
 
-				explicit TypeException(void);
-				virtual ~TypeException(void) throw();
+				explicit TypeException() noexcept;
+				~TypeException() noexcept override = default;
 		};
 
 		class ChannelNumberException : public GeneralException
 		{
 			public :
 
-				explicit ChannelNumberException(void);
-				virtual ~ChannelNumberException(void) throw();
+				explicit ChannelNumberException() noexcept;
+				~ChannelNumberException() noexcept override = default;
 		};
 
 		class BufferException : public GeneralException
 		{
 			public :
 
-				explicit BufferException(void);
-				virtual ~BufferException(void) throw();
+				explicit BufferException() noexcept;
+				~BufferException() noexcept override = default;
 		};
 
 		class InvalidTextureException : public GeneralException
 		{
 			public :
 
-				explicit InvalidTextureException(void);
-				virtual ~InvalidTextureException(void) throw();
+				explicit InvalidTextureException() noexcept;
+				~InvalidTextureException() noexcept override = default;
 		};
 
 	private :
@@ -113,7 +113,7 @@ class Texture
 
 		inline GLuint _load_flat(std::string const &path, int *w, int *h, int *chan);
 		inline GLuint _load_buffer(const void *buffer, int tex_w, int tex_h,
-							GLint internalFormat, GLenum format);
+								   GLint internalFormat, GLenum format);
 };
 
 #endif

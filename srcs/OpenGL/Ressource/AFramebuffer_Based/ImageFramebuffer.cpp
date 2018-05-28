@@ -28,16 +28,12 @@ ImageFramebuffer::ImageFramebuffer(int h, int w) :
 	}
 }
 
-ImageFramebuffer::~ImageFramebuffer(void)
-{
-}
-
-ImageFramebuffer::ImageFramebuffer(ImageFramebuffer &&src)
+ImageFramebuffer::ImageFramebuffer(ImageFramebuffer &&src) noexcept
 {
 	*this = std::move(src);
 }
 
-ImageFramebuffer &ImageFramebuffer::operator=(ImageFramebuffer &&rhs)
+ImageFramebuffer &ImageFramebuffer::operator=(ImageFramebuffer &&rhs) noexcept
 {
 	AFramebuffer::operator=(std::move(rhs));
 	return (*this);
@@ -59,25 +55,17 @@ void ImageFramebuffer::reallocateFBO(int h, int w)
 	this->_allocate_buffers();
 }
 
-ImageFramebuffer::InitException::InitException(void)
+ImageFramebuffer::InitException::InitException() noexcept
 {
 	this->_msg = "ImageFramebuffer : Failed initialize framebuffer";
 }
 
-ImageFramebuffer::InitException::~InitException(void) throw()
-{
-}
-
-ImageFramebuffer::IncompleteBufferException::IncompleteBufferException(void)
+ImageFramebuffer::IncompleteBufferException::IncompleteBufferException() noexcept
 {
 	this->_msg = "ImageFramebuffer : Framebuffer is incomplet";
 }
 
-ImageFramebuffer::IncompleteBufferException::~IncompleteBufferException(void) throw()
-{
-}
-
-inline void ImageFramebuffer::_allocate_buffers(void)
+inline void ImageFramebuffer::_allocate_buffers()
 {
 	glGenFramebuffers(1, &this->_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, this->_fbo);

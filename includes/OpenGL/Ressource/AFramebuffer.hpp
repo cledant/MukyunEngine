@@ -23,28 +23,28 @@ class AFramebuffer
 	public :
 
 		AFramebuffer(int h, int w);
-		AFramebuffer(void);
-		virtual ~AFramebuffer(void);
+		AFramebuffer();
+		virtual ~AFramebuffer();
 		AFramebuffer(AFramebuffer const &src) = delete;
 		AFramebuffer &operator=(AFramebuffer const &rhs) = delete;
-		AFramebuffer(AFramebuffer &&src);
-		AFramebuffer &operator=(AFramebuffer &&rhs);
+		AFramebuffer(AFramebuffer &&src) noexcept;
+		AFramebuffer &operator=(AFramebuffer &&rhs) noexcept;
 
-		void useFramebuffer(void) const;
-		void defaultFramebuffer(void) const;
-		void setViewport(void) const;
+		void useFramebuffer() const;
+		void defaultFramebuffer() const;
+		void setViewport() const;
 		virtual void reallocateFBO(int h, int w) = 0;
 
 		/*
 		 * Getter
 		 */
 
-		GLuint moveFramebuffer(void);
-		GLuint moveTextureBuffer(void);
-		GLuint moveRBO(void);
-		GLuint getTextureBuffer(void) const;
-		int getTexWidth(void) const;
-		int getTexHeight(void) const;
+		GLuint moveFramebuffer();
+		GLuint getTextureBuffer() const;
+		GLuint moveTextureBuffer();
+		GLuint moveRBO();
+		int getTexWidth() const;
+		int getTexHeight() const;
 
 	protected :
 
