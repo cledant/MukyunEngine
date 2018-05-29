@@ -42,6 +42,8 @@ void Env::parse_args(int argc, char **argv)
 		if (parse)
 			parse = this->_parse_fullscreen_monitor(std::string(argv[i]));
 		if (parse)
+			parse = this->_parse_model(std::string(argv[i]));
+		if (parse)
 			this->_parse_vsync(std::string(argv[i]));
 	}
 }
@@ -275,6 +277,27 @@ bool Env::_parse_instance_size(std::string const &arg)
 	return (false);
 }
 
+bool Env::_parse_model(std::string const &arg)
+{
+	static bool    already_parsed = false;
+	constexpr char alice[]        = "--model=ALICE";
+	constexpr char sakuya[]       = "--model=SAKUYA";
+	constexpr char cube[]         = "--model=CUBE";
+
+	if (already_parsed)
+		return (true);
+	if (arg == alice)
+		this->_env_value.model_type = InitValue::Model_type::ALICE;
+	else if (arg == sakuya)
+		this->_env_value.model_type = InitValue::Model_type::SAKUYA;
+	else if (arg == cube)
+		this->_env_value.model_type = InitValue::Model_type::CUBE;
+	else
+		return (true);
+	already_parsed = true;
+	return (false);
+}
+
 /*
  * Display info
  */
@@ -309,6 +332,12 @@ void Env::_display_help()
 	std::cout << "				Min resolution is 640x480" << std::endl;
 	std::cout << "				Max resolution is 3840x2160" << std::endl;
 	std::cout << "				Default is 1280x720" << std::endl;
+	std::cout << "		--model=NAME" << std::endl;
+	std::cout << "			Loads named model in instacing test" << std::endl;
+	std::cout << "			Possible selection :" << std::endl;
+	std::cout << "				CUBE" << std::endl;
+	std::cout << "				ALICE" << std::endl;
+	std::cout << "				SAKUYA" << std::endl;
 	std::cout << "		--nbInstance=AxBxC" << std::endl;
 	std::cout << "			Set number of models for instancing test" << std::endl;
 	std::cout << "			Max per size is 65536" << std::endl;

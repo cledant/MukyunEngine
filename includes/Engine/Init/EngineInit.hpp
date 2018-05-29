@@ -23,12 +23,20 @@ struct InitValue
 
 	enum class Scene_type
 	{
-		NONE,
-		INSTANCING_1,
-		MULTILIGHT_1,
-		DIRECTIONAL_SHADOW_1,
-		OMNI_DIRECTIONAL_SHADOW_1,
-		SPOT_SHADOW_1,
+			NONE,
+			INSTANCING_1,
+			MULTILIGHT_1,
+			DIRECTIONAL_SHADOW_1,
+			OMNI_DIRECTIONAL_SHADOW_1,
+			SPOT_SHADOW_1,
+	};
+
+	enum class Model_type
+	{
+			NONE,
+			CUBE,
+			ALICE,
+			SAKUYA,
 	};
 
 	InitValue::Scene_type type;
@@ -38,6 +46,7 @@ struct InitValue
 	unsigned long         monitor;
 	bool                  vsync;
 	std::vector<size_t>   instance_size;
+	InitValue::Model_type model_type;
 };
 
 /*
