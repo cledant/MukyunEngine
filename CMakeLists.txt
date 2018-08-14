@@ -1,5 +1,8 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.6)
 project(MukyunEngine)
+
+#Global build type
+set(CMAKE_BUILD_TYPE Release)
 
 #Setup Glad
 set(GLAD_API "gl=4.1")
@@ -12,15 +15,16 @@ option(GLFW_INSTALL "" OFF)
 add_subdirectory(libs/glfw ${CMAKE_BINARY_DIR}/libs/glfw/build)
 
 #Setup Assimp
-set(BUILD_SHARED_LIBS OFF)
-set(ASSIMP_NO_EXPORT ON)
+option(BUILD_SHARED_LIBS OFF)
+option(ASSIMP_NO_EXPORT ON)
+option(ASSIMP_BUILD_TESTS OFF)
+option(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
 add_subdirectory(libs/assimp ${CMAKE_BINARY_DIR}/libs/assimp/build)
 
 #Setup FreeType
 add_subdirectory(libs/freetype2 ${CMAKE_BINARY_DIR}/libs/freetype2/build)
 
 #Setup cpp version and Release type
-set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
