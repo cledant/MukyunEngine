@@ -31,4 +31,3 @@ Shadows :
 
 ![screenshot](/screenshots/me_shadow_3.png?raw=true)
 
-![screenshot](/screens/screen.png?raw=true)
