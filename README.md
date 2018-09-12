@@ -15,7 +15,7 @@ You may compile the executable `mukyun_engine` by running `cmake`.
 
 ## Usage
 
-Run `./mukyun_engine` after compiling, usage be should displayed.
+Run `./mukyun_engine` after compiling, usage should be displayed.
 
 ## Other screenshots
 
