@@ -208,13 +208,22 @@ void Mesh::_load_texture(aiMaterial *mat, aiTextureType type,
 		mat->GetTexture(type, 0, &str);
 		std_str = this->_directory + '/';
 		std_str.append(str.C_Str());
-		if (texture_list.find(std_str) != texture_list.end())
-			return;
-		auto it = texture_list.insert(std::pair<std::string, Texture>(std_str, Texture(std_str, tex_type)));
-		if (tex_type == Texture::eTextureType::TEX_DIFFUSE)
-			this->_material.diffuseMap = it.first->second.getTextureID();
+		auto is_loaded = texture_list.find(std_str);
+		if (is_loaded != texture_list.end())
+		{
+			if (tex_type == Texture::eTextureType::TEX_DIFFUSE)
+				this->_material.diffuseMap = is_loaded->second.getTextureID();
+			else
+				this->_material.specularMap = is_loaded->second.getTextureID();
+		}
 		else
-			this->_material.specularMap = it.first->second.getTextureID();
+		{
+			auto new_tex = texture_list.insert(std::pair<std::string, Texture>(std_str, Texture(std_str, tex_type)));
+			if (tex_type == Texture::eTextureType::TEX_DIFFUSE)
+				this->_material.diffuseMap = new_tex.first->second.getTextureID();
+			else
+				this->_material.specularMap = new_tex.first->second.getTextureID();
+		}
 	}
 }
 
