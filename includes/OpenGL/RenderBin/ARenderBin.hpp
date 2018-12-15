@@ -45,6 +45,7 @@ class ARenderBin
 			LightContainer const *lc;
 			glm::vec3 const      *view_pos;
 			size_t               nb_thread;
+			bool                 use_face_culling;
 		};
 
 		enum class eType
@@ -94,6 +95,7 @@ class ARenderBin
 		std::vector<GLuint> moveVaoMeshes();
 		size_t getCurrentInstanceNumber() const;
 		size_t getMaxInstanceNumber() const;
+		bool getFaceCulling() const;
 
 		/*
 		 * Light Related Getter
@@ -136,7 +138,7 @@ class ARenderBin
 		size_t                       _max_object;
 		std::unique_ptr<glm::mat4[]> _model_matrices;
 		glm::mat4                    *_ptr_render_model;
-
+		bool                         _face_culling;
 		/*
 		 * Light related
 		 */

@@ -60,9 +60,10 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating RenderBin to draw Light position as debug
 	ARenderBin::Params rb_light_pos;
-	rb_light_pos.shader       = &rm.getShader("DiffuseColored");
-	rb_light_pos.model        = &rm.getModel("WhiteBox2");
-	rb_light_pos.max_instance = LightContainer::Params::default_max_light;
+	rb_light_pos.shader           = &rm.getShader("DiffuseColored");
+	rb_light_pos.model            = &rm.getModel("WhiteBox2");
+	rb_light_pos.max_instance     = LightContainer::Params::default_max_light;
+	rb_light_pos.use_face_culling = true;
 	(*world)->add_RenderBin("LightPos", rb_light_pos,
 							ARenderBin::eType::DIFFUSE_COLORED);
 
@@ -92,18 +93,20 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating RenderBin for Light that uses LightContainer
 	AShadowRenderBin::Params rb_light;
-	rb_light.shader       = &rm.getShader("MultiPointDirSpotLightWithShadowMapMultiPass");
-	rb_light.model        = &rm.getModel("BlueBox");
-	rb_light.nb_thread    = 8;
-	rb_light.win_h        = manager.getWindow().cur_win_h;
-	rb_light.win_w        = manager.getWindow().cur_win_w;
-	rb_light.max_instance = 100000;
+	rb_light.shader           = &rm.getShader("MultiPointDirSpotLightWithShadowMapMultiPass");
+	rb_light.model            = &rm.getModel("BlueBox");
+	rb_light.nb_thread        = 8;
+	rb_light.win_h            = manager.getWindow().cur_win_h;
+	rb_light.win_w            = manager.getWindow().cur_win_w;
+	rb_light.max_instance     = 100000;
+	rb_light.use_face_culling = true;
 	(*world)->add_ShadowRenderBin("LightBlueBoxRB", rb_light,
 								  ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
 
-	rb_light.shader       = &rm.getShader("MultiPointDirSpotLightWithShadowMapMultiPass");
-	rb_light.model        = &rm.getModel("TenshiPlane");
-	rb_light.max_instance = 100000;
+	rb_light.shader           = &rm.getShader("MultiPointDirSpotLightWithShadowMapMultiPass");
+	rb_light.model            = &rm.getModel("TenshiPlane");
+	rb_light.max_instance     = 100000;
+	rb_light.use_face_culling = true;
 	(*world)->add_ShadowRenderBin("TenshiPlaneRB", rb_light,
 								  ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
 

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MultiDirLightShadowRenderBin.cpp                :+:      :+:    :+:   */
+/*   MultiDirLightShadowRenderBin.cpp                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -91,6 +91,13 @@ void MultiPointDirSpotLightShadowRenderBin::drawAmbient()
 	this->_shader->setVec3("viewPos", *(this->_view_pos));
 	this->_shader->setInt("index", 0);
 	this->_shader->setFloat("uniform_farPlane", this->_sr->getOmniNearFar().y);
+	//Setting face culling
+	if (this->_face_culling)
+	{
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glFrontFace(GL_CCW);
+	}
 	//Render Loop
 	for (auto const &it : this->_vao_mesh)
 	{
@@ -116,6 +123,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawAmbient()
 		glBindVertexArray(0);
 		i++;
 	}
+	glDisable(GL_CULL_FACE);
 }
 
 void MultiPointDirSpotLightShadowRenderBin::drawLight()
@@ -155,6 +163,13 @@ void MultiPointDirSpotLightShadowRenderBin::drawLight()
 	glActiveTexture(GL_TEXTURE3);
 	this->_shader->setInt("depthCube", 3);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, this->_sr->getOmniDepthMaps()[0].get()->getTextureBuffer());
+	//Setting face culling
+	if (this->_face_culling)
+	{
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glFrontFace(GL_CCW);
+	}
 	//Render Loop
 	for (auto const &it : this->_vao_mesh)
 	{
@@ -215,6 +230,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawLight()
 		glBindVertexArray(0);
 		i++;
 	}
+	glDisable(GL_CULL_FACE);
 	glDepthFunc(GL_LESS);
 	glDisable(GL_BLEND);
 }
@@ -223,6 +239,13 @@ void MultiPointDirSpotLightShadowRenderBin::drawNoShader() const
 {
 	size_t i = 0;
 
+	//Setting face culling
+	if (this->_face_culling)
+	{
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glFrontFace(GL_CCW);
+	}
 	for (auto const &it : this->_vao_mesh)
 	{
 		glBindVertexArray(it);
@@ -233,4 +256,5 @@ void MultiPointDirSpotLightShadowRenderBin::drawNoShader() const
 		glBindVertexArray(0);
 		i++;
 	}
+	glDisable(GL_CULL_FACE);
 }

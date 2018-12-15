@@ -22,12 +22,13 @@ ARenderBin::Params::Params()
 	this->lc                = nullptr;
 	this->view_pos          = nullptr;
 	this->nb_thread         = ARenderBin::_default_nb_thread;
+	this->use_face_culling  = false;
 }
 
 ARenderBin::ARenderBin() :
 		_type(ARenderBin::eType::NONE), _shader(nullptr), _perspec_mult_view(nullptr),
 		_model(nullptr), _vbo_model_matrices(0), _max_object(0),
-		_model_matrices(nullptr), _ptr_render_model(nullptr),
+		_model_matrices(nullptr), _ptr_render_model(nullptr), _face_culling(false),
 		_use_light(false), _lc(nullptr), _view_pos(nullptr), _inv_model_matrices(nullptr),
 		_ptr_render_inv_model(nullptr), _vbo_inv_model_matrices(0), _nb_thread(ARenderBin::_default_nb_thread),
 		_entity_per_thread(0), _leftover(0), _update_vbo(true), _update_it(true)
@@ -39,7 +40,8 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		_perspec_mult_view(params.perspec_mult_view), _model(params.model),
 		_vbo_model_matrices(0), _max_object(params.max_instance),
 		_model_matrices(nullptr), _ptr_render_model(nullptr),
-		_use_light(params.use_light), _lc(params.lc), _view_pos(params.view_pos),
+		_face_culling(params.use_face_culling), _use_light(params.use_light),
+		_lc(params.lc), _view_pos(params.view_pos),
 		_inv_model_matrices(nullptr), _ptr_render_inv_model(nullptr), _vbo_inv_model_matrices(0),
 		_nb_thread(params.nb_thread), _entity_per_thread(0), _leftover(0), _update_vbo(true),
 		_update_it(true)
@@ -102,6 +104,7 @@ ARenderBin &ARenderBin::operator=(ARenderBin &&rhs)
 	this->_model                = rhs.getModel();
 	this->_ptr_render_inv_model = nullptr;
 	this->_ptr_render_model     = nullptr;
+	this->_face_culling         = rhs.getFaceCulling();
 	this->_nb_thread            = rhs.getNbThread();
 	this->_entity_per_thread    = 0;
 	this->_leftover             = 0;
@@ -254,6 +257,11 @@ size_t ARenderBin::getCurrentInstanceNumber() const
 size_t ARenderBin::getMaxInstanceNumber() const
 {
 	return (this->_max_object);
+}
+
+bool ARenderBin::getFaceCulling() const
+{
+	return (this->_face_culling);
 }
 
 /*

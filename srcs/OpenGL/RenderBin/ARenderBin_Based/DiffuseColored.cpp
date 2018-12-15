@@ -90,6 +90,12 @@ void DiffuseColored::draw()
 	}
 	this->_shader->use();
 	this->_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
+	if (this->_face_culling)
+	{
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glFrontFace(GL_CCW);
+	}
 	for (auto const &it : this->_vao_mesh)
 	{
 		glActiveTexture(GL_TEXTURE0);
@@ -101,6 +107,7 @@ void DiffuseColored::draw()
 							  this->_vector_light_diffuse.size());
 		i++;
 	}
+	glDisable(GL_CULL_FACE);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
 }

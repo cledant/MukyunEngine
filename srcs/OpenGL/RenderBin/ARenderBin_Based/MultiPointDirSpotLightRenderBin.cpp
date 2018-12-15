@@ -58,6 +58,12 @@ void MultiPointDirSpotLightRenderBin::draw()
 						  sizeof(LightContainer::DirLightDataGL) * this->_lc->getMaxDirLightNumber());
 	this->_shader->setUbo("uniform_SpotLight", 2, this->_lc->getUboSpotLight(),
 						  sizeof(LightContainer::SpotLightDataGL) * this->_lc->getMaxSpotLightNumber());
+	if (this->_face_culling)
+	{
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glFrontFace(GL_CCW);
+	}
 	for (auto const &it : this->_vao_mesh)
 	{
 		glActiveTexture(GL_TEXTURE0);
@@ -79,4 +85,5 @@ void MultiPointDirSpotLightRenderBin::draw()
 		glBindVertexArray(0);
 		i++;
 	}
+	glDisable(GL_CULL_FACE);
 }

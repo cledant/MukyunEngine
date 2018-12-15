@@ -39,7 +39,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	sr_params.omni_depth_map_shader     = &rm.getShader("ComputeOmniDepthMap");
 	sr_params.spot_dir_depth_map_shader = &rm.getShader("ComputeDirLightDepthMap");
 
-	//Setting Engine Params
+	//Setting Engine Params￼
 	Engine::EngineInitParams engine_params;
 	engine_params.input          = &manager.getInput();
 	engine_params.win            = &manager.getWindow();
@@ -57,28 +57,33 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating Model RenderBin
 	ARenderBin::Params rb_model;
+
 	rb_model.nb_thread    = 8;
 	rb_model.max_instance = arg.instance_size[0] * arg.instance_size[1] * arg.instance_size[2];
 	switch (arg.model_type)
 	{
 		case InitValue::Model_type::CUBE :
-			rb_model.shader = &rm.getShader("BasicColor");
-			rb_model.model  = &rm.getModel("BlueBox");
+			rb_model.shader           = &rm.getShader("BasicColor");
+			rb_model.model            = &rm.getModel("BlueBox");
+			rb_model.use_face_culling = true;
 			(*world)->add_RenderBin("Model", rb_model, ARenderBin::eType::COLOR);
 			break;
 		case InitValue::Model_type::ALICE :
-			rb_model.shader = &rm.getShader("BasicProp");
-			rb_model.model  = &rm.getModel("Alice");
+			rb_model.shader           = &rm.getShader("BasicProp");
+			rb_model.model            = &rm.getModel("Alice");
+			rb_model.use_face_culling = false;
 			(*world)->add_RenderBin("Model", rb_model, ARenderBin::eType::PROP);
 			break;
 		case InitValue::Model_type::SAKUYA :
-			rb_model.shader = &rm.getShader("BasicProp");
-			rb_model.model  = &rm.getModel("Sakuya");
+			rb_model.shader           = &rm.getShader("BasicProp");
+			rb_model.model            = &rm.getModel("Sakuya");
+			rb_model.use_face_culling = true;
 			(*world)->add_RenderBin("Model", rb_model, ARenderBin::eType::PROP);
 			break;
 		case InitValue::Model_type::NONE :
-			rb_model.shader = &rm.getShader("BasicColor");
-			rb_model.model  = &rm.getModel("BlueBox");
+			rb_model.shader           = &rm.getShader("BasicColor");
+			rb_model.model            = &rm.getModel("BlueBox");
+			rb_model.use_face_culling = true;
 			(*world)->add_RenderBin("Model", rb_model, ARenderBin::eType::COLOR);
 			break;
 	}
