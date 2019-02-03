@@ -22,7 +22,7 @@
 # include "OpenGL/LightContainer/LightContainer.hpp"
 # include "GameEntities/Prop.hpp"
 # include <vector>
-
+# include <future>
 # include <memory>
 
 class ARenderBin
@@ -153,6 +153,7 @@ class ARenderBin
 		size_t                                             _max_entities;
 		float                                              _tick;
 		bool                                               _update_vbo;
+		std::vector<std::future<void>>                     _vec_futures;
 
 		/*
 		 * Protected functions

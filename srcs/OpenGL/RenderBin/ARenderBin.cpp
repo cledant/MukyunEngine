@@ -382,13 +382,15 @@ void ARenderBin::_update_vao()
 
 void ARenderBin::_update_entities()
 {
-	//TODO use std::promise std::async and stuff for multithread
-
+	this->_vec_futures.clear();
 	for (size_t i = 0; i < this->_nb_thread; ++i)
-		this->_update_single_entity_vector(i);
+	{
+		this->_vec_futures.emplace_back(std::async(std::launch::async, &ARenderBin::_update_single_entity_vector, this, i));
+	}
 	this->_nb_active_entities = 0;
 	for (size_t i = 0; i < this->_nb_thread; ++i)
 	{
+		this->_vec_futures[i].get();
 		if (this->_vec_updated[i])
 		{
 			std::memcpy(&this->_ptr_model_matrices[this->_nb_active_entities],
