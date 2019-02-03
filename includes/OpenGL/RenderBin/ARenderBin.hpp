@@ -63,13 +63,8 @@ class ARenderBin
 		virtual ~ARenderBin();
 		ARenderBin(ARenderBin const &src) = delete;
 		ARenderBin &operator=(ARenderBin const &rhs) = delete;
-		/*
-		 * Doesn't copy content of ModelMatrices Array
-		 * Same for InvModelMatrices
-		 * Move constructor can throw
-		 */
-		ARenderBin(ARenderBin &&src);
-		ARenderBin &operator=(ARenderBin &&rhs);
+		ARenderBin(ARenderBin &&src) = delete;
+		ARenderBin &operator=(ARenderBin &&rhs) = delete;
 
 		/*
 		 * Draw
@@ -90,9 +85,7 @@ class ARenderBin
 		Model const *getModel() const;
 		glm::mat4 *getModelMatrices() const;
 		GLuint getVboModelMatrices() const;
-		GLuint moveVboModelMatrices();
 		std::vector<GLuint> const &getVaoMeshes() const;
-		std::vector<GLuint> moveVaoMeshes();
 		size_t getCurrentInstanceNumber() const;
 		size_t getMaxInstanceNumber() const;
 		bool getFaceCulling() const;
@@ -106,26 +99,18 @@ class ARenderBin
 		glm::vec3 const *getViewPos();
 		glm::mat4 *getInvModelMatrices() const;
 		GLuint getVBOInvModelMatrices() const;
-		GLuint moveVBOInvModelMatrices();
 
 		/*
 		 * Entity related getter
 		 */
 
 		size_t getNbThread() const;
-		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> const &getEntities() const;
-		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> moveEntities();
-		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> const &getInactiveEntities() const;
-		std::unordered_map<IEntity *, std::unique_ptr<IEntity>> moveInactiveEntities();
 
 		/*
 		 * Entity related setter
 		 */
 
 		IEntity *add_Prop(Prop::Params &params);
-		bool delete_Prop(IEntity const *ptr);
-		bool activate_Prop(IEntity const *ptr);
-		bool deactivate_Prop(IEntity const *ptr);
 
 	protected :
 
@@ -139,6 +124,7 @@ class ARenderBin
 		std::unique_ptr<glm::mat4[]> _model_matrices;
 		glm::mat4                    *_ptr_render_model;
 		bool                         _face_culling;
+
 		/*
 		 * Light related
 		 */
@@ -154,21 +140,20 @@ class ARenderBin
 		 * Entity related
 		 */
 
-		static constexpr size_t                                                        _default_nb_thread       = 1;
-		static constexpr size_t                                                        _max_thread              = 16;
-		static constexpr size_t                                                        _min_elements_per_thread = 8192;
-		size_t                                                                         _nb_thread;
-		std::unordered_map<IEntity *, std::unique_ptr<IEntity>>                        _entity_list;
-		std::unordered_map<IEntity *, std::unique_ptr<IEntity>>                        _inactive_entity_list;
-		std::vector<std::thread>                                                       _workers;
-		std::mutex                                                                     _workers_mutex[ARenderBin::_max_thread];
-		std::atomic<size_t>                                                            _workers_done;
-		std::atomic<size_t>                                                            _entity_per_thread;
-		std::atomic<size_t>                                                            _leftover;
-		float                                                                          _tick;
-		std::atomic<bool>                                                              _update_vbo;
-		bool                                                                           _update_it;
-		std::vector<std::unordered_map<IEntity *, std::unique_ptr<IEntity>>::iterator> _vec_it;
+		static constexpr size_t                            _default_nb_thread       = 2;
+		static constexpr size_t                            _max_thread              = 16;
+		static constexpr size_t                            _min_elements_per_vector = 64;
+		size_t                                             _nb_thread;
+		size_t                                             _nb_elements_per_vector;
+		std::vector<std::vector<std::unique_ptr<IEntity>>> _vec_entity_list;
+		std::vector<std::vector<glm::mat4>>                _vec_model_matricies_list;
+		std::vector<std::vector<glm::mat4>>                _vec_inv_model_matricies_list;
+		std::vector<bool>                                  _vec_updated;
+		std::vector<size_t>                                _vec_nb_active_entities;
+		size_t                                             _nb_active_entities;
+		size_t                                             _nb_entities;
+		float                                              _tick;
+		bool                                               _update_vbo;
 
 		/*
 		 * Protected functions
@@ -188,10 +173,8 @@ class ARenderBin
 		 * Protected function for thread
 		 */
 
-		inline void _start_workers();
-		inline void _update_iterators();
-		inline void _update_multithread_opengl_arrays(size_t thread_id);
-		inline void _update_monothread_opengl_arrays();
+		inline void _update_entities();
+		inline void _update_single_entity_vector(size_t thread_id);
 };
 
 #endif

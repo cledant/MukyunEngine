@@ -17,7 +17,7 @@ BasicColorRenderBin::BasicColorRenderBin(ARenderBin::Params const &params) : ARe
 	this->_type = ARenderBin::eType::COLOR;
 	std::cout << "Creating BasicColor RenderBin" << std::endl;
 }
-
+/*
 BasicColorRenderBin::BasicColorRenderBin(BasicColorRenderBin &&src) : ARenderBin(std::move(src))
 {
 }
@@ -27,7 +27,7 @@ BasicColorRenderBin &BasicColorRenderBin::operator=(BasicColorRenderBin &&rhs)
 	ARenderBin::operator=(std::move(rhs));
 	return (*this);
 }
-
+*/
 void BasicColorRenderBin::draw()
 {
 	size_t i = 0;
@@ -54,7 +54,7 @@ void BasicColorRenderBin::draw()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0,
 							  (this->_model->getMeshList())[i].getNbVertices(),
-							  this->_entity_list.size());
+							  this->_nb_active_entities);
 		glBindVertexArray(0);
 		i++;
 	}

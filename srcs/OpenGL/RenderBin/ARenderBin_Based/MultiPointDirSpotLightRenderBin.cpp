@@ -18,7 +18,7 @@ MultiPointDirSpotLightRenderBin::MultiPointDirSpotLightRenderBin(ARenderBin::Par
 	this->_type = ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT;
 	std::cout << "Creating MultiLightPointDirSpotLight RenderBin" << std::endl;
 }
-
+/*
 MultiPointDirSpotLightRenderBin::MultiPointDirSpotLightRenderBin(MultiPointDirSpotLightRenderBin &&src) :
 		ARenderBin(std::move(src))
 {
@@ -31,7 +31,7 @@ MultiPointDirSpotLightRenderBin &MultiPointDirSpotLightRenderBin::operator=(
 	ARenderBin::operator=(std::move(rhs));
 	return (*this);
 }
-
+*/
 /*
  * Draw
  */
@@ -81,7 +81,7 @@ void MultiPointDirSpotLightRenderBin::draw()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0,
 							  (this->_model->getMeshList())[i].getNbVertices(),
-							  this->_entity_list.size());
+							  this->_nb_active_entities);
 		glBindVertexArray(0);
 		i++;
 	}

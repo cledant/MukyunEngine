@@ -24,8 +24,8 @@ class BasicColorRenderBin : public ARenderBin
 		BasicColorRenderBin(BasicColorRenderBin const &src) = delete;
 		BasicColorRenderBin &operator=(BasicColorRenderBin const &rhs) = delete;
 		//Move constructor can throw because of ARenderBin Inheritance
-		BasicColorRenderBin(BasicColorRenderBin &&src);
-		BasicColorRenderBin &operator=(BasicColorRenderBin &&rhs);
+		BasicColorRenderBin(BasicColorRenderBin &&src) = delete;
+		BasicColorRenderBin &operator=(BasicColorRenderBin &&rhs) = delete;
 
 		/*
 		 * Draw

@@ -24,8 +24,8 @@ class BasicPropRenderBin : public ARenderBin
 		BasicPropRenderBin(BasicPropRenderBin const &src) = delete;
 		BasicPropRenderBin &operator=(BasicPropRenderBin const &rhs) = delete;
 		//Move constructor can throw because of ARenderBin Inheritance
-		BasicPropRenderBin(BasicPropRenderBin &&src);
-		BasicPropRenderBin &operator=(BasicPropRenderBin &&rhs);
+		BasicPropRenderBin(BasicPropRenderBin &&src) = delete;
+		BasicPropRenderBin &operator=(BasicPropRenderBin &&rhs) = delete;
 
 		/*
 		 * Draw

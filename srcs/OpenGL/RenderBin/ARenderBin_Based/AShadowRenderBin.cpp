@@ -29,7 +29,7 @@ AShadowRenderBin::AShadowRenderBin(AShadowRenderBin::Params const &params) :
 		_win_h(params.win_h)
 {
 }
-
+/*
 AShadowRenderBin::AShadowRenderBin(AShadowRenderBin &&src) :
 		ARenderBin(), _sr(nullptr)
 {
@@ -44,7 +44,7 @@ AShadowRenderBin &AShadowRenderBin::operator=(AShadowRenderBin &&rhs)
 	ARenderBin::operator=(std::move(rhs));
 	return (*this);
 }
-
+*/
 /*
  * Getter
  */

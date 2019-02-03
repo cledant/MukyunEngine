@@ -45,7 +45,7 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		};
 
 		explicit Prop(Prop::Params const &params);
-		virtual ~Prop() = default;
+		~Prop() override = default;
 		Prop(Prop const &src);
 		Prop &operator=(Prop const &rhs);
 
@@ -82,6 +82,8 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		bool update(float time) override;
 		void setActive(bool value) override;
 		bool getActive() const override;
+		void setDelete(bool value) override;
+		bool getDelete() const override;
 		glm::mat4 const &getModelMatrix() const override;
 		glm::mat4 const &getInvModelMatrix() const override;
 
@@ -116,6 +118,7 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 
 		//Related to IEntity
 		bool      _active;
+		bool      _delete;
 		glm::mat4 _model;
 		glm::mat4 _inv_model;
 

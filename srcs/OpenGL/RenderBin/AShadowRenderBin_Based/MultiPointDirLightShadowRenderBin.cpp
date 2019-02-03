@@ -18,7 +18,7 @@ MultiPointDirSpotLightShadowRenderBin::MultiPointDirSpotLightShadowRenderBin(ASh
 	this->_type = ARenderBin::eType::MULTIDIRLIGHT_SHADOW;
 	std::cout << "Creating MultiDirLightShadow RenderBin" << std::endl;
 }
-
+/*
 MultiPointDirSpotLightShadowRenderBin::MultiPointDirSpotLightShadowRenderBin(
 		MultiPointDirSpotLightShadowRenderBin &&src) :
 		AShadowRenderBin(std::move(src))
@@ -32,7 +32,7 @@ MultiPointDirSpotLightShadowRenderBin &MultiPointDirSpotLightShadowRenderBin::op
 	AShadowRenderBin::operator=(std::move(rhs));
 	return (*this);
 }
-
+*/
 /*
  * Draw
  */
@@ -119,7 +119,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawAmbient()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0,
 							  (this->_model->getMeshList())[i].getNbVertices(),
-							  this->_entity_list.size());
+							  this->_nb_active_entities);
 		glBindVertexArray(0);
 		i++;
 	}
@@ -200,7 +200,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawLight()
 			glBindTexture(GL_TEXTURE_2D, this->_sr->getDirDepthMaps()[j].get()->getTextureBuffer());
 			glDrawArraysInstanced(GL_TRIANGLES, 0,
 								  (this->_model->getMeshList())[i].getNbVertices(),
-								  this->_entity_list.size());
+								  this->_nb_active_entities);
 		}
 		//OmniDirectional Light
 		this->_shader->setInt("light_type", 0);
@@ -212,7 +212,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawLight()
 			glBindTexture(GL_TEXTURE_CUBE_MAP, this->_sr->getOmniDepthMaps()[j].get()->getTextureBuffer());
 			glDrawArraysInstanced(GL_TRIANGLES, 0,
 								  (this->_model->getMeshList())[i].getNbVertices(),
-								  this->_entity_list.size());
+								  this->_nb_active_entities);
 		}
 		//Spot Light
 		this->_shader->setInt("light_type", 2);
@@ -225,7 +225,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawLight()
 			glBindTexture(GL_TEXTURE_2D, this->_sr->getSpotDirDepthMaps()[j].get()->getTextureBuffer());
 			glDrawArraysInstanced(GL_TRIANGLES, 0,
 								  (this->_model->getMeshList())[i].getNbVertices(),
-								  this->_entity_list.size());
+								  this->_nb_active_entities);
 		}
 		glBindVertexArray(0);
 		i++;
@@ -252,7 +252,7 @@ void MultiPointDirSpotLightShadowRenderBin::drawNoShader() const
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0,
 							  (this->_model->getMeshList())[i].getNbVertices(),
-							  this->_entity_list.size());
+							  this->_nb_active_entities);
 		glBindVertexArray(0);
 		i++;
 	}

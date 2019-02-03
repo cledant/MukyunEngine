@@ -17,7 +17,7 @@ BasicPropRenderBin::BasicPropRenderBin(ARenderBin::Params const &params) : ARend
 	this->_type = ARenderBin::eType::PROP;
 	std::cout << "Creating BasicProp RenderBin" << std::endl;
 }
-
+/*
 BasicPropRenderBin::BasicPropRenderBin(BasicPropRenderBin &&src) : ARenderBin(std::move(src))
 {
 }
@@ -27,7 +27,7 @@ BasicPropRenderBin &BasicPropRenderBin::operator=(BasicPropRenderBin &&rhs)
 	ARenderBin::operator=(std::move(rhs));
 	return (*this);
 }
-
+*/
 void BasicPropRenderBin::draw()
 {
 	size_t i = 0;
@@ -54,7 +54,7 @@ void BasicPropRenderBin::draw()
 		glBindVertexArray(it);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArraysInstanced(GL_TRIANGLES, 0, (this->_model->getMeshList())[i].getNbVertices(),
-							  this->_entity_list.size());
+							  this->_nb_active_entities);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindVertexArray(0);
 		i++;

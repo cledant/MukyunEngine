@@ -31,7 +31,7 @@ Prop::Prop(Prop::Params const &params) :
 		_roll(params.orientation.z), _pos(params.pos), _scale(params.scale),
 		_offset(params.offset), _model_center(params.model_center),
 		_to_update(true), _used_for_light(params.light),
-		_active(params.active), _cb(params.pos, params.cb_half_size),
+		_active(params.active), _delete(false), _cb(params.pos, params.cb_half_size),
 		_dmg(params.dmg), _passthrough(params.passthrough)
 {
 }
@@ -58,6 +58,7 @@ Prop &Prop::operator=(Prop const &rhs)
 	this->_cb             = rhs.getCollisionBox();
 	this->_dmg            = rhs.getDamages();
 	this->_passthrough    = rhs.getPassthrough();
+	this->_delete         = rhs.getDelete();
 	return (*this);
 }
 
@@ -190,6 +191,16 @@ void Prop::setActive(bool value)
 bool Prop::getActive() const
 {
 	return (this->_active);
+}
+
+void Prop::setDelete(bool value)
+{
+	this->_delete = value;
+}
+
+bool Prop::getDelete() const
+{
+	return (this->_delete);
 }
 
 glm::mat4 const &Prop::getModelMatrix() const

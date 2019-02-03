@@ -138,9 +138,9 @@ void Engine::update()
 	this->_light_container.flushData();
 	//No need to flush render bins
 	for (auto &val : this->_render_bin_list)
-		val.second.get()->update(this->_tick);
+		val.second->update(this->_tick);
 	for (auto &val : this->_shadow_render_bin_list)
-		val.second.get()->update(this->_tick);
+		val.second->update(this->_tick);
 	this->_light_container.update(this->_tick);
 	this->_sr.update();
 }
@@ -148,9 +148,9 @@ void Engine::update()
 void Engine::updateGPU()
 {
 	for (auto &val : this->_render_bin_list)
-		val.second.get()->updateVBO();
+		val.second->updateVBO();
 	for (auto &val : this->_shadow_render_bin_list)
-		val.second.get()->updateVBO();
+		val.second->updateVBO();
 	this->_light_container.updateGPU();
 }
 
@@ -158,13 +158,13 @@ void Engine::render()
 {
 	//Shadow Rendering
 	for (auto &val : this->_shadow_render_bin_list)
-		val.second.get()->drawAmbient();
+		val.second->drawAmbient();
 	for (auto &val : this->_shadow_render_bin_list)
-		val.second.get()->drawLight();
+		val.second->drawLight();
 
 	//No Shadow Rendering
 	for (auto &val : this->_render_bin_list)
-		val.second.get()->draw();
+		val.second->draw();
 }
 
 /*
@@ -185,7 +185,7 @@ void Engine::computeDirectionalDepthMaps()
 		glDepthFunc(GL_LESS);
 		shader->setMat4("uniform_lightSpaceMatrix", (this->_sr.getVecDirLightSpaceMatrix())[i]);
 		for (auto &val : this->_shadow_render_bin_list)
-			val.second.get()->drawNoShader();
+			val.second->drawNoShader();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glCullFace(GL_BACK);
@@ -211,7 +211,7 @@ void Engine::computeOmniDepthMaps()
 		}
 		shader->setVec3("uniform_lightPos", glm::vec3(this->_light_container.getPointLightDataGL()[i].pos));
 		for (auto &val : this->_shadow_render_bin_list)
-			val.second.get()->drawNoShader();
+			val.second->drawNoShader();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glCullFace(GL_BACK);
@@ -231,7 +231,7 @@ void Engine::computeSpotDirDepthMaps()
 		glDepthFunc(GL_LESS);
 		shader->setMat4("uniform_lightSpaceMatrix", this->_sr.getVecSpotDirLightSpaceMatrix()[i]);
 		for (auto &val : this->_shadow_render_bin_list)
-			val.second.get()->drawNoShader();
+			val.second->drawNoShader();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glCullFace(GL_BACK);
