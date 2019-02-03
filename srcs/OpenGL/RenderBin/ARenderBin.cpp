@@ -27,29 +27,29 @@ ARenderBin::Params::Params()
 
 ARenderBin::ARenderBin() :
 		_type(ARenderBin::eType::NONE), _shader(nullptr), _perspec_mult_view(nullptr),
-		_model(nullptr), _vbo_model_matrices(0), _max_object(0),
-		_model_matrices(nullptr), _ptr_render_model(nullptr), _face_culling(false),
-		_use_light(false), _lc(nullptr), _view_pos(nullptr), _inv_model_matrices(nullptr),
-		_ptr_render_inv_model(nullptr), _vbo_inv_model_matrices(0), _nb_thread(ARenderBin::_default_nb_thread),
-		_nb_elements_per_vector(ARenderBin::_min_elements_per_vector), _nb_active_entities(0), _nb_entities(0),
-		_update_vbo(true)
+		_model(nullptr), _vbo_model_matrices(0), _model_matrices(nullptr),
+		_face_culling(false), _ptr_model_matrices(nullptr), _use_light(false),
+		_lc(nullptr), _view_pos(nullptr), _inv_model_matrices(nullptr),
+		_vbo_inv_model_matrices(0), _ptr_inv_model_matrices(nullptr),
+		_nb_thread(ARenderBin::_default_nb_thread),
+		_nb_elements_per_vector(ARenderBin::_min_elements_per_vector), _nb_active_entities(0),
+		_nb_entities(0), _max_entities(0), _update_vbo(true)
 {
 }
 
 ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		_type(ARenderBin::eType::NONE), _shader(params.shader),
 		_perspec_mult_view(params.perspec_mult_view), _model(params.model),
-		_vbo_model_matrices(0), _max_object(params.max_instance),
-		_model_matrices(nullptr), _ptr_render_model(nullptr),
-		_face_culling(params.use_face_culling), _use_light(params.use_light),
-		_lc(params.lc), _view_pos(params.view_pos),
-		_inv_model_matrices(nullptr), _ptr_render_inv_model(nullptr), _vbo_inv_model_matrices(0),
-		_nb_thread(params.nb_thread), _nb_active_entities(0), _nb_entities(0),_update_vbo(true)
+		_vbo_model_matrices(0), _model_matrices(nullptr), _face_culling(params.use_face_culling),
+		_ptr_model_matrices(nullptr), _use_light(params.use_light),
+		_lc(params.lc), _view_pos(params.view_pos), _inv_model_matrices(nullptr),
+		_vbo_inv_model_matrices(0), _ptr_inv_model_matrices(nullptr), _nb_thread(params.nb_thread),
+		_nb_active_entities(0), _nb_entities(0), _max_entities(params.max_instance), _update_vbo(true)
 {
 	if (this->_nb_thread > ARenderBin::_max_thread)
 		this->_nb_thread = 16;
 	else if (!this->_nb_thread)
-		this->_nb_thread          = ARenderBin::_default_nb_thread;
+		this->_nb_thread = ARenderBin::_default_nb_thread;
 	else if (this->_nb_thread % 2)
 		this->_nb_thread++;
 
@@ -92,6 +92,8 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 		throw;
 	}
 
+	this->_ptr_model_matrices     = this->_model_matrices.get();
+	this->_ptr_inv_model_matrices = this->_inv_model_matrices.get();
 }
 
 ARenderBin::~ARenderBin()
@@ -112,13 +114,13 @@ void ARenderBin::updateVBO()
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_model_matrices);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * this->_nb_active_entities,
-						this->_model_matrices.get());
+						this->_ptr_model_matrices);
 		if (this->_use_light)
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, this->_vbo_inv_model_matrices);
 			glBufferSubData(GL_ARRAY_BUFFER, 0,
 							sizeof(glm::mat4) * this->_nb_active_entities,
-							this->_inv_model_matrices.get());
+							this->_ptr_inv_model_matrices);
 		}
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
@@ -165,7 +167,7 @@ Model const *ARenderBin::getModel() const
 
 glm::mat4 *ARenderBin::getModelMatrices() const
 {
-	return (this->_model_matrices.get());
+	return (this->_ptr_model_matrices);
 }
 
 GLuint ARenderBin::getVboModelMatrices() const
@@ -176,16 +178,6 @@ GLuint ARenderBin::getVboModelMatrices() const
 std::vector<GLuint> const &ARenderBin::getVaoMeshes() const
 {
 	return (this->_vao_mesh);
-}
-
-size_t ARenderBin::getCurrentInstanceNumber() const
-{
-	return (this->_nb_active_entities);
-}
-
-size_t ARenderBin::getMaxInstanceNumber() const
-{
-	return (this->_max_object);
 }
 
 bool ARenderBin::getFaceCulling() const
@@ -214,7 +206,7 @@ glm::vec3 const *ARenderBin::getViewPos()
 
 glm::mat4 *ARenderBin::getInvModelMatrices() const
 {
-	return (this->_inv_model_matrices.get());
+	return (this->_ptr_inv_model_matrices);
 }
 
 GLuint ARenderBin::getVBOInvModelMatrices() const
@@ -232,13 +224,28 @@ size_t ARenderBin::getNbThread() const
 	return (this->_nb_thread);
 }
 
+size_t ARenderBin::getNbActiveInstances() const
+{
+	return (this->_nb_active_entities);
+}
+
+size_t ARenderBin::getTotalInstances() const
+{
+	return (this->_nb_entities);
+}
+
+size_t ARenderBin::getMaxInstances() const
+{
+	return (this->_max_entities);
+}
+
 /*
  * Entity related setter
  */
 
 IEntity *ARenderBin::add_Prop(Prop::Params &params)
 {
-	if (this->_nb_entities >= this->_max_object)
+	if (this->_nb_entities >= this->_max_entities)
 		return (nullptr);
 
 	params.light        = this->_use_light;
@@ -384,12 +391,12 @@ void ARenderBin::_update_entities()
 	{
 		if (this->_vec_updated[i])
 		{
-			std::memcpy(&this->_model_matrices.get()[this->_nb_active_entities],
+			std::memcpy(&this->_ptr_model_matrices[this->_nb_active_entities],
 						this->_vec_model_matricies_list[i].data(),
 						this->_vec_nb_active_entities[i] * sizeof(glm::mat4));
 			if (this->_use_light)
 			{
-				std::memcpy(&this->_inv_model_matrices.get()[this->_nb_active_entities],
+				std::memcpy(&this->_ptr_inv_model_matrices[this->_nb_active_entities],
 							this->_vec_inv_model_matricies_list[i].data(),
 							this->_vec_nb_active_entities[i] * sizeof(glm::mat4));
 			}

@@ -191,11 +191,6 @@ void DiffuseColored::_update_light_model_matrix()
 	ALight    *ptr_light = nullptr;
 	size_t    i          = 0;
 
-	if (!this->_ptr_render_model)
-	{
-		this->_ptr_render_model     = this->_model_matrices.get();
-		this->_ptr_render_inv_model = this->_inv_model_matrices.get();
-	}
 	for (auto const &it : this->_lc->getLightStorage())
 	{
 		ptr_light = it.get();
@@ -205,7 +200,7 @@ void DiffuseColored::_update_light_model_matrix()
 			mat_model = glm::translate(mat_model, ptr_light->getPos());
 			mat_model = glm::translate(mat_model, this->_model->getCenter() * DiffuseColored::_light_scale);
 			mat_model = glm::scale(mat_model, glm::vec3(DiffuseColored::_light_scale));
-			std::memcpy(&this->_ptr_render_model[i], &mat_model, sizeof(glm::mat4));
+			std::memcpy(&this->_ptr_model_matrices[i], &mat_model, sizeof(glm::mat4));
 			i++;
 		}
 	}

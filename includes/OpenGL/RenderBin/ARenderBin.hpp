@@ -83,8 +83,6 @@ class ARenderBin
 		glm::mat4 *getModelMatrices() const;
 		GLuint getVboModelMatrices() const;
 		std::vector<GLuint> const &getVaoMeshes() const;
-		size_t getCurrentInstanceNumber() const;
-		size_t getMaxInstanceNumber() const;
 		bool getFaceCulling() const;
 
 		/*
@@ -102,12 +100,16 @@ class ARenderBin
 		 */
 
 		size_t getNbThread() const;
+		size_t getNbActiveInstances() const;
+		size_t getTotalInstances() const;
+		size_t getMaxInstances() const;
 
 		/*
 		 * Entity related setter
 		 */
 
 		IEntity *add_Prop(Prop::Params &params);
+
 
 	protected :
 
@@ -117,10 +119,9 @@ class ARenderBin
 		Model const                  *_model;
 		GLuint                       _vbo_model_matrices;
 		std::vector<GLuint>          _vao_mesh;
-		size_t                       _max_object;
 		std::unique_ptr<glm::mat4[]> _model_matrices;
-		glm::mat4                    *_ptr_render_model;
 		bool                         _face_culling;
+		glm::mat4                    *_ptr_model_matrices;
 
 		/*
 		 * Light related
@@ -130,8 +131,8 @@ class ARenderBin
 		LightContainer const         *_lc;
 		glm::vec3 const              *_view_pos;
 		std::unique_ptr<glm::mat4[]> _inv_model_matrices;
-		glm::mat4                    *_ptr_render_inv_model;
 		GLuint                       _vbo_inv_model_matrices;
+		glm::mat4                    *_ptr_inv_model_matrices;
 
 		/*
 		 * Entity related
@@ -149,6 +150,7 @@ class ARenderBin
 		std::vector<size_t>                                _vec_nb_active_entities;
 		size_t                                             _nb_active_entities;
 		size_t                                             _nb_entities;
+		size_t                                             _max_entities;
 		float                                              _tick;
 		bool                                               _update_vbo;
 
