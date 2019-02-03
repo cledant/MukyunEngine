@@ -18,20 +18,7 @@ MultiPointDirSpotLightRenderBin::MultiPointDirSpotLightRenderBin(ARenderBin::Par
 	this->_type = ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT;
 	std::cout << "Creating MultiLightPointDirSpotLight RenderBin" << std::endl;
 }
-/*
-MultiPointDirSpotLightRenderBin::MultiPointDirSpotLightRenderBin(MultiPointDirSpotLightRenderBin &&src) :
-		ARenderBin(std::move(src))
-{
-	*this = std::move(src);
-}
 
-MultiPointDirSpotLightRenderBin &MultiPointDirSpotLightRenderBin::operator=(
-		MultiPointDirSpotLightRenderBin &&rhs)
-{
-	ARenderBin::operator=(std::move(rhs));
-	return (*this);
-}
-*/
 /*
  * Draw
  */

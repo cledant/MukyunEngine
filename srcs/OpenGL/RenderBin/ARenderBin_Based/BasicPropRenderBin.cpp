@@ -17,17 +17,7 @@ BasicPropRenderBin::BasicPropRenderBin(ARenderBin::Params const &params) : ARend
 	this->_type = ARenderBin::eType::PROP;
 	std::cout << "Creating BasicProp RenderBin" << std::endl;
 }
-/*
-BasicPropRenderBin::BasicPropRenderBin(BasicPropRenderBin &&src) : ARenderBin(std::move(src))
-{
-}
 
-BasicPropRenderBin &BasicPropRenderBin::operator=(BasicPropRenderBin &&rhs)
-{
-	ARenderBin::operator=(std::move(rhs));
-	return (*this);
-}
-*/
 void BasicPropRenderBin::draw()
 {
 	size_t i = 0;

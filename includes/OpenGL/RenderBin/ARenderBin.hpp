@@ -22,11 +22,8 @@
 # include "OpenGL/LightContainer/LightContainer.hpp"
 # include "GameEntities/Prop.hpp"
 # include <vector>
-# include <unordered_map>
+
 # include <memory>
-# include <atomic>
-# include <thread>
-# include <mutex>
 
 class ARenderBin
 {

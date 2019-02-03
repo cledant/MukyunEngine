@@ -37,7 +37,6 @@ class AShadowRenderBin : public ARenderBin
 		~AShadowRenderBin() override = default;
 		AShadowRenderBin(AShadowRenderBin const &src) = delete;
 		AShadowRenderBin &operator=(AShadowRenderBin const &rhs) = delete;
-		//Move constructor can throw because of ARenderBin Inheritance
 		AShadowRenderBin(AShadowRenderBin &&src) = delete;
 		AShadowRenderBin &operator=(AShadowRenderBin &&rhs) = delete;
 

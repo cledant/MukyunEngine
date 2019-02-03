@@ -35,21 +35,7 @@ DiffuseColored::~DiffuseColored()
 {
 	glDeleteBuffers(1, &(this->_vbo_light_diffuse));
 }
-/*
-DiffuseColored::DiffuseColored(DiffuseColored &&src) : ARenderBin(),
-													   _vbo_light_diffuse(0)
-{
-	*this = std::move(src);
-}
 
-DiffuseColored &DiffuseColored::operator=(DiffuseColored &&rhs)
-{
-	this->_vector_light_diffuse = rhs.moveVectorLightDiffuse();
-	this->_vbo_light_diffuse    = rhs.moveVBOLightDiffuse();
-	ARenderBin::operator=(std::move(rhs));
-	return (*this);
-}
-*/
 /*
  * Draw
  */

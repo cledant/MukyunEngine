@@ -41,11 +41,8 @@
 # include <vector>
 # include <fstream>
 # include <memory>
-# include <map>
-# include <thread>
-# include <atomic>
-# include <mutex>
 # include <string>
+# include <unordered_map>
 
 class Engine
 {

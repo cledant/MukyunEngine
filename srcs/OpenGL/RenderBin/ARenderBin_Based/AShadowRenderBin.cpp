@@ -29,22 +29,7 @@ AShadowRenderBin::AShadowRenderBin(AShadowRenderBin::Params const &params) :
 		_win_h(params.win_h)
 {
 }
-/*
-AShadowRenderBin::AShadowRenderBin(AShadowRenderBin &&src) :
-		ARenderBin(), _sr(nullptr)
-{
-	*this = std::move(src);
-}
 
-AShadowRenderBin &AShadowRenderBin::operator=(AShadowRenderBin &&rhs)
-{
-	this->_sr    = rhs.getShadowRenderer();
-	this->_win_h = rhs.getWinHeight();
-	this->_win_w = rhs.getWinWidth();
-	ARenderBin::operator=(std::move(rhs));
-	return (*this);
-}
-*/
 /*
  * Getter
  */

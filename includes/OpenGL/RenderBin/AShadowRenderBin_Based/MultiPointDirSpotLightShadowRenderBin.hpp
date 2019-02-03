@@ -23,7 +23,6 @@ class MultiPointDirSpotLightShadowRenderBin : public AShadowRenderBin
 		~MultiPointDirSpotLightShadowRenderBin() override = default;
 		MultiPointDirSpotLightShadowRenderBin(MultiPointDirSpotLightShadowRenderBin const &src) = delete;
 		MultiPointDirSpotLightShadowRenderBin &operator=(MultiPointDirSpotLightShadowRenderBin const &rhs) = delete;
-		//Move constructor can throw because of ARenderBin Inheritance
 		MultiPointDirSpotLightShadowRenderBin(MultiPointDirSpotLightShadowRenderBin &&src) = delete;
 		MultiPointDirSpotLightShadowRenderBin &operator=(MultiPointDirSpotLightShadowRenderBin &&rhs) = delete;
 

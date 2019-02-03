@@ -29,7 +29,6 @@ class DiffuseColored : public ARenderBin
 		~DiffuseColored() override;
 		DiffuseColored(DiffuseColored const &src) = delete;
 		DiffuseColored &operator=(DiffuseColored const &rhs) = delete;
-		//Move constructor can throw because of ARenderBin Inheritance
 		DiffuseColored(DiffuseColored &&src) = delete;
 		DiffuseColored &operator=(DiffuseColored &&rhs) = delete;
 

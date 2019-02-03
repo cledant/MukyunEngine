@@ -18,21 +18,7 @@ MultiPointDirSpotLightShadowRenderBin::MultiPointDirSpotLightShadowRenderBin(ASh
 	this->_type = ARenderBin::eType::MULTIDIRLIGHT_SHADOW;
 	std::cout << "Creating MultiDirLightShadow RenderBin" << std::endl;
 }
-/*
-MultiPointDirSpotLightShadowRenderBin::MultiPointDirSpotLightShadowRenderBin(
-		MultiPointDirSpotLightShadowRenderBin &&src) :
-		AShadowRenderBin(std::move(src))
-{
-	*this = std::move(src);
-}
 
-MultiPointDirSpotLightShadowRenderBin &MultiPointDirSpotLightShadowRenderBin::operator=(
-		MultiPointDirSpotLightShadowRenderBin &&rhs)
-{
-	AShadowRenderBin::operator=(std::move(rhs));
-	return (*this);
-}
-*/
 /*
  * Draw
  */
