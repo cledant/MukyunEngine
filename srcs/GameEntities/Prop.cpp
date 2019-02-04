@@ -119,7 +119,7 @@ bool Prop::getToUpdate() const
 
 bool Prop::update(float time)
 {
-//	if (this->_to_update && this->_active)
+	if (this->_to_update && this->_active)
 	{
 		static_cast<void>(time);
 		this->_to_update = false;
