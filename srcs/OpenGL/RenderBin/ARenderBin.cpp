@@ -248,7 +248,6 @@ IEntity *ARenderBin::add_Prop(Prop::Params &params)
 	if (this->_nb_entities >= this->_max_entities)
 		return (nullptr);
 
-	params.light        = this->_use_light;
 	params.model_center = this->_model->getCenter();
 
 	size_t    index = 0;
@@ -385,7 +384,8 @@ void ARenderBin::_update_entities()
 	this->_vec_futures.clear();
 	for (size_t i = 0; i < this->_nb_thread; ++i)
 	{
-		this->_vec_futures.emplace_back(std::async(std::launch::async, &ARenderBin::_update_single_entity_vector, this, i));
+		this->_vec_futures
+			.emplace_back(std::async(std::launch::async, &ARenderBin::_update_single_entity_vector, this, i));
 	}
 	this->_nb_active_entities = 0;
 	for (size_t i = 0; i < this->_nb_thread; ++i)
@@ -422,11 +422,9 @@ void ARenderBin::_update_single_entity_vector(size_t thread_id)
 
 		if ((*it)->update(this->_tick) && !to_delete)
 		{
-			this->_vec_model_matricies_list[thread_id][this->_vec_nb_active_entities[thread_id]]         =
-					(*it)->getModelMatrix();
-			if (this->_use_light)
-				this->_vec_inv_model_matricies_list[thread_id][this->_vec_nb_active_entities[thread_id]] =
-						(*it)->getInvModelMatrix();
+			this->_generate_matrices(*it->get(),
+					this->_vec_model_matricies_list[thread_id][this->_vec_nb_active_entities[thread_id]],
+					this->_vec_inv_model_matricies_list[thread_id][this->_vec_nb_active_entities[thread_id]]);
 			this->_vec_updated[thread_id] = true;
 		}
 		if (to_delete)
@@ -443,4 +441,17 @@ void ARenderBin::_update_single_entity_vector(size_t thread_id)
 			this->_vec_nb_active_entities[thread_id]++;
 		}
 	}
+}
+
+void ARenderBin::_generate_matrices(IEntity &entity, glm::mat4 &model_matrix, glm::mat4 &inv_model_matrix)
+{
+	model_matrix         = glm::mat4(1.0f);
+	model_matrix         = glm::translate(model_matrix, (entity.getPos() + entity.getOffset()));
+	model_matrix         = glm::rotate(model_matrix, glm::radians(entity.getYaw()), glm::vec3(0.0f, 1.0f, 0.0f));
+	model_matrix         = glm::rotate(model_matrix, glm::radians(entity.getPitch()), glm::vec3(1.0f, 0.0f, 0.0f));
+	model_matrix         = glm::rotate(model_matrix, glm::radians(entity.getRoll()), glm::vec3(0.0f, 0.0f, 1.0f));
+	model_matrix         = glm::translate(model_matrix, entity.getModelCenter() * entity.getScale());
+	model_matrix         = glm::scale(model_matrix, entity.getScale());
+	if (this->_use_light)
+		inv_model_matrix = glm::transpose(glm::inverse(model_matrix));
 }

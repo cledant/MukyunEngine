@@ -72,6 +72,8 @@ class Engine
 		virtual ~Engine() = default;
 		Engine(Engine const &src) = delete;
 		Engine &operator=(Engine const &rhs) = delete;
+		Engine(Engine &&src) = delete;
+		Engine &operator=(Engine &&rhs) = delete;
 
 		/*
 		 * Draw

@@ -41,7 +41,6 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 			glm::vec3             cb_half_size;
 			ICollidable::eDamages dmg;
 			bool                  passthrough;
-			bool                  light;
 		};
 
 		explicit Prop(Prop::Params const &params);
@@ -65,15 +64,8 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		 * Getter
 		 */
 
-		float getYaw() const;
-		float getPitch() const;
-		float getRoll() const;
-		glm::vec3 const &getPos() const;
-		glm::vec3 const &getScale() const;
-		glm::vec3 const &getOffset() const;
-		glm::vec3 const &getModelCenter() const;
+
 		bool getToUpdate() const;
-		bool getUsedForLight() const;
 
 		/*
 		 * Interface IEntity
@@ -84,8 +76,6 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		bool getActive() const override;
 		void setDelete(bool value) override;
 		bool getDelete() const override;
-		glm::mat4 const &getModelMatrix() const override;
-		glm::mat4 const &getInvModelMatrix() const override;
 
 		/*
 		 * Interface ITransformable
@@ -94,6 +84,13 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		void translateObject(glm::vec3 const &vec) override;
 		void scaleObject(glm::vec3 const &vec) override;
 		void rotateObject(glm::vec3 const &vec) override;
+		float getYaw() const override;
+		float getPitch() const override;
+		float getRoll() const override;
+		glm::vec3 const &getPos() const override;
+		glm::vec3 const &getScale() const override;
+		glm::vec3 const &getOffset() const override;
+		glm::vec3 const &getModelCenter() const override;
 
 		/*
 		 * Interface ICollidable
@@ -114,13 +111,10 @@ class Prop : public IEntity, public ITransformable, public ICollidable
 		glm::vec3 _offset;
 		glm::vec3 _model_center;
 		bool      _to_update;
-		bool      _used_for_light;
 
 		//Related to IEntity
-		bool      _active;
-		bool      _delete;
-		glm::mat4 _model;
-		glm::mat4 _inv_model;
+		bool _active;
+		bool _delete;
 
 		//Related to ICollidable
 		CollisionBox          _cb;

@@ -175,6 +175,8 @@ class ARenderBin
 
 		inline void _update_entities();
 		inline void _update_single_entity_vector(size_t thread_id);
+		inline void _generate_matrices(IEntity &entity, glm::mat4 &model_matrix,
+									   glm::mat4 &inv_model_matrix);
 };
 
 #endif

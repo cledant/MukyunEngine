@@ -27,8 +27,13 @@ class IEntity
 		virtual bool getActive() const = 0;
 		virtual void setDelete(bool value) = 0;
 		virtual bool getDelete() const = 0;
-		virtual glm::mat4 const &getModelMatrix() const = 0;
-		virtual glm::mat4 const &getInvModelMatrix() const = 0;
+		virtual float getYaw() const = 0;
+		virtual float getPitch() const = 0;
+		virtual float getRoll() const = 0;
+		virtual glm::vec3 const &getPos() const = 0;
+		virtual glm::vec3 const &getScale() const = 0;
+		virtual glm::vec3 const &getOffset() const = 0;
+		virtual glm::vec3 const &getModelCenter() const = 0;
 };
 
 #endif
