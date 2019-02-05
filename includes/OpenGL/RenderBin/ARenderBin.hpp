@@ -20,7 +20,8 @@
 # include "OpenGL/Ressource/Shader.hpp"
 # include "OpenGL/Ressource/Model.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
-# include "GameEntities/Prop.hpp"
+# include "GameEntities/Prop/AProp.hpp"
+# include "GameEntities/Prop/Prop.hpp"
 # include <vector>
 # include <future>
 # include <memory>
@@ -108,7 +109,7 @@ class ARenderBin
 		 * Entity related setter
 		 */
 
-		IEntity *add_Prop(Prop::Params &params);
+		AProp *add_Prop(AProp::Params &params, AProp::eType type);
 
 
 	protected :
@@ -138,22 +139,22 @@ class ARenderBin
 		 * Entity related
 		 */
 
-		static constexpr size_t                            _default_nb_thread       = 2;
-		static constexpr size_t                            _max_thread              = 16;
-		static constexpr size_t                            _min_elements_per_vector = 64;
-		size_t                                             _nb_thread;
-		size_t                                             _nb_elements_per_vector;
-		std::vector<std::vector<std::unique_ptr<IEntity>>> _vec_entity_list;
-		std::vector<std::vector<glm::mat4>>                _vec_model_matricies_list;
-		std::vector<std::vector<glm::mat4>>                _vec_inv_model_matricies_list;
-		std::vector<bool>                                  _vec_updated;
-		std::vector<size_t>                                _vec_nb_active_entities;
-		size_t                                             _nb_active_entities;
-		size_t                                             _nb_entities;
-		size_t                                             _max_entities;
-		float                                              _tick;
-		bool                                               _update_vbo;
-		std::vector<std::future<void>>                     _vec_futures;
+		static constexpr size_t                          _default_nb_thread       = 2;
+		static constexpr size_t                          _max_thread              = 16;
+		static constexpr size_t                          _min_elements_per_vector = 64;
+		size_t                                           _nb_thread;
+		size_t                                           _nb_elements_per_vector;
+		std::vector<std::vector<std::unique_ptr<AProp>>> _vec_entity_list;
+		std::vector<std::vector<glm::mat4>>              _vec_model_matricies_list;
+		std::vector<std::vector<glm::mat4>>              _vec_inv_model_matricies_list;
+		std::vector<bool>                                _vec_updated;
+		std::vector<size_t>                              _vec_nb_active_entities;
+		size_t                                           _nb_active_entities;
+		size_t                                           _nb_entities;
+		size_t                                           _max_entities;
+		float                                            _tick;
+		bool                                             _update_vbo;
+		std::vector<std::future<void>>                   _vec_futures;
 
 		/*
 		 * Protected functions
@@ -175,7 +176,7 @@ class ARenderBin
 
 		inline void _update_entities();
 		inline void _update_single_entity_vector(size_t thread_id);
-		inline void _generate_matrices(IEntity &entity, glm::mat4 &model_matrix,
+		inline void _generate_matrices(AProp &entity, glm::mat4 &model_matrix,
 									   glm::mat4 &inv_model_matrix);
 };
 

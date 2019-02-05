@@ -88,8 +88,8 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 			break;
 	}
 
-	//Creating Prop
-	Prop::Params prop_params;
+	//Creating AProp
+	AProp::Params prop_params;
 	prop_params.orientation = glm::vec3(0.0f);
 	switch (arg.model_type)
 	{
@@ -113,7 +113,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 			for (size_t j = 0; j < arg.instance_size[0]; ++j)
 			{
 				prop_params.pos = glm::vec3(2.0f * i, k * 2.0f, 2.0f * j);
-				(*world)->add_Prop("Model", prop_params);
+				(*world)->add_Prop("Model", prop_params, AProp::eType::PROP);
 			}
 		}
 	}

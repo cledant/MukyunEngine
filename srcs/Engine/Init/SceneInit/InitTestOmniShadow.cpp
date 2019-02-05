@@ -113,26 +113,26 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	(*world)->add_ShadowRenderBin("TenshiPlaneRB", rb_light,
 								  ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
 
-	//Creating Prop
-	Prop::Params prop_params;
+	//Creating AProp
+	AProp::Params prop_params;
 	prop_params.orientation = glm::vec3(45.0f);
 	prop_params.scale       = glm::vec3(0.5f);
 	prop_params.pos         = glm::vec3(3.0f, 0.0f, 3.0f);
-	(*world)->add_Prop("LightBlueBoxRB", prop_params);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
 
 	prop_params.pos = glm::vec3(-3.0f, 0.0f, -3.0f);
-	(*world)->add_Prop("LightBlueBoxRB", prop_params);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
 
 	prop_params.pos = glm::vec3(3.0f, 0.0f, -3.0f);
-	(*world)->add_Prop("LightBlueBoxRB", prop_params);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
 
 	prop_params.pos = glm::vec3(-3.0f, 0.0f, 3.0f);
-	(*world)->add_Prop("LightBlueBoxRB", prop_params);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
 
 	prop_params.orientation = glm::vec3(0.0f);
 	prop_params.scale       = glm::vec3(5.0f);
 	prop_params.pos         = glm::vec3(0.0f, -1.0f, 0.0f);
-	(*world)->add_Prop("TenshiPlaneRB", prop_params);
+	(*world)->add_Prop("TenshiPlaneRB", prop_params, AProp::eType::PROP);
 }
 
 static void init_program(Engine **world, RessourceManager &rm,

@@ -1,27 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ITransformable.hpp                                 :+:      :+:    :+:   */
+/*   Prop.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/04 11:44:29 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 15:09:19 by cledant          ###   ########.fr       */
+/*   Created: 2017/11/06 09:38:15 by cledant           #+#    #+#             */
+/*   Updated: 2017/11/06 09:38:15 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ITRANSFORMABLE_HPP
-# define ITRANSFORMABLE_HPP
+#ifndef PROP_HPP
+# define PROP_HPP
 
-# include "glm/glm.hpp"
+# include "GameEntities/Prop/AProp.hpp"
 
-class ITransformable
+class Prop : public AProp
 {
 	public :
 
-		virtual void translateObject(glm::vec3 const &vec) = 0;
-		virtual void scaleObject(glm::vec3 const &vec) = 0;
-		virtual void rotateObject(glm::vec3 const &vec) = 0;
+		explicit Prop(AProp::Params const &params);
+		~Prop() override = default;
+		Prop(Prop const &src);
+		Prop &operator=(Prop const &rhs);
+
+		/*
+		 * Virtual fct
+		 */
+
+		bool update(float time) override;
 };
 
 #endif

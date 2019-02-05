@@ -28,8 +28,7 @@
 # include "Exceptions/GeneralException.hpp"
 # include "glm/glm.hpp"
 # include "glm/gtc/matrix_transform.hpp"
-# include "Interfaces/IEntity.hpp"
-# include "GameEntities/Prop.hpp"
+# include "GameEntities/Prop/AProp.hpp"
 # include "GameEntities/Utility/CollisionBox.hpp"
 # include "Cameras/Camera.hpp"
 # include "WindowManager/Glfw_manager.hpp"
@@ -107,7 +106,7 @@ class Engine
 		ARenderBin *add_ShadowRenderBin(std::string const &name,
 										AShadowRenderBin::Params &params,
 										ARenderBin::eType type);
-		IEntity *add_Prop(std::string const &name, Prop::Params &params);
+		AProp *add_Prop(std::string const &name, AProp::Params &params, AProp::eType type);
 		void add_PointLight(PointLight::Params &params);
 		void add_DirectionalLight(DirectionalLight::Params &params);
 		void add_SpotLight(SpotLight::Params &params);

@@ -17,7 +17,7 @@ CollisionBox::CollisionBox(glm::vec3 const &pos, glm::vec3 const &half_size) :
 {
 }
 
-CollisionBox::CollisionBox(CollisionBox const &src) : ITransformable()
+CollisionBox::CollisionBox(CollisionBox const &src)
 {
 	this->_pos       = src.getPos();
 	this->_half_size = src.getHalfSize();
@@ -28,25 +28,6 @@ CollisionBox &CollisionBox::operator=(CollisionBox const &rhs)
 	this->_pos       = rhs.getPos();
 	this->_half_size = rhs.getHalfSize();
 	return (*this);
-}
-
-/*
- * Interface ITranslatable
- */
-
-void CollisionBox::translateObject(glm::vec3 const &vec)
-{
-	this->_pos += vec;
-}
-
-void CollisionBox::scaleObject(glm::vec3 const &vec)
-{
-	this->_half_size *= vec;
-}
-
-void CollisionBox::rotateObject(glm::vec3 const &vec)
-{
-	static_cast<void>(vec);
 }
 
 /*
@@ -61,6 +42,21 @@ void CollisionBox::setPos(glm::vec3 const &pos)
 void CollisionBox::setHalfSize(glm::vec3 const &half_size)
 {
 	this->_half_size = half_size;
+}
+
+void CollisionBox::translateObject(glm::vec3 const &vec)
+{
+	this->_pos += vec;
+}
+
+void CollisionBox::scaleObject(glm::vec3 const &vec)
+{
+	this->_half_size *= vec;
+}
+
+void CollisionBox::rotateObject(glm::vec3 const &vec)
+{
+	static_cast<void>(vec);
 }
 
 /*

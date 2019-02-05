@@ -292,15 +292,15 @@ ARenderBin *Engine::add_ShadowRenderBin(std::string const &name,
 	return (nullptr);
 }
 
-IEntity *Engine::add_Prop(std::string const &name, Prop::Params &params)
+AProp *Engine::add_Prop(std::string const &name, AProp::Params &params, AProp::eType type)
 {
 	auto it  = this->_render_bin_list.find(name);
 	auto it2 = this->_shadow_render_bin_list.find(name);
 
 	if (it != this->_render_bin_list.end())
-		return (it->second->add_Prop(params));
+		return (it->second->add_Prop(params, type));
 	else if (it2 != this->_shadow_render_bin_list.end())
-		return (it2->second->add_Prop(params));
+		return (it2->second->add_Prop(params, type));
 	return (nullptr);
 }
 

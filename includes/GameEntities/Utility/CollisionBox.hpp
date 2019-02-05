@@ -16,12 +16,11 @@
 #include "Exceptions/GeneralException.hpp"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-#include "Interfaces/ITransformable.hpp"
 #include <iostream>
 #include <memory>
 #include <algorithm>
 
-class CollisionBox : public ITransformable
+class CollisionBox
 {
 	public :
 
@@ -46,19 +45,14 @@ class CollisionBox : public ITransformable
 		virtual ~CollisionBox() = default;
 
 		/*
-		 * Interface ITransformable
-		 */
-
-		void translateObject(glm::vec3 const &vec) override;
-		void scaleObject(glm::vec3 const &vec) override;
-		void rotateObject(glm::vec3 const &vec) override;
-
-		/*
 		 * Setter
 		 */
 
 		void setPos(glm::vec3 const &pos);
 		void setHalfSize(glm::vec3 const &pos);
+		void translateObject(glm::vec3 const &vec);
+		void scaleObject(glm::vec3 const &vec);
+		void rotateObject(glm::vec3 const &vec);
 
 		/*
 		 * Getter

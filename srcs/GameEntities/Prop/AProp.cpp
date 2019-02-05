@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Prop.cpp                                           :+:      :+:    :+:   */
+/*   AProp.cpp                                           :+:      :+:    :+:  */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "GameEntities/Prop.hpp"
+#include "GameEntities/Prop/AProp.hpp"
 
-Prop::Params::Params()
+AProp::Params::Params()
 {
 	this->model_center = glm::vec3(0.0f);
 	this->pos          = glm::vec3(0.0f);
@@ -21,11 +21,11 @@ Prop::Params::Params()
 	this->offset       = glm::vec3(0.0f);
 	this->active       = true;
 	this->cb_half_size = glm::vec3(1.0f);
-	this->dmg          = ICollidable::eDamages::NONE;
+	this->dmg          = eDamages::NONE;
 	this->passthrough  = true;
 }
 
-Prop::Prop(Prop::Params const &params) :
+AProp::AProp(AProp::Params const &params) :
 		_yaw(params.orientation.x), _pitch(params.orientation.y),
 		_roll(params.orientation.z), _pos(params.pos), _scale(params.scale),
 		_offset(params.offset), _model_center(params.model_center),
@@ -35,12 +35,12 @@ Prop::Prop(Prop::Params const &params) :
 {
 }
 
-Prop::Prop(Prop const &src) : _cb(glm::vec3(0.0f), glm::vec3(0.0f))
+AProp::AProp(AProp const &src) : _cb(glm::vec3(0.0f), glm::vec3(0.0f))
 {
 	*this = src;
 }
 
-Prop &Prop::operator=(Prop const &rhs)
+AProp &AProp::operator=(AProp const &rhs)
 {
 	this->_yaw          = rhs.getYaw();
 	this->_pitch        = rhs.getPitch();
@@ -62,146 +62,78 @@ Prop &Prop::operator=(Prop const &rhs)
  * Setter
  */
 
-void Prop::setPosition(glm::vec3 const &pos)
+void AProp::setPosition(glm::vec3 const &pos)
 {
 	this->_pos       = pos;
 	this->_to_update = true;
 }
 
-void Prop::setScale(glm::vec3 const &scale)
+void AProp::setScale(glm::vec3 const &scale)
 {
 	this->_scale     = scale;
 	this->_to_update = true;
 }
 
-void Prop::setYaw(float yaw)
+void AProp::setYaw(float yaw)
 {
 	this->_yaw       = yaw;
 	this->_to_update = true;
 }
 
-void Prop::setPitch(float pitch)
+void AProp::setPitch(float pitch)
 {
 	this->_pitch     = pitch;
 	this->_to_update = true;
 }
 
-void Prop::setRoll(float roll)
+void AProp::setRoll(float roll)
 {
 	this->_roll      = roll;
 	this->_to_update = true;
 }
 
-void Prop::setOffset(glm::vec3 const &offset)
+void AProp::setOffset(glm::vec3 const &offset)
 {
 	this->_offset    = offset;
 	this->_to_update = true;
 }
 
-void Prop::setModelCenter(glm::vec3 const &center)
+void AProp::setModelCenter(glm::vec3 const &center)
 {
 	this->_model_center = center;
 	this->_to_update    = true;
 }
 
-/*
- * Getter
- */
-
-bool Prop::getToUpdate() const
-{
-	return (this->_to_update);
-}
-
-/*
- * Interface IEntity
- */
-
-bool Prop::update(float time)
-{
-	if (this->_to_update && this->_active)
-	{
-		static_cast<void>(time);
-		this->_to_update = false;
-		return (true);
-	}
-	return (false);
-}
-
-void Prop::setActive(bool value)
+void AProp::setActive(bool value)
 {
 	this->_active        = value;
 	if (value)
 		this->_to_update = true;
 }
 
-bool Prop::getActive() const
-{
-	return (this->_active);
-}
-
-void Prop::setDelete(bool value)
+void AProp::setDelete(bool value)
 {
 	this->_delete = value;
 }
 
-bool Prop::getDelete() const
+void AProp::setPassthrough(bool value)
 {
-	return (this->_delete);
+	this->_passthrough = value;
 }
 
-float Prop::getYaw() const
-{
-	return (this->_yaw);
-}
-
-float Prop::getPitch() const
-{
-	return (this->_pitch);
-}
-
-float Prop::getRoll() const
-{
-	return (this->_roll);
-}
-
-glm::vec3 const &Prop::getPos() const
-{
-	return (this->_pos);
-}
-
-glm::vec3 const &Prop::getScale() const
-{
-	return (this->_scale);
-}
-
-glm::vec3 const &Prop::getOffset() const
-{
-	return (this->_offset);
-}
-
-glm::vec3 const &Prop::getModelCenter() const
-{
-	return (this->_model_center);
-}
-
-/*
- * Interface ITransformable
- */
-
-void Prop::translateObject(glm::vec3 const &vec)
+void AProp::translateObject(glm::vec3 const &vec)
 {
 	this->_pos += vec;
 	this->_to_update = true;
 }
 
-void Prop::scaleObject(glm::vec3 const &vec)
+void AProp::scaleObject(glm::vec3 const &vec)
 {
 	this->_scale *= vec;
 	this->_to_update = true;
 }
 
-void Prop::rotateObject(glm::vec3 const &vec)
+void AProp::rotateObject(glm::vec3 const &vec)
 {
 	this->_yaw += vec.x;
 	this->_pitch += vec.y;
@@ -210,25 +142,70 @@ void Prop::rotateObject(glm::vec3 const &vec)
 }
 
 /*
- * Interface ICollidable
+ * Getter
  */
 
-CollisionBox const &Prop::getCollisionBox() const
+bool AProp::getToUpdate() const
+{
+	return (this->_to_update);
+}
+
+bool AProp::getActive() const
+{
+	return (this->_active);
+}
+
+bool AProp::getDelete() const
+{
+	return (this->_delete);
+}
+
+float AProp::getYaw() const
+{
+	return (this->_yaw);
+}
+
+float AProp::getPitch() const
+{
+	return (this->_pitch);
+}
+
+float AProp::getRoll() const
+{
+	return (this->_roll);
+}
+
+glm::vec3 const &AProp::getPos() const
+{
+	return (this->_pos);
+}
+
+glm::vec3 const &AProp::getScale() const
+{
+	return (this->_scale);
+}
+
+glm::vec3 const &AProp::getOffset() const
+{
+	return (this->_offset);
+}
+
+glm::vec3 const &AProp::getModelCenter() const
+{
+	return (this->_model_center);
+}
+
+CollisionBox const &AProp::getCollisionBox() const
 {
 	return (this->_cb);
 }
 
-ICollidable::eDamages Prop::getDamages() const
+AProp::eDamages AProp::getDamages() const
 {
 	return (this->_dmg);
 }
 
-void Prop::setPassthrough(bool value)
-{
-	this->_passthrough = value;
-}
-
-bool Prop::getPassthrough() const
+bool AProp::getPassthrough() const
 {
 	return (this->_passthrough);
 }

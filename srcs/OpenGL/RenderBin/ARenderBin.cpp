@@ -61,7 +61,7 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 
 	try
 	{
-		this->_vec_entity_list = std::vector<std::vector<std::unique_ptr<IEntity>>>(this->_nb_thread);
+		this->_vec_entity_list = std::vector<std::vector<std::unique_ptr<AProp>>>(this->_nb_thread);
 		for (auto &it : this->_vec_entity_list)
 			it.reserve(this->_nb_elements_per_vector);
 		this->_vec_model_matricies_list = std::vector<std::vector<glm::mat4>>(this->_nb_thread);
@@ -243,7 +243,7 @@ size_t ARenderBin::getMaxInstances() const
  * Entity related setter
  */
 
-IEntity *ARenderBin::add_Prop(Prop::Params &params)
+AProp *ARenderBin::add_Prop(AProp::Params &params, AProp::eType type)
 {
 	if (this->_nb_entities >= this->_max_entities)
 		return (nullptr);
@@ -262,7 +262,8 @@ IEntity *ARenderBin::add_Prop(Prop::Params &params)
 		i++;
 	}
 	this->_nb_entities++;
-	this->_vec_entity_list[index].emplace_back(new Prop(params));
+	if (type == AProp::eType::PROP)
+		this->_vec_entity_list[index].emplace_back(new Prop(params));
 	this->_vec_updated[index] = true;
 	return (this->_vec_entity_list[index].back().get());
 }
@@ -423,8 +424,10 @@ void ARenderBin::_update_single_entity_vector(size_t thread_id)
 		if ((*it)->update(this->_tick) && !to_delete)
 		{
 			this->_generate_matrices(*it->get(),
-					this->_vec_model_matricies_list[thread_id][this->_vec_nb_active_entities[thread_id]],
-					this->_vec_inv_model_matricies_list[thread_id][this->_vec_nb_active_entities[thread_id]]);
+									 this->_vec_model_matricies_list[thread_id][this
+											 ->_vec_nb_active_entities[thread_id]],
+									 this->_vec_inv_model_matricies_list[thread_id][this
+											 ->_vec_nb_active_entities[thread_id]]);
 			this->_vec_updated[thread_id] = true;
 		}
 		if (to_delete)
@@ -443,7 +446,7 @@ void ARenderBin::_update_single_entity_vector(size_t thread_id)
 	}
 }
 
-void ARenderBin::_generate_matrices(IEntity &entity, glm::mat4 &model_matrix, glm::mat4 &inv_model_matrix)
+void ARenderBin::_generate_matrices(AProp &entity, glm::mat4 &model_matrix, glm::mat4 &inv_model_matrix)
 {
 	model_matrix         = glm::mat4(1.0f);
 	model_matrix         = glm::translate(model_matrix, (entity.getPos() + entity.getOffset()));

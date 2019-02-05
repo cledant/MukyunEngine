@@ -61,7 +61,7 @@ set(SOURCE_FILES
 		srcs/OpenGL/RenderBin/ARenderBin_Based/BasicColorRenderBin.cpp
 		srcs/GameEntities/Utility/CollisionBox.cpp
 		srcs/Cameras/Camera.cpp
-		srcs/GameEntities/Prop.cpp
+		srcs/GameEntities/Prop/AProp.cpp
 		srcs/Light/ALight.cpp
 		srcs/Light/ALight_Based/PointLight.cpp
 		srcs/Light/ALight_Based/DirectionalLight.cpp
@@ -86,7 +86,8 @@ set(SOURCE_FILES
 		srcs/Engine/Engine.cpp
 		srcs/Engine/Init/ShaderLoading/ShaderLoading.cpp
 		srcs/Engine/Init/EngineInit.cpp
-		srcs/OpenGL/Ressource/Fontset.cpp)
+		srcs/OpenGL/Ressource/Fontset.cpp
+		srcs/GameEntities/Prop/Prop.cpp)
 add_library(primary STATIC ${SOURCE_FILES})
 target_link_libraries(primary glad glfw assimp freetype)
 target_compile_options(primary PRIVATE -Wall -Wextra -g3)

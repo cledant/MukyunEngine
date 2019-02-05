@@ -14,7 +14,6 @@
 # define SHADERSURFACE_HPP
 
 # include "WindowManager/Glfw_manager.hpp"
-# include "Interfaces/IEntity.hpp"
 # include "WindowManager/Window.hpp"
 # include "WindowManager/Input.hpp"
 # include "OpenGL/Ressource/Shader.hpp"

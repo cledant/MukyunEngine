@@ -113,18 +113,18 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	params_spot.cutoff            = glm::vec2(20.0f, 15.0f);
 	(*world)->add_SpotLight(params_spot);
 
-	//Creating Prop
-	Prop::Params prop_params;
+	//Creating AProp
+	AProp::Params prop_params;
 	prop_params.orientation = glm::vec3(0.0f);
 	prop_params.scale       = glm::vec3(2.0f);
 	prop_params.pos         = glm::vec3(0.0f);
-	(*world)->add_Prop("Light", prop_params);
+	(*world)->add_Prop("Light", prop_params, AProp::eType::PROP);
 
 	prop_params.pos = glm::vec3(0.0f, 0.0f, 20.0f);
-	(*world)->add_Prop("Light", prop_params);
+	(*world)->add_Prop("Light", prop_params, AProp::eType::PROP);
 
 	prop_params.pos = glm::vec3(0.0f, 0.0f, -20.0f);
-	(*world)->add_Prop("Light", prop_params);
+	(*world)->add_Prop("Light", prop_params, AProp::eType::PROP);
 }
 
 static void init_program(Engine **world, RessourceManager &rm,
