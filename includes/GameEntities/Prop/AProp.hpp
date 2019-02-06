@@ -39,6 +39,8 @@ class AProp
 			glm::vec3 cb_half_size;
 			eDamages  dmg;
 			bool      passthrough;
+			bool      auto_rotate;
+			glm::vec3 rotation_per_tick;
 		};
 
 		explicit AProp(AProp::Params const &params);
@@ -69,6 +71,8 @@ class AProp
 		void translateObject(glm::vec3 const &vec);
 		void scaleObject(glm::vec3 const &vec);
 		void rotateObject(glm::vec3 const &vec);
+		void setAutoRotation(bool val);
+		void setRotationPerTick(glm::vec3 const &vec);
 
 		/*
 		 * Getter
@@ -87,6 +91,8 @@ class AProp
 		bool getPassthrough() const;
 		CollisionBox const &getCollisionBox() const;
 		eDamages getDamages() const;
+		bool getAutoRotation() const;
+		glm::vec3 const &getRotationPerTick() const;
 
 	protected :
 
@@ -103,6 +109,8 @@ class AProp
 		CollisionBox _cb;
 		eDamages     _dmg;
 		bool         _passthrough;
+		bool         _auto_rotate;
+		glm::vec3    _rotation_per_tick;
 };
 
 #endif

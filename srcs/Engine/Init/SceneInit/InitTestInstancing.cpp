@@ -90,7 +90,10 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating AProp
 	AProp::Params prop_params;
-	prop_params.orientation = glm::vec3(0.0f);
+	prop_params.orientation       = glm::vec3(0.0f);
+	if (arg.auto_rotate_model)
+		prop_params.auto_rotate   = true;
+	prop_params.rotation_per_tick = glm::vec3(0.0f, 1.0f, 0.0f);
 	switch (arg.model_type)
 	{
 		case InitValue::Model_type::CUBE :

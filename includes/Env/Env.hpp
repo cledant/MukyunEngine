@@ -46,6 +46,7 @@ class Env
 		bool _parse_help(std::string const &arg);
 		bool _parse_instance_size(std::string const &arg);
 		bool _parse_model(std::string const &arg);
+		bool _parse_auto_rotate(std::string const &arg);
 
 		/*
 		 * Display info

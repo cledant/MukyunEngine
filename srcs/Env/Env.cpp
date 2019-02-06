@@ -44,6 +44,8 @@ void Env::parse_args(int argc, char **argv)
 		if (parse)
 			parse = this->_parse_model(std::string(argv[i]));
 		if (parse)
+			parse = this->_parse_auto_rotate(std::string(argv[i]));
+		if (parse)
 			this->_parse_vsync(std::string(argv[i]));
 	}
 }
@@ -298,6 +300,20 @@ bool Env::_parse_model(std::string const &arg)
 	return (false);
 }
 
+bool Env::_parse_auto_rotate(std::string const &arg)
+{
+	static bool already_parsed = false;
+
+	if (already_parsed)
+		return (true);
+	if (arg == "--autoRotation")
+		this->_env_value.auto_rotate_model = true;
+	else
+		return (true);
+	already_parsed = true;
+	return (false);
+}
+
 /*
  * Display info
  */
@@ -342,7 +358,9 @@ void Env::_display_help()
 	std::cout << "			Set number of models for instancing test" << std::endl;
 	std::cout << "			Max per size is 65536" << std::endl;
 	std::cout << "		--vsync" << std::endl;
-	std::cout << "			Enable Vsync. Vsync is disable by default" << std::endl << std::endl;
+	std::cout << "			Enable Vsync. Vsync is disable by default" << std::endl;
+	std::cout << "		--autoRotation" << std::endl;
+	std::cout << "			Rotate models" << std::endl;
 	std::cout << "		--help" << std::endl;
 	std::cout << "			Display control keys + argument available then exit" << std::endl;
 	exit(0);

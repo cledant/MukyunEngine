@@ -47,6 +47,7 @@ struct InitValue
 	bool                  vsync;
 	std::vector<size_t>   instance_size;
 	InitValue::Model_type model_type;
+	bool                  auto_rotate_model;
 };
 
 /*

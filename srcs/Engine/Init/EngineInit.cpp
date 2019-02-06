@@ -23,5 +23,6 @@ InitValue::InitValue()
 	this->instance_size.emplace_back(32);
 	this->instance_size.emplace_back(32);
 	this->instance_size.emplace_back(32);
-	this->model_type = InitValue::Model_type::NONE;
+	this->model_type        = InitValue::Model_type::NONE;
+	this->auto_rotate_model = false;
 }

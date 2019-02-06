@@ -14,15 +14,17 @@
 
 AProp::Params::Params()
 {
-	this->model_center = glm::vec3(0.0f);
-	this->pos          = glm::vec3(0.0f);
-	this->orientation  = glm::vec3(0.0f);
-	this->scale        = glm::vec3(1.0f);
-	this->offset       = glm::vec3(0.0f);
-	this->active       = true;
-	this->cb_half_size = glm::vec3(1.0f);
-	this->dmg          = eDamages::NONE;
-	this->passthrough  = true;
+	this->model_center      = glm::vec3(0.0f);
+	this->pos               = glm::vec3(0.0f);
+	this->orientation       = glm::vec3(0.0f);
+	this->scale             = glm::vec3(1.0f);
+	this->offset            = glm::vec3(0.0f);
+	this->active            = true;
+	this->cb_half_size      = glm::vec3(1.0f);
+	this->dmg               = eDamages::NONE;
+	this->passthrough       = true;
+	this->auto_rotate       = false;
+	this->rotation_per_tick = glm::vec3(0.0f);
 }
 
 AProp::AProp(AProp::Params const &params) :
@@ -31,7 +33,8 @@ AProp::AProp(AProp::Params const &params) :
 		_offset(params.offset), _model_center(params.model_center),
 		_to_update(true), _active(params.active), _delete(false),
 		_cb(params.pos, params.cb_half_size), _dmg(params.dmg),
-		_passthrough(params.passthrough)
+		_passthrough(params.passthrough), _auto_rotate(params.auto_rotate),
+		_rotation_per_tick(params.rotation_per_tick)
 {
 }
 
@@ -42,19 +45,21 @@ AProp::AProp(AProp const &src) : _cb(glm::vec3(0.0f), glm::vec3(0.0f))
 
 AProp &AProp::operator=(AProp const &rhs)
 {
-	this->_yaw          = rhs.getYaw();
-	this->_pitch        = rhs.getPitch();
-	this->_roll         = rhs.getRoll();
-	this->_pos          = rhs.getPos();
-	this->_scale        = rhs.getScale();
-	this->_offset       = rhs.getOffset();
-	this->_model_center = rhs.getModelCenter();
-	this->_to_update    = rhs.getToUpdate();
-	this->_active       = rhs.getActive();
-	this->_cb           = rhs.getCollisionBox();
-	this->_dmg          = rhs.getDamages();
-	this->_passthrough  = rhs.getPassthrough();
-	this->_delete       = rhs.getDelete();
+	this->_yaw               = rhs.getYaw();
+	this->_pitch             = rhs.getPitch();
+	this->_roll              = rhs.getRoll();
+	this->_pos               = rhs.getPos();
+	this->_scale             = rhs.getScale();
+	this->_offset            = rhs.getOffset();
+	this->_model_center      = rhs.getModelCenter();
+	this->_to_update         = rhs.getToUpdate();
+	this->_active            = rhs.getActive();
+	this->_cb                = rhs.getCollisionBox();
+	this->_dmg               = rhs.getDamages();
+	this->_passthrough       = rhs.getPassthrough();
+	this->_delete            = rhs.getDelete();
+	this->_auto_rotate       = rhs.getAutoRotation();
+	this->_rotation_per_tick = rhs.getRotationPerTick();
 	return (*this);
 }
 
@@ -141,6 +146,17 @@ void AProp::rotateObject(glm::vec3 const &vec)
 	this->_to_update = true;
 }
 
+void AProp::setAutoRotation(bool val)
+{
+	this->_auto_rotate = val;
+}
+
+
+void AProp::setRotationPerTick(glm::vec3 const &vec)
+{
+	this->_rotation_per_tick = vec;
+}
+
 /*
  * Getter
  */
@@ -208,4 +224,14 @@ AProp::eDamages AProp::getDamages() const
 bool AProp::getPassthrough() const
 {
 	return (this->_passthrough);
+}
+
+bool AProp::getAutoRotation() const
+{
+	return (this->_auto_rotate);
+}
+
+glm::vec3 const &AProp::getRotationPerTick() const
+{
+	return (this->_rotation_per_tick);
 }

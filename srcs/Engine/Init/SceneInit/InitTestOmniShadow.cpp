@@ -115,9 +115,12 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 
 	//Creating AProp
 	AProp::Params prop_params;
-	prop_params.orientation = glm::vec3(45.0f);
-	prop_params.scale       = glm::vec3(0.5f);
-	prop_params.pos         = glm::vec3(3.0f, 0.0f, 3.0f);
+	if (arg.auto_rotate_model)
+		prop_params.auto_rotate   = true;
+	prop_params.rotation_per_tick = glm::vec3(0.0f, 1.0f, 0.0f);
+	prop_params.orientation       = glm::vec3(45.0f);
+	prop_params.scale             = glm::vec3(0.5f);
+	prop_params.pos               = glm::vec3(3.0f, 0.0f, 3.0f);
 	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
 
 	prop_params.pos = glm::vec3(-3.0f, 0.0f, -3.0f);
@@ -132,6 +135,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	prop_params.orientation = glm::vec3(0.0f);
 	prop_params.scale       = glm::vec3(5.0f);
 	prop_params.pos         = glm::vec3(0.0f, -1.0f, 0.0f);
+	prop_params.auto_rotate = false;
 	(*world)->add_Prop("TenshiPlaneRB", prop_params, AProp::eType::PROP);
 }
 
