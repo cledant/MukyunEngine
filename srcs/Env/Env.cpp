@@ -285,6 +285,7 @@ bool Env::_parse_model(std::string const &arg)
 	constexpr char alice[]        = "--model=ALICE";
 	constexpr char sakuya[]       = "--model=SAKUYA";
 	constexpr char cube[]         = "--model=CUBE";
+	constexpr char plane[]        = "--model=PLANE";
 
 	if (already_parsed)
 		return (true);
@@ -294,6 +295,8 @@ bool Env::_parse_model(std::string const &arg)
 		this->_env_value.model_type = InitValue::Model_type::SAKUYA;
 	else if (arg == cube)
 		this->_env_value.model_type = InitValue::Model_type::CUBE;
+	else if (arg == plane)
+		this->_env_value.model_type = InitValue::Model_type::PLANE;
 	else
 		return (true);
 	already_parsed = true;
@@ -354,6 +357,7 @@ void Env::_display_help()
 	std::cout << "				CUBE" << std::endl;
 	std::cout << "				ALICE" << std::endl;
 	std::cout << "				SAKUYA" << std::endl;
+	std::cout << "				PLANE" << std::endl;
 	std::cout << "		--nbInstance=AxBxC" << std::endl;
 	std::cout << "			Set number of models for instancing test" << std::endl;
 	std::cout << "			Max per size is 65536" << std::endl;

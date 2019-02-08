@@ -37,6 +37,7 @@ struct InitValue
 			CUBE,
 			ALICE,
 			SAKUYA,
+			PLANE,
 	};
 
 	InitValue::Scene_type type;

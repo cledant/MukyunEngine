@@ -12,7 +12,7 @@
 
 #include "OpenGL/RessourceManager.hpp"
 #include "Engine/Engine.hpp"
-#include "Engine/Init/EngineInit.hpp"
+#include "Env/Init/EngineInit.hpp"
 
 static void init_ressources(RessourceManager &rm)
 {
@@ -28,6 +28,7 @@ static void init_ressources(RessourceManager &rm)
 	rm.add_model("Sakuya", "./assets/models/Sakuya/Sakuya_Izayoi.obj");
 	rm.add_model("Alice", "./assets/models/Alice/Alice.obj");
 	rm.add_model("BlueBox", "./assets/models/BlueBox/BlueBox.obj");
+	rm.add_model("TenshiPlane", "./assets/models/TenshiPlane/TenshiPlane.obj");
 }
 
 static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
@@ -80,6 +81,12 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 			rb_model.use_face_culling = true;
 			(*world)->add_RenderBin("Model", rb_model, ARenderBin::eType::PROP);
 			break;
+		case InitValue::Model_type::PLANE :
+			rb_model.shader           = &rm.getShader("BasicProp");
+			rb_model.model            = &rm.getModel("TenshiPlane");
+			rb_model.use_face_culling = false;
+			(*world)->add_RenderBin("Model", rb_model, ARenderBin::eType::PROP);
+			break;
 		case InitValue::Model_type::NONE :
 			rb_model.shader           = &rm.getShader("BasicColor");
 			rb_model.model            = &rm.getModel("BlueBox");
@@ -104,6 +111,10 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 			break;
 		case InitValue::Model_type::SAKUYA :
 			prop_params.scale = glm::vec3(0.01f);
+			break;
+		case InitValue::Model_type::PLANE :
+			prop_params.scale = glm::vec3(0.05f);
+			prop_params.orientation = glm::vec3(0.0f, 90.0f, 0.0f);
 			break;
 		case InitValue::Model_type::NONE :
 			prop_params.scale = glm::vec3(0.25f);

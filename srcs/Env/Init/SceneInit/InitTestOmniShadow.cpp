@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   InitTestLight.cpp                                  :+:      :+:    :+:   */
+/*   InitTestDirectionalShadow.cpp                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "OpenGL/RessourceManager.hpp"
 #include "Engine/Engine.hpp"
-#include "Engine/Init/EngineInit.hpp"
+#include "Env/Init/EngineInit.hpp"
 
 static void init_ressources(RessourceManager &rm)
 {
@@ -29,6 +29,7 @@ static void init_ressources(RessourceManager &rm)
 	rm.add_model("WhiteBox2", "./assets/models/WhiteBox/WhiteBox.obj");
 	rm.add_model("BlueBox", "./assets/models/BlueBox/BlueBox.obj");
 	rm.add_model("RedBox", "./assets/models/RedBox/RedBox.obj");
+	rm.add_model("TenshiPlane", "./assets/models/TenshiPlane/TenshiPlane.obj");
 }
 
 static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
@@ -39,6 +40,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	sr_params.dir_depth_map_shader      = &rm.getShader("ComputeDirLightDepthMap");
 	sr_params.omni_depth_map_shader     = &rm.getShader("ComputeOmniDepthMap");
 	sr_params.spot_dir_depth_map_shader = &rm.getShader("ComputeDirLightDepthMap");
+	sr_params.omni_near_far             = glm::vec2(1.0f, 100.0f);
 
 	//Setting Engine Params
 	Engine::EngineInitParams engine_params;
@@ -56,16 +58,6 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	engine_params.system_fontset = &rm.getFontset("system_font");
 	(*world) = new Engine(engine_params);
 
-	//Creating RenderBin for Light that uses LightContainer
-	ARenderBin::Params rb_light;
-	rb_light.shader           = &rm.getShader("MultiPointDirSpotLight");
-	rb_light.model            = &rm.getModel("WhiteBox");
-	rb_light.nb_thread        = 8;
-	rb_light.max_instance     = 100000;
-	rb_light.use_face_culling = true;
-	(*world)->add_RenderBin("Light", rb_light,
-							ARenderBin::eType::MULTILIGHT_POINT_DIR_SPOT);
-
 	//Creating RenderBin to draw Light position as debug
 	ARenderBin::Params rb_light_pos;
 	rb_light_pos.shader           = &rm.getShader("DiffuseColored");
@@ -76,69 +68,86 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 							ARenderBin::eType::DIFFUSE_COLORED);
 
 	//Creating Point Lights
-	PointLight::Params params_point;
-	params_point.ambient_color     = glm::vec3(0.05f);
-	params_point.diffuse_color     = glm::vec3(1.0f, 0.0f, 0.0f);
-	params_point.specular_color    = params_point.diffuse_color;
-	params_point.pos               = glm::vec3(0.0f, 3.0f, 1.0f);
-	params_point.attenuation_coeff = glm::vec3(1.0f, 0.5f, 0.1f);
-	(*world)->add_PointLight(params_point);
+	PointLight::Params params_dir;
+	params_dir.pos               = glm::vec3(0.0f, 0.0f, 0.0f);
+	params_dir.ambient_color     = glm::vec3(0.05f);
+	params_dir.diffuse_color     = glm::vec3(1.0f);
+	params_dir.specular_color    = params_dir.diffuse_color;
+	params_dir.attenuation_coeff = glm::vec3(1.0f, 0.07f, 0.002f);
+	params_dir.draw_model        = true;
+	(*world)->add_PointLight(params_dir);
 
-	params_point.diffuse_color  = glm::vec3(0.0f, 1.0f, 0.0f);
-	params_point.specular_color = params_point.diffuse_color;
-	params_point.pos            = glm::vec3(-3.0f, -3.0f, 3.0f);
-	(*world)->add_PointLight(params_point);
+	params_dir.attenuation_coeff = glm::vec3(1.0f, 0.7f, 0.02f);
+	params_dir.pos               = glm::vec3(3.0f, 6.0f, 3.0f);
+	params_dir.draw_model        = true;
+	(*world)->add_PointLight(params_dir);
 
-	params_point.diffuse_color  = glm::vec3(0.0f, 0.0f, 1.0f);
-	params_point.specular_color = params_point.diffuse_color;
-	params_point.pos            = glm::vec3(3.0f, -3.0f, -3.0f);
-	(*world)->add_PointLight(params_point);
+	params_dir.pos        = glm::vec3(-3.0f, 6.0f, -3.0f);
+	params_dir.draw_model = true;
+	(*world)->add_PointLight(params_dir);
 
-	//Creating Directional Lights
-	DirectionalLight::Params params_dir;
-	params_dir.ambient_color  = glm::vec3(0.05f);
-	params_dir.diffuse_color  = glm::vec3(0.6f, 0.2f, 0.8f);
-	params_dir.specular_color = params_dir.diffuse_color;
-	params_dir.dir            = glm::vec3(1.0f, 0.0f, 1.0f);
-	(*world)->add_DirectionalLight(params_dir);
+	params_dir.pos        = glm::vec3(3.0f, 6.0f, -3.0f);
+	params_dir.draw_model = true;
+	(*world)->add_PointLight(params_dir);
 
-	//Creating Spot Lights
-	SpotLight::Params params_spot;
-	params_spot.pos               = glm::vec3(0.0f, 0.0f, 25.0f);
-	params_spot.ambient_color     = glm::vec3(0.05f);
-	params_spot.diffuse_color     = glm::vec3(1.0f);
-	params_spot.specular_color    = params_spot.diffuse_color;
-	params_spot.dir               = glm::vec3(0.0f, 0.0f, -1.0f);
-	params_spot.attenuation_coeff = glm::vec3(1.0f, 0.5f, 0.1f);
-	params_spot.cutoff            = glm::vec2(20.0f, 15.0f);
-	(*world)->add_SpotLight(params_spot);
+	params_dir.pos        = glm::vec3(-3.0f, 6.0f, 3.0f);
+	params_dir.draw_model = true;
+	(*world)->add_PointLight(params_dir);
+
+	//Creating RenderBin for Light that uses LightContainer
+	AShadowRenderBin::Params rb_light;
+	rb_light.shader           = &rm.getShader("MultiPointDirSpotLightWithShadowMapMultiPass");
+	rb_light.model            = &rm.getModel("BlueBox");
+	rb_light.nb_thread        = 8;
+	rb_light.win_h            = manager.getWindow().cur_win_h;
+	rb_light.win_w            = manager.getWindow().cur_win_w;
+	rb_light.max_instance     = 100000;
+	rb_light.use_face_culling = true;
+	(*world)->add_ShadowRenderBin("LightBlueBoxRB", rb_light,
+								  ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
+
+	rb_light.shader           = &rm.getShader("MultiPointDirSpotLightWithShadowMapMultiPass");
+	rb_light.model            = &rm.getModel("TenshiPlane");
+	rb_light.max_instance     = 100000;
+	rb_light.use_face_culling = true;
+	(*world)->add_ShadowRenderBin("TenshiPlaneRB", rb_light,
+								  ARenderBin::eType::MULTIDIRLIGHT_SHADOW);
 
 	//Creating AProp
 	AProp::Params prop_params;
 	if (arg.auto_rotate_model)
 		prop_params.auto_rotate   = true;
 	prop_params.rotation_per_tick = glm::vec3(0.0f, 1.0f, 0.0f);
-	prop_params.orientation       = glm::vec3(0.0f);
-	prop_params.scale             = glm::vec3(2.0f);
-	prop_params.pos               = glm::vec3(0.0f);
-	(*world)->add_Prop("Light", prop_params, AProp::eType::PROP);
+	prop_params.orientation       = glm::vec3(45.0f);
+	prop_params.scale             = glm::vec3(0.5f);
+	prop_params.pos               = glm::vec3(3.0f, 0.0f, 3.0f);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
 
-	prop_params.pos = glm::vec3(0.0f, 0.0f, 20.0f);
-	(*world)->add_Prop("Light", prop_params, AProp::eType::PROP);
+	prop_params.pos = glm::vec3(-3.0f, 0.0f, -3.0f);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
 
-	prop_params.pos = glm::vec3(0.0f, 0.0f, -20.0f);
-	(*world)->add_Prop("Light", prop_params, AProp::eType::PROP);
+	prop_params.pos = glm::vec3(3.0f, 0.0f, -3.0f);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
+
+	prop_params.pos = glm::vec3(-3.0f, 0.0f, 3.0f);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
+
+	prop_params.orientation = glm::vec3(0.0f);
+	prop_params.scale       = glm::vec3(5.0f);
+	prop_params.pos         = glm::vec3(0.0f, -1.0f, 0.0f);
+	prop_params.auto_rotate = false;
+	(*world)->add_Prop("TenshiPlaneRB", prop_params, AProp::eType::PROP);
 }
 
 static void init_program(Engine **world, RessourceManager &rm,
 						 Glfw_manager &manager, InitValue const &arg)
 {
-	manager.create_window("TestMultiLight", 4, 1, arg.res_w, arg.res_h, false);
+	manager.create_window("TestOmnidirectionalShadow", 4, 1, arg.res_w, arg.res_h, false);
 	if (arg.vsync)
 		manager.enableVsync();
 	if (arg.fullscreen)
-		Glfw_manager::toggleScreenMode(const_cast<GLFW_Window &>(manager.getWindow()), arg.monitor,
-									   arg.res_h, arg.res_w);
+		Glfw_manager::toggleScreenMode(const_cast<GLFW_Window &>(manager.getWindow()),
+									   arg.monitor, arg.res_h, arg.res_w);
 	manager.displayGpuInfo();
 	manager.init_input_callback();
 	ShaderLoading(rm);
@@ -146,7 +155,7 @@ static void init_program(Engine **world, RessourceManager &rm,
 	load_test_level(manager, rm, world, arg);
 }
 
-void InitRunTestMultiLight(Glfw_manager &manager, InitValue const &arg)
+void InitRunTestOmniShadow(Glfw_manager &manager, InitValue const &arg)
 {
 	RessourceManager rm;
 	Engine           *world = nullptr;

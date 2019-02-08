@@ -67,11 +67,6 @@ set(SOURCE_FILES
 		srcs/Light/ALight_Based/DirectionalLight.cpp
 		srcs/Light/ALight_Based/SpotLight.cpp
 		srcs/OpenGL/RenderBin/ARenderBin_Based/MultiPointDirSpotLightRenderBin.cpp
-		srcs/Engine/Init/SceneInit/InitTestInstancing.cpp
-		srcs/Engine/Init/SceneInit/InitTestMultiLight.cpp
-		srcs/Engine/Init/SceneInit/InitTestDirectionalShadow.cpp
-		srcs/Engine/Init/SceneInit/InitTestOmniShadow.cpp
-		srcs/Engine/Init/SceneInit/InitTestSpotShadow.cpp
 		srcs/OpenGL/LightContainer/LightContainer.cpp
 		srcs/OpenGL/RenderBin/ARenderBin_Based/DiffuseColored.cpp
 		srcs/OpenGL/Ressource/AFramebuffer.cpp
@@ -84,25 +79,30 @@ set(SOURCE_FILES
 		srcs/UI/ShaderSurface/TextureShaderBuffer.cpp
 		srcs/OpenGL/Ressource/AFramebuffer_Based/OmnidirectionalDepthMap.cpp
 		srcs/Engine/Engine.cpp
-		srcs/Engine/Init/ShaderLoading/ShaderLoading.cpp
-		srcs/Engine/Init/EngineInit.cpp
 		srcs/OpenGL/Ressource/Fontset.cpp
 		srcs/GameEntities/Prop/Prop.cpp)
-add_library(primary STATIC ${SOURCE_FILES})
-target_link_libraries(primary glad glfw assimp freetype)
-target_compile_options(primary PRIVATE -Wall -Wextra -g3)
+add_library(engine STATIC ${SOURCE_FILES})
+target_link_libraries(engine glad glfw assimp freetype)
+target_compile_options(engine PRIVATE -Wall -Wextra)
 
 #Creating executable
 set(SOURCE_FILES_MAIN
 		srcs/main.cpp
+		srcs/Env/Init/ShaderLoading/ShaderLoading.cpp
+		srcs/Env/Init/EngineInit.cpp
+		srcs/Env/Init/SceneInit/InitTestInstancing.cpp
+		srcs/Env/Init/SceneInit/InitTestMultiLight.cpp
+		srcs/Env/Init/SceneInit/InitTestDirectionalShadow.cpp
+		srcs/Env/Init/SceneInit/InitTestOmniShadow.cpp
+		srcs/Env/Init/SceneInit/InitTestSpotShadow.cpp
 		srcs/Env/Env.cpp)
 add_executable(mukyun_engine ${SOURCE_FILES_MAIN})
-target_compile_options(mukyun_engine PRIVATE -Wall -Wextra -g3)
+target_compile_options(mukyun_engine PRIVATE -Wall -Wextra)
 
 #Build Order
-add_dependencies(primary glad glfw assimp freetype)
-add_dependencies(mukyun_engine primary)
-target_link_libraries(mukyun_engine glad glfw assimp freetype primary)
+add_dependencies(engine glad glfw assimp freetype)
+add_dependencies(mukyun_engine engine)
+target_link_libraries(mukyun_engine glad glfw assimp freetype engine)
 
 #Copy assets
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})

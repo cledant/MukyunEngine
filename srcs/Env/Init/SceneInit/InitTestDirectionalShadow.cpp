@@ -12,7 +12,7 @@
 
 #include "OpenGL/RessourceManager.hpp"
 #include "Engine/Engine.hpp"
-#include "Engine/Init/EngineInit.hpp"
+#include "Env/Init/EngineInit.hpp"
 
 static void init_ressources(RessourceManager &rm)
 {
@@ -40,7 +40,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	sr_params.dir_depth_map_shader      = &rm.getShader("ComputeDirLightDepthMap");
 	sr_params.omni_depth_map_shader     = &rm.getShader("ComputeOmniDepthMap");
 	sr_params.spot_dir_depth_map_shader = &rm.getShader("ComputeDirLightDepthMap");
-	sr_params.dir_near_far              = glm::vec2(1.0f, 30.0f);
+	sr_params.dir_near_far              = glm::vec2(1.0f, 50.0f);
 
 	//Setting Engine Params
 	Engine::EngineInitParams engine_params;
@@ -68,28 +68,19 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 							ARenderBin::eType::DIFFUSE_COLORED);
 
 	//Creating Directional Lights
-	SpotLight::Params params_dir;
-	params_dir.pos               = glm::vec3(0.0f, 10.0f, 0.1f);
-	params_dir.ambient_color     = glm::vec3(0.05f);
-	params_dir.diffuse_color     = glm::vec3(1.0f);
-	params_dir.specular_color    = params_dir.diffuse_color;
-	params_dir.dir               = glm::vec3(0.0f, -1.0f, 0.0f);
-	params_dir.cutoff            = glm::vec2(20.0f, 15.0f);
-	params_dir.attenuation_coeff = glm::vec3(1.0f, 0.007f, 0.0002f);
-	params_dir.draw_model        = true;
-	(*world)->add_SpotLight(params_dir);
+	DirectionalLight::Params params_dir;
+	params_dir.pos            = glm::vec3(-15.0f, 10.0f, -15.0f);
+	params_dir.ambient_color  = glm::vec3(0.05f);
+	params_dir.diffuse_color  = glm::vec3(1.0f);
+	params_dir.specular_color = params_dir.diffuse_color;
+	params_dir.dir            = glm::vec3(1.0f, -1.0f, 1.0f);
+	params_dir.draw_model     = true;
+	(*world)->add_DirectionalLight(params_dir);
 
-	params_dir.pos        = glm::vec3(-8.0f, 4.0f, -8.0f);
-	params_dir.dir        = glm::vec3(1.0f, -1.0f, 1.0f);
-	params_dir.cutoff     = glm::vec2(20.0f, 15.0f);
+	params_dir.pos        = glm::vec3(15.0f, 10.0f, 15.0f);
+	params_dir.dir        = glm::vec3(-1.0f, -1.0f, -1.0f);
 	params_dir.draw_model = true;
-	(*world)->add_SpotLight(params_dir);
-
-	params_dir.pos        = glm::vec3(10.0f, 4.0f, -10.0f);
-	params_dir.dir        = glm::vec3(-1.0f, -1.0f, 1.0f);
-	params_dir.cutoff     = glm::vec2(30.0f, 15.0f);
-	params_dir.draw_model = true;
-	(*world)->add_SpotLight(params_dir);
+	(*world)->add_DirectionalLight(params_dir);
 
 	//Creating RenderBin for Light that uses LightContainer
 	AShadowRenderBin::Params rb_light;
@@ -117,7 +108,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	prop_params.rotation_per_tick = glm::vec3(0.0f, 1.0f, 0.0f);
 	prop_params.orientation       = glm::vec3(45.0f);
 	prop_params.scale             = glm::vec3(0.5f);
-	prop_params.pos               = glm::vec3(7.0f, 1.0f, -6.0f);
+	prop_params.pos               = glm::vec3(0.0f, 2.0f, 0.0f);
 	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
 
 	prop_params.orientation = glm::vec3(0.0f);
@@ -125,6 +116,25 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
 
 	prop_params.pos = glm::vec3(4.0f, 0.0f, 4.0f);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
+
+	prop_params.pos = glm::vec3(-4.0f, 0.0f, -4.0f);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
+
+	prop_params.orientation = glm::vec3(45.0f);
+	prop_params.pos         = glm::vec3(0.0f, 2.0f, 4.0f);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
+
+	prop_params.orientation = glm::vec3(45.0f);
+	prop_params.pos         = glm::vec3(0.0f, 2.0f, -4.0f);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
+
+	prop_params.orientation = glm::vec3(45.0f);
+	prop_params.pos         = glm::vec3(4.0f, 2.0f, 0.0f);
+	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
+
+	prop_params.orientation = glm::vec3(45.0f);
+	prop_params.pos         = glm::vec3(-4.0f, 2.0f, 0.0f);
 	(*world)->add_Prop("LightBlueBoxRB", prop_params, AProp::eType::PROP);
 
 	prop_params.orientation = glm::vec3(0.0f);
@@ -137,7 +147,7 @@ static void load_test_level(Glfw_manager &manager, RessourceManager &rm,
 static void init_program(Engine **world, RessourceManager &rm,
 						 Glfw_manager &manager, InitValue const &arg)
 {
-	manager.create_window("TestSpotShadow", 4, 1, arg.res_w, arg.res_h, false);
+	manager.create_window("TestDirectionalShadow", 4, 1, arg.res_w, arg.res_h, false);
 	if (arg.vsync)
 		manager.enableVsync();
 	if (arg.fullscreen)
@@ -150,7 +160,7 @@ static void init_program(Engine **world, RessourceManager &rm,
 	load_test_level(manager, rm, world, arg);
 }
 
-void InitRunTestSpotShadow(Glfw_manager &manager, InitValue const &arg)
+void InitRunTestDirectionalShadow(Glfw_manager &manager, InitValue const &arg)
 {
 	RessourceManager rm;
 	Engine           *world = nullptr;
