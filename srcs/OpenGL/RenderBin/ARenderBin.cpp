@@ -53,9 +53,8 @@ ARenderBin::ARenderBin(ARenderBin::Params const &params) :
 	else if (this->_nb_thread % 2)
 		this->_nb_thread++;
 
-	this->_nb_elements_per_vector = params.max_instance / this->_nb_thread;
-	if (params.max_instance % this->_nb_thread)
-		this->_nb_elements_per_vector++;
+	this->_nb_elements_per_vector     = params.max_instance / this->_nb_thread;
+	this->_nb_elements_per_vector += params.max_instance % this->_nb_thread;
 	if (this->_nb_elements_per_vector < ARenderBin::_min_elements_per_vector)
 		this->_nb_elements_per_vector = ARenderBin::_min_elements_per_vector;
 
