@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(Lib-Mukyun-Engine)
 
-#option(MUKYUN_CPP_CHECK "Runs CppCheck" OFF)
-
 #Setup Glad
 set(GLAD_API "gl=4.1")
 add_subdirectory(${CMAKE_SOURCE_DIR}/libs/glad ${CMAKE_BINARY_DIR}/libs/glad/build)
@@ -20,20 +18,10 @@ option(ASSIMP_BUILD_TESTS OFF)
 option(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
 add_subdirectory(${CMAKE_SOURCE_DIR}/libs/assimp ${CMAKE_BINARY_DIR}/libs/assimp/build)
 
-#Setup FreeTypeinclude
+#Setup FreeType2
 add_subdirectory(${CMAKE_SOURCE_DIR}/libs/freetype2 ${CMAKE_BINARY_DIR}/libs/freetype2/build)
 
-#Cppcheck config
-#find_program(CMAKE_CXX_CPPCHECK NAMES cppcheck)
-#if (CMAKE_CXX_CPPCHECK AND MUKYUN_CPP_CHECK)
-#	list(
-#			APPEND CMAKE_CXX_CPPCHECK
-#			"--suppress=*:*libs/*"
-#			"-j8"
-#	)
-#endif()
-
-#Engine Lib
+#Setup lib compilation
 add_library(mukyunengine STATIC
 		srcs/WindowManager/Glfw_manager.cpp
 		srcs/WindowManager/Window.cpp
@@ -82,10 +70,4 @@ target_include_directories(mukyunengine PUBLIC
 		${CMAKE_SOURCE_DIR}/libs/freetype2/include
 		${CMAKE_BINARY_DIR}/libs/assimp/build/include)
 target_link_libraries(mukyunengine PRIVATE glad glfw assimp freetype)
-target_compile_options(mukyunengine PRIVATE -Wall -Wextra)
-set_target_properties(
-		mukyunengine
-		PROPERTIES
-		CMAKE_CXX_STANDARD 14
-		CMAKE_CXX_STANDARD_REQUIRED ON
-		CMAKE_CXX_EXTENSIONS OFF)
+target_compile_options(mukyunengine PRIVATE -Wall -Wextra -std=c++14)
