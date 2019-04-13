@@ -1,51 +1,40 @@
-cmake_minimum_required(VERSION 3.6)
-project(MukyunEngine)
+cmake_minimum_required(VERSION 3.10)
+project(Mukyun-Engine)
 
-#Global build type
-set(CMAKE_BUILD_TYPE Release)
+option(MUKYUN_CPP_CHECK "Runs CppCheck" OFF)
 
 #Setup Glad
 set(GLAD_API "gl=4.1")
-add_subdirectory(libs/glad ${CMAKE_BINARY_DIR}/libs/glad/build)
+add_subdirectory(${CMAKE_SOURCE_DIR}/libs/glad ${CMAKE_BINARY_DIR}/libs/glad/build)
 
 #Setup GLFW
 option(GLFW_BUILD_EXAMPLES "" OFF)
 option(GLFW_BUILD_TESTS "" OFF)
 option(GLFW_INSTALL "" OFF)
-add_subdirectory(libs/glfw ${CMAKE_BINARY_DIR}/libs/glfw/build)
+add_subdirectory(${CMAKE_SOURCE_DIR}/libs/glfw ${CMAKE_BINARY_DIR}/libs/glfw/build)
 
 #Setup Assimp
 option(BUILD_SHARED_LIBS OFF)
 option(ASSIMP_NO_EXPORT ON)
 option(ASSIMP_BUILD_TESTS OFF)
 option(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
-add_subdirectory(libs/assimp ${CMAKE_BINARY_DIR}/libs/assimp/build)
+add_subdirectory(${CMAKE_SOURCE_DIR}/libs/assimp ${CMAKE_BINARY_DIR}/libs/assimp/build)
 
-#Setup FreeType
-add_subdirectory(libs/freetype2 ${CMAKE_BINARY_DIR}/libs/freetype2/build)
+#Setup FreeTypeinclude
+add_subdirectory(${CMAKE_SOURCE_DIR}/libs/freetype2 ${CMAKE_BINARY_DIR}/libs/freetype2/build)
 
-#Setup cpp version and Release type
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+#Cppcheck config
+#find_program(CMAKE_CXX_CPPCHECK NAMES cppcheck)
+#if (CMAKE_CXX_CPPCHECK AND MUKYUN_CPP_CHECK)
+#	list(
+#			APPEND CMAKE_CXX_CPPCHECK
+#			"--suppress=*:*libs/*"
+#			"-j8"
+#	)
+#endif()
 
-#Setup directories
-include_directories(includes
-		libs/glm
-		libs/stb
-		${CMAKE_BINARY_DIR}/libs/glad/build/include
-		libs/glfw/include/GLFW
-		libs/assimp/include
-		libs/assimp/build/include
-		libs/freetype2/include
-		${CMAKE_BINARY_DIR}/libs/assimp/build/include)
-link_directories(${CMAKE_BINARY_DIR}/libs/glad/build
-		${CMAKE_BINARY_DIR}/libs/glfw/build/src
-		${CMAKE_BINARY_DIR}/libs/assimp/build/code
-		${CMAKE_BINARY_DIR}/libs/freetype2/build)
-
-#Setup Main Lib with all compilations flag
-set(SOURCE_FILES
+#Engine Lib
+add_library(mukyunengine STATIC
 		srcs/WindowManager/Glfw_manager.cpp
 		srcs/WindowManager/Window.cpp
 		srcs/WindowManager/Input.cpp
@@ -81,29 +70,45 @@ set(SOURCE_FILES
 		srcs/Engine/Engine.cpp
 		srcs/OpenGL/Ressource/Fontset.cpp
 		srcs/GameEntities/Prop/Prop.cpp)
-add_library(engine STATIC ${SOURCE_FILES})
-target_link_libraries(engine glad glfw assimp freetype)
-target_compile_options(engine PRIVATE -Wall -Wextra)
+target_include_directories(mukyunengine PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/includes>
+		$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/glm>
+		$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/stb>
+		$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/libs/glad/build/include>
+		$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/glfw/include/GLFW>
+		$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/assimp/include>
+		$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/assimp/build/include>
+		$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/freetype2/include>
+		$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/libs/assimp/build/include>)
+target_link_libraries(mukyunengine glad glfw assimp freetype)
+target_compile_options(mukyunengine PRIVATE -Wall -Wextra)
+add_dependencies(mukyunengine glad glfw assimp freetype)
+set_target_properties(
+		mukyunengine
+		PROPERTIES
+		CMAKE_CXX_STANDARD 14
+		CMAKE_CXX_STANDARD_REQUIRED ON
+		CMAKE_CXX_EXTENSIONS OFF)
 
-#Creating executable
-set(SOURCE_FILES_MAIN
-		srcs/main.cpp
-		srcs/Env/Init/ShaderLoading/ShaderLoading.cpp
-		srcs/Env/Init/EngineInit.cpp
-		srcs/Env/Init/SceneInit/InitTestInstancing.cpp
-		srcs/Env/Init/SceneInit/InitTestMultiLight.cpp
-		srcs/Env/Init/SceneInit/InitTestDirectionalShadow.cpp
-		srcs/Env/Init/SceneInit/InitTestOmniShadow.cpp
-		srcs/Env/Init/SceneInit/InitTestSpotShadow.cpp
-		srcs/Env/Env.cpp)
-add_executable(mukyun_engine ${SOURCE_FILES_MAIN})
+#Binary
+add_executable(mukyun_engine
+	srcs/main.cpp
+	srcs/Env/Init/ShaderLoading/ShaderLoading.cpp
+	srcs/Env/Init/EngineInit.cpp
+	srcs/Env/Init/SceneInit/InitTestInstancing.cpp
+	srcs/Env/Init/SceneInit/InitTestMultiLight.cpp
+	srcs/Env/Init/SceneInit/InitTestDirectionalShadow.cpp
+	srcs/Env/Init/SceneInit/InitTestOmniShadow.cpp
+	srcs/Env/Init/SceneInit/InitTestSpotShadow.cpp
+	srcs/Env/Env.cpp)
 target_compile_options(mukyun_engine PRIVATE -Wall -Wextra)
-
-#Build Order
-add_dependencies(engine glad glfw assimp freetype)
-add_dependencies(mukyun_engine engine)
-target_link_libraries(mukyun_engine glad glfw assimp freetype engine)
-
-#Copy assets
+add_dependencies(mukyun_engine mukyunengine)
+target_link_libraries(mukyun_engine glad glfw assimp freetype mukyunengine)
+set_target_properties(
+	mukyun_engine
+	PROPERTIES
+	CMAKE_CXX_STANDARD 14
+	CMAKE_CXX_STANDARD_REQUIRED ON
+	CMAKE_CXX_EXTENSIONS OFF)
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY shaders DESTINATION ${CMAKE_BINARY_DIR})
