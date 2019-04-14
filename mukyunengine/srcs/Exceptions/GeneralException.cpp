@@ -12,23 +12,26 @@
 
 #include "Exceptions/GeneralException.hpp"
 
-GeneralException::GeneralException() noexcept
+namespace MukyunEngine
 {
-	this->_msg = "General Exception : An Error happend !";
-}
+	GeneralException::GeneralException() noexcept
+	{
+		this->_msg = "General Exception : An Error happend !";
+	}
 
-GeneralException::GeneralException(GeneralException const &src) noexcept
-{
-	this->_msg = src._msg;
-}
+	GeneralException::GeneralException(GeneralException const &src) noexcept
+	{
+		this->_msg = src._msg;
+	}
 
-GeneralException &GeneralException::operator=(GeneralException const &rhs) noexcept
-{
-	this->_msg = rhs._msg;
-	return (*this);
-}
+	GeneralException &GeneralException::operator=(GeneralException const &rhs) noexcept
+	{
+		this->_msg = rhs._msg;
+		return (*this);
+	}
 
-const char *GeneralException::what() const noexcept
-{
-	return (this->_msg.c_str());
+	const char *GeneralException::what() const noexcept
+	{
+		return (this->_msg.c_str());
+	}
 }

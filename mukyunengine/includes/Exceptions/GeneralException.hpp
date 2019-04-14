@@ -15,19 +15,21 @@
 
 #include <string>
 
-class GeneralException : public std::exception
+namespace MukyunEngine
 {
-	public :
+	class GeneralException : public std::exception
+	{
+		public :
 
-		explicit GeneralException() noexcept;
-		~GeneralException() override = default;
-		GeneralException(GeneralException const &src) noexcept;
-		GeneralException &operator=(GeneralException const &rhs) noexcept;
-		const char *what() const noexcept override;
+			explicit GeneralException() noexcept;
+			~GeneralException() override = default;
+			GeneralException(GeneralException const &src) noexcept;
+			GeneralException &operator=(GeneralException const &rhs) noexcept;
+			const char *what() const noexcept override;
 
-	protected :
+		protected :
 
-		std::string _msg;
-};
-
+			std::string _msg;
+	};
+}
 #endif

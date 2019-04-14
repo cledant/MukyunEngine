@@ -20,88 +20,90 @@
 #include <memory>
 #include <algorithm>
 
-class CollisionBox
+namespace MukyunEngine
 {
-	public :
+	class CollisionBox
+	{
+		public :
 
-		struct Resolution
-		{
-			glm::vec3 pos;
-			glm::vec3 delta;
-			glm::vec3 normal;
-			float     time;
-		};
+			struct Resolution
+			{
+				glm::vec3 pos;
+				glm::vec3 delta;
+				glm::vec3 normal;
+				float     time;
+			};
 
-		struct SweepResolution
-		{
-			Resolution res;
-			glm::vec3  pos;
-			float      time;
-		};
+			struct SweepResolution
+			{
+				Resolution res;
+				glm::vec3  pos;
+				float      time;
+			};
 
-		CollisionBox(glm::vec3 const &pos, glm::vec3 const &half_size);
-		CollisionBox(CollisionBox const &src);
-		CollisionBox &operator=(CollisionBox const &rhs);
-		virtual ~CollisionBox() = default;
+			CollisionBox(glm::vec3 const &pos, glm::vec3 const &half_size);
+			CollisionBox(CollisionBox const &src);
+			CollisionBox &operator=(CollisionBox const &rhs);
+			virtual ~CollisionBox() = default;
 
-		/*
-		 * Setter
-		 */
+			/*
+			 * Setter
+			 */
 
-		void setPos(glm::vec3 const &pos);
-		void setHalfSize(glm::vec3 const &pos);
-		void translateObject(glm::vec3 const &vec);
-		void scaleObject(glm::vec3 const &vec);
-		void rotateObject(glm::vec3 const &vec);
+			void setPos(glm::vec3 const &pos);
+			void setHalfSize(glm::vec3 const &pos);
+			void translateObject(glm::vec3 const &vec);
+			void scaleObject(glm::vec3 const &vec);
+			void rotateObject(glm::vec3 const &vec);
 
-		/*
-		 * Getter
-		 */
+			/*
+			 * Getter
+			 */
 
-		glm::vec3 const &getPos() const;
-		glm::vec3 const &getHalfSize() const;
+			glm::vec3 const &getPos() const;
+			glm::vec3 const &getHalfSize() const;
 
-		/*
-		 * Collision Functions
-		 */
+			/*
+			 * Collision Functions
+			 */
 
-		bool IsPointInBox(glm::vec3 const &pt, Resolution *res) const;
-		bool IsBoxInBox(CollisionBox const &box, Resolution *res) const;
-		bool IsSegmentInBox(glm::vec3 const &pt, glm::vec3 const &delta,
-							glm::vec3 const &padding, Resolution *res) const;
-		bool IsBoxInBoxSweep(CollisionBox const &box, glm::vec3 const &delta,
-							 SweepResolution *s_res) const;
-		bool IsBoxOnBox(CollisionBox const &box) const;
+			bool IsPointInBox(glm::vec3 const &pt, Resolution *res) const;
+			bool IsBoxInBox(CollisionBox const &box, Resolution *res) const;
+			bool IsSegmentInBox(glm::vec3 const &pt, glm::vec3 const &delta,
+								glm::vec3 const &padding, Resolution *res) const;
+			bool IsBoxInBoxSweep(CollisionBox const &box, glm::vec3 const &delta,
+								 SweepResolution *s_res) const;
+			bool IsBoxOnBox(CollisionBox const &box) const;
 
-		class InitException : public GeneralException
-		{
-			public :
+			class InitException : public GeneralException
+			{
+				public :
 
-				explicit InitException() noexcept;
-				~InitException() noexcept override = default;
-		};
+					explicit InitException() noexcept;
+					~InitException() noexcept override = default;
+			};
 
-	private :
+		private :
 
-		glm::vec3 _pos;
-		glm::vec3 _half_size;
+			glm::vec3 _pos;
+			glm::vec3 _half_size;
 
-		inline void _resolution_pt_x(Resolution *res, glm::vec3 const &pt,
-									 glm::vec3 const &d, glm::vec3 const &p) const;
-		inline void _resolution_pt_y(Resolution *res, glm::vec3 const &pt,
-									 glm::vec3 const &d, glm::vec3 const &p) const;
-		inline void _resolution_pt_z(Resolution *res, glm::vec3 const &pt,
-									 glm::vec3 const &d, glm::vec3 const &p) const;
-		inline void _resolution_box_x(Resolution *res, CollisionBox const &box,
-									  glm::vec3 const &d, glm::vec3 const &p) const;
-		inline void _resolution_box_y(Resolution *res, CollisionBox const &box,
-									  glm::vec3 const &d, glm::vec3 const &p) const;
-		inline void _resolution_box_z(Resolution *res, CollisionBox const &box,
-									  glm::vec3 const &d, glm::vec3 const &p) const;
+			inline void _resolution_pt_x(Resolution *res, glm::vec3 const &pt,
+										 glm::vec3 const &d, glm::vec3 const &p) const;
+			inline void _resolution_pt_y(Resolution *res, glm::vec3 const &pt,
+										 glm::vec3 const &d, glm::vec3 const &p) const;
+			inline void _resolution_pt_z(Resolution *res, glm::vec3 const &pt,
+										 glm::vec3 const &d, glm::vec3 const &p) const;
+			inline void _resolution_box_x(Resolution *res, CollisionBox const &box,
+										  glm::vec3 const &d, glm::vec3 const &p) const;
+			inline void _resolution_box_y(Resolution *res, CollisionBox const &box,
+										  glm::vec3 const &d, glm::vec3 const &p) const;
+			inline void _resolution_box_z(Resolution *res, CollisionBox const &box,
+										  glm::vec3 const &d, glm::vec3 const &p) const;
 
-		static constexpr inline float _sign(float nb);
-		static constexpr inline float _max_vec3(glm::vec3 const &vec);
-		static constexpr inline float _min_vec3(glm::vec3 const &vec);
-};
-
+			static constexpr inline float _sign(float nb);
+			static constexpr inline float _max_vec3(glm::vec3 const &vec);
+			static constexpr inline float _min_vec3(glm::vec3 const &vec);
+	};
+}
 #endif

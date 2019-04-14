@@ -15,33 +15,35 @@
 
 # include "Light/ALight.hpp"
 
-class PointLight : public ALight
+namespace MukyunEngine
 {
-	public :
+	class PointLight : public ALight
+	{
+		public :
 
-		struct Params : ALight::Params
-		{
-			Params();
-			~Params() override = default;
+			struct Params : ALight::Params
+			{
+				Params();
+				~Params() override = default;
 
-			glm::vec3 attenuation_coeff;
-		};
+				glm::vec3 attenuation_coeff;
+			};
 
-		explicit PointLight(PointLight::Params const &params);
-		~PointLight() override = default;
-		PointLight(const PointLight &src);
-		PointLight &operator=(PointLight const &rhs);
+			explicit PointLight(PointLight::Params const &params);
+			~PointLight() override = default;
+			PointLight(const PointLight &src);
+			PointLight &operator=(PointLight const &rhs);
 
-		/*
-		 * Getter
-		 */
+			/*
+			 * Getter
+			 */
 
-		glm::vec3 const &getAttenuationCoeff() const;
+			glm::vec3 const &getAttenuationCoeff() const;
 
-	protected :
+		protected :
 
-		//x = constant; y = linear; z = quadratic
-		glm::vec3 _attenuation_coeff;
-};
-
+			//x = constant; y = linear; z = quadratic
+			glm::vec3 _attenuation_coeff;
+	};
+}
 #endif

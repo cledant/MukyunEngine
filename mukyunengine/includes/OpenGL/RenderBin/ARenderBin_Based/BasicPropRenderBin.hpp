@@ -15,22 +15,24 @@
 
 # include "OpenGL/RenderBin/ARenderBin.hpp"
 
-class BasicPropRenderBin : public ARenderBin
+namespace MukyunEngine
 {
-	public :
+	class BasicPropRenderBin : public ARenderBin
+	{
+		public :
 
-		explicit BasicPropRenderBin(ARenderBin::Params const &params);
-		~BasicPropRenderBin() override = default;
-		BasicPropRenderBin(BasicPropRenderBin const &src) = delete;
-		BasicPropRenderBin &operator=(BasicPropRenderBin const &rhs) = delete;
-		BasicPropRenderBin(BasicPropRenderBin &&src) = delete;
-		BasicPropRenderBin &operator=(BasicPropRenderBin &&rhs) = delete;
+			explicit BasicPropRenderBin(ARenderBin::Params const &params);
+			~BasicPropRenderBin() override = default;
+			BasicPropRenderBin(BasicPropRenderBin const &src) = delete;
+			BasicPropRenderBin &operator=(BasicPropRenderBin const &rhs) = delete;
+			BasicPropRenderBin(BasicPropRenderBin &&src) = delete;
+			BasicPropRenderBin &operator=(BasicPropRenderBin &&rhs) = delete;
 
-		/*
-		 * Draw
-		 */
+			/*
+			 * Draw
+			 */
 
-		void draw() override;
-};
-
+			void draw() override;
+	};
+}
 #endif

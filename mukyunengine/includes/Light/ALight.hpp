@@ -17,77 +17,79 @@
 # include "glm/glm.hpp"
 # include "glm/gtc/matrix_transform.hpp"
 
-class ALight
+namespace MukyunEngine
 {
-	public :
+	class ALight
+	{
+		public :
 
-		enum class eType
-		{
-			POINT,
-			DIRECTIONAL,
-			SPOT,
-			NONE,
-		};
+			enum class eType
+			{
+					POINT,
+					DIRECTIONAL,
+					SPOT,
+					NONE,
+			};
 
-		struct Params
-		{
-			Params();
-			virtual ~Params() = default;
+			struct Params
+			{
+				Params();
+				virtual ~Params() = default;
 
-			glm::vec3 ambient_color;
-			glm::vec3 diffuse_color;
-			glm::vec3 specular_color;
-			bool      draw_model;
-			bool      active;
-			glm::vec3 pos;
-		};
+				glm::vec3 ambient_color;
+				glm::vec3 diffuse_color;
+				glm::vec3 specular_color;
+				bool      draw_model;
+				bool      active;
+				glm::vec3 pos;
+			};
 
-		ALight();
-		explicit ALight(ALight::Params const &Params);
-		virtual ~ALight() = default;
-		ALight(ALight const &src);
-		ALight &operator=(ALight const &rhs);
+			ALight();
+			explicit ALight(ALight::Params const &Params);
+			virtual ~ALight() = default;
+			ALight(ALight const &src);
+			ALight &operator=(ALight const &rhs);
 
-		/*
-		 * Getter
-		 */
+			/*
+			 * Getter
+			 */
 
-		ALight::eType getLightType() const;
-		glm::vec3 const &getLightAmbientColor() const;
-		glm::vec3 const &getLightDiffuseColor() const;
-		glm::vec3 const &getLightSpecularColor() const;
-		bool getDrawModel() const;
-		glm::vec3 const &getPos() const;
-		bool getActive() const;
+			ALight::eType getLightType() const;
+			glm::vec3 const &getLightAmbientColor() const;
+			glm::vec3 const &getLightDiffuseColor() const;
+			glm::vec3 const &getLightSpecularColor() const;
+			bool getDrawModel() const;
+			glm::vec3 const &getPos() const;
+			bool getActive() const;
 
-		/*
-		 * Setter
-		 */
+			/*
+			 * Setter
+			 */
 
-		void setLightAmbientColor(glm::vec3 const &vec);
-		void setLightDiffuseColor(glm::vec3 const &vec);
-		void setLightSpecularColor(glm::vec3 const &vec);
-		void setDrawModel(bool val);
-		void setActive(bool value);
-		void translateLight(glm::vec3 const &vec);
+			void setLightAmbientColor(glm::vec3 const &vec);
+			void setLightDiffuseColor(glm::vec3 const &vec);
+			void setLightSpecularColor(glm::vec3 const &vec);
+			void setDrawModel(bool val);
+			void setActive(bool value);
+			void translateLight(glm::vec3 const &vec);
 
-		class InitException : public GeneralException
-		{
-			public :
+			class InitException : public GeneralException
+			{
+				public :
 
-				explicit InitException() noexcept;
-				~InitException() override = default;
-		};
+					explicit InitException() noexcept;
+					~InitException() override = default;
+			};
 
-	protected :
+		protected :
 
-		ALight::eType _type;
-		glm::vec3     _ambient_color;
-		glm::vec3     _diffuse_color;
-		glm::vec3     _specular_color;
-		bool          _draw_model;
-		bool          _active;
-		glm::vec3     _pos;
-};
-
+			ALight::eType _type;
+			glm::vec3     _ambient_color;
+			glm::vec3     _diffuse_color;
+			glm::vec3     _specular_color;
+			bool          _draw_model;
+			bool          _active;
+			glm::vec3     _pos;
+	};
+}
 #endif

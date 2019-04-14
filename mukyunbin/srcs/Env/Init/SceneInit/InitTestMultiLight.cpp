@@ -14,6 +14,8 @@
 #include "Engine/Engine.hpp"
 #include "Env/Init/EngineInit.hpp"
 
+using namespace MukyunEngine;
+
 static void init_ressources(RessourceManager &rm)
 {
 	//System fontset and Default Texture are mandatory

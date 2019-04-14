@@ -18,23 +18,25 @@
 # include "Exceptions/GeneralException.hpp"
 # include <iostream>
 
+namespace MukyunEngine
+{
 /*
  * OpenGL related function
  */
 
-void oGL_check_error();
-void oGL_display_error();
+	void oGL_check_error();
+	void oGL_display_error();
 
 /*
  * Exception
  */
 
-class oGLFailException : public GeneralException
-{
-	public :
+	class oGLFailException : public GeneralException
+	{
+		public :
 
-		explicit oGLFailException() noexcept;
-		~oGLFailException() noexcept override = default;
-};
-
+			explicit oGLFailException() noexcept;
+			~oGLFailException() noexcept override = default;
+	};
+}
 #endif

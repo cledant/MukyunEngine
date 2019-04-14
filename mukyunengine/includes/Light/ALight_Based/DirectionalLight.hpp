@@ -15,32 +15,34 @@
 
 # include "Light/ALight.hpp"
 
-class DirectionalLight : public ALight
+namespace MukyunEngine
 {
-	public :
+	class DirectionalLight : public ALight
+	{
+		public :
 
-		struct Params : ALight::Params
-		{
-			Params();
-			~Params() override = default;
+			struct Params : ALight::Params
+			{
+				Params();
+				~Params() override = default;
 
-			glm::vec3 dir;
-		};
+				glm::vec3 dir;
+			};
 
-		explicit DirectionalLight(DirectionalLight::Params const &params);
-		~DirectionalLight() override = default;
-		DirectionalLight(const DirectionalLight &src);
-		DirectionalLight &operator=(DirectionalLight const &rhs);
+			explicit DirectionalLight(DirectionalLight::Params const &params);
+			~DirectionalLight() override = default;
+			DirectionalLight(const DirectionalLight &src);
+			DirectionalLight &operator=(DirectionalLight const &rhs);
 
-		/*
-		 * Getter
-		 */
+			/*
+			 * Getter
+			 */
 
-		glm::vec3 const &getDirection() const;
+			glm::vec3 const &getDirection() const;
 
-	protected :
+		protected :
 
-		glm::vec3 _dir;
-};
-
+			glm::vec3 _dir;
+	};
+}
 #endif

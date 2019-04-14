@@ -19,21 +19,23 @@
 # define PRESSED true
 # define RELEASED false
 
-struct Input
+namespace MukyunEngine
 {
-	Input();
-	virtual ~Input() = default;
+	struct Input
+	{
+		Input();
+		virtual ~Input() = default;
 
-	std::vector<bool> p_key;
-	std::vector<bool> p_mouse;
-	float             last_pos_x;
-	float             last_pos_y;
-	float             x_offset;
-	float             y_offset;
-	float             timer;
-	bool              first_time;
-	bool              mouse_refreshed;
-	bool              mouse_exclusive;
-};
-
+		std::vector<bool> p_key;
+		std::vector<bool> p_mouse;
+		float             last_pos_x;
+		float             last_pos_y;
+		float             x_offset;
+		float             y_offset;
+		float             timer;
+		bool              first_time;
+		bool              mouse_refreshed;
+		bool              mouse_exclusive;
+	};
+}
 #endif

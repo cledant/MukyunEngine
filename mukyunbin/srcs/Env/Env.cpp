@@ -12,6 +12,8 @@
 
 #include "Env/Env.hpp"
 
+using namespace MukyunEngine;
+
 Env::Env() : _manager(), _env_value()
 {
 }

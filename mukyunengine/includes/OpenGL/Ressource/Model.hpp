@@ -25,52 +25,54 @@
 # include <vector>
 # include <map>
 
-class Model
+namespace MukyunEngine
 {
-	public :
+	class Model
+	{
+		public :
 
-		Model();
-		Model(std::string const &path, std::map<std::string, Texture> &_texture_list);
-		Model(Model const &src) = delete;
-		Model &operator=(Model const &rhs) = delete;
-		Model(Model &&src) noexcept;
-		Model &operator=(Model &&rhs) noexcept;
-		virtual ~Model() = default;
+			Model();
+			Model(std::string const &path, std::map<std::string, Texture> &_texture_list);
+			Model(Model const &src) = delete;
+			Model &operator=(Model const &rhs) = delete;
+			Model(Model &&src) noexcept;
+			Model &operator=(Model &&rhs) noexcept;
+			virtual ~Model() = default;
 
-		/*
-		 * Getter
-		 */
+			/*
+			 * Getter
+			 */
 
-		std::vector<Mesh> const &getMeshList() const;
-		glm::vec3 const &getCenter() const;
-		std::vector<Mesh> moveMeshList();
+			std::vector<Mesh> const &getMeshList() const;
+			glm::vec3 const &getCenter() const;
+			std::vector<Mesh> moveMeshList();
 
-		class FileOpenException : public GeneralException
-		{
-			public :
+			class FileOpenException : public GeneralException
+			{
+				public :
 
-				explicit FileOpenException() noexcept;
-				explicit FileOpenException(std::string const &path) noexcept;
-				~FileOpenException() noexcept override = default;
-		};
+					explicit FileOpenException() noexcept;
+					explicit FileOpenException(std::string const &path) noexcept;
+					~FileOpenException() noexcept override = default;
+			};
 
-		class InvalidNodeException : public GeneralException
-		{
-			public :
+			class InvalidNodeException : public GeneralException
+			{
+				public :
 
-				explicit InvalidNodeException() noexcept;
-				~InvalidNodeException() noexcept override = default;
-		};
+					explicit InvalidNodeException() noexcept;
+					~InvalidNodeException() noexcept override = default;
+			};
 
-	private :
+		private :
 
-		std::vector<Mesh> _mesh_list;
-		glm::vec3         _center;
+			std::vector<Mesh> _mesh_list;
+			glm::vec3         _center;
 
-		inline void _load_model(std::string const &path, std::map<std::string, Texture> &texture_list);
-		inline void _load_node(aiNode *node, const aiScene *scene, std::string const &directory,
-							   std::map<std::string, Texture> &texture_list);
-		inline void _calculate_center();
-};
-
+			inline void _load_model(std::string const &path, std::map<std::string, Texture> &texture_list);
+			inline void _load_node(aiNode *node, const aiScene *scene, std::string const &directory,
+								   std::map<std::string, Texture> &texture_list);
+			inline void _calculate_center();
+	};
+}
 #endif

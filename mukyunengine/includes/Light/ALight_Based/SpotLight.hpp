@@ -15,40 +15,42 @@
 
 # include "Light/ALight.hpp"
 
-class SpotLight : public ALight
+namespace MukyunEngine
 {
-	public :
+	class SpotLight : public ALight
+	{
+		public :
 
-		struct Params : ALight::Params
-		{
-			Params();
-			~Params() override = default;
+			struct Params : ALight::Params
+			{
+				Params();
+				~Params() override = default;
 
-			glm::vec3 dir;
-			glm::vec3 attenuation_coeff;
-			glm::vec2 cutoff;
-		};
+				glm::vec3 dir;
+				glm::vec3 attenuation_coeff;
+				glm::vec2 cutoff;
+			};
 
-		explicit SpotLight(SpotLight::Params const &params);
-		~SpotLight() override = default;
-		SpotLight(const SpotLight &src);
-		SpotLight &operator=(SpotLight const &rhs);
+			explicit SpotLight(SpotLight::Params const &params);
+			~SpotLight() override = default;
+			SpotLight(const SpotLight &src);
+			SpotLight &operator=(SpotLight const &rhs);
 
-		/*
-		 * Getter
-		 */
+			/*
+			 * Getter
+			 */
 
-		glm::vec3 const &getDirection() const;
-		glm::vec3 const &getAttenuationCoeff() const;
-		glm::vec2 const &getCutoff() const;
+			glm::vec3 const &getDirection() const;
+			glm::vec3 const &getAttenuationCoeff() const;
+			glm::vec2 const &getCutoff() const;
 
-	protected :
+		protected :
 
-		glm::vec3 _dir;
-		//x = constant; y = linear; z = quadratic
-		glm::vec3 _attenuation_coeff;
-		//x = outer, y = inner || x should be superior to y
-		glm::vec2 _cutoff;
-};
-
+			glm::vec3 _dir;
+			//x = constant; y = linear; z = quadratic
+			glm::vec3 _attenuation_coeff;
+			//x = outer, y = inner || x should be superior to y
+			glm::vec2 _cutoff;
+	};
+}
 #endif

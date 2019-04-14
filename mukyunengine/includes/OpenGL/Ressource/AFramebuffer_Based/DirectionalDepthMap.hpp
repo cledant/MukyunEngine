@@ -15,38 +15,40 @@
 
 # include "OpenGL/Ressource/AFramebuffer.hpp"
 
-class DirectionalDepthMap : public AFramebuffer
+namespace MukyunEngine
 {
-	public :
+	class DirectionalDepthMap : public AFramebuffer
+	{
+		public :
 
-		DirectionalDepthMap(int w, int h);
-		~DirectionalDepthMap() override = default;
-		DirectionalDepthMap(DirectionalDepthMap const &src) = delete;
-		DirectionalDepthMap &operator=(DirectionalDepthMap const &rhs) = delete;
-		DirectionalDepthMap(DirectionalDepthMap &&src) noexcept;
-		DirectionalDepthMap &operator=(DirectionalDepthMap &&rhs) noexcept;
+			DirectionalDepthMap(int w, int h);
+			~DirectionalDepthMap() override = default;
+			DirectionalDepthMap(DirectionalDepthMap const &src) = delete;
+			DirectionalDepthMap &operator=(DirectionalDepthMap const &rhs) = delete;
+			DirectionalDepthMap(DirectionalDepthMap &&src) noexcept;
+			DirectionalDepthMap &operator=(DirectionalDepthMap &&rhs) noexcept;
 
-		void reallocateFBO(int h, int w) override;
+			void reallocateFBO(int h, int w) override;
 
-		class InitException : public GeneralException
-		{
-			public :
+			class InitException : public GeneralException
+			{
+				public :
 
-				explicit InitException() noexcept;
-				~InitException() noexcept override = default;
-		};
+					explicit InitException() noexcept;
+					~InitException() noexcept override = default;
+			};
 
-		class IncompleteBufferException : public GeneralException
-		{
-			public :
+			class IncompleteBufferException : public GeneralException
+			{
+				public :
 
-				explicit IncompleteBufferException() noexcept;
-				~IncompleteBufferException() noexcept override = default;
-		};
+					explicit IncompleteBufferException() noexcept;
+					~IncompleteBufferException() noexcept override = default;
+			};
 
-	protected :
+		protected :
 
-		inline void _allocate_buffers();
-};
-
+			inline void _allocate_buffers();
+	};
+}
 #endif

@@ -15,20 +15,22 @@
 
 # include "GameEntities/Prop/AProp.hpp"
 
-class Prop : public AProp
+namespace MukyunEngine
 {
-	public :
+	class Prop : public AProp
+	{
+		public :
 
-		explicit Prop(AProp::Params const &params);
-		~Prop() override = default;
-		Prop(Prop const &src);
-		Prop &operator=(Prop const &rhs);
+			explicit Prop(AProp::Params const &params);
+			~Prop() override = default;
+			Prop(Prop const &src);
+			Prop &operator=(Prop const &rhs);
 
-		/*
-		 * Virtual fct
-		 */
+			/*
+			 * Virtual fct
+			 */
 
-		bool update(float time) override;
-};
-
+			bool update(float time) override;
+	};
+}
 #endif

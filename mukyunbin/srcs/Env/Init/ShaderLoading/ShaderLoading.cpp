@@ -12,6 +12,8 @@
 
 #include "OpenGL/RessourceManager.hpp"
 
+using namespace MukyunEngine;
+
 void ShaderLoading(RessourceManager &rm)
 {
 	rm.add_shader("BasicColor", "./shaders/BasicColor/BasicColor_vs.glsl",

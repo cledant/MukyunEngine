@@ -26,101 +26,103 @@
 # include <map>
 # include <memory>
 
-class RessourceManager
+namespace MukyunEngine
 {
-	public :
+	class RessourceManager
+	{
+		public :
 
-		RessourceManager() = default;
-		virtual ~RessourceManager() = default;
-		RessourceManager(RessourceManager const &src) = delete;
-		RessourceManager &operator=(RessourceManager const &rhs) = delete;
+			RessourceManager() = default;
+			virtual ~RessourceManager() = default;
+			RessourceManager(RessourceManager const &src) = delete;
+			RessourceManager &operator=(RessourceManager const &rhs) = delete;
 
-		/*
-		 * Ressource creation
-		 */
+			/*
+			 * Ressource creation
+			 */
 
-		void add_shader(std::string const &name,
-						std::string const &vs_path,
-						std::string const &fs_path);
-		void add_shader(std::string const &name,
-						std::string const &vs_path,
-						std::string const &gs_path,
-						std::string const &fs_path);
-		void add_model(std::string const &name,
-					   std::string const &path);
-		void add_texture(std::string const &name,
-						 std::string const &path,
-						 Texture::eTextureType type);
-		void add_image_framebuffer(std::string const &name, int h, int w);
-		void add_directional_depthbuffer(std::string const &name, int h, int w);
-		void add_fontset(std::string const &name, Fontset::Params const &params);
+			void add_shader(std::string const &name,
+							std::string const &vs_path,
+							std::string const &fs_path);
+			void add_shader(std::string const &name,
+							std::string const &vs_path,
+							std::string const &gs_path,
+							std::string const &fs_path);
+			void add_model(std::string const &name,
+						   std::string const &path);
+			void add_texture(std::string const &name,
+							 std::string const &path,
+							 Texture::eTextureType type);
+			void add_image_framebuffer(std::string const &name, int h, int w);
+			void add_directional_depthbuffer(std::string const &name, int h, int w);
+			void add_fontset(std::string const &name, Fontset::Params const &params);
 
-		/*
-		 * Getter
-		 */
+			/*
+			 * Getter
+			 */
 
-		Shader &getShader(std::string const &name);
-		Model const &getModel(std::string const &name) const;
-		Texture const &getTexture(std::string const &name) const;
-		AFramebuffer const &getFramebuffer(std::string const &name) const;
-		Fontset &getFontset(std::string const &name);
+			Shader &getShader(std::string const &name);
+			Model const &getModel(std::string const &name) const;
+			Texture const &getTexture(std::string const &name) const;
+			AFramebuffer const &getFramebuffer(std::string const &name) const;
+			Fontset &getFontset(std::string const &name);
 
-		/*
-		 * Exceptions
-		 */
+			/*
+			 * Exceptions
+			 */
 
-		class ShaderNotFoundException : public GeneralException
-		{
-			public :
+			class ShaderNotFoundException : public GeneralException
+			{
+				public :
 
-				explicit ShaderNotFoundException() noexcept;
-				explicit ShaderNotFoundException(std::string const &name) noexcept;
-				~ShaderNotFoundException() noexcept override = default;
-		};
+					explicit ShaderNotFoundException() noexcept;
+					explicit ShaderNotFoundException(std::string const &name) noexcept;
+					~ShaderNotFoundException() noexcept override = default;
+			};
 
-		class ModelNotFoundException : public GeneralException
-		{
-			public :
+			class ModelNotFoundException : public GeneralException
+			{
+				public :
 
-				explicit ModelNotFoundException() noexcept;
-				explicit ModelNotFoundException(std::string const &name) noexcept;
-				~ModelNotFoundException() noexcept override = default;
-		};
+					explicit ModelNotFoundException() noexcept;
+					explicit ModelNotFoundException(std::string const &name) noexcept;
+					~ModelNotFoundException() noexcept override = default;
+			};
 
-		class TextureNotFoundException : public GeneralException
-		{
-			public :
+			class TextureNotFoundException : public GeneralException
+			{
+				public :
 
-				explicit TextureNotFoundException() noexcept;
-				explicit TextureNotFoundException(std::string const &name) noexcept;
-				~TextureNotFoundException() noexcept override = default;
-		};
+					explicit TextureNotFoundException() noexcept;
+					explicit TextureNotFoundException(std::string const &name) noexcept;
+					~TextureNotFoundException() noexcept override = default;
+			};
 
-		class FramebufferNotFoundException : public GeneralException
-		{
-			public :
+			class FramebufferNotFoundException : public GeneralException
+			{
+				public :
 
-				explicit FramebufferNotFoundException() noexcept;
-				explicit FramebufferNotFoundException(std::string const &name) noexcept;
-				~FramebufferNotFoundException() noexcept override = default;
-		};
+					explicit FramebufferNotFoundException() noexcept;
+					explicit FramebufferNotFoundException(std::string const &name) noexcept;
+					~FramebufferNotFoundException() noexcept override = default;
+			};
 
-		class FontsetNotFoundException : public GeneralException
-		{
-			public :
+			class FontsetNotFoundException : public GeneralException
+			{
+				public :
 
-				explicit FontsetNotFoundException() noexcept;
-				explicit FontsetNotFoundException(std::string const &name) noexcept;
-				~FontsetNotFoundException() noexcept override = default;
-		};
+					explicit FontsetNotFoundException() noexcept;
+					explicit FontsetNotFoundException(std::string const &name) noexcept;
+					~FontsetNotFoundException() noexcept override = default;
+			};
 
-	private :
+		private :
 
-		std::map<std::string, Shader>                        _shader_list;
-		std::map<std::string, Model>                         _model_list;
-		std::map<std::string, Texture>                       _texture_list;
-		std::map<std::string, std::unique_ptr<AFramebuffer>> _framebuffer_list;
-		std::map<std::string, Fontset>                       _fontset_list;
-};
-
+			std::map<std::string, Shader>                        _shader_list;
+			std::map<std::string, Model>                         _model_list;
+			std::map<std::string, Texture>                       _texture_list;
+			std::map<std::string, std::unique_ptr<AFramebuffer>> _framebuffer_list;
+			std::map<std::string, Fontset>                       _fontset_list;
+	};
+}
 #endif

@@ -15,21 +15,23 @@
 
 # include "glfw3.h"
 
-struct GLFW_Window
+namespace MukyunEngine
 {
-	GLFW_Window();
-	virtual ~GLFW_Window() = default;
+	struct GLFW_Window
+	{
+		GLFW_Window();
+		virtual ~GLFW_Window() = default;
 
-	GLFWwindow           *win;
-	int                  cur_win_w;
-	int                  cur_win_h;
-	static constexpr int max_win_w = 3840;
-	static constexpr int max_win_h = 2160;
-	static constexpr int min_win_w = 640;
-	static constexpr int min_win_h = 480;
-	bool                 resized;
-	bool                 toggle_screen_mode;
-	bool                 fullscreen;
-};
-
+		GLFWwindow           *win;
+		int                  cur_win_w;
+		int                  cur_win_h;
+		static constexpr int max_win_w = 3840;
+		static constexpr int max_win_h = 2160;
+		static constexpr int min_win_w = 640;
+		static constexpr int min_win_h = 480;
+		bool                 resized;
+		bool                 toggle_screen_mode;
+		bool                 fullscreen;
+	};
+}
 #endif

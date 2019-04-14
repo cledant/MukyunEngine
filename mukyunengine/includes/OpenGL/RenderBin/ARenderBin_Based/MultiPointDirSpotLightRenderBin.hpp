@@ -17,22 +17,24 @@
 # include "OpenGL/RenderBin/ARenderBin.hpp"
 # include "OpenGL/LightContainer/LightContainer.hpp"
 
-class MultiPointDirSpotLightRenderBin : public ARenderBin
+namespace MukyunEngine
 {
-	public :
+	class MultiPointDirSpotLightRenderBin : public ARenderBin
+	{
+		public :
 
-		explicit MultiPointDirSpotLightRenderBin(ARenderBin::Params const &params);
-		~MultiPointDirSpotLightRenderBin() override = default;
-		MultiPointDirSpotLightRenderBin(MultiPointDirSpotLightRenderBin const &src) = delete;
-		MultiPointDirSpotLightRenderBin &operator=(MultiPointDirSpotLightRenderBin const &rhs) = delete;
-		MultiPointDirSpotLightRenderBin(MultiPointDirSpotLightRenderBin &&src) = delete;
-		MultiPointDirSpotLightRenderBin &operator=(MultiPointDirSpotLightRenderBin &&rhs) = delete;
+			explicit MultiPointDirSpotLightRenderBin(ARenderBin::Params const &params);
+			~MultiPointDirSpotLightRenderBin() override = default;
+			MultiPointDirSpotLightRenderBin(MultiPointDirSpotLightRenderBin const &src) = delete;
+			MultiPointDirSpotLightRenderBin &operator=(MultiPointDirSpotLightRenderBin const &rhs) = delete;
+			MultiPointDirSpotLightRenderBin(MultiPointDirSpotLightRenderBin &&src) = delete;
+			MultiPointDirSpotLightRenderBin &operator=(MultiPointDirSpotLightRenderBin &&rhs) = delete;
 
-		/*
-		 * Draw
-		 */
+			/*
+			 * Draw
+			 */
 
-		void draw() override;
-};
-
+			void draw() override;
+	};
+}
 #endif

@@ -3,23 +3,23 @@ project(Lib-Mukyun-Engine)
 
 #Setup Glad
 set(GLAD_API "gl=4.1")
-add_subdirectory(${CMAKE_SOURCE_DIR}/libs/glad ${CMAKE_BINARY_DIR}/libs/glad/build)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/glad ${CMAKE_BINARY_DIR}/libs/glad/build)
 
 #Setup GLFW
 option(GLFW_BUILD_EXAMPLES "" OFF)
 option(GLFW_BUILD_TESTS "" OFF)
 option(GLFW_INSTALL "" OFF)
-add_subdirectory(${CMAKE_SOURCE_DIR}/libs/glfw ${CMAKE_BINARY_DIR}/libs/glfw/build)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/glfw ${CMAKE_BINARY_DIR}/libs/glfw/build)
 
 #Setup Assimp
 option(BUILD_SHARED_LIBS OFF)
 option(ASSIMP_NO_EXPORT ON)
 option(ASSIMP_BUILD_TESTS OFF)
 option(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
-add_subdirectory(${CMAKE_SOURCE_DIR}/libs/assimp ${CMAKE_BINARY_DIR}/libs/assimp/build)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/assimp ${CMAKE_BINARY_DIR}/libs/assimp/build)
 
 #Setup FreeType2
-add_subdirectory(${CMAKE_SOURCE_DIR}/libs/freetype2 ${CMAKE_BINARY_DIR}/libs/freetype2/build)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/freetype2 ${CMAKE_BINARY_DIR}/libs/freetype2/build)
 
 #Setup lib compilation
 add_library(mukyunengine STATIC
@@ -61,13 +61,13 @@ add_library(mukyunengine STATIC
 add_dependencies(mukyunengine glad glfw assimp freetype)
 target_include_directories(mukyunengine PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/includes>
-		${CMAKE_SOURCE_DIR}/libs/glm
-		${CMAKE_SOURCE_DIR}/libs/stb
+		${CMAKE_CURRENT_SOURCE_DIR}/libs/glm
+		${CMAKE_CURRENT_SOURCE_DIR}/libs/stb
 		${CMAKE_BINARY_DIR}/libs/glad/build/include
-		${CMAKE_SOURCE_DIR}/libs/glfw/include/GLFW
-		${CMAKE_SOURCE_DIR}/libs/assimp/include
-		${CMAKE_SOURCE_DIR}/libs/assimp/build/include
-		${CMAKE_SOURCE_DIR}/libs/freetype2/include
+		${CMAKE_CURRENT_SOURCE_DIR}/libs/glfw/include/GLFW
+		${CMAKE_CURRENT_SOURCE_DIR}/libs/assimp/include
+		${CMAKE_CURRENT_SOURCE_DIR}/libs/assimp/build/include
+		${CMAKE_CURRENT_SOURCE_DIR}/libs/freetype2/include
 		${CMAKE_BINARY_DIR}/libs/assimp/build/include)
 target_link_libraries(mukyunengine PRIVATE glad glfw assimp freetype)
 target_compile_options(mukyunengine PRIVATE -Wall -Wextra -std=c++14)

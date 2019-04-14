@@ -12,12 +12,15 @@
 
 #include "WindowManager/Window.hpp"
 
-GLFW_Window::GLFW_Window()
+namespace MukyunEngine
 {
-	this->win                = NULL;
-	this->cur_win_w          = min_win_w;
-	this->cur_win_h          = min_win_h;
-	this->resized            = true;
-	this->toggle_screen_mode = false;
-	this->fullscreen         = false;
+	GLFW_Window::GLFW_Window()
+	{
+		this->win                = NULL;
+		this->cur_win_w          = min_win_w;
+		this->cur_win_h          = min_win_h;
+		this->resized            = true;
+		this->toggle_screen_mode = false;
+		this->fullscreen         = false;
+	}
 }

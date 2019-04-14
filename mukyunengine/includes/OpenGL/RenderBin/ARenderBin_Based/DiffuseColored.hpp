@@ -21,51 +21,53 @@
  * Used for debug to display lights
  */
 
-class DiffuseColored : public ARenderBin
+namespace MukyunEngine
 {
-	public :
+	class DiffuseColored : public ARenderBin
+	{
+		public :
 
-		explicit DiffuseColored(ARenderBin::Params const &params);
-		~DiffuseColored() override;
-		DiffuseColored(DiffuseColored const &src) = delete;
-		DiffuseColored &operator=(DiffuseColored const &rhs) = delete;
-		DiffuseColored(DiffuseColored &&src) = delete;
-		DiffuseColored &operator=(DiffuseColored &&rhs) = delete;
+			explicit DiffuseColored(ARenderBin::Params const &params);
+			~DiffuseColored() override;
+			DiffuseColored(DiffuseColored const &src) = delete;
+			DiffuseColored &operator=(DiffuseColored const &rhs) = delete;
+			DiffuseColored(DiffuseColored &&src) = delete;
+			DiffuseColored &operator=(DiffuseColored &&rhs) = delete;
 
-		/*
-		 * Draw
-		 */
+			/*
+			 * Draw
+			 */
 
-		void draw() override;
-		void update(float tick) override;
-		void updateVBO() override;
-		void flushData() override;
+			void draw() override;
+			void update(float tick) override;
+			void updateVBO() override;
+			void flushData() override;
 
-		/*
-		 * Getter
-		 */
+			/*
+			 * Getter
+			 */
 
-		std::vector<glm::vec3> const &getVectorLightDiffuse() const;
-		std::vector<glm::vec3> moveVectorLightDiffuse();
-		size_t getCurrentVectorLightDiffuseNumber() const;
-		size_t getMaxVectorLightDiffuseNumber() const;
-		GLuint getVBOLightDiffuse() const;
-		GLuint moveVBOLightDiffuse();
+			std::vector<glm::vec3> const &getVectorLightDiffuse() const;
+			std::vector<glm::vec3> moveVectorLightDiffuse();
+			size_t getCurrentVectorLightDiffuseNumber() const;
+			size_t getMaxVectorLightDiffuseNumber() const;
+			GLuint getVBOLightDiffuse() const;
+			GLuint moveVBOLightDiffuse();
 
-	protected :
+		protected :
 
-		static constexpr float _light_scale = 0.1f;
-		std::vector<glm::vec3> _vector_light_diffuse;
-		GLuint                 _vbo_light_diffuse;
+			static constexpr float _light_scale = 0.1f;
+			std::vector<glm::vec3> _vector_light_diffuse;
+			GLuint                 _vbo_light_diffuse;
 
-		/*
-		 * Protected functions
-		 */
+			/*
+			 * Protected functions
+			 */
 
-		inline void _allocate_vbo(size_t max_size);
-		inline void _update_vector_light_diffuse();
-		inline void _update_vao_light_diffuse();
-		inline void _update_light_model_matrix();
-};
-
+			inline void _allocate_vbo(size_t max_size);
+			inline void _update_vector_light_diffuse();
+			inline void _update_vao_light_diffuse();
+			inline void _update_light_model_matrix();
+	};
+}
 #endif

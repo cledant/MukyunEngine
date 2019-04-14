@@ -12,34 +12,37 @@
 
 #include "Light/ALight_Based/DirectionalLight.hpp"
 
-DirectionalLight::Params::Params() : ALight::Params()
+namespace MukyunEngine
 {
-	this->dir = glm::vec3(0.0f);
-}
+	DirectionalLight::Params::Params() : ALight::Params()
+	{
+		this->dir = glm::vec3(0.0f);
+	}
 
-DirectionalLight::DirectionalLight(DirectionalLight::Params const &params) : ALight(params),
-																			 _dir(params.dir)
-{
-	this->_type = ALight::eType::DIRECTIONAL;
-}
+	DirectionalLight::DirectionalLight(DirectionalLight::Params const &params) : ALight(params),
+																				 _dir(params.dir)
+	{
+		this->_type = ALight::eType::DIRECTIONAL;
+	}
 
-DirectionalLight::DirectionalLight(const DirectionalLight &src) : ALight()
-{
-	*this = src;
-}
+	DirectionalLight::DirectionalLight(const DirectionalLight &src) : ALight()
+	{
+		*this = src;
+	}
 
-DirectionalLight &DirectionalLight::operator=(DirectionalLight const &rhs)
-{
-	ALight::operator=(rhs);
-	this->_dir = rhs.getDirection();
-	return (*this);
-}
+	DirectionalLight &DirectionalLight::operator=(DirectionalLight const &rhs)
+	{
+		ALight::operator=(rhs);
+		this->_dir = rhs.getDirection();
+		return (*this);
+	}
 
 /*
  * Getter
  */
 
-glm::vec3 const &DirectionalLight::getDirection() const
-{
-	return (this->_dir);
+	glm::vec3 const &DirectionalLight::getDirection() const
+	{
+		return (this->_dir);
+	}
 }

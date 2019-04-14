@@ -16,6 +16,8 @@
 # include "OpenGL/RessourceManager.hpp"
 # include "WindowManager/Glfw_manager.hpp"
 
+using namespace MukyunEngine;
+
 struct InitValue
 {
 	InitValue();

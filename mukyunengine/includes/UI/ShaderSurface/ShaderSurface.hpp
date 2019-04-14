@@ -18,66 +18,68 @@
 # include "WindowManager/Input.hpp"
 # include "OpenGL/Ressource/Shader.hpp"
 
-class ShaderSurface
+namespace MukyunEngine
 {
-	public :
+	class ShaderSurface
+	{
+		public :
 
-		ShaderSurface();
-		explicit ShaderSurface(GLFW_Window const *win, Input const *input, Shader *shader);
-		virtual ~ShaderSurface();
-		ShaderSurface(ShaderSurface const &src) = delete;
-		ShaderSurface &operator=(ShaderSurface const &rhs) = delete;
-		ShaderSurface(ShaderSurface &&src) noexcept;
-		ShaderSurface &operator=(ShaderSurface &&rhs) noexcept;
+			ShaderSurface();
+			explicit ShaderSurface(GLFW_Window const *win, Input const *input, Shader *shader);
+			virtual ~ShaderSurface();
+			ShaderSurface(ShaderSurface const &src) = delete;
+			ShaderSurface &operator=(ShaderSurface const &rhs) = delete;
+			ShaderSurface(ShaderSurface &&src) noexcept;
+			ShaderSurface &operator=(ShaderSurface &&rhs) noexcept;
 
-		/*
-		 * Getter
-		 */
+			/*
+			 * Getter
+			 */
 
-		Shader *getShader() const;
-		Input const *getInput() const;
-		GLFW_Window const *getWindow() const;
-		GLuint moveVAO();
-		GLuint moveVBO();
+			Shader *getShader() const;
+			Input const *getInput() const;
+			GLFW_Window const *getWindow() const;
+			GLuint moveVAO();
+			GLuint moveVBO();
 
-		/*
-		 * Setter
-		 */
+			/*
+			 * Setter
+			 */
 
-		void setShader(Shader *shader);
+			void setShader(Shader *shader);
 
 
-		/*
-		 * Draw
-		 */
+			/*
+			 * Draw
+			 */
 
-		virtual void draw();
+			virtual void draw();
 
-		class InitException : public GeneralException
-		{
-			public :
+			class InitException : public GeneralException
+			{
+				public :
 
-				explicit InitException() noexcept;
-				~InitException() noexcept override = default;
-		};
+					explicit InitException() noexcept;
+					~InitException() noexcept override = default;
+			};
 
-	protected :
+		protected :
 
-		GLFW_Window const *_win;
-		Input const       *_input;
-		Shader            *_shader;
-		GLuint            _vao;
-		GLuint            _vbo;
+			GLFW_Window const *_win;
+			Input const       *_input;
+			Shader            *_shader;
+			GLuint            _vao;
+			GLuint            _vbo;
 
-		inline void _allocate_buffer();
+			inline void _allocate_buffer();
 
-		static constexpr float  _vertices[] = {-1.0f, 1.0f, 0.5f,
-											   1.0f, 1.0f, 0.5f,
-											   -1.0f, -1.0f, 0.5f,
-											   -1.0f, -1.0f, 0.5f,
-											   1.0f, 1.0f, 0.5f,
-											   1.0f, -1.0f, 0.5f};
-		static constexpr size_t _nb_faces   = 6;
-};
-
+			static constexpr float  _vertices[] = {-1.0f, 1.0f, 0.5f,
+												   1.0f, 1.0f, 0.5f,
+												   -1.0f, -1.0f, 0.5f,
+												   -1.0f, -1.0f, 0.5f,
+												   1.0f, 1.0f, 0.5f,
+												   1.0f, -1.0f, 0.5f};
+			static constexpr size_t _nb_faces   = 6;
+	};
+}
 #endif

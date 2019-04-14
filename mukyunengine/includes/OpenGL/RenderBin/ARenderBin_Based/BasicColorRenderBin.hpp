@@ -15,22 +15,24 @@
 
 # include "OpenGL/RenderBin/ARenderBin.hpp"
 
-class BasicColorRenderBin : public ARenderBin
+namespace MukyunEngine
 {
-	public :
+	class BasicColorRenderBin : public ARenderBin
+	{
+		public :
 
-		explicit BasicColorRenderBin(ARenderBin::Params const &params);
-		~BasicColorRenderBin() override = default;
-		BasicColorRenderBin(BasicColorRenderBin const &src) = delete;
-		BasicColorRenderBin &operator=(BasicColorRenderBin const &rhs) = delete;
-		BasicColorRenderBin(BasicColorRenderBin &&src) = delete;
-		BasicColorRenderBin &operator=(BasicColorRenderBin &&rhs) = delete;
+			explicit BasicColorRenderBin(ARenderBin::Params const &params);
+			~BasicColorRenderBin() override = default;
+			BasicColorRenderBin(BasicColorRenderBin const &src) = delete;
+			BasicColorRenderBin &operator=(BasicColorRenderBin const &rhs) = delete;
+			BasicColorRenderBin(BasicColorRenderBin &&src) = delete;
+			BasicColorRenderBin &operator=(BasicColorRenderBin &&rhs) = delete;
 
-		/*
-		 * Draw
-		 */
+			/*
+			 * Draw
+			 */
 
-		void draw() override;
-};
-
+			void draw() override;
+	};
+}
 #endif

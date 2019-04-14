@@ -15,25 +15,27 @@
 
 # include "OpenGL/RenderBin/ARenderBin_Based/AShadowRenderBin.hpp"
 
-class MultiPointDirSpotLightShadowRenderBin : public AShadowRenderBin
+namespace MukyunEngine
 {
-	public :
+	class MultiPointDirSpotLightShadowRenderBin : public AShadowRenderBin
+	{
+		public :
 
-		explicit MultiPointDirSpotLightShadowRenderBin(AShadowRenderBin::Params const &params);
-		~MultiPointDirSpotLightShadowRenderBin() override = default;
-		MultiPointDirSpotLightShadowRenderBin(MultiPointDirSpotLightShadowRenderBin const &src) = delete;
-		MultiPointDirSpotLightShadowRenderBin &operator=(MultiPointDirSpotLightShadowRenderBin const &rhs) = delete;
-		MultiPointDirSpotLightShadowRenderBin(MultiPointDirSpotLightShadowRenderBin &&src) = delete;
-		MultiPointDirSpotLightShadowRenderBin &operator=(MultiPointDirSpotLightShadowRenderBin &&rhs) = delete;
+			explicit MultiPointDirSpotLightShadowRenderBin(AShadowRenderBin::Params const &params);
+			~MultiPointDirSpotLightShadowRenderBin() override = default;
+			MultiPointDirSpotLightShadowRenderBin(MultiPointDirSpotLightShadowRenderBin const &src) = delete;
+			MultiPointDirSpotLightShadowRenderBin &operator=(MultiPointDirSpotLightShadowRenderBin const &rhs) = delete;
+			MultiPointDirSpotLightShadowRenderBin(MultiPointDirSpotLightShadowRenderBin &&src) = delete;
+			MultiPointDirSpotLightShadowRenderBin &operator=(MultiPointDirSpotLightShadowRenderBin &&rhs) = delete;
 
-		/*
-		 * Draw
-		 */
+			/*
+			 * Draw
+			 */
 
-		void draw() override;
-		void drawAmbient() override;
-		void drawLight() override;
-		void drawNoShader() const override;
-};
-
+			void draw() override;
+			void drawAmbient() override;
+			void drawLight() override;
+			void drawNoShader() const override;
+	};
+}
 #endif

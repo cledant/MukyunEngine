@@ -12,36 +12,39 @@
 
 #include "OpenGL/oGL_utility.hpp"
 
-void oGL_check_error()
+namespace MukyunEngine
 {
-	if (glGetError() != GL_NO_ERROR)
-		throw oGLFailException();
-}
-
-void oGL_display_error()
-{
-	GLuint error = glGetError();
-	switch (error)
+	void oGL_check_error()
 	{
-		case GL_NO_ERROR :
-			std::cout << "No error" << std::endl;
-			break;
-		case GL_INVALID_VALUE :
-			std::cout << "Invalid value" << std::endl;
-			break;
-		case GL_INVALID_OPERATION :
-			std::cout << "Invalid operation" << std::endl;
-			break;
-		case GL_INVALID_ENUM :
-			std::cout << "Invalid enum" << std::endl;
-			break;
-		default :
-			std::cout << "Other error" << std::endl;
-			break;
+		if (glGetError() != GL_NO_ERROR)
+			throw oGLFailException();
 	}
-}
 
-oGLFailException::oGLFailException() noexcept
-{
-	this->_msg = "OpenGL : Something failed !";
+	void oGL_display_error()
+	{
+		GLuint error = glGetError();
+		switch (error)
+		{
+			case GL_NO_ERROR :
+				std::cout << "No error" << std::endl;
+				break;
+			case GL_INVALID_VALUE :
+				std::cout << "Invalid value" << std::endl;
+				break;
+			case GL_INVALID_OPERATION :
+				std::cout << "Invalid operation" << std::endl;
+				break;
+			case GL_INVALID_ENUM :
+				std::cout << "Invalid enum" << std::endl;
+				break;
+			default :
+				std::cout << "Other error" << std::endl;
+				break;
+		}
+	}
+
+	oGLFailException::oGLFailException() noexcept
+	{
+		this->_msg = "OpenGL : Something failed !";
+	}
 }
