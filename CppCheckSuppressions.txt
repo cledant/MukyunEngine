@@ -1,0 +1,6 @@
+// To run:
+// cd /path/to/MukyunEngine/
+// cppcheck --enable=warning,style,performance -q --suppressions-list=CppCheckSuppressions.txt --template='{file}:{line},{severity},{id},{message}' --force -I/path/to/includes  /path/to/srcs
+
+//Suppress ThirdParty Libs
+*:libs/*
