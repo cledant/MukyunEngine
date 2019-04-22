@@ -31,7 +31,6 @@ namespace MukyunEngine
 			return;
 		}
 		this->_shader->use();
-		this->_shader->setMat4("uniform_mat_perspec_mult_view", *(this->_perspec_mult_view));
 		if (this->_face_culling)
 		{
 			glEnable(GL_CULL_FACE);

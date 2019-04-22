@@ -35,7 +35,7 @@ namespace MukyunEngine
 			_vbo_inv_model_matrices(0), _ptr_inv_model_matrices(nullptr),
 			_nb_thread(ARenderBin::_default_nb_thread),
 			_nb_elements_per_vector(ARenderBin::_min_elements_per_vector), _nb_active_entities(0),
-			_nb_entities(0), _max_entities(0), _update_vbo(true)
+			_nb_entities(0), _max_entities(0), _tick(0), _update_vbo(true)
 	{
 	}
 
@@ -46,7 +46,8 @@ namespace MukyunEngine
 			_ptr_model_matrices(nullptr), _use_light(params.use_light),
 			_lc(params.lc), _view_pos(params.view_pos), _inv_model_matrices(nullptr),
 			_vbo_inv_model_matrices(0), _ptr_inv_model_matrices(nullptr), _nb_thread(params.nb_thread),
-			_nb_active_entities(0), _nb_entities(0), _max_entities(params.max_instance), _update_vbo(true)
+			_nb_active_entities(0), _nb_entities(0), _max_entities(params.max_instance), _tick(0),
+			_update_vbo(true)
 	{
 		if (this->_nb_thread > ARenderBin::_max_thread)
 			this->_nb_thread = 16;
@@ -71,7 +72,6 @@ namespace MukyunEngine
 			this->_vec_inv_model_matricies_list = std::vector<std::vector<glm::mat4>>(this->_nb_thread);
 			for (auto &it : this->_vec_inv_model_matricies_list)
 				it = std::vector<glm::mat4>(this->_nb_elements_per_vector);
-			this->_vec_updated            = std::vector<bool>(this->_nb_thread, true);
 			this->_vec_nb_active_entities = std::vector<size_t>(this->_nb_thread, 0);
 			this->_model_matrices         = std::make_unique<glm::mat4[]>(params.max_instance);
 			this->_create_vbo_model_matrices(params.max_instance);
@@ -265,7 +265,6 @@ namespace MukyunEngine
 		this->_nb_entities++;
 		if (type == AProp::eType::PROP)
 			this->_vec_entity_list[index].emplace_back(new Prop(params));
-		this->_vec_updated[index] = true;
 		return (this->_vec_entity_list[index].back().get());
 	}
 
@@ -393,20 +392,16 @@ namespace MukyunEngine
 		for (size_t i = 0; i < this->_nb_thread; ++i)
 		{
 			this->_vec_futures[i].get();
-			if (this->_vec_updated[i])
+			std::memcpy(&this->_ptr_model_matrices[this->_nb_active_entities],
+						this->_vec_model_matricies_list[i].data(),
+						this->_vec_nb_active_entities[i] * sizeof(glm::mat4));
+			if (this->_use_light)
 			{
-				std::memcpy(&this->_ptr_model_matrices[this->_nb_active_entities],
-							this->_vec_model_matricies_list[i].data(),
+				std::memcpy(&this->_ptr_inv_model_matrices[this->_nb_active_entities],
+							this->_vec_inv_model_matricies_list[i].data(),
 							this->_vec_nb_active_entities[i] * sizeof(glm::mat4));
-				if (this->_use_light)
-				{
-					std::memcpy(&this->_ptr_inv_model_matrices[this->_nb_active_entities],
-								this->_vec_inv_model_matricies_list[i].data(),
-								this->_vec_nb_active_entities[i] * sizeof(glm::mat4));
-				}
-				this->_update_vbo = true;
 			}
-			this->_vec_updated[i] = false;
+			this->_update_vbo = true;
 			this->_nb_active_entities += this->_vec_nb_active_entities[i];
 		}
 	}
@@ -422,19 +417,18 @@ namespace MukyunEngine
 		{
 			bool to_delete = (*it)->getDelete();
 
-			if ((*it)->update(this->_tick) && !to_delete)
+			if (!to_delete)
 			{
+				(*it)->update(this->_tick);
 				this->_generate_matrices(*it->get(),
 										 this->_vec_model_matricies_list[thread_id][this
 												 ->_vec_nb_active_entities[thread_id]],
 										 this->_vec_inv_model_matricies_list[thread_id][this
 												 ->_vec_nb_active_entities[thread_id]]);
-				this->_vec_updated[thread_id] = true;
 			}
 			if (to_delete)
 			{
 				it = this->_vec_entity_list[thread_id].erase(it);
-				this->_vec_updated[thread_id] = true;
 				this->_nb_entities--;
 			}
 			else
@@ -449,14 +443,18 @@ namespace MukyunEngine
 
 	void ARenderBin::_generate_matrices(AProp &entity, glm::mat4 &model_matrix, glm::mat4 &inv_model_matrix)
 	{
-		model_matrix         = glm::mat4(1.0f);
-		model_matrix         = glm::translate(model_matrix, (entity.getPos() + entity.getOffset()));
-		model_matrix         = glm::rotate(model_matrix, glm::radians(entity.getYaw()), glm::vec3(0.0f, 1.0f, 0.0f));
-		model_matrix         = glm::rotate(model_matrix, glm::radians(entity.getPitch()), glm::vec3(1.0f, 0.0f, 0.0f));
-		model_matrix         = glm::rotate(model_matrix, glm::radians(entity.getRoll()), glm::vec3(0.0f, 0.0f, 1.0f));
-		model_matrix         = glm::translate(model_matrix, entity.getModelCenter() * entity.getScale());
-		model_matrix         = glm::scale(model_matrix, entity.getScale());
+		model_matrix = glm::mat4(1.0f);
+		model_matrix = glm::translate(model_matrix, (entity.getPos() + entity.getOffset()));
+		model_matrix = glm::rotate(model_matrix, glm::radians(entity.getYaw()), glm::vec3(0.0f, 1.0f, 0.0f));
+		model_matrix = glm::rotate(model_matrix, glm::radians(entity.getPitch()), glm::vec3(1.0f, 0.0f, 0.0f));
+		model_matrix = glm::rotate(model_matrix, glm::radians(entity.getRoll()), glm::vec3(0.0f, 0.0f, 1.0f));
+		model_matrix = glm::translate(model_matrix, entity.getModelCenter() * entity.getScale());
+		model_matrix = glm::scale(model_matrix, entity.getScale());
 		if (this->_use_light)
+		{
 			inv_model_matrix = glm::transpose(glm::inverse(model_matrix));
+			inv_model_matrix = *this->_perspec_mult_view * inv_model_matrix;
+		}
+		model_matrix = *this->_perspec_mult_view * model_matrix;
 	}
 }

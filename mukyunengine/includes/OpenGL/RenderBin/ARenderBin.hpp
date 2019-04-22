@@ -149,7 +149,6 @@ namespace MukyunEngine
 			std::vector<std::vector<std::unique_ptr<AProp>>> _vec_entity_list;
 			std::vector<std::vector<glm::mat4>>              _vec_model_matricies_list;
 			std::vector<std::vector<glm::mat4>>              _vec_inv_model_matricies_list;
-			std::vector<bool>                                _vec_updated;
 			std::vector<size_t>                              _vec_nb_active_entities;
 			size_t                                           _nb_active_entities;
 			size_t                                           _nb_entities;
