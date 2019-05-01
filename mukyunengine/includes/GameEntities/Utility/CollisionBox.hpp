@@ -16,6 +16,7 @@
 #include "Exceptions/GeneralException.hpp"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include <cstring>
 #include <iostream>
 #include <memory>
 #include <algorithm>

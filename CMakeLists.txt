@@ -6,7 +6,7 @@ include(CheckCXXCompilerFlag)
 
 option(MUKYUN_BINARY "Compiles mukyun_bin" ON)
 option(MUKYUN_CPPCHECK "Runs CppCheck" OFF)
-option(MUKYUN_LTO "Enables Link time optimization globaly" ON)
+option(MUKYUN_LTO "Enables Link time optimization globaly" OFF)
 option(MUKYUN_MARCH_NATIVE "Enables -march globaly" OFF)
 
 find_program(CMAKE_CXX_CPPCHECK NAMES cppcheck)

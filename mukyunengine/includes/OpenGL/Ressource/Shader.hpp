@@ -17,6 +17,7 @@
 # include "glfw3.h"
 # include "Exceptions/GeneralException.hpp"
 # include "glm/glm.hpp"
+# include <cstring>
 # include <iostream>
 # include <fstream>
 # include <map>
