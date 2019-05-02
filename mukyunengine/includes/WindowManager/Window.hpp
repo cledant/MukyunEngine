@@ -13,7 +13,7 @@
 #ifndef WINDOW_HPP
 # define WINDOW_HPP
 
-# include "glfw3.h"
+# include "GLFW/glfw3.h"
 
 namespace MukyunEngine
 {

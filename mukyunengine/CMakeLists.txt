@@ -21,6 +21,12 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/assimp ${CMAKE_BINARY_DIR}/lib
 #Setup FreeType2
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/freetype2 ${CMAKE_BINARY_DIR}/libs/freetype2/build)
 
+#Setup glm
+option(BUILD_SHARED_LIBS OFF)
+option(BUILD_STATIC_LIBS OFF)
+option(GLM_TEST_ENABLE OFF)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/glm ${CMAKE_BINARY_DIR}/libs/glm/build)
+
 #Setup lib compilation
 add_library(mukyunengine STATIC
 		srcs/WindowManager/Glfw_manager.cpp
@@ -58,16 +64,12 @@ add_library(mukyunengine STATIC
 		srcs/Engine/Engine.cpp
 		srcs/OpenGL/Ressource/Fontset.cpp
 		srcs/GameEntities/Prop/Prop.cpp)
-add_dependencies(mukyunengine glad glfw assimp freetype)
+add_dependencies(mukyunengine glad glfw assimp freetype glm)
 target_include_directories(mukyunengine PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/includes>
-		${CMAKE_CURRENT_SOURCE_DIR}/libs/glm
-		${CMAKE_CURRENT_SOURCE_DIR}/libs/stb
-		${CMAKE_BINARY_DIR}/libs/glad/build/include
-		${CMAKE_CURRENT_SOURCE_DIR}/libs/glfw/include/GLFW
-		${CMAKE_CURRENT_SOURCE_DIR}/libs/assimp/include
-		${CMAKE_CURRENT_SOURCE_DIR}/libs/assimp/build/include
-		${CMAKE_CURRENT_SOURCE_DIR}/libs/freetype2/include
-		${CMAKE_BINARY_DIR}/libs/assimp/build/include)
-target_link_libraries(mukyunengine PRIVATE glad glfw assimp freetype)
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libs/stb>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libs/freetype2/include>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libs/assimp/include>
+		$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/libs/assimp/build/include>)
+target_link_libraries(mukyunengine PUBLIC glm glad glfw freetype assimp)
 target_compile_options(mukyunengine PRIVATE -Wall -Wextra -std=c++14)

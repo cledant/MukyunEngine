@@ -14,7 +14,7 @@
 # define FONTSET_HPP
 
 # include "glad/glad.h"
-# include "glfw3.h"
+# include "GLFW/glfw3.h"
 # include "ft2build.h"
 # include "OpenGL/Ressource/Texture.hpp"
 # include "OpenGL/Ressource/Shader.hpp"

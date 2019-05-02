@@ -16,7 +16,7 @@
 # define THIS_GLFW (static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win)))
 
 # include "glad/glad.h"
-# include "glfw3.h"
+# include "GLFW/glfw3.h"
 # include "Input.hpp"
 # include "Window.hpp"
 # include "Exceptions/GeneralException.hpp"

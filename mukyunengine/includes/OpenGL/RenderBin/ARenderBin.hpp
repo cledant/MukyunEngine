@@ -14,7 +14,7 @@
 # define ARENDERBIN_HPP
 
 # include "glad/glad.h"
-# include "glfw3.h"
+# include "GLFW/glfw3.h"
 # include "glm/glm.hpp"
 # include "Exceptions/GeneralException.hpp"
 # include "OpenGL/Ressource/Shader.hpp"

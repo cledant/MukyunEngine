@@ -14,7 +14,7 @@
 # define INPUT_HPP
 
 # include <vector>
-# include "glfw3.h"
+# include "GLFW/glfw3.h"
 
 # define PRESSED true
 # define RELEASED false

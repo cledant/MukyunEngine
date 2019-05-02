@@ -14,7 +14,7 @@
 # define AFRAMEBUFFER_HPP
 
 # include "glad/glad.h"
-# include "glfw3.h"
+# include "GLFW/glfw3.h"
 # include "Exceptions/GeneralException.hpp"
 # include "glm/glm.hpp"
 
