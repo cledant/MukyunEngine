@@ -1,7 +1,7 @@
 #version 410 core
 
 #define NB_MAX_DIR_LIGHT 10
-#define NB_MAX_POINT_LIGHT 20
+#define NB_MAX_POINT_LIGHT 10
 #define NB_MAX_SPOT_LIGHT 10
 
 out vec4 FragColor;
@@ -83,7 +83,7 @@ void main()
 {
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
-    vec3 result = vec3(0.0f);
+    vec3 result = vec3(0.0);
 
     //1) DirLight
     for(int i = 0; i < nb_dir_light; i++)
