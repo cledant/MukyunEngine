@@ -16,6 +16,8 @@ option(BUILD_SHARED_LIBS OFF)
 option(ASSIMP_NO_EXPORT ON)
 option(ASSIMP_BUILD_TESTS OFF)
 option(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
+set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "")
+set(ASSIMP_BUILD_OBJ_IMPORTER ON CACHE BOOL "")
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/assimp ${CMAKE_BINARY_DIR}/libs/assimp/build)
 
 #Setup FreeType2
@@ -67,9 +69,10 @@ add_library(mukyunengine STATIC
 add_dependencies(mukyunengine glad glfw assimp freetype glm)
 target_include_directories(mukyunengine PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/includes>
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libs/stb>
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libs/freetype2/include>
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libs/assimp/include>
-		$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/libs/assimp/build/include>)
+		$<INSTALL_INTERFACE:includes>
+		${CMAKE_CURRENT_SOURCE_DIR}/libs/stb
+		${CMAKE_CURRENT_SOURCE_DIR}/libs/freetype2/include
+		${CMAKE_CURRENT_SOURCE_DIR}/libs/assimp/include
+		${CMAKE_BINARY_DIR}/libs/assimp/build/include)
 target_link_libraries(mukyunengine PUBLIC glm glad glfw freetype assimp)
 target_compile_options(mukyunengine PRIVATE -Wall -Wextra -std=c++14)
