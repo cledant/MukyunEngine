@@ -1,0 +1,2 @@
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/mukyunengine/cmake/libs" "${CMAKE_CURRENT_SOURCE_DIR}/mukyunengine/cmake/conan" ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR})
+set(CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/mukyunengine/cmake/libs" "${CMAKE_CURRENT_SOURCE_DIR}/mukyunengine/cmake/conan" ${CMAKE_PREFIX_PATH} ${CMAKE_CURRENT_LIST_DIR})

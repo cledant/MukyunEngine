@@ -1,0 +1,8 @@
+[requires]
+glfw/3.3@bincrafters/stable
+Assimp/4.1.0@jacmoe/stable
+freetype/2.9.1@bincrafters/stable
+glm/0.9.9.4@g-truc/stable
+
+[generators]
+cmake_paths
